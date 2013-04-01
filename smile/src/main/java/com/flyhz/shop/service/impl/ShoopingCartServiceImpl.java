@@ -7,11 +7,9 @@ import com.flyhz.shop.dto.CartItem;
 import com.flyhz.shop.service.ShoppingCartService;
 
 public class ShoopingCartServiceImpl implements ShoppingCartService {
-
 	@Override
-	public void addItem(Integer userId, Integer productId) {
-		// TODO Auto-generated method stub
-
+	public void addItem(Integer userId, Integer productId,Integer count) {
+		
 	}
 
 	@Override
