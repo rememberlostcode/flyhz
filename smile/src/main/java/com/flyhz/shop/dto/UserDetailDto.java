@@ -1,7 +1,7 @@
 
 package com.flyhz.shop.dto;
 
-public class UserDetail extends User {
+public class UserDetailDto extends UserDto {
 
 	private String	password;
 

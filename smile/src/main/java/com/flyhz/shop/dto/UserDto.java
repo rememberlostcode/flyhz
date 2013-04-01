@@ -1,7 +1,7 @@
 
 package com.flyhz.shop.dto;
 
-public class User {
+public class UserDto {
 
 	private Integer	id;
 

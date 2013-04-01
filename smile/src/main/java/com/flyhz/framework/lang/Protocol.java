@@ -21,5 +21,4 @@ public class Protocol {
 	public void setData(String data) {
 		this.data = data;
 	}
-
 }

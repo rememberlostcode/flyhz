@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.flyhz.framework.auth.Authenticate;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.Protocol;
-import com.flyhz.shop.dto.User;
+import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.service.UserService;
 
 @Controller
@@ -32,7 +32,7 @@ public class LoginController {
 	public String Login(String username, String password, String verifycode,
 			HttpServletRequest request, HttpServletResponse response, Model model)
 			throws IOException {
-		User user;
+		UserDto user;
 		try {
 			user = userService.login(username, password, verifycode);
 			if (user != null) {
