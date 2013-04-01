@@ -63,7 +63,7 @@
 	  	</beans:property>
 	  	<beans:property name="viewResolvers">
 	  		<beans:list>
-	  			<beans:bean class="com.flyhz.framework.view.velocity.LostVelocityLayoutViewResolver">
+	  			<beans:bean class="com.flyhz.framework.lang.velocity.LostVelocityLayoutViewResolver">
 					<beans:property name="order" value="1"/>
 				</beans:bean>
 	  		</beans:list>
@@ -73,7 +73,7 @@
 		<beans:list>
 		  <!-- JSON View -->
 		  <beans:bean
-			class="com.flyhz.framework.view.content.FinderJsonView">
+			class="com.flyhz.framework.lang.content.FinderJsonView">
 		  </beans:bean>
  
 		  <!-- RSS View -->
@@ -111,18 +111,17 @@
 		<beans:property name="maxUploadSize" value="1073741824"/>
 	</beans:bean>   -->
 	
-	<beans:bean id="multipartResolver" class="com.flyhz.framework.view.multipart.LostMultipartResolver"> 
+	<beans:bean id="multipartResolver" class="com.flyhz.framework.lang.multipart.LostMultipartResolver"> 
 		<beans:property name="defaultEncoding" value="utf-8"/>
 		<beans:property name="resolveLazily" value="true"/> 
 		<beans:property name="maxUploadSize" value="1073741824"/>
 	</beans:bean>
 	<beans:bean id="auth" class="com.flyhz.framework.auth.IAuth"/>
 	<beans:import resource="finder-timer.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-core.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-dao.xml"/>
+	<beans:import resource="finder-lang.xml"/>
+	<beans:import resource="classpath:spring/applicationContext-core.xml"/>
+	<beans:import resource="classpath:spring/applicationContext-dao.xml"/>
+	<beans:import resource="classpath:spring/applicationContext-transaction.xml"/>
 	<beans:import resource="classpath*:spring/applicationContext-service.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-repository.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-transaction.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-dao.xml"/>
 	<beans:import resource="classpath*:spring/applicationContext-controller.xml"/>
 </beans:beans>

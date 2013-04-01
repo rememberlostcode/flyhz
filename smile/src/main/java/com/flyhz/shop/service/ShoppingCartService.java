@@ -14,7 +14,7 @@ public interface ShoppingCartService {
 	 * @param productId 产品ID
 	 * @return 
 	 */
-	public void addItem(Integer userId, Integer productId ,Integer count);
+	public void addItem(Integer userId, Integer productId, Integer qty);
 
 	public void removeItem(Integer userId, Integer itemId);
 

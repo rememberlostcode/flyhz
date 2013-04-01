@@ -8,8 +8,8 @@ import com.flyhz.shop.service.ShoppingCartService;
 
 public class ShoopingCartServiceImpl implements ShoppingCartService {
 	@Override
-	public void addItem(Integer userId, Integer productId,Integer count) {
-		
+	public void addItem(Integer userId, Integer productId, Integer qty) {
+
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.view.multipart;
+package com.flyhz.framework.lang.multipart;
 
 import java.util.Map;
 
