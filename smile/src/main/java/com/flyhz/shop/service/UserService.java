@@ -1,7 +1,10 @@
 
 package com.flyhz.shop.service;
 
+import java.util.List;
+
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.dto.ConsigneeDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
@@ -85,7 +88,7 @@ public interface UserService {
 	 */
 	public void removeConsignee(Integer userId, Integer consigneeId) throws ValidateException;
 
-	public void listConsignees(Integer userId);
+	public List<ConsigneeDto> listConsignees(Integer userId);
 
 	/**
 	 * 设置个人信息

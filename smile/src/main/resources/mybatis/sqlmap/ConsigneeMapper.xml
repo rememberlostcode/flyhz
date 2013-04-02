@@ -5,4 +5,19 @@
 		insert into consignee(name,contury,city,province,address,zipcode,mobilephone,user_id) 
 		values(#{name},#{contury},#{city},#{province},#{address},#{zipcode},#{mobilephone},#{userId})
 	</insert>
+	<select id="getModelById" parameterType="Integer" resultType="ConsigneeModel">
+	    select id, name,contury,city,province,address,zipcode,mobilephone,user_id userId
+	    from consignee
+	    where id = #{id}
+	</select>
+	<select id="getModel" parameterType="ConsigneeModel" resultType="ConsigneeModel">
+	    select id, name,contury,city,province,address,zipcode,mobilephone,user_id userId
+	    from consignee
+	    where id = #{id} and user_id = #{userId}
+	</select>
+	<select id="getConsigneesByUserId" parameterType="Integer" resultType="ConsigneeDto">
+	    select id, name,contury,city,province,address,zipcode,mobilephone,user_id userId
+	    from consignee
+	    where user_id = #{id}
+	</select>
 </mapper>
