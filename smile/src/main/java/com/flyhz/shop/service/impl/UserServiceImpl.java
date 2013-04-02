@@ -12,6 +12,7 @@ import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.RandomString;
 import com.flyhz.framework.util.RegexUtils;
 import com.flyhz.framework.util.StringUtil;
+import com.flyhz.framework.util.ValidateUtil;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.dao.UserDao;
@@ -187,6 +188,40 @@ public class UserServiceImpl implements UserService {
 		userModel = userDao.getModel(userModel);
 		if (userModel == null) {
 			throw new ValidateException("");
+		}
+		// 判断是更新电话、邮箱、密码
+		if (field.equals("email")) {
+			// 校验email格式是否正确
+			String valueStr = String.valueOf(value);
+			if (StringUtil.isNotBlank(valueStr)) {
+				// 邮箱长度最大为64个英文字符
+				if (StringUtil.length(valueStr) > 64) {
+					throw new ValidateException("");
+				} else if (!ValidateUtil.checkEmail(valueStr)) {
+					throw new ValidateException("");
+				}
+			}
+			userModel.setEmail(valueStr);
+			userDao.updateEmail(userModel);
+		} else if (field.equals("mphone")) {
+			// 校验电话格式是否正确
+			String valueStr = String.valueOf(value);
+			if (StringUtil.isNotBlank(valueStr) && !ValidateUtil.isMobileNO(valueStr)) {
+				throw new ValidateException("");
+			}
+			userModel.setMobilephone(valueStr);
+			userDao.updateMobilePhone(userModel);
+		} else if (field.equals("pwd")) {
+			// 密码不能设置为空
+			// 密码长度最大为16个英文字符
+			String valueStr = String.valueOf(value);
+			if (StringUtil.isBlank(valueStr)) {
+				throw new ValidateException("");
+			} else if (StringUtil.length(valueStr) > 16) {
+				throw new ValidateException("");
+			}
+			userModel.setPassword(valueStr);
+			userDao.updatePwd(userModel);
 		}
 	}
 
