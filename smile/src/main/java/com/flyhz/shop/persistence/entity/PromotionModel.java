@@ -12,36 +12,28 @@ import java.util.Date;
 
 public class PromotionModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
-
-	private int					id;
-
+	private Integer				id;
 	private Date				endtime;
-
 	private Date				gmtCreate;
-
 	private Date				gmtModify;
-
 	private BigDecimal			price;
-
-	private int					productId;
-
+	private Integer				productId;
 	private Date				starttime;
-
 	private String				status;
 
 	public PromotionModel() {
 	}
 
-	public int getId() {
-		return this.id;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
 	public Date getEndtime() {
-		return this.endtime;
+		return endtime;
 	}
 
 	public void setEndtime(Date endtime) {
@@ -49,7 +41,7 @@ public class PromotionModel implements Serializable {
 	}
 
 	public Date getGmtCreate() {
-		return this.gmtCreate;
+		return gmtCreate;
 	}
 
 	public void setGmtCreate(Date gmtCreate) {
@@ -57,7 +49,7 @@ public class PromotionModel implements Serializable {
 	}
 
 	public Date getGmtModify() {
-		return this.gmtModify;
+		return gmtModify;
 	}
 
 	public void setGmtModify(Date gmtModify) {
@@ -65,23 +57,23 @@ public class PromotionModel implements Serializable {
 	}
 
 	public BigDecimal getPrice() {
-		return this.price;
+		return price;
 	}
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
-	public int getProductId() {
-		return this.productId;
+	public Integer getProductId() {
+		return productId;
 	}
 
-	public void setProductId(int productId) {
+	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
 
 	public Date getStarttime() {
-		return this.starttime;
+		return starttime;
 	}
 
 	public void setStarttime(Date starttime) {
@@ -89,11 +81,10 @@ public class PromotionModel implements Serializable {
 	}
 
 	public String getStatus() {
-		return this.status;
+		return status;
 	}
 
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
 }

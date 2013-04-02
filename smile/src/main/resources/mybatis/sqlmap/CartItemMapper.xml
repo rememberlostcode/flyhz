@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.flyhz.shop.persistence.entity.CartitemModel">
+<mapper namespace="com.flyhz.shop.persistence.dao.CartItemDao">
 	<delete id="deleteCartItem" parameterType="CartitemModel">
 		delete from cartitem where user_id=#{userId} and id=#{id}
     </delete>
@@ -10,14 +10,16 @@
     <insert id="insertCartItem" parameterType="CartitemModel">
     	insert into cartitem(product_id,qty,user_id,gmt_create) values(#{productId},#{qty},#{userId},#{gmtCreate})
     </insert>
-    <select id="getCartItem" parameterType="CartitemModel" resultType="CartitemModel">
+    <select id="getCartItemById" parameterType="CartitemModel" resultType="CartitemModel">
+    	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
+    	where user_id=#{userId} and id=#{id}
+    </select>
+    <select id="getCartItemByProductId" parameterType="CartitemModel" resultType="CartitemModel">
+    	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
+    	where user_id=#{userId} and product_id=#{productId}
+    </select>
+    <select id="getCartItemList" parameterType="CartitemModel" resultType="CartitemModel">
     	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
     	where user_id=#{userId} 
-    	<if test="id != null">
-    	and id=#{id}
-    	</if>
-    	<if test="productId != null">
-    	and product_id=#{productId}
-    	</if> 
     </select>
 </mapper>

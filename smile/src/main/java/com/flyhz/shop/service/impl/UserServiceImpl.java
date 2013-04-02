@@ -125,18 +125,33 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ConsigneeModel addConsignee(ConsigneeModel consignee) {
+	public ConsigneeModel addConsignee(ConsigneeModel consignee) throws ValidateException {
+		if (consignee == null) {
+			throw new ValidateException("");
+		}
+		if (StringUtils.isBlank(consignee.getName())) {
+
+		}
 		return null;
 	}
 
 	@Override
-	public ConsigneeModel modifyConsignee(ConsigneeModel consignee) {
+	public ConsigneeModel modifyConsignee(ConsigneeModel consignee) throws ValidateException {
+		if (consignee == null) {
+			throw new ValidateException("");
+		}
 		return null;
 	}
 
 	@Override
-	public void removeConsignee(Integer userId, Integer consigneeId) {
-
+	public void removeConsignee(Integer userId, Integer consigneeId) throws ValidateException {
+		if (userId == null) {
+			throw new ValidateException("");
+		}
+		if (consigneeId == null) {
+			throw new ValidateException("");
+		}
+		// ConsigneeModel consigneeModel
 	}
 
 	@Override
@@ -145,8 +160,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void setPersonalInformation(Integer userId, String field, Object value) {
-
+	public void setPersonalInformation(Integer userId, String field, Object value)
+			throws ValidateException {
+		if (userId == null) {
+			throw new ValidateException("");
+		}
+		if (StringUtils.isBlank(field)) {
+			throw new ValidateException("");
+		}
+		UserModel userModel = new UserModel();
+		userModel.setId(userId);
+		userModel = userDao.getModel(userModel);
+		if (userModel == null) {
+			throw new ValidateException("");
+		}
 	}
 
 	@Override

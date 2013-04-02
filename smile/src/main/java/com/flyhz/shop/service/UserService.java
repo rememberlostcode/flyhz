@@ -55,15 +55,43 @@ public interface UserService {
 
 	public ConsigneeModel getConsignee(Integer userId, Integer consigneeId);
 
-	public ConsigneeModel addConsignee(ConsigneeModel consignee);
+	/**
+	 * 添加收件人地址
+	 * 
+	 * @param consignee
+	 * @return ConsigneeModel
+	 */
+	public ConsigneeModel addConsignee(ConsigneeModel consignee) throws ValidateException;
 
-	public ConsigneeModel modifyConsignee(ConsigneeModel consignee);
+	/**
+	 * 修改收件人地址
+	 * 
+	 * @param consignee
+	 * @return ConsigneeModel
+	 */
+	public ConsigneeModel modifyConsignee(ConsigneeModel consignee) throws ValidateException;
 
-	public void removeConsignee(Integer userId, Integer consigneeId);
+	/**
+	 * 删除收件人地址
+	 * 
+	 * @param userId
+	 * @param consigneeId
+	 * @return
+	 */
+	public void removeConsignee(Integer userId, Integer consigneeId) throws ValidateException;
 
 	public void listConsignees(Integer userId);
 
-	public void setPersonalInformation(Integer userId, String field, Object value);
+	/**
+	 * 设置个人信息
+	 * 
+	 * @param userId
+	 * @param field
+	 * @param value
+	 * @return
+	 */
+	public void setPersonalInformation(Integer userId, String field, Object value)
+			throws ValidateException;
 
 	public UserDetailDto getPersonalInformation(Integer userId);
 

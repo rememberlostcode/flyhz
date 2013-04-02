@@ -10,32 +10,26 @@ import java.util.Date;
  */
 public class CartitemModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
-
-	private int					id;
-
+	private Integer				id;
 	private Date				gmtCreate;
-
 	private Date				gmtModify;
-
-	private int					productId;
-
-	private byte				qty;
-
-	private int					userId;
+	private Integer				productId;
+	private Byte				qty;
+	private Integer				userId;
 
 	public CartitemModel() {
 	}
 
-	public int getId() {
-		return this.id;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
 	public Date getGmtCreate() {
-		return this.gmtCreate;
+		return gmtCreate;
 	}
 
 	public void setGmtCreate(Date gmtCreate) {
@@ -43,35 +37,34 @@ public class CartitemModel implements Serializable {
 	}
 
 	public Date getGmtModify() {
-		return this.gmtModify;
+		return gmtModify;
 	}
 
 	public void setGmtModify(Date gmtModify) {
 		this.gmtModify = gmtModify;
 	}
 
-	public int getProductId() {
-		return this.productId;
+	public Integer getProductId() {
+		return productId;
 	}
 
-	public void setProductId(int productId) {
+	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
 
-	public byte getQty() {
-		return this.qty;
+	public Byte getQty() {
+		return qty;
 	}
 
-	public void setQty(byte qty) {
+	public void setQty(Byte qty) {
 		this.qty = qty;
 	}
 
-	public int getUserId() {
-		return this.userId;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-
 }

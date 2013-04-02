@@ -10,23 +10,19 @@ import java.util.Date;
  */
 public class BrandModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
-
-	private int					id;
-
+	private Integer				id;
 	private Date				gmtCreate;
-
 	private Date				gmtModify;
-
 	private String				name;
 
 	public BrandModel() {
 	}
 
-	public int getId() {
-		return this.id;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -53,5 +49,4 @@ public class BrandModel implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 }

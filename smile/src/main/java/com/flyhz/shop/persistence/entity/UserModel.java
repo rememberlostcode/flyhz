@@ -8,41 +8,27 @@ import java.util.Date;
  * The persistent class for the user database table.
  * 
  */
-
 public class UserModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
-
 	private Integer				id;
-
 	private Date				gmtCreate;
-
 	private Date				gmtModify;
-
 	private Date				gmtRegister;
-
 	private String				identitycard;
-
 	private String				mobilephone;
-
 	private String				password;
-
 	private String				qq;
-
 	private String				username;
-
 	private String				email;
-
 	private String				weibo;
-
 	private String				weixin;
-
 	private String				token;
 
 	public UserModel() {
 	}
 
 	public Integer getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(Integer id) {
@@ -50,7 +36,7 @@ public class UserModel implements Serializable {
 	}
 
 	public Date getGmtCreate() {
-		return this.gmtCreate;
+		return gmtCreate;
 	}
 
 	public void setGmtCreate(Date gmtCreate) {
@@ -58,7 +44,7 @@ public class UserModel implements Serializable {
 	}
 
 	public Date getGmtModify() {
-		return this.gmtModify;
+		return gmtModify;
 	}
 
 	public void setGmtModify(Date gmtModify) {
@@ -66,7 +52,7 @@ public class UserModel implements Serializable {
 	}
 
 	public Date getGmtRegister() {
-		return this.gmtRegister;
+		return gmtRegister;
 	}
 
 	public void setGmtRegister(Date gmtRegister) {
@@ -74,7 +60,7 @@ public class UserModel implements Serializable {
 	}
 
 	public String getIdentitycard() {
-		return this.identitycard;
+		return identitycard;
 	}
 
 	public void setIdentitycard(String identitycard) {
@@ -82,7 +68,7 @@ public class UserModel implements Serializable {
 	}
 
 	public String getMobilephone() {
-		return this.mobilephone;
+		return mobilephone;
 	}
 
 	public void setMobilephone(String mobilephone) {
@@ -90,7 +76,7 @@ public class UserModel implements Serializable {
 	}
 
 	public String getPassword() {
-		return this.password;
+		return password;
 	}
 
 	public void setPassword(String password) {
@@ -98,7 +84,7 @@ public class UserModel implements Serializable {
 	}
 
 	public String getQq() {
-		return this.qq;
+		return qq;
 	}
 
 	public void setQq(String qq) {
@@ -106,27 +92,11 @@ public class UserModel implements Serializable {
 	}
 
 	public String getUsername() {
-		return this.username;
+		return username;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getWeibo() {
-		return this.weibo;
-	}
-
-	public void setWeibo(String weibo) {
-		this.weibo = weibo;
-	}
-
-	public String getWeixin() {
-		return this.weixin;
-	}
-
-	public void setWeixin(String weixin) {
-		this.weixin = weixin;
 	}
 
 	public String getEmail() {
@@ -135,6 +105,22 @@ public class UserModel implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getWeibo() {
+		return weibo;
+	}
+
+	public void setWeibo(String weibo) {
+		this.weibo = weibo;
+	}
+
+	public String getWeixin() {
+		return weixin;
+	}
+
+	public void setWeixin(String weixin) {
+		this.weixin = weixin;
 	}
 
 	public String getToken() {

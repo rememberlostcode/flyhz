@@ -24,6 +24,7 @@
     	<!-- 配置Model别名 -->
         <typeAlias alias="CartitemModel" type="com.flyhz.shop.persistence.entity.CartitemModel"/>
         <typeAlias alias="UserModel" type="com.flyhz.shop.persistence.entity.UserModel"/>
+		<typeAlias alias="ConsigneeModel" type="com.flyhz.shop.persistence.entity.ConsigneeModel"/>
         <typeAlias alias="ProductModel" type="com.flyhz.shop.persistence.entity.ProductModel"/>
         <typeAlias alias="PageModel" type="com.flyhz.shop.build.solr.PageModel"/>
         <!-- 配置Dto别名 -->
