@@ -9,8 +9,10 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.CartItemDto;
+import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.persistence.dao.CartItemDao;
 import com.flyhz.shop.persistence.entity.CartitemModel;
 import com.flyhz.shop.service.ShoppingCartService;
@@ -18,7 +20,9 @@ import com.flyhz.shop.service.ShoppingCartService;
 @Service
 public class ShoopingCartServiceImpl implements ShoppingCartService {
 	@Resource
-	private CartItemDao	cartItemDao;
+	private CartItemDao		cartItemDao;
+	@Resource
+	private RedisRepository	redisRepository;
 
 	@Override
 	public void addItem(Integer userId, Integer productId, Byte qty) throws ValidateException {
@@ -88,13 +92,20 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		return null;
 	}
 
-	// 处理CartitemModel，返回CartItemDto对象
+	/**
+	 * 处理CartitemModel，返回CartItemDto对象
+	 * 
+	 * @param cartitemModel
+	 * @return CartItemDto
+	 */
 	private CartItemDto getCartItemDto(CartitemModel cartitemModel) {
 		if (cartitemModel != null) {
 			CartItemDto cartItemDto = new CartItemDto();
 			cartItemDto.setId(cartitemModel.getId());
 			cartItemDto.setQty((short) cartitemModel.getQty());
-			// product redis中取数据
+			ProductDto productDto = redisRepository.getProductFromRedis(String.valueOf(cartitemModel.getProductId()));
+			cartItemDto.setProduct(productDto);
+			return cartItemDto;
 		}
 		return null;
 	}
