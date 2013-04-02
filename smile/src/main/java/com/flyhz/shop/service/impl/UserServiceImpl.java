@@ -18,6 +18,7 @@ import com.flyhz.framework.util.ValidateUtil;
 import com.flyhz.shop.dto.ConsigneeDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
+import com.flyhz.shop.persistence.dao.ConsigneeDao;
 import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.persistence.entity.UserModel;
