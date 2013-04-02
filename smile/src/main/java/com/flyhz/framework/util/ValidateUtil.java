@@ -49,6 +49,25 @@ public class ValidateUtil {
 	}
 
 	/**
+	 * 校验邮编是否正确
+	 * 
+	 * @author fuwb
+	 * @param zipcode
+	 * @return boolean
+	 */
+	public static boolean isValidZipcode(String zipcode) {
+		boolean flag = false;
+		try {
+			Pattern p = Pattern.compile("[1-9]\\d{5}(?!\\d)");
+			Matcher m = p.matcher(zipcode);
+			flag = m.matches();
+		} catch (Exception e) {
+			flag = false;
+		}
+		return flag;
+	}
+
+	/**
 	 * 校验经度值是否有效(经度值范围-180~180;东经为正数，西经为负数)
 	 * 
 	 * @param lng

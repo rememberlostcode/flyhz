@@ -150,13 +150,51 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ConsigneeModel addConsignee(ConsigneeModel consignee) throws ValidateException {
+		// 收件人对象不能为空
 		if (consignee == null) {
 			throw new ValidateException("");
+			// 登陆用户ID不能为空
+		} else if (consignee.getUserId() == null) {
+			throw new ValidateException("");
+			// 收件人姓名不能为空
+		} else if (StringUtil.isBlank(consignee.getName())) {
+			throw new ValidateException("");
+			// 收件人姓名最大为16个英文字符
+		} else if (StringUtil.length(consignee.getName()) > 16) {
+			throw new ValidateException("");
+			// 收件人国家不能为空
+		} else if (consignee.getContury() == null) {
+			throw new ValidateException("");
+			// 收件人省份不能为空
+		} else if (consignee.getProvince() == null) {
+			throw new ValidateException("");
+			// 收件人市不能为空
+		} else if (consignee.getCity() == null) {
+			throw new ValidateException("");
+			// 收件人区不能为空
+		} else if (consignee.getTown() == null) {
+			throw new ValidateException("");
+			// 收件人街道地址不能为空
+		} else if (StringUtil.isBlank(consignee.getAddress())) {
+			throw new ValidateException("");
+			// 收件人街道地址最大128个英文字符
+		} else if (StringUtil.length(consignee.getAddress()) > 128) {
+			throw new ValidateException("");
+			// 邮编不能为空
+		} else if (StringUtil.isBlank(consignee.getZipcode())) {
+			throw new ValidateException("");
+			// 邮编格式错误
+		} else if (!ValidateUtil.isValidZipcode(consignee.getZipcode())) {
+			throw new ValidateException("");
+			// 收件人手机号不能为空
+		} else if (StringUtil.isBlank(consignee.getMobilephone())) {
+			throw new ValidateException("");
+			// 手机号码格式错误
+		} else if (!ValidateUtil.isMobileNO(consignee.getMobilephone())) {
+			throw new ValidateException("");
 		}
-		if (StringUtils.isBlank(consignee.getName())) {
-
-		}
-		return null;
+		consigneeDao.insertConsignee(consignee);
+		return consignee;
 	}
 
 	@Override
