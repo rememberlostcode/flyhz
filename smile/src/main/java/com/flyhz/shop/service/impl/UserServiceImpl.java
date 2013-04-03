@@ -436,6 +436,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDetailDto getPersonalInformation(Integer userId) {
+		if (userId != null) {
+			UserModel userModel = userDao.getModelById(userId);
+			if (userModel != null) {
+				UserDetailDto userDetailDto = new UserDetailDto();
+				BeanUtils.copyProperties(userModel, userDetailDto);
+				return userDetailDto;
+			}
+		}
 		return null;
 	}
 

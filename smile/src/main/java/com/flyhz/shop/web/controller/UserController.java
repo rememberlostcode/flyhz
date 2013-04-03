@@ -270,4 +270,19 @@ public class UserController {
 		}
 		model.addAttribute("protocol", protocol);
 	}
+
+	/**
+	 * 查询用户个人信息
+	 * 
+	 * @param userId
+	 * @param model
+	 */
+	@RequestMapping(value = "user/getPInfo", method = RequestMethod.GET)
+	public void getPersonalInfo(@Identify Integer userId, Model model) {
+		Protocol protocol = new Protocol();
+		userId = 1;
+		protocol.setCode(200000);
+		protocol.setData(JSONUtil.getEntity2Json(userService.getPersonalInformation(userId)));
+		model.addAttribute("protocol", protocol);
+	}
 }
