@@ -419,6 +419,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void relieveEmail(Integer userId) throws ValidateException {
+		// 登陆用户ID不能为空
+		if (userId == null) {
+			throw new ValidateException(101002);
+		}
+		UserModel userModel = new UserModel();
+		userModel.setId(userId);
+		userModel = userDao.getModel(userModel);
+		if (userModel == null) {
+			throw new ValidateException(101002);
+		}
+		userModel.setEmail("");
+		userDao.updateEmail(userModel);
+	}
+
+	@Override
 	public UserDetailDto getPersonalInformation(Integer userId) {
 		return null;
 	}

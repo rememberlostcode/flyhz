@@ -149,12 +149,38 @@ public class UserController {
 		return "";
 	}
 
+	/**
+	 * 设置用户信息，包括邮箱、密码和手机号
+	 * 
+	 * @param userId
+	 * @param field
+	 * @param fval
+	 * @param model
+	 */
 	@RequestMapping(value = "user/setInfo")
 	public void setInfo(@Identify Integer userId, @RequestParam(value = "field") String field,
 			@RequestParam(value = "fval") Object fval, Model model) {
 		Protocol protocol = new Protocol();
 		try {
 			userService.setPersonalInformation(userId, field, fval);
+			protocol.setCode(200000);
+		} catch (ValidateException e) {
+			protocol.setCode(e.getCode());
+		}
+		model.addAttribute("protocol", protocol);
+	}
+
+	/**
+	 * 解除绑定邮箱
+	 * 
+	 * @param userId
+	 * @param model
+	 */
+	@RequestMapping(value = "user/releiveEmail")
+	public void releiveEmail(@Identify Integer userId, Model model) {
+		Protocol protocol = new Protocol();
+		try {
+			userService.relieveEmail(userId);
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());
