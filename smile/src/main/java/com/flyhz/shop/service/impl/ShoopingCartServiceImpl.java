@@ -1,6 +1,7 @@
 
 package com.flyhz.shop.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.CartItemDto;
+import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.persistence.dao.CartItemDao;
 import com.flyhz.shop.persistence.entity.CartitemModel;
@@ -104,6 +106,13 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 			cartItemDto.setId(cartitemModel.getId());
 			cartItemDto.setQty((short) cartitemModel.getQty());
 			ProductDto productDto = redisRepository.getProductFromRedis(String.valueOf(cartitemModel.getProductId()));
+			if (productDto != null) {
+				if (productDto.getPurchasingPrice() != null) {
+					BigDecimal detailTotal = productDto.getPurchasingPrice().multiply(
+							BigDecimal.valueOf(cartItemDto.getQty()));
+					cartItemDto.setTotal(detailTotal);
+				}
+			}
 			cartItemDto.setProduct(productDto);
 			return cartItemDto;
 		}
@@ -111,7 +120,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	}
 
 	@Override
-	public void setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException {
+	public CartItemDto setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException {
 		// 登陆用户ID不能为空
 		if (userId == null) {
 			throw new ValidateException("");
@@ -135,5 +144,24 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		cartitemModel.setQty(qty);
 		cartitemModel.setGmtModify(new Date());
 		cartItemDao.updateCartItem(cartitemModel);
+
+		return getCartItemDto(cartitemModel);
+	}
+
+	@Override
+	public String[] listItemsByUserIdAndIds(CartItemParamDto cartItemParam) {
+		if (cartItemParam == null || cartItemParam.getUserId() == null
+				|| cartItemParam.getItemIds() == null || cartItemParam.getItemIds().length == 0)
+			return null;
+		List<CartitemModel> list = cartItemDao.listItemsByUserIdAndIds(cartItemParam);
+		if (list != null && !list.isEmpty()) {
+			String[] ids = new String[list.size()];
+			for (int i = 0; i < list.size(); i++) {
+				CartitemModel item = list.get(i);
+				ids[i] = item.getProductId() + "_" + item.getQty();
+			}
+			return ids;
+		}
+		return null;
 	}
 }

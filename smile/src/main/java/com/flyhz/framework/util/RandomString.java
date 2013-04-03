@@ -29,4 +29,8 @@ public class RandomString {
 	public static String generateRandomString16() {
 		return generateRandomString(16);
 	}
+
+	public static String generateRandomString8() {
+		return generateRandomString(8);
+	}
 }

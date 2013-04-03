@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.CartItemDto;
+import com.flyhz.shop.dto.CartItemParamDto;
 
 public interface ShoppingCartService {
 	/**
@@ -41,5 +42,13 @@ public interface ShoppingCartService {
 	 * @param qty
 	 * @return
 	 */
-	public void setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException;
+	public CartItemDto setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException;
+
+	/**
+	 * 查询购物车物品列表
+	 * 
+	 * @param userId
+	 * @return String[]
+	 */
+	public String[] listItemsByUserIdAndIds(CartItemParamDto cartItemParam);
 }
