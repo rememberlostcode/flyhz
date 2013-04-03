@@ -105,7 +105,12 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 			CartItemDto cartItemDto = new CartItemDto();
 			cartItemDto.setId(cartitemModel.getId());
 			cartItemDto.setQty((short) cartitemModel.getQty());
-			ProductDto productDto = redisRepository.getProductFromRedis(String.valueOf(cartitemModel.getProductId()));
+			ProductDto productDto = null;
+			try {
+				productDto = redisRepository.getProductFromRedis(String.valueOf(cartitemModel.getProductId()));
+			} catch (ValidateException e) {
+				e.printStackTrace();
+			}
 			if (productDto != null) {
 				if (productDto.getPurchasingPrice() != null) {
 					BigDecimal detailTotal = productDto.getPurchasingPrice().multiply(

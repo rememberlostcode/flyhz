@@ -2,6 +2,7 @@
 package com.flyhz.shop.persistence;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -112,17 +113,6 @@ public class RCacheRepository implements CacheRepository, InitializingBean {
 	}
 
 	@Override
-	public void set(String prefix, String key, String value) {
-		if (StringUtils.isNotBlank(key)) {
-			Jedis jedis = getJedis();
-			if (jedis != null && StringUtils.isNotBlank(prefix)) {
-				jedis.set(prefix + "@" + key, value);
-				pool.returnResource(jedis);
-			}
-		}
-	}
-
-	@Override
 	public String getString(String prefix, String key) {
 		if (StringUtils.isNotBlank(key)) {
 			Jedis jedis = getJedis();
@@ -226,6 +216,16 @@ public class RCacheRepository implements CacheRepository, InitializingBean {
 		}
 	}
 
+	public void setString(String key, String value) {
+		if (StringUtils.isNotBlank(key) && value != null) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				jedis.set(key, value);
+				pool.returnResource(jedis);
+			}
+		}
+	}
+
 	public void setString(String prefix, String key, String value) {
 		if (StringUtils.isNotBlank(key) && value != null) {
 			Jedis jedis = getJedis();
@@ -236,13 +236,107 @@ public class RCacheRepository implements CacheRepository, InitializingBean {
 		}
 	}
 
-	public void setStringNull(String prefix, String key) {
-		if (StringUtils.isNotBlank(key)) {
+	public void hset(String key, String field, String value) {
+		if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(field)
+				&& StringUtils.isNotBlank(value)) {
 			Jedis jedis = getJedis();
-			if (jedis != null && StringUtils.isNotBlank(prefix)) {
-				jedis.set(prefix + "@" + key, "");
+			if (jedis != null) {
+				jedis.hset(key, field, value);
 				pool.returnResource(jedis);
 			}
 		}
+	}
+
+	public String hget(String key, String field) {
+		String result = null;
+		if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(field)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				result = jedis.hget(key, field);
+				pool.returnResource(jedis);
+			}
+		}
+		return result;
+	}
+
+	public void hdel(String key, String field) {
+		if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(field)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				jedis.hdel(key, field);
+				pool.returnResource(jedis);
+			}
+		}
+	}
+
+	public Map<String, String> hgetall(String key) {
+		Map<String, String> result = null;
+		if (StringUtils.isNotBlank(key)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				result = jedis.hgetAll(key);
+				pool.returnResource(jedis);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public void rpush(String key, String value) {
+		if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(value)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				jedis.rpush(key, value);
+				pool.returnResource(jedis);
+			}
+		}
+	}
+
+	@Override
+	public void lpush(String key, String value) {
+		if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(value)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				jedis.lpush(key, value);
+				pool.returnResource(jedis);
+			}
+		}
+	}
+
+	@Override
+	public Long llen(String key) {
+		Long l = 0L;
+		if (StringUtils.isNotBlank(key)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				l = jedis.llen(key);
+				pool.returnResource(jedis);
+			}
+		}
+		return l;
+	}
+
+	@Override
+	public void lrem(String key, String value) {
+		if (StringUtils.isNotBlank(key) && StringUtils.isNotBlank(value)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				jedis.lrem(key, 0, value);
+				pool.returnResource(jedis);
+			}
+		}
+	}
+
+	@Override
+	public List<String> lrange(String key) {
+		List<String> list = null;
+		if (StringUtils.isNotBlank(key)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				list = jedis.lrange(key, 0, jedis.llen(key));
+				pool.returnResource(jedis);
+			}
+		}
+		return list;
 	}
 }

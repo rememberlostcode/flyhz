@@ -20,9 +20,6 @@ http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 				<entry key="com.flyhz.shop.dto.ProductBuildDto">
 					<value>smile@product</value>
 				</entry>
-				<entry key="com.flyhz.shop.dto.OrderModel">
-					<value>smile@order</value>
-				</entry>
 			</map>
 		</constructor-arg>
 	</bean>
