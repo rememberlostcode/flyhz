@@ -15,7 +15,7 @@
     </update>
     
     <insert id="insert" parameterType="UserModel">
-    	insert into user(username,password,email,gmt_create) values(#{username},#{password},#{email},#{gmtCreate})
+    	insert into user(username,password,email,gmt_create,gmt_modify) values(#{username},#{password},#{email},#{gmtCreate},#{gmtModify})
     </insert>
     
     <insert id="register" parameterType="UserModel">

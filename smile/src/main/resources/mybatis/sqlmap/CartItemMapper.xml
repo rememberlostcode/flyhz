@@ -8,7 +8,7 @@
     	update cartitem set qty=#{qty},gmt_modify=#{gmtModify} where user_id=#{userId} and id=#{id}
     </update>
     <insert id="insertCartItem" parameterType="CartitemModel">
-    	insert into cartitem(product_id,qty,user_id,gmt_create) values(#{productId},#{qty},#{userId},#{gmtCreate})
+    	insert into cartitem(product_id,qty,user_id,gmt_create,gmt_modify) values(#{productId},#{qty},#{userId},#{gmtCreate},#{gmtModify})
     </insert>
     <select id="getCartItem" parameterType="CartitemModel" resultType="CartitemModel">
     	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
