@@ -165,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
 	public boolean pay(Integer userId, String number) throws ValidateException {
 		if (userId == null)
 			throw new ValidateException("您没有登录！");
-		if (number == null)
+		if (StringUtils.isBlank(number))
 			throw new ValidateException("订单ID不能为空！");
 		boolean flag = false;
 		OrderModel orderModel = new OrderModel();

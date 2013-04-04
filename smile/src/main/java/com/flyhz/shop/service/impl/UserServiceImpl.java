@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.file.FileRepository;
 import com.flyhz.framework.util.DateUtil;
+import com.flyhz.framework.util.MD5;
 import com.flyhz.framework.util.RandomString;
 import com.flyhz.framework.util.RegexUtils;
 import com.flyhz.framework.util.StringUtil;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
 		UserModel userModel = new UserModel();
 		userModel.setUsername(userDetail.getUsername());
-		userModel.setPassword(userDetail.getPassword());
+		userModel.setPassword(MD5.getMD5(userDetail.getPassword()));
 		if (StringUtils.isNotBlank(userDetail.getEmail())) {
 			if (RegexUtils.checkEmail(userDetail.getEmail())) {
 				userModel.setEmail(userDetail.getEmail());
@@ -69,10 +70,9 @@ public class UserServiceImpl implements UserService {
 		userModel.setGmtRegister(new Date());
 		userDao.register(userModel);
 
-		user = userDao.getUserByName(userDetail.getUsername());
 		UserDto userDto = new UserDto();
-		userDto.setId(user.getId());
-		userDto.setUsername(user.getUsername());
+		userDto.setId(userModel.getId());
+		userDto.setUsername(userModel.getUsername());
 		return userDto;
 	}
 

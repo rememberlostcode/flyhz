@@ -46,6 +46,10 @@
     		,#{gmtRegister}
     	</if>
     	
+    	<selectKey resultType="int" keyProperty="id">
+            <![CDATA[SELECT LAST_INSERT_ID() AS id ]]>
+        </selectKey>
+    	
     	)
     </insert>
     
