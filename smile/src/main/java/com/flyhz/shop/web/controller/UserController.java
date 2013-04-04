@@ -245,6 +245,7 @@ public class UserController {
 	 * @param fval
 	 * @param model
 	 */
+	// @RequestMapping(value = "user/setInfo", method = RequestMethod.POST)
 	@RequestMapping(value = "user/setInfo")
 	public void setInfo(@Identify Integer userId, @RequestParam(value = "field") String field,
 			@RequestParam(value = "fval") Object fval, Model model) {
@@ -264,6 +265,7 @@ public class UserController {
 	 * @param userId
 	 * @param model
 	 */
+	// @RequestMapping(value = "user/releiveEmail", method = RequestMethod.POST)
 	@RequestMapping(value = "user/releiveEmail")
 	public void releiveEmail(@Identify Integer userId, Model model) {
 		Protocol protocol = new Protocol();
@@ -285,9 +287,30 @@ public class UserController {
 	@RequestMapping(value = "user/getPInfo", method = RequestMethod.GET)
 	public void getPersonalInfo(@Identify Integer userId, Model model) {
 		Protocol protocol = new Protocol();
-		userId = 1;
-		protocol.setCode(200000);
 		protocol.setData(JSONUtil.getEntity2Json(userService.getPersonalInformation(userId)));
+		protocol.setCode(200000);
+		model.addAttribute("protocol", protocol);
+	}
+
+	/**
+	 * 重置用户密码
+	 * 
+	 * @param userId
+	 * @param oldpwd
+	 * @param newpwd
+	 * @param model
+	 */
+	// @RequestMapping(value = "user/resetPwd", method = RequestMethod.POST)
+	@RequestMapping(value = "user/resetPwd")
+	public void resetPwd(@Identify Integer userId, @RequestParam(value = "opwd") String oldpwd,
+			@RequestParam(value = "npwd") String newpwd, Model model) {
+		Protocol protocol = new Protocol();
+		try {
+			userService.resetpwd(userId, oldpwd, newpwd);
+			protocol.setCode(200000);
+		} catch (ValidateException e) {
+			protocol.setCode(e.getCode());
+		}
 		model.addAttribute("protocol", protocol);
 	}
 }

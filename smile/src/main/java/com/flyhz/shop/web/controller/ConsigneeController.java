@@ -26,12 +26,12 @@ public class ConsigneeController {
 	@Resource
 	private UserService	userService;
 
+	// @RequestMapping(value = "/setIdCard", method = RequestMethod.POST)
 	@RequestMapping(value = "/setIdCard")
 	public void setIdCard(@Identify Integer userId, @RequestParam(value = "conid") Integer conid,
 			MultipartFile multipartFile, Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			userId = 1;
 			userService.setIdCardImg(userId, conid, multipartFile);
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
@@ -40,12 +40,12 @@ public class ConsigneeController {
 		model.addAttribute("protocol", protocol);
 	}
 
+	// @RequestMapping(value = "/add", method = RequestMethod.POST)
 	@RequestMapping(value = "/add")
 	public void addConsignee(@Identify Integer userId, ConsigneeModel consignee, Model model) {
 		Protocol protocol = new Protocol();
 		try {
 			consignee.setUserId(userId);
-			consignee.setUserId(2);
 			userService.addConsignee(consignee);
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
@@ -54,6 +54,7 @@ public class ConsigneeController {
 		model.addAttribute("protocol", protocol);
 	}
 
+	// @RequestMapping(value = "/modify", method = RequestMethod.POST)
 	@RequestMapping(value = "/modify")
 	public void modifyConsignee(@Identify Integer userId, ConsigneeModel consignee, Model model) {
 		Protocol protocol = new Protocol();
@@ -67,12 +68,12 @@ public class ConsigneeController {
 		model.addAttribute("protocol", protocol);
 	}
 
+	// @RequestMapping(value = "/remove", method = RequestMethod.POST)
 	@RequestMapping(value = "/remove")
 	public void removeConsignee(@Identify Integer userId,
 			@RequestParam(value = "conid") Integer conid, Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			userId = 2;
 			userService.removeConsignee(userId, conid);
 			protocol.setCode(200000);
 		} catch (ValidateException e) {

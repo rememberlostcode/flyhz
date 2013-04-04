@@ -375,7 +375,7 @@ public class UserServiceImpl implements UserService {
 			String valueStr = String.valueOf(value);
 			if (StringUtil.isBlank(valueStr)) {
 				throw new ValidateException(101018);
-			} else if (StringUtil.length(valueStr) > 16) {
+			} else if (StringUtil.length(valueStr) > 64) {
 				throw new ValidateException(101019);
 			}
 			userModel.setPassword(valueStr);
@@ -448,7 +448,35 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void resetpwd(Integer userId, String oldpwd, String newpwd) {
-
+	public void resetpwd(Integer userId, String oldpwd, String newpwd) throws ValidateException {
+		// 登陆用户ID不能为空
+		if (userId == null) {
+			throw new ValidateException(101002);
+		}
+		// 旧密码不能为空
+		if (StringUtil.isBlank(oldpwd)) {
+			throw new ValidateException(101024);
+		} else if (StringUtil.length(oldpwd) > 64) {
+			throw new ValidateException(101027);
+		}
+		// 新密码不能为空
+		if (StringUtil.isBlank(newpwd)) {
+			throw new ValidateException(101025);
+		} else if (StringUtil.length(newpwd) > 64) {
+			throw new ValidateException(101028);
+		}
+		UserModel userModel = new UserModel();
+		userModel.setId(userId);
+		userModel = userDao.getModel(userModel);
+		// 登陆用户ID不能为空
+		if (userModel == null) {
+			throw new ValidateException(101002);
+		}
+		// 输入旧密码不对
+		if (!oldpwd.equals(userModel.getPassword())) {
+			throw new ValidateException(101026);
+		}
+		userModel.setPassword(newpwd);
+		userDao.updatePwd(userModel);
 	}
 }

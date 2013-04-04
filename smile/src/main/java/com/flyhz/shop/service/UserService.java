@@ -135,7 +135,20 @@ public interface UserService {
 	 */
 	public void relieveEmail(Integer userId) throws ValidateException;
 
+	/**
+	 * 查询个人信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	public UserDetailDto getPersonalInformation(Integer userId);
 
-	public void resetpwd(Integer userId, String oldpwd, String newpwd);
+	/**
+	 * 重置用户密码
+	 * 
+	 * @param userId
+	 * @param oldpwd
+	 * @param newpwd
+	 */
+	public void resetpwd(Integer userId, String oldpwd, String newpwd) throws ValidateException;
 }
