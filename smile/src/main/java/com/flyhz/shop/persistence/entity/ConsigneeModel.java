@@ -11,15 +11,15 @@ public class ConsigneeModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
 	private Integer				id;
 	private String				address;
-	private Short				city;
-	private Short				contury;
+	private Short				cityId;
+	private Short				conturyId;
 	private String				idcard;
 	private String				mobilephone;
 	private String				name;
-	private Short				province;
+	private Short				provinceId;
 	private Integer				userId;
 	private String				zipcode;
-	private Short				town;
+	private Short				districtId;
 
 	public ConsigneeModel() {
 	}
@@ -38,22 +38,6 @@ public class ConsigneeModel implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
-	}
-
-	public Short getCity() {
-		return city;
-	}
-
-	public void setCity(Short city) {
-		this.city = city;
-	}
-
-	public Short getContury() {
-		return contury;
-	}
-
-	public void setContury(Short contury) {
-		this.contury = contury;
 	}
 
 	public String getIdcard() {
@@ -80,14 +64,6 @@ public class ConsigneeModel implements Serializable {
 		this.name = name;
 	}
 
-	public Short getProvince() {
-		return province;
-	}
-
-	public void setProvince(Short province) {
-		this.province = province;
-	}
-
 	public Integer getUserId() {
 		return userId;
 	}
@@ -104,11 +80,35 @@ public class ConsigneeModel implements Serializable {
 		this.zipcode = zipcode;
 	}
 
-	public Short getTown() {
-		return town;
+	public Short getCityId() {
+		return cityId;
 	}
 
-	public void setTown(Short town) {
-		this.town = town;
+	public void setCityId(Short cityId) {
+		this.cityId = cityId;
+	}
+
+	public Short getConturyId() {
+		return conturyId;
+	}
+
+	public void setConturyId(Short conturyId) {
+		this.conturyId = conturyId;
+	}
+
+	public Short getProvinceId() {
+		return provinceId;
+	}
+
+	public void setProvinceId(Short provinceId) {
+		this.provinceId = provinceId;
+	}
+
+	public Short getDistrictId() {
+		return districtId;
+	}
+
+	public void setDistrictId(Short districtId) {
+		this.districtId = districtId;
 	}
 }

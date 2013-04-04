@@ -175,19 +175,19 @@ public class UserServiceImpl implements UserService {
 			throw new ValidateException(101004);
 		}
 		// 收件人国家不能为空
-		if (consignee.getContury() == null) {
+		if (consignee.getConturyId() == null) {
 			throw new ValidateException(101005);
 		}
 		// 收件人省份不能为空
-		if (consignee.getProvince() == null) {
+		if (consignee.getProvinceId() == null) {
 			throw new ValidateException(101006);
 		}
 		// 收件人市不能为空
-		if (consignee.getCity() == null) {
+		if (consignee.getCityId() == null) {
 			throw new ValidateException(101007);
 		}
 		// 收件人区不能为空
-		if (consignee.getTown() == null) {
+		if (consignee.getDistrictId() == null) {
 			throw new ValidateException(101008);
 		}
 		// 收件人街道地址不能为空
@@ -237,19 +237,19 @@ public class UserServiceImpl implements UserService {
 			throw new ValidateException(101004);
 		}
 		// 收件人国家不能为空
-		if (consignee.getContury() == null) {
+		if (consignee.getConturyId() == null) {
 			throw new ValidateException(101005);
 		}
 		// 收件人省份不能为空
-		if (consignee.getProvince() == null) {
+		if (consignee.getProvinceId() == null) {
 			throw new ValidateException(101006);
 		}
 		// 收件人市不能为空
-		if (consignee.getCity() == null) {
+		if (consignee.getCityId() == null) {
 			throw new ValidateException(101007);
 		}
 		// 收件人区不能为空
-		if (consignee.getTown() == null) {
+		if (consignee.getDistrictId() == null) {
 			throw new ValidateException(101008);
 		}
 		// 收件人街道地址不能为空

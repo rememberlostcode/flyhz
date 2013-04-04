@@ -2,27 +2,17 @@
 package com.flyhz.shop.dto;
 
 public class ConsigneeDto {
-
 	private Integer	id;
-
 	private String	name;
-
-	private Integer	contry;
-
-	private Integer	province;
-
-	private Integer	city;
-
+	private Integer	conturyId;
+	private Integer	provinceId;
+	private Integer	cityId;
+	private Integer	districtId;
 	private String	address;
-
 	private Integer	zipcode;
-
 	private Integer	areacode;
-
 	private Integer	telephone;
-
 	private String	mobilephone;
-
 	private UserDto	user;
 
 	public Integer getId() {
@@ -41,28 +31,36 @@ public class ConsigneeDto {
 		this.name = name;
 	}
 
-	public Integer getContry() {
-		return contry;
+	public Integer getConturyId() {
+		return conturyId;
 	}
 
-	public void setContry(Integer contry) {
-		this.contry = contry;
+	public void setConturyId(Integer conturyId) {
+		this.conturyId = conturyId;
 	}
 
-	public Integer getProvince() {
-		return province;
+	public Integer getProvinceId() {
+		return provinceId;
 	}
 
-	public void setProvince(Integer province) {
-		this.province = province;
+	public void setProvinceId(Integer provinceId) {
+		this.provinceId = provinceId;
 	}
 
-	public Integer getCity() {
-		return city;
+	public Integer getCityId() {
+		return cityId;
 	}
 
-	public void setCity(Integer city) {
-		this.city = city;
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
+	}
+
+	public Integer getDistrictId() {
+		return districtId;
+	}
+
+	public void setDistrictId(Integer districtId) {
+		this.districtId = districtId;
 	}
 
 	public String getAddress() {
