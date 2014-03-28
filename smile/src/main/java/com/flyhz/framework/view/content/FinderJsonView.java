@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
-import com.flyhz.framework.id.WebUser;
+import com.flyhz.framework.auth.WebUser;
 
 public class FinderJsonView extends MappingJacksonJsonView {
 

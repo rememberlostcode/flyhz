@@ -10,9 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.flyhz.framework.auth.Authenticate;
 import com.flyhz.framework.config.WebConfigurer;
-import com.flyhz.framework.id.WebUser;
-import com.flyhz.framework.lang.Authenticate;
 import com.flyhz.framework.lang.Config;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter implements InitializingBean {
@@ -35,8 +34,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter implements Initi
 
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 			Object handler) throws Exception {
-		WebUser webUser = auth.identify(request, response);
-		if (webUser == null) {
+		Integer id = auth.recognize(request, response);
+		if (id == null) {
 			response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
 			response.sendRedirect(webPageLoginIndex);
 			return false;

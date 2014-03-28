@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.flyhz.framework.id.WebUser;
+import com.flyhz.framework.auth.WebUser;
 import com.flyhz.framework.tool.Pager;
 
 public class FinderServlet extends DispatcherServlet {

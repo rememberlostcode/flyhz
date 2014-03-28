@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
+import com.flyhz.framework.auth.Authenticate;
 import com.flyhz.framework.config.WebConfigurer;
-import com.flyhz.framework.lang.Authenticate;
-import com.flyhz.framework.lang.BusinessException;
 import com.flyhz.framework.lang.Config;
 
 @Controller
@@ -83,18 +82,15 @@ public class LoginController {
 	@RequestMapping(value = "/loginAuth", method = RequestMethod.POST)
 	public String Login(HttpServletRequest request, HttpServletResponse response, Model model)
 			throws IOException {
-		try {
-			auth.login(request, response);
-		} catch (BusinessException e) {
-			model.addAttribute("error", e.getMessage());
-			return getWebPageLogin();
-		}
+
+		auth.recognize(request, response);
+
 		return getWebPageLogged();
 	}
 
 	@RequestMapping(value = "/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
-		auth.logout(request, response);
+		auth.removeMark(request, response);
 		return getWebPageIndex();
 	}
 }
