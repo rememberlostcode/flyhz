@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.view.velocity;
+package com.flyhz.framework.lang.velocity;
 
 import java.io.File;
 import java.io.FileOutputStream;

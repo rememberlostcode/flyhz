@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.view.content;
+package com.flyhz.framework.lang.content;
 
 import java.util.HashMap;
 import java.util.List;

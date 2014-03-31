@@ -25,10 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.flyhz.framework.lang.file.FileRepository;
+import com.flyhz.framework.lang.multipart.FileUpload;
+import com.flyhz.framework.lang.multipart.FileUploadStatus;
+import com.flyhz.framework.lang.multipart.FileUploadValidateStatus;
 import com.flyhz.framework.util.JSONUtil;
-import com.flyhz.framework.view.multipart.FileUpload;
-import com.flyhz.framework.view.multipart.FileUploadStatus;
-import com.flyhz.framework.view.multipart.FileUploadValidateStatus;
 
 @Controller
 public class FileController {

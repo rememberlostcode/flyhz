@@ -12,8 +12,8 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.context.ServletContextAware;
 
-import com.flyhz.framework.view.velocity.LostVelocityEngine;
-import com.flyhz.framework.view.velocity.LostVelocityLayoutViewResolver;
+import com.flyhz.framework.lang.velocity.LostVelocityEngine;
+import com.flyhz.framework.lang.velocity.LostVelocityLayoutViewResolver;
 
 /**
  * LostWebCore所有的属性配置均由该类接管，包括velocity.properties的路径配置，spring

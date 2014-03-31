@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.view.velocity;
+package com.flyhz.framework.lang.velocity;
 
 import java.io.IOException;
 import java.io.StringWriter;
