@@ -21,8 +21,7 @@ import org.springframework.context.ApplicationContextException;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 import org.springframework.web.servlet.view.velocity.VelocityToolboxView;
 
-import com.flyhz.framework.config.WebConfigurer;
-import com.flyhz.framework.lang.Config;
+import com.flyhz.framework.config.FinderConfig;
 
 /**
  * velocityLayoutView不支持velocity-tool2.0,修改该类方法来支持velocity
@@ -113,9 +112,9 @@ public class LostVelocityLayoutView extends AbstractTemplateView {
 	 */
 	protected LostVelocityEngine autodetectVelocityEngine() throws BeansException {
 		try {
-			Config lostWebCoreConfig = BeanFactoryUtils.beanOfTypeIncludingAncestors(
-					getApplicationContext(), WebConfigurer.class, true, false);
-			return (LostVelocityEngine) lostWebCoreConfig.getConfig(WebConfigurer.LOST_VELOCITY);
+			FinderConfig lostWebCoreConfig = BeanFactoryUtils.beanOfTypeIncludingAncestors(
+					getApplicationContext(), FinderConfig.class, true, false);
+			return (LostVelocityEngine) lostWebCoreConfig.getConfig(FinderConfig.LOST_VELOCITY);
 		} catch (NoSuchBeanDefinitionException ex) {
 			throw new ApplicationContextException(
 					"Must define a single LostVelocityConfig bean in this web application context "

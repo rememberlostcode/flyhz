@@ -7,11 +7,11 @@ import java.util.Map.Entry;
 
 import javax.servlet.ServletContext;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.context.ServletContextAware;
 
-import com.flyhz.framework.lang.Config;
 import com.flyhz.framework.view.velocity.LostVelocityEngine;
 import com.flyhz.framework.view.velocity.LostVelocityLayoutViewResolver;
 
@@ -23,7 +23,7 @@ import com.flyhz.framework.view.velocity.LostVelocityLayoutViewResolver;
  * 
  */
 
-public class WebConfigurer implements Config, ServletContextAware, ResourceLoaderAware {
+public class FinderConfig implements ServletContextAware, ResourceLoaderAware, InitializingBean {
 
 	private Map<String, Object>	properties										= new HashMap<String, Object>();
 
@@ -109,7 +109,6 @@ public class WebConfigurer implements Config, ServletContextAware, ResourceLoade
 	public static String		WEB_PAGE_LOGGED									= DEFAULT_WEB_PAGE_LOGGED;
 	public static String		WEB_PAGE_INDEX									= DEFAULT_WEB_PAGE_INDEX;
 
-	@Override
 	public Object getConfig(String key) {
 		return this.properties.get(key);
 	}
@@ -139,5 +138,10 @@ public class WebConfigurer implements Config, ServletContextAware, ResourceLoade
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.properties.put(SPRING_RESOURCE_LOADER, resourceLoader);
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.properties.put(LOST_VELOCITY, new LostVelocityEngine(this));
 	}
 }

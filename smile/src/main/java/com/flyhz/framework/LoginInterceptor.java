@@ -11,7 +11,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.flyhz.framework.auth.Authenticate;
-import com.flyhz.framework.config.WebConfigurer;
+import com.flyhz.framework.config.FinderConfig;
 import com.flyhz.framework.lang.Config;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter implements InitializingBean {
@@ -28,7 +28,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter implements Initi
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		webPageLoginIndex = (webConfig.getConfig(WebConfigurer.WEB_PAGE_LOGIN) != null ? (String) webConfig.getConfig(WebConfigurer.WEB_PAGE_LOGIN)
+		webPageLoginIndex = (webConfig.getConfig(FinderConfig.WEB_PAGE_LOGIN) != null ? (String) webConfig.getConfig(FinderConfig.WEB_PAGE_LOGIN)
 				: "/login");
 	}
 

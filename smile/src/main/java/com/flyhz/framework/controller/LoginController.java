@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 import com.flyhz.framework.auth.Authenticate;
-import com.flyhz.framework.config.WebConfigurer;
-import com.flyhz.framework.lang.Config;
+import com.flyhz.framework.config.FinderConfig;
 
 @Controller
 @RequestMapping(value = "/")
@@ -25,7 +24,7 @@ public class LoginController {
 	private Authenticate	auth;
 
 	@Resource
-	private Config			webConfig;
+	private FinderConfig		finderConfig;
 
 	private String			webPageLogin;
 
@@ -36,11 +35,11 @@ public class LoginController {
 	public String getWebPageIndex() {
 		if (webPageIndex == null) {
 			webPageIndex = UrlBasedViewResolver.REDIRECT_URL_PREFIX + "/index";
-			if (webConfig.getConfig(WebConfigurer.WEB_PAGE_INDEX) != null) {
-				if (webConfig.getConfig(WebConfigurer.WEB_PAGE_INDEX).toString()
-								.indexOf(WebConfigurer.WEB_PAGE_INDEX) < 0) {
+			if (finderConfig.getConfig(FinderConfig.WEB_PAGE_INDEX) != null) {
+				if (finderConfig.getConfig(FinderConfig.WEB_PAGE_INDEX).toString()
+								.indexOf(FinderConfig.WEB_PAGE_INDEX) < 0) {
 					webPageIndex = UrlBasedViewResolver.REDIRECT_URL_PREFIX
-							+ (String) webConfig.getConfig(WebConfigurer.WEB_PAGE_INDEX);
+							+ (String) finderConfig.getConfig(FinderConfig.WEB_PAGE_INDEX);
 
 				}
 			}
@@ -52,11 +51,11 @@ public class LoginController {
 	public String getWebPageLogged() {
 		if (webPageLogged == null) {
 			webPageLogged = UrlBasedViewResolver.REDIRECT_URL_PREFIX + "/home";
-			if (webConfig.getConfig(WebConfigurer.WEB_PAGE_LOGGED) != null) {
-				if (webConfig.getConfig(WebConfigurer.WEB_PAGE_LOGGED).toString()
-								.indexOf(WebConfigurer.WEB_PAGE_LOGGED) < 0) {
+			if (finderConfig.getConfig(FinderConfig.WEB_PAGE_LOGGED) != null) {
+				if (finderConfig.getConfig(FinderConfig.WEB_PAGE_LOGGED).toString()
+								.indexOf(FinderConfig.WEB_PAGE_LOGGED) < 0) {
 					webPageLogged = UrlBasedViewResolver.REDIRECT_URL_PREFIX
-							+ (String) webConfig.getConfig(WebConfigurer.WEB_PAGE_LOGGED);
+							+ (String) finderConfig.getConfig(FinderConfig.WEB_PAGE_LOGGED);
 				}
 			}
 		}
@@ -67,11 +66,11 @@ public class LoginController {
 	public String getWebPageLogin() {
 		if (webPageLogin == null) {
 			webPageLogin = UrlBasedViewResolver.FORWARD_URL_PREFIX + "/login";
-			if (webConfig.getConfig(WebConfigurer.WEB_PAGE_LOGIN) != null) {
-				if (webConfig.getConfig(WebConfigurer.WEB_PAGE_LOGIN).toString()
-								.indexOf(WebConfigurer.WEB_PAGE_LOGIN) < 0) {
+			if (finderConfig.getConfig(FinderConfig.WEB_PAGE_LOGIN) != null) {
+				if (finderConfig.getConfig(FinderConfig.WEB_PAGE_LOGIN).toString()
+								.indexOf(FinderConfig.WEB_PAGE_LOGIN) < 0) {
 					webPageLogin = UrlBasedViewResolver.FORWARD_URL_PREFIX
-							+ (String) webConfig.getConfig(WebConfigurer.WEB_PAGE_LOGIN);
+							+ (String) finderConfig.getConfig(FinderConfig.WEB_PAGE_LOGIN);
 				}
 			}
 		}

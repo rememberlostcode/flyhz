@@ -9,8 +9,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
-import com.flyhz.framework.config.WebConfigurer;
-import com.flyhz.framework.lang.Config;
+import com.flyhz.framework.config.FinderConfig;
 import com.flyhz.framework.util.StringUtil;
 
 public class LostVelocityLayoutViewResolver extends UrlBasedViewResolver implements
@@ -18,10 +17,10 @@ public class LostVelocityLayoutViewResolver extends UrlBasedViewResolver impleme
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		Config lostWebCoreConfig = BeanFactoryUtils.beanOfTypeIncludingAncestors(
-				getApplicationContext(), WebConfigurer.class, true, false);
+		FinderConfig lostWebCoreConfig = BeanFactoryUtils.beanOfTypeIncludingAncestors(
+				getApplicationContext(), FinderConfig.class, true, false);
 
-		String suffix = (String) lostWebCoreConfig.getConfig(WebConfigurer.SPRING_URL_BASED_VIEW_RESOLVER_SUFFIX);
+		String suffix = (String) lostWebCoreConfig.getConfig(FinderConfig.SPRING_URL_BASED_VIEW_RESOLVER_SUFFIX);
 		if (!StringUtil.isEmpty(suffix)) {
 			super.setSuffix(suffix);
 		}

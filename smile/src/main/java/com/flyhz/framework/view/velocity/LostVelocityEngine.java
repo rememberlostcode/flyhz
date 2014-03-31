@@ -41,8 +41,7 @@ import org.springframework.ui.velocity.SpringResourceLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.flyhz.framework.config.WebConfigurer;
-import com.flyhz.framework.lang.Config;
+import com.flyhz.framework.config.FinderConfig;
 import com.flyhz.framework.repository.file.FileUtil;
 
 public class LostVelocityEngine extends ToolManager {
@@ -97,9 +96,9 @@ public class LostVelocityEngine extends ToolManager {
 	private static SimplePool	writerPool						= new SimplePool(40);
 	private String				defaultContentType				= DEFAULT_CONTENT_TYPE;
 
-	private Config				config;
+	private FinderConfig			config;
 
-	public LostVelocityEngine(Config config) throws VelocityException, IOException {
+	public LostVelocityEngine(FinderConfig config) throws VelocityException, IOException {
 		this.config = config;
 		newVelocityEngine();
 		newToolboxFactory();
@@ -167,7 +166,7 @@ public class LostVelocityEngine extends ToolManager {
 		String loadDefaults = (String) this.velocity.getProperty(LOAD_DEFAULTS_KEY);
 		if ((loadDefaults == null) || "true".equalsIgnoreCase(loadDefaults)) {
 			log.trace("Loading velocityView tools configuration...");
-			ResourceLoader resourceLoader = (ResourceLoader) this.config.getConfig(WebConfigurer.SPRING_RESOURCE_LOADER);
+			ResourceLoader resourceLoader = (ResourceLoader) this.config.getConfig(FinderConfig.SPRING_RESOURCE_LOADER);
 			Resource reousrce = resourceLoader.getResource("classpath:velocity/tools.xml");
 			try {
 				FactoryConfiguration config = ConfigurationUtils.read(reousrce.getURL());
@@ -230,7 +229,7 @@ public class LostVelocityEngine extends ToolManager {
 		Map<String, Object> props = new HashMap<String, Object>();
 
 		// Load config file if set.
-		Resource velocityPropertiesResource = (Resource) config.getConfig(WebConfigurer.VELOCITY_PROPERTIES_RESOURCE);
+		Resource velocityPropertiesResource = (Resource) config.getConfig(FinderConfig.VELOCITY_PROPERTIES_RESOURCE);
 		if (velocityPropertiesResource != null) {
 
 			log.info("Loading Velocity config from [{}]", velocityPropertiesResource);
@@ -241,23 +240,23 @@ public class LostVelocityEngine extends ToolManager {
 
 		// Set a resource loader path, if required.
 		// String velocityVmPath = (String)
-		// config.getConfig(WebConfigurer.VELOCITY_VM_ROOT_PATH);
+		// config.getConfig(FinderConfig.VELOCITY_VM_ROOT_PATH);
 
-		if (config.getConfig(WebConfigurer.WEB_VM_SCREEN_ROOT_PATH) == null) {
-			throw new RuntimeException(WebConfigurer.WEB_VM_SCREEN_ROOT_PATH + " is null");
+		if (config.getConfig(FinderConfig.WEB_VM_SCREEN_ROOT_PATH) == null) {
+			throw new RuntimeException(FinderConfig.WEB_VM_SCREEN_ROOT_PATH + " is null");
 		}
-		String velocityScreenVmPath = (String) config.getConfig(WebConfigurer.WEB_VM_SCREEN_ROOT_PATH);
-		if (config.getConfig(WebConfigurer.WEB_VM_LAYOUT_ROOT_PATH) == null) {
-			throw new RuntimeException(WebConfigurer.WEB_VM_LAYOUT_ROOT_PATH + " is null");
+		String velocityScreenVmPath = (String) config.getConfig(FinderConfig.WEB_VM_SCREEN_ROOT_PATH);
+		if (config.getConfig(FinderConfig.WEB_VM_LAYOUT_ROOT_PATH) == null) {
+			throw new RuntimeException(FinderConfig.WEB_VM_LAYOUT_ROOT_PATH + " is null");
 		}
 
-		String velocityLayoutVmPath = (String) config.getConfig(WebConfigurer.WEB_VM_LAYOUT_ROOT_PATH);
+		String velocityLayoutVmPath = (String) config.getConfig(FinderConfig.WEB_VM_LAYOUT_ROOT_PATH);
 		StringBuffer velocityVmPath = new StringBuffer(30);
 		velocityVmPath.append(velocityLayoutVmPath).append(",").append(velocityScreenVmPath);
 		initVelocityResourceLoader(getVelocityEngine(), velocityVmPath.toString());
 
 		// Log via Commons Logging?
-		if (Boolean.TRUE.equals(config.getConfig(WebConfigurer.LOST_VELOCITY_OVERRIDELOGGING))) {
+		if (Boolean.TRUE.equals(config.getConfig(FinderConfig.LOST_VELOCITY_OVERRIDELOGGING))) {
 			velocity.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM,
 					new CommonsLoggingLogSystem());
 		}
@@ -309,7 +308,7 @@ public class LostVelocityEngine extends ToolManager {
 			String resourceLoaderPath) throws IOException {
 		StringBuilder resolvedPath = new StringBuilder();
 		String[] paths = StringUtils.commaDelimitedListToStringArray(resourceLoaderPath);
-		ResourceLoader resourceLoader = (ResourceLoader) this.config.getConfig(WebConfigurer.SPRING_RESOURCE_LOADER);
+		ResourceLoader resourceLoader = (ResourceLoader) this.config.getConfig(FinderConfig.SPRING_RESOURCE_LOADER);
 		for (int i = 0; i < paths.length; i++) {
 			String path = paths[i];
 			// .append(LostVelocityLayoutView.DEFAULT_LAYOUT_DO_NOT_USE).append(",")
@@ -404,7 +403,7 @@ public class LostVelocityEngine extends ToolManager {
 		try {
 			// 仅支持新的tool.xml
 			config = ServletUtils.getConfiguration(path,
-					(ServletContext) this.config.getConfig(WebConfigurer.SPRING_MVC_SERVLET), false);
+					(ServletContext) this.config.getConfig(FinderConfig.SPRING_MVC_SERVLET), false);
 			if (config == null) {
 				String msg = "Did not find resource at: " + path;
 				if (required) {
@@ -506,7 +505,7 @@ public class LostVelocityEngine extends ToolManager {
 	protected void postProcessVelocityEngine(VelocityEngine velocityEngine) throws IOException,
 			VelocityException {
 		velocityEngine.setApplicationAttribute(ServletContext.class.getName(),
-				this.config.getConfig(WebConfigurer.SPRING_MVC_SERVLET));
+				this.config.getConfig(FinderConfig.SPRING_MVC_SERVLET));
 		velocityEngine.setProperty(LOST_MACRO_RESOURCE_LOADER_CLASS,
 				ClasspathResourceLoader.class.getName());
 		velocityEngine.addProperty(VelocityEngine.RESOURCE_LOADER, LOST_MACRO_RESOURCE_LOADER_NAME);
@@ -524,7 +523,7 @@ public class LostVelocityEngine extends ToolManager {
 	public Context createContext(Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) {
 		ViewToolContext ctx = new ViewToolContext(velocity, request, response,
-				(ServletContext) config.getConfig(WebConfigurer.SPRING_MVC_SERVLET));
+				(ServletContext) config.getConfig(FinderConfig.SPRING_MVC_SERVLET));
 		ctx.putAll(model);
 		prepareContext(ctx);
 		return ctx;
