@@ -118,11 +118,10 @@
 	</beans:bean>
 	<beans:bean id="auth" class="com.flyhz.framework.auth.IAuth"/>
 	<beans:import resource="finder-timer.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-core.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-dao.xml"/>
+	<beans:import resource="finder-lang.xml"/>
+	<beans:import resource="classpath:spring/applicationContext-core.xml"/>
+	<beans:import resource="classpath:spring/applicationContext-dao.xml"/>
+	<beans:import resource="classpath:spring/applicationContext-transaction.xml"/>
 	<beans:import resource="classpath*:spring/applicationContext-service.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-repository.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-transaction.xml"/>
-	<beans:import resource="classpath*:spring/applicationContext-dao.xml"/>
 	<beans:import resource="classpath*:spring/applicationContext-controller.xml"/>
 </beans:beans>
