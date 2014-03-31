@@ -3,7 +3,7 @@ package com.flyhz.shop.service.impl;
 
 import java.util.List;
 
-import com.flyhz.shop.dto.Item;
+import com.flyhz.shop.dto.CartItem;
 import com.flyhz.shop.service.ShoppingCartService;
 
 public class ShoopingCartServiceImpl implements ShoppingCartService {
@@ -21,7 +21,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	}
 
 	@Override
-	public List<Item> listItems(Integer userId) {
+	public List<CartItem> listItems(Integer userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

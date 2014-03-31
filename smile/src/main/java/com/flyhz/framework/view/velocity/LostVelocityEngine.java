@@ -41,8 +41,8 @@ import org.springframework.ui.velocity.SpringResourceLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.flyhz.framework.config.FinderConfig;
-import com.flyhz.framework.repository.file.FileUtil;
+import com.flyhz.framework.FinderConfig;
+import com.flyhz.framework.lang.file.FileUtil;
 
 public class LostVelocityEngine extends ToolManager {
 

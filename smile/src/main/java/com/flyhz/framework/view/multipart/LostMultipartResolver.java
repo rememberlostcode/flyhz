@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import com.flyhz.framework.repository.file.FileRepository;
+import com.flyhz.framework.lang.file.FileRepository;
 
 public class LostMultipartResolver extends CommonsMultipartResolver {
 

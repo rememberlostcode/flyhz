@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.repository.file;
+package com.flyhz.framework.lang.file;
 
 public abstract class FileCopyStatus {
 

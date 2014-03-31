@@ -27,9 +27,9 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.framework.repository.file.FileRepository;
-import com.flyhz.framework.repository.file.FileUploadCancelException;
-import com.flyhz.framework.repository.file.FileUtil;
+import com.flyhz.framework.lang.file.FileRepository;
+import com.flyhz.framework.lang.file.FileUploadCancelException;
+import com.flyhz.framework.lang.file.FileUtil;
 
 public class FileUpload extends ServletFileUpload implements Job {
 

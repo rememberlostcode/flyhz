@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
+import com.flyhz.framework.FinderConfig;
 import com.flyhz.framework.auth.Authenticate;
-import com.flyhz.framework.config.FinderConfig;
 
 @Controller
 @RequestMapping(value = "/")

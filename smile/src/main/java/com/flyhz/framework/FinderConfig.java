@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.config;
+package com.flyhz.framework;
 
 import java.util.HashMap;
 import java.util.Map;

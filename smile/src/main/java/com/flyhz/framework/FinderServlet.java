@@ -8,7 +8,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.flyhz.framework.auth.WebUser;
-import com.flyhz.framework.tool.Pager;
+import com.flyhz.framework.lang.page.Pager;
 
 public class FinderServlet extends DispatcherServlet {
 

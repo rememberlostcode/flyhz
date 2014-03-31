@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.repository.file;
+package com.flyhz.framework.lang.file;
 
 import java.io.File;
 import java.io.FileOutputStream;

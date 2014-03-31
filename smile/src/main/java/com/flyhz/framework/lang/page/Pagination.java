@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.tool;
+package com.flyhz.framework.lang.page;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

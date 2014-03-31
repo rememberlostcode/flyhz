@@ -21,7 +21,7 @@ import org.springframework.context.ApplicationContextException;
 import org.springframework.web.servlet.view.AbstractTemplateView;
 import org.springframework.web.servlet.view.velocity.VelocityToolboxView;
 
-import com.flyhz.framework.config.FinderConfig;
+import com.flyhz.framework.FinderConfig;
 
 /**
  * velocityLayoutView不支持velocity-tool2.0,修改该类方法来支持velocity

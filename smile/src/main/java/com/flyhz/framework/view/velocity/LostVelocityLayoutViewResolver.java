@@ -9,7 +9,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
-import com.flyhz.framework.config.FinderConfig;
+import com.flyhz.framework.FinderConfig;
 import com.flyhz.framework.util.StringUtil;
 
 public class LostVelocityLayoutViewResolver extends UrlBasedViewResolver implements

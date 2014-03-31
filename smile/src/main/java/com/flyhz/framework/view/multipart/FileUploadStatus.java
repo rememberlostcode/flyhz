@@ -3,7 +3,7 @@ package com.flyhz.framework.view.multipart;
 
 import java.util.Date;
 
-import com.flyhz.framework.repository.file.FileCopyStatus;
+import com.flyhz.framework.lang.file.FileCopyStatus;
 
 public class FileUploadStatus extends FileCopyStatus {
 

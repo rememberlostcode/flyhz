@@ -1,5 +1,5 @@
 
-package com.flyhz.framework;
+package com.flyhz.framework.lang;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -10,11 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.flyhz.framework.FinderConfig;
 import com.flyhz.framework.auth.Authenticate;
-import com.flyhz.framework.config.FinderConfig;
-import com.flyhz.framework.lang.Config;
 
-public class LoginInterceptor extends HandlerInterceptorAdapter implements InitializingBean {
+public class AccessInterceptor extends HandlerInterceptorAdapter implements InitializingBean {
 
 	protected Logger		log	= LoggerFactory.getLogger(getClass());
 
@@ -22,13 +21,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter implements Initi
 	private Authenticate	auth;
 
 	@Resource
-	private Config			webConfig;
+	private FinderConfig	config;
 
 	private String			webPageLoginIndex;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		webPageLoginIndex = (webConfig.getConfig(FinderConfig.WEB_PAGE_LOGIN) != null ? (String) webConfig.getConfig(FinderConfig.WEB_PAGE_LOGIN)
+		webPageLoginIndex = (config.getConfig(FinderConfig.WEB_PAGE_LOGIN) != null ? (String) config.getConfig(FinderConfig.WEB_PAGE_LOGIN)
 				: "/login");
 	}
 
