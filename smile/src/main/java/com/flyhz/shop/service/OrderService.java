@@ -3,16 +3,16 @@ package com.flyhz.shop.service;
 
 import java.util.List;
 
-import com.flyhz.shop.dto.Order;
+import com.flyhz.shop.dto.OrderDto;
 
 public interface OrderService {
 
-	public Order generateOrder(Order order);
+	public OrderDto generateOrder(OrderDto order);
 
-	public Order getOrder(Integer userId, Integer orderId);
+	public OrderDto getOrder(Integer userId, Integer orderId);
 
-	public List<Order> listOrders(Integer userId, Character status);
+	public List<OrderDto> listOrders(Integer userId, Character status);
 
-	public Order pay();
+	public OrderDto pay();
 
 }

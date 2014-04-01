@@ -3,31 +3,34 @@ package com.flyhz.shop.service.impl;
 
 import java.util.List;
 
-import com.flyhz.shop.dto.Order;
+import org.springframework.stereotype.Service;
+
+import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.service.OrderService;
 
+@Service
 public class OrderServiceImpl implements OrderService {
 
 	@Override
-	public Order generateOrder(Order order) {
+	public OrderDto generateOrder(OrderDto order) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Order getOrder(Integer userId, Integer orderId) {
+	public OrderDto getOrder(Integer userId, Integer orderId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Order> listOrders(Integer userId, Character status) {
+	public List<OrderDto> listOrders(Integer userId, Character status) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Order pay() {
+	public OrderDto pay() {
 		// TODO Auto-generated method stub
 		return null;
 	}

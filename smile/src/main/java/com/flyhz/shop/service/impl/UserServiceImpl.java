@@ -3,35 +3,58 @@ package com.flyhz.shop.service.impl;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
+import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.RandomString;
-import com.flyhz.shop.dto.Consignee;
-import com.flyhz.shop.dto.User;
-import com.flyhz.shop.dto.UserDetail;
+import com.flyhz.shop.dto.UserDetailDto;
+import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.dao.UserDao;
+import com.flyhz.shop.persistence.entity.ConsigneeModel;
+import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 	@Resource
 	private UserDao	userDao;
 
 	@Override
-	public User register(UserDetail userDetail) {
+	public UserDto register(UserDetailDto userDetail) {
 		return null;
 	}
 
 	@Override
-	public User login(String username, String password, String verifycode) {
-		com.flyhz.shop.persistence.entity.User userTemp = new com.flyhz.shop.persistence.entity.User();
+	public UserDto login(String username, String password, String verifycode) {
+		UserModel userTemp = new UserModel();
 		userTemp.setUsername(username);
 		userTemp.setPassword(password);
-		com.flyhz.shop.persistence.entity.User userModel = userDao.getModel(userTemp);
+		UserModel userModel = userDao.getModel(userTemp);
 		if (userModel == null) {
 			return null;
 		} else {
 			String token = RandomString.generateRandomString16();
 			userModel.setToken(token);
 			userDao.update(userModel);
-			User user = new User();
+			UserDto user = new UserDto();
+			user.setId(userModel.getId());
+			user.setUsername(userModel.getUsername());
+			user.setToken(token);
+			return user;
+		}
+	}
+
+	@Override
+	public UserDto loginAuto(Integer userId, String token, String verifycode)
+			throws ValidateException {
+		UserModel userTemp = new UserModel();
+		userTemp.setId(userId);
+		userTemp.setToken(token);
+		UserModel userModel = userDao.getModel(userTemp);
+		if (userModel == null) {
+			return null;
+		} else {
+			UserDto user = new UserDto();
 			user.setId(userModel.getId());
 			user.setUsername(userModel.getUsername());
 			user.setToken(token);
@@ -41,48 +64,47 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void logout(Integer userId) {
-		// TODO Auto-generated method stub
-
+		UserModel userTemp = new UserModel();
+		userTemp.setId(userId);
+		UserModel userModel = userDao.getModel(userTemp);
+		if (userModel != null) {
+			userModel.setToken(null);
+			userDao.update(userModel);
+		}
 	}
 
 	@Override
-	public Consignee getConsignee(Integer userId, Integer consigneeId) {
-		// TODO Auto-generated method stub
+	public ConsigneeModel getConsignee(Integer userId, Integer consigneeId) {
 		return null;
 	}
 
 	@Override
-	public Consignee addConsignee(Consignee consignee) {
-		// TODO Auto-generated method stub
+	public ConsigneeModel addConsignee(ConsigneeModel consignee) {
 		return null;
 	}
 
 	@Override
-	public Consignee modifyConsignee(Consignee consignee) {
-		// TODO Auto-generated method stub
+	public ConsigneeModel modifyConsignee(ConsigneeModel consignee) {
 		return null;
 	}
 
 	@Override
 	public void removeConsignee(Integer userId, Integer consigneeId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void listConsignees(Integer userId) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void setPersonalInformation(Integer userId, String field, Object value) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public UserDetail getPersonalInformation(Integer userId) {
+	public UserDetailDto getPersonalInformation(Integer userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

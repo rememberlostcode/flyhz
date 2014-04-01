@@ -1,7 +1,7 @@
 
 package com.flyhz.shop.dto;
 
-public class Coupon {
+public class CouponDto {
 
 	private Integer	id;
 

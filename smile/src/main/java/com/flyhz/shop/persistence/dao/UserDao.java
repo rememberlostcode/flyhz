@@ -1,8 +1,8 @@
 
 package com.flyhz.shop.persistence.dao;
 
-import com.flyhz.shop.persistence.entity.User;
+import com.flyhz.shop.persistence.entity.UserModel;
 
-public interface UserDao extends GenericDao<User> {
+public interface UserDao extends GenericDao<UserModel> {
 
 }

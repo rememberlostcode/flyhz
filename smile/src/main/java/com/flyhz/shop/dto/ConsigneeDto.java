@@ -1,7 +1,7 @@
 
 package com.flyhz.shop.dto;
 
-public class Consignee {
+public class ConsigneeDto {
 
 	private Integer	id;
 
@@ -23,7 +23,7 @@ public class Consignee {
 
 	private String	mobilephone;
 
-	private User	user;
+	private UserDto	user;
 
 	public Integer getId() {
 		return id;
@@ -105,12 +105,11 @@ public class Consignee {
 		this.mobilephone = mobilephone;
 	}
 
-	public User getUser() {
+	public UserDto getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(UserDto user) {
 		this.user = user;
 	}
-
 }

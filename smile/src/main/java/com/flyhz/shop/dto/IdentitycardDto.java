@@ -3,7 +3,7 @@ package com.flyhz.shop.dto;
 
 import java.io.File;
 
-public class Identitycard {
+public class IdentitycardDto {
 
 	private Integer	id;
 

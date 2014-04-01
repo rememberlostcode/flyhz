@@ -9,7 +9,7 @@ import java.util.Date;
  * 
  */
 
-public class User implements Serializable {
+public class UserModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
 
 	private int					id;
@@ -36,7 +36,7 @@ public class User implements Serializable {
 
 	private String				token;
 
-	public User() {
+	public UserModel() {
 	}
 
 	public int getId() {
@@ -134,5 +134,4 @@ public class User implements Serializable {
 	public void setToken(String token) {
 		this.token = token;
 	}
-
 }

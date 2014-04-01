@@ -23,9 +23,8 @@
     </settings>
     <typeAliases>
     	<!-- 配置Model别名 -->
-        
+        <typeAlias alias="CartitemModel" type="com.flyhz.shop.persistence.entity.CartitemModel"/>
         <!-- 配置Dto别名 -->
-        
     </typeAliases>
     <plugins>
 		<plugin interceptor="com.flyhz.shop.persistence.SqlPlugin">

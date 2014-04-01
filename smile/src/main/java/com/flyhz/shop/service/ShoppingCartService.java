@@ -3,23 +3,38 @@ package com.flyhz.shop.service;
 
 import java.util.List;
 
-import com.flyhz.shop.dto.CartItem;
+import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.persistence.entity.CartitemModel;
 
 public interface ShoppingCartService {
 	/**
 	 * 添加商品到购物车
 	 * 
 	 * @author fuwb
-	 * @param userId 用户ID
-	 * @param productId 产品ID
-	 * @return 
+	 * @param userId
+	 * @param productId
+	 * @return
 	 */
-	public void addItem(Integer userId, Integer productId, Integer qty);
+	public void addItem(Integer userId, Integer productId, Byte qty) throws ValidateException;
 
-	public void removeItem(Integer userId, Integer itemId);
+	/**
+	 * 删除购物车物品
+	 * 
+	 * @param userId
+	 * @param itemId
+	 * @return
+	 */
+	public void removeItem(Integer userId, Integer itemId) throws ValidateException;
 
-	public List<CartItem> listItems(Integer userId);
+	public List<CartitemModel> listItems(Integer userId);
 
-	public void setQty(Integer userId, Integer itemId, Integer qty);
-
+	/**
+	 * 设置购物车商品梳理
+	 * 
+	 * @param userId
+	 * @param itemId
+	 * @param qty
+	 * @return
+	 */
+	public void setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException;
 }
