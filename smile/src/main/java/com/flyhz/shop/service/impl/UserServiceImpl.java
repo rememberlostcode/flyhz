@@ -1,11 +1,14 @@
 
 package com.flyhz.shop.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.service.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	public UserDto register(UserDetailDto userDetail) {

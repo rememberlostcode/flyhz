@@ -3,9 +3,12 @@ package com.flyhz.shop.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.service.OrderService;
 
+@Service
 public class OrderServiceImpl implements OrderService {
 
 	@Override

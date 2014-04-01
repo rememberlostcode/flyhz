@@ -6,24 +6,27 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Service;
+
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.persistence.dao.CartItemDao;
 import com.flyhz.shop.persistence.entity.CartitemModel;
 import com.flyhz.shop.service.ShoppingCartService;
 
+@Service
 public class ShoopingCartServiceImpl implements ShoppingCartService {
 	@Resource
 	private CartItemDao	cartItemDao;
 
 	@Override
 	public void addItem(Integer userId, Integer productId, Byte qty) throws ValidateException {
+		if (userId == null) {
+			throw new ValidateException("");
+		}
 		if (productId == null) {
 			throw new ValidateException("");
 		}
-		if (qty == null) {
-			throw new ValidateException("");
-		}
-		if (qty <= 0) {
+		if (qty == null || qty <= 0) {
 			throw new ValidateException("");
 		}
 		// 查询购物车是否已有该物品
@@ -75,6 +78,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		if (cartitemModel != null) {
 			cartitemModel.setQty(qty);
 			cartitemModel.setGmtModify(new Date());
+			cartItemDao.updateCartItem(cartitemModel);
 		}
 	}
 }
