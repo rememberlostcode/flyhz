@@ -8,4 +8,6 @@ public interface UserDao extends GenericDao<UserModel> {
 
 	public void register(UserModel userModel) throws ValidateException;
 
+	public UserModel getUserByName(String username) throws ValidateException;
+
 }

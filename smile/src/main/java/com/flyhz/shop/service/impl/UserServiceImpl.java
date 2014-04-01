@@ -1,6 +1,8 @@
 
 package com.flyhz.shop.service.impl;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.RandomString;
+import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.dao.UserDao;
@@ -23,22 +26,37 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto register(UserDetailDto userDetail) throws ValidateException {
 		if (userDetail == null)
-			throw new ValidateException("");
+			throw new ValidateException("用户名与密码不能为空");
 		if (StringUtils.isBlank(userDetail.getUsername()))
-			throw new ValidateException("");
+			throw new ValidateException("用户名为空");
+		if (StringUtil.stringLength(userDetail.getUsername()) > 32)
+			throw new ValidateException("用户名长度不能大于32个字节");
+		UserModel user = userDao.getUserByName(userDetail.getUsername());
+		if (user != null)
+			throw new ValidateException("用户名已存在");
+
 		if (StringUtils.isBlank(userDetail.getPassword()))
-			throw new ValidateException("");
+			throw new ValidateException("密码为空");
+
 		UserModel userModel = new UserModel();
 		userModel.setUsername(userDetail.getUsername());
 		userModel.setPassword(userDetail.getPassword());
 		if (StringUtils.isNotBlank(userDetail.getEmail())) {
-
+			if (StringUtil.validEmail(userDetail.getEmail())) {
+				userModel.setEmail(userDetail.getEmail());
+			} else {
+				throw new ValidateException("电子邮箱输入不正确");
+			}
 		}
-		userModel.setEmail(userDetail.getEmail());
+		userModel.setGmtCreate(new Date());
+		userModel.setGmtModify(new Date());
+		userModel.setGmtRegister(new Date());
 		userDao.register(userModel);
+
+		user = userDao.getUserByName(userDetail.getUsername());
 		UserDto userDto = new UserDto();
-		userDto.setId(userModel.getId());
-		userDto.setUsername(userModel.getUsername());
+		userDto.setId(user.getId());
+		userDto.setUsername(user.getUsername());
 		return userDto;
 	}
 

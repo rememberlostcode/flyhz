@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -18,6 +20,8 @@ public class StringUtil extends StringUtils {
 
 	public static final String	EMPTY_STRING	= "";
 	public static final String	NULL_STRING		= "null";
+	public static final String	REGEX_EMAIL		= "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+	public static final String	REGEX_MOBILE	= "^(13[4,5,6,7,8,9]|15[0,8,9,1,7]|188|187)\\d{8}$";
 
 	/**
 	 * 将单词的首字母大写
@@ -214,9 +218,74 @@ public class StringUtil extends StringUtils {
 		return md5StrBuff.toString();
 	}
 
+	/**
+	 * 获取字符串的长度，中文占两个字符,英文数字占一个字符
+	 * 
+	 * @param value
+	 *            指定的字符串
+	 * @return 字符串的长度
+	 */
+	public static double stringLength(String value) {
+		if (value == null)
+			return 0;
+
+		double valueLength = 0;
+		String chinese = "[\u4e00-\u9fa5]";
+		// 获取字段值的长度，如果含中文字符，则每个中文字符长度为2，否则为1
+		for (int i = 0; i < value.length(); i++) {
+			// 获取一个字符
+			String temp = value.substring(i, i + 1);
+			// 判断是否为中文字符
+			if (temp.matches(chinese)) {
+				// 中文字符长度为2
+				valueLength += 2;
+			} else {
+				// 其他字符长度为1
+				valueLength += 1;
+			}
+		}
+		// 进位取整
+		return Math.ceil(valueLength);
+	}
+
+	/**
+	 * 校验email
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public static boolean validEmail(String email) {
+		if (StringUtils.isBlank(email))
+			return false;
+
+		Pattern regex = Pattern.compile(REGEX_EMAIL);
+		Matcher matcher = regex.matcher(email);
+		return matcher.matches();
+	}
+
+	/**
+	 * 校验手机
+	 * 
+	 * @param mobilePhone
+	 * @return
+	 */
+	public static boolean validMobilePhone(String mobilePhone) {
+		if (StringUtils.isBlank(mobilePhone))
+			return false;
+
+		Pattern regex = Pattern.compile(REGEX_MOBILE);
+		Matcher matcher = regex.matcher(mobilePhone);
+		return matcher.matches();
+	}
+
 	public static void main(String[] name) {
 		// System.out.println(convertStringToDate("2011-06-16 11:30:20",
 		// DEFAULT_DATE_FORMAT));
+		System.out.println("======email======" + validEmail("robin@163.com--"));
+		System.out.println("======email======" + validEmail("robin@163.com"));
+
+		System.out.println("=====mobile=======" + validMobilePhone("0571546442"));
+		System.out.println("======mobile======" + validMobilePhone("13456731653"));
 
 		System.out.println(200 / 200);
 	}
