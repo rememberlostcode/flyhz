@@ -33,13 +33,6 @@
 				<beans:entry key="org.lost.finder.package.screen" value="${org.lost.finder.package.screen}"/>
 				<beans:entry key="org.lost.finder.package.action" value="${org.lost.finder.package.action}"/>
 				<beans:entry key="org.lost.finder.encoding" value="${org.lost.finder.encoding}"/>
-				<beans:entry key="org.lost.finder.app.username" value="${org.lost.finder.app.username}"/>
-				<beans:entry key="org.lost.finder.app.password" value="${org.lost.finder.app.password}"/>
-				<beans:entry key="org.lost.finder.domainname" value="${org.lost.finder.domainname}"></beans:entry>
-				<beans:entry key="org.lost.finder.port" value="${org.lost.finder.port}"></beans:entry>
-				<beans:entry key="org.lost.finder.web.index" value="${org.lost.finder.web.index}"></beans:entry>
-				<beans:entry key="org.lost.finder.web.login" value="${org.lost.finder.web.login}"></beans:entry>
-				<beans:entry key="org.lost.finder.web.logged" value="${org.lost.finder.web.logged}"></beans:entry>
 			</beans:map>
 		</beans:property>
 	</beans:bean>
@@ -74,6 +67,12 @@
 		  <!-- JSON View -->
 		  <beans:bean
 			class="com.flyhz.framework.lang.content.FinderJsonView">
+			<beans:property name="modelKeys">
+		        <beans:set>
+		        	<beans:value>code</beans:value>
+					<beans:value>data</beans:value>
+		        </beans:set>
+		    </beans:property>
 		  </beans:bean>
  
 		  <!-- RSS View -->

@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.controller;
+package com.flyhz.shop.web.controller;
 
 import java.io.IOException;
 import java.util.Map;

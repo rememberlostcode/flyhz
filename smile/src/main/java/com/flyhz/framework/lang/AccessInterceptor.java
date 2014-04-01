@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.flyhz.framework.FinderConfig;
 import com.flyhz.framework.auth.Authenticate;
 
 public class AccessInterceptor extends HandlerInterceptorAdapter implements InitializingBean {
@@ -20,15 +19,11 @@ public class AccessInterceptor extends HandlerInterceptorAdapter implements Init
 	@Resource
 	private Authenticate	auth;
 
-	@Resource
-	private FinderConfig	config;
-
-	private String			webPageLoginIndex;
+	private String			indexPage;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		webPageLoginIndex = (config.getConfig(FinderConfig.WEB_PAGE_LOGIN) != null ? (String) config.getConfig(FinderConfig.WEB_PAGE_LOGIN)
-				: "/login");
+		indexPage = "/login";
 	}
 
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -36,7 +31,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter implements Init
 		Integer id = auth.recognize(request, response);
 		if (id == null) {
 			response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-			response.sendRedirect(webPageLoginIndex);
+			response.sendRedirect(indexPage);
 			return false;
 		} else {
 			return true;

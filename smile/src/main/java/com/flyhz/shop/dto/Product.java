@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 public class Product {
 
-	private Integer		id;					// 主键ID
+	private Integer		id;				// 主键ID
 
 	private String		name;
 
