@@ -36,12 +36,12 @@ public class BuildServiceImpl implements BuildService {
 			// 500条数据查询一次并插入数据库
 			int resultSize = 500;
 			int thisNum = 0;
-			List<ProductBuildDto> newsList = null;
+			List<ProductBuildDto> productList = null;
 			while (thisNum < maxIdCount) {
-				newsList = findAll(thisNum, resultSize);
-				ProductBuildDto newsModel = null;
-				for (int i = 0; i < newsList.size(); i++) {
-					newsModel = newsList.get(i);
+				productList = findAll(thisNum, resultSize);
+				ProductBuildDto product = null;
+				for (int i = 0; i < productList.size(); i++) {
+					product = productList.get(i);
 					// cacheRepository.set(String.valueOf(newsModel.getId()),
 					// newsModel);
 				}
