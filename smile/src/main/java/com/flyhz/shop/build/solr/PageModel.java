@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.solr;
+package com.flyhz.shop.build.solr;
 
 public class PageModel {
 

@@ -8,8 +8,8 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.flyhz.framework.redis.CacheRepository;
-import com.flyhz.framework.solr.PageModel;
+import com.flyhz.framework.lang.CacheRepository;
+import com.flyhz.shop.build.solr.PageModel;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.service.BuildService;
