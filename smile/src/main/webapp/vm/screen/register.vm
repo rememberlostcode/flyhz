@@ -19,12 +19,8 @@
     		url : url,
     		async : false,
 			data:{"username":uname,"password":pwd,"email":email},
-    		beforeSend : function(XMLHttpRequest) {
-    		},
     		success : function(data) {
     			alert(data);
-    		},
-    		complete : function(XMLHttpRequest, textStatus) {
     		},
     		error : function() {
     		}

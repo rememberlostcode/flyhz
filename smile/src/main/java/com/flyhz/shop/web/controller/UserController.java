@@ -11,8 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
@@ -40,9 +40,10 @@ public class UserController {
 	}
 
 	@RequestMapping(value = { "saveRegister" }, method = RequestMethod.POST)
-	@ResponseBody
 	public String saveRegister(Model model, @ModelAttribute UserDetailDto userDetail) {
+		Protocol protocol = new Protocol();
 		Integer code = 0;
+		String msg = "";
 		if (userDetail != null) {
 			if (StringUtils.isNotBlank(userDetail.getUsername())
 					&& StringUtils.isNotBlank(userDetail.getPassword())) {
@@ -51,6 +52,7 @@ public class UserController {
 					code = 1;
 				} catch (ValidateException e) {
 					code = 4;
+					msg = e.getMessage();
 					log.error("=======在注册时=========" + e.getMessage());
 				}
 			} else {
@@ -59,7 +61,9 @@ public class UserController {
 		} else {
 			code = 2;
 		}
-		model.addAttribute("data", code);
-		return null;
+		protocol.setCode(code);
+		protocol.setData(msg);
+		model.addAttribute("protocol", protocol);
+		return "";
 	}
 }
