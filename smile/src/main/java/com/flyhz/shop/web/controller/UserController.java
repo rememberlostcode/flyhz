@@ -1,6 +1,8 @@
 
 package com.flyhz.shop.web.controller;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.UserDetailDto;
+import com.flyhz.shop.service.UserService;
 
 /**
  * 
@@ -19,9 +23,12 @@ import com.flyhz.shop.dto.UserDetailDto;
  * 
  */
 @Controller
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/")
 public class UserController {
 	protected Logger	log	= LoggerFactory.getLogger(UserController.class);
+
+	@Resource
+	private UserService	userService;
 
 	@RequestMapping(value = { "register" })
 	public String register(Model model) {
@@ -35,6 +42,12 @@ public class UserController {
 		if (userDetail != null) {
 			if (StringUtils.isNotBlank(userDetail.getUsername())
 					&& StringUtils.isNotBlank(userDetail.getPassword())) {
+				try {
+					userService.register(userDetail);
+				} catch (ValidateException e) {
+					e.printStackTrace();
+					code = 4;
+				}
 				code = 1;
 			} else {
 				code = 3;// 用户名或者密码错误
