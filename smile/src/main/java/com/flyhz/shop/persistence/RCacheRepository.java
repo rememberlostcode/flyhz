@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.redis.impl;
+package com.flyhz.shop.persistence;
 
 import java.io.IOException;
 import java.util.Map;
@@ -23,7 +23,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
-import com.flyhz.framework.redis.CacheRepository;
+import com.flyhz.framework.lang.CacheRepository;
 import com.flyhz.framework.util.JSONUtil;
 
 @Service

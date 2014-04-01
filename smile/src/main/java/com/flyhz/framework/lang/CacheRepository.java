@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.redis;
+package com.flyhz.framework.lang;
 
 import java.util.Map;
 
