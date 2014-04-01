@@ -10,7 +10,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User register(UserDetail userDetail) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

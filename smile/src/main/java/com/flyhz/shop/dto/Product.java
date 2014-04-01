@@ -1,13 +1,17 @@
 
 package com.flyhz.shop.dto;
 
+import java.math.BigDecimal;
+
 public class Product {
 
-	private Integer	id;
+	private Integer		id;					// 主键ID
 
-	private String	name;
+	private String		name;
 
-	private Brand	brand;
+	private Brand		brand;
+
+	private BigDecimal	puarchasingPrice;
 
 	public Integer getId() {
 		return id;
@@ -33,4 +37,11 @@ public class Product {
 		this.brand = brand;
 	}
 
+	public BigDecimal getPuarchasingPrice() {
+		return puarchasingPrice;
+	}
+
+	public void setPuarchasingPrice(BigDecimal puarchasingPrice) {
+		this.puarchasingPrice = puarchasingPrice;
+	}
 }
