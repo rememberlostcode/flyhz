@@ -11,6 +11,7 @@ http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
     <!-- Scans within the base package of the application for @Service to configure as beans -->
 	<context:component-scan base-package="*.*.*.service.impl" /> 
 	
+	<bean id="productFraction" class="com.flyhz.shop.build.solr.ProductFractionImpl"></bean>
 	<bean id="cacheRepository" class="com.flyhz.shop.persistence.RCacheRepository"></bean>
 	<bean id="cache.prefixs" class="java.util.HashMap">
 		<constructor-arg>

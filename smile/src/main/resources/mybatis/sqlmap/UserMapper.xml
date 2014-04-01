@@ -19,9 +19,40 @@
     </insert>
     
     <insert id="register" parameterType="UserModel">
-    	insert into user(username,password,email,gmt_create) values(#{username},#{password},#{email},#{gmtCreate})
+    	insert into user(username,password
+    	<if test="email != null and email != ''">
+	    	,email
+    	</if>
+    	<if test="gmtCreate != null and gmtCreate != ''">
+    		,gmt_create
+    	</if>
+    	<if test="gmtModify != null and gmtModify != ''">
+    		,gmt_modify
+    	</if>
+    	<if test="gmtRegister != null and gmtRegister != ''">
+    		,gmt_register
+    	</if>
+    	) values(#{username},#{password}
+    	<if test="email != null and email != ''">	
+    		,#{email}
+    	</if>
+    	<if test="gmtCreate != null and gmtCreate != ''">
+    		,#{gmtCreate}
+    	</if>
+    	<if test="gmtModify != null and gmtModify != ''">
+    		,#{gmtModify}
+    	</if>
+    	<if test="gmtRegister != null and gmtRegister != ''">
+    		,#{gmtRegister}
+    	</if>
+    	
+    	)
     </insert>
     
+    <select id="getModelById" parameterType="Integer" resultType="UserModel">
+    	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify from user  
+    	where id=#{id}
+    </select>
     <select id="getModel" parameterType="UserModel" resultType="UserModel">
     	select id,gmt_create gmtCreate,gmt_modify gmtModify,gmt_register gmtRegister,username,password,email,mobilephone,qq,weixin,weibo,identitycard,token
     	from user  
@@ -66,6 +97,7 @@
 	      and token=#{token}
         </if>
     </select>
+
     <update id="update" parameterType="UserModel">
         update user set id = #{id}
         <if test="gmtCreate!=null">
@@ -106,4 +138,10 @@
         </if>
         where id = #{id}
     </update>
+
+    <select id="getUserByName" parameterType="String" resultType="UserModel">
+    	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify from user
+    	where username=#{username}
+    </select>
+
 </mapper>

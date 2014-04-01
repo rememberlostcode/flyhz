@@ -7,7 +7,6 @@
         <setting name="lazyLoadingEnabled" value="true"/>
         <!--当启用时，使用延迟加载属性的对象在发起任何延迟属性的调用时会被完全加载。否则，每个属性在请求时就加载。default:true-->
         <setting name="aggressiveLazyLoading" value="false"/>
-
         <!--
         详情查看:
         http://blog.csdn.net/theoffspring/article/details/5930481
