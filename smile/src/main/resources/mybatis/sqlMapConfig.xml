@@ -24,6 +24,7 @@
     <typeAliases>
     	<!-- 配置Model别名 -->
         <typeAlias alias="CartitemModel" type="com.flyhz.shop.persistence.entity.CartitemModel"/>
+        <typeAlias alias="UserModel" type="com.flyhz.shop.persistence.entity.UserModel"/>
         <!-- 配置Dto别名 -->
     </typeAliases>
     <plugins>
