@@ -23,7 +23,47 @@
     </insert>
     
     <select id="getModel" parameterType="UserModel" resultType="UserModel">
-    	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify from user  
-    	where id=#{id}
+    	select id,gmt_create gmtCreate,gmt_modify gmtModify,gmt_register gmtRegister,username,password,email,mobilephone,qq,weixin,weibo,identitycard,token
+    	from user  
+    	where 1=1
+        <if test="id!=null">
+	      and id=#{id}
+        </if>
+        <if test="gmtCreate!=null">
+	      and gmt_create=#{gmtCreate}
+        </if>
+        <if test="gmtModify!=null">
+	      and gmt_modify=#{gmtModify}
+        </if>
+        <if test="gmtRegister!=null">
+	      and gmt_register=#{gmtRegister}
+        </if>
+        <if test="username!=null and username!=''">
+	      and username=#{username}
+        </if>
+        <if test="password!=null and password!=''">
+	      and password=#{password}
+        </if>
+        <if test="email!=null and email!=''">
+	      and email=#{email}
+        </if>
+        <if test="mobilephone!=null and mobilephone!=''">
+	      and mobilephone=#{mobilephone}
+        </if>       
+        <if test="qq!=null and qq!=''">
+	      and qq=#{qq}
+        </if>
+        <if test="weixin!=null and weixin!=''">
+	      and weixin=#{weixin}
+        </if>
+        <if test="weibo!=null and weibo!=''">
+	      and weibo=#{weibo}
+        </if>
+        <if test="identitycard!=null and identitycard!=''">
+	      and identitycard=#{identitycard}
+        </if>
+        <if test="token!=null and token!=''">
+	      and token=#{token}
+        </if>
     </select>
 </mapper>
