@@ -15,12 +15,12 @@ public class IStart {
 		// Set some timeout options to make debugging easier.
 		connector.setMaxIdleTime(1000 * 60 * 60);
 		connector.setSoLingerTime(-1);
-		connector.setPort(8080);
+		connector.setPort(8088);
 		server.setConnectors(new Connector[] { connector });
 
 		WebAppContext bb = new WebAppContext();
 		bb.setServer(server);
-		bb.setContextPath("/");
+		bb.setContextPath("/smile");
 		bb.setWar("src/main/webapp");
 
 		// START JMX SERVER
