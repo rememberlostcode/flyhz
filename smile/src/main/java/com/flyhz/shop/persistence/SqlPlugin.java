@@ -35,7 +35,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.framework.tool.Pager;
+import com.flyhz.framework.lang.page.Pager;
 import com.flyhz.framework.util.ReflectHelper;
 import com.flyhz.framework.util.StringUtil;
 

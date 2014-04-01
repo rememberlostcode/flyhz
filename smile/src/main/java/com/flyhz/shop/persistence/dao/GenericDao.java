@@ -54,7 +54,7 @@ public interface GenericDao<T> {
 	 * @param list
 	 * @return
 	 */
-	public int batchInsert(List list);
+	public int batchInsert(List<?> list);
 
 	/**
 	 * 批量删除
@@ -70,7 +70,7 @@ public interface GenericDao<T> {
 	 * @param list
 	 * @return
 	 */
-	public int batchDelete(List list);
+	public int batchDelete(List<?> list);
 
 	/**
 	 * 批量修改
