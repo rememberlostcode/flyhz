@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.flyhz.shop.persistence.entity.UserModel">
+<mapper namespace="com.flyhz.shop.persistence.dao.UserDao">
 	<delete id="delete" parameterType="UserModel">
 		delete from user where id=#{id}
     </delete>
@@ -19,11 +19,46 @@
     </insert>
     
     <insert id="register" parameterType="UserModel">
-    	insert into user(username,password,email,gmt_create) values(#{username},#{password},#{email},#{gmtCreate})
+    	insert into user(username,password
+    	<if test="email != null and email != ''">
+	    	,email
+    	</if>
+    	<if test="gmtCreate != null and gmtCreate != ''">
+    		,gmt_create
+    	</if>
+    	<if test="gmtModify != null and gmtModify != ''">
+    		,gmt_modify
+    	</if>
+    	<if test="gmtRegister != null and gmtRegister != ''">
+    		,gmt_register
+    	</if>
+    	) values(#{username},#{password}
+    	<if test="email != null and email != ''">	
+    		,#{email}
+    	</if>
+    	<if test="gmtCreate != null and gmtCreate != ''">
+    		,#{gmtCreate}
+    	</if>
+    	<if test="gmtModify != null and gmtModify != ''">
+    		,#{gmtModify}
+    	</if>
+    	<if test="gmtRegister != null and gmtRegister != ''">
+    		,#{gmtRegister}
+    	</if>
+    	
+    	)
     </insert>
     
+    <select id="getModelById" parameterType="Integer" resultType="UserModel">
+    	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify from user  
+    	where id=#{id}
+    </select>
     <select id="getModel" parameterType="UserModel" resultType="UserModel">
     	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify from user  
     	where id=#{id}
+    </select>
+    <select id="getUserByName" parameterType="String" resultType="UserModel">
+    	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify from user
+    	where username=#{username}
     </select>
 </mapper>

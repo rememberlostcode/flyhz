@@ -10,9 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.UserDetailDto;
+import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.service.UserService;
 
 /**
@@ -36,26 +39,27 @@ public class UserController {
 		return "register";
 	}
 
-	@RequestMapping(value = { "saveRegister" })
+	@RequestMapping(value = { "saveRegister" }, method = RequestMethod.POST)
+	@ResponseBody
 	public String saveRegister(Model model, @ModelAttribute UserDetailDto userDetail) {
 		Integer code = 0;
 		if (userDetail != null) {
 			if (StringUtils.isNotBlank(userDetail.getUsername())
 					&& StringUtils.isNotBlank(userDetail.getPassword())) {
 				try {
-					userService.register(userDetail);
+					UserDto user = userService.register(userDetail);
+					code = 1;
 				} catch (ValidateException e) {
-					e.printStackTrace();
 					code = 4;
+					log.error("=======在注册时=========" + e.getMessage());
 				}
-				code = 1;
 			} else {
 				code = 3;// 用户名或者密码错误
 			}
 		} else {
 			code = 2;
 		}
-		model.addAttribute("code", code);
+		model.addAttribute("data", code);
 		return null;
 	}
 }
