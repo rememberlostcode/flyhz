@@ -7,6 +7,8 @@ public class UserDto {
 
 	private String	username;
 
+	private String	token;
+
 	public String getUsername() {
 		return username;
 	}
@@ -21,6 +23,14 @@ public class UserDto {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

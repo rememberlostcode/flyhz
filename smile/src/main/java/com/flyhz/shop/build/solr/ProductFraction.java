@@ -1,9 +1,8 @@
 
-package com.flyhz.framework.solr;
-
+package com.flyhz.shop.build.solr;
 
 /**
- * solr工具接口
+ * 商品计算分数工具接口
  * 
  * @author zhangb 2014年4月1日 下午1:24:19
  * 
@@ -16,6 +15,6 @@ public interface ProductFraction {
 	 * @param fraction
 	 * @return
 	 */
-	public Float getProductFraction(Fraction fraction);
+	public Double getProductFraction(Fraction fraction);
 
 }

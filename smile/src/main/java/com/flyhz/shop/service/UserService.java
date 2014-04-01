@@ -15,10 +15,43 @@ public interface UserService {
 	 */
 	public UserDto register(UserDetailDto userDetail) throws ValidateException;
 
+	/**
+	 * 用户名密码登录
+	 * 
+	 * @param username
+	 *            用户名
+	 * @param password
+	 *            用户密码，MD5加密
+	 * @param verifycode
+	 *            保留
+	 * @return
+	 * @throws ValidateException
+	 */
 	public UserDto login(String username, String password, String verifycode)
 			throws ValidateException;
 
-	public void logout(Integer userId);
+	/**
+	 * 自动登录
+	 * 
+	 * @param userId
+	 *            用户id
+	 * @param token
+	 *            用户token
+	 * @param verifycode
+	 *            保留
+	 * @return
+	 * @throws ValidateException
+	 */
+	public UserDto loginAuto(Integer userId, String token, String verifycode)
+			throws ValidateException;
+
+	/**
+	 * 注销
+	 * 
+	 * @param userId
+	 *            用户id
+	 */
+	public void logout(Integer userId) throws ValidateException;
 
 	public ConsigneeModel getConsignee(Integer userId, Integer consigneeId);
 

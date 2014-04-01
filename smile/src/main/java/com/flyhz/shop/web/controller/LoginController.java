@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.flyhz.framework.auth.Authenticate;
-import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.Protocol;
+import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.service.UserService;
 
@@ -28,10 +28,11 @@ public class LoginController {
 	@Resource
 	private UserService		userService;
 
-	@RequestMapping(value = "/loginAuth", method = RequestMethod.POST)
+	@RequestMapping(value = "/loginAuth", method = RequestMethod.GET)
 	public String Login(String username, String password, String verifycode,
 			HttpServletRequest request, HttpServletResponse response, Model model)
 			throws IOException {
+		Protocol protocol = new Protocol();
 		UserDto user;
 		try {
 			user = userService.login(username, password, verifycode);
@@ -39,10 +40,9 @@ public class LoginController {
 				auth.mark(user.getId(), request, response);
 			}
 		} catch (ValidateException e) {
-			Protocol protocol = new Protocol();
 			protocol.setCode(e.getCode());
 		}
-
+		model.addAttribute("protocol", protocol);
 		return "";
 	}
 

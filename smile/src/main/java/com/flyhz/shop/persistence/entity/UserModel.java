@@ -36,6 +36,8 @@ public class UserModel implements Serializable {
 
 	private String				weixin;
 
+	private String				token;
+
 	public UserModel() {
 	}
 
@@ -135,4 +137,11 @@ public class UserModel implements Serializable {
 		this.email = email;
 	}
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 }

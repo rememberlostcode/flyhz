@@ -14,20 +14,19 @@ public class FinderJsonView extends MappingJacksonJsonView {
 
 	@Override
 	protected Object filterModel(Map<String, Object> model) {
-		if (model.size() == 1) {
-			Object value = model.get(key);
-			if (value != null && value instanceof Protocol) {
-				Protocol protocol = (Protocol) value;
-				Map<String, Object> result = new HashMap<String, Object>(2);
-				if (protocol.getCode() != null) {
-					result.put("code", protocol.getCode());
-				}
-				if (protocol.getData() != null) {
-					result.put("data", protocol.getData());
-				}
-				return result;
+		Object value = model.get(key);
+		if (value != null && value instanceof Protocol) {
+			Protocol protocol = (Protocol) value;
+			Map<String, Object> result = new HashMap<String, Object>(2);
+			if (protocol.getCode() != null) {
+				result.put("code", protocol.getCode());
 			}
+			if (protocol.getData() != null) {
+				result.put("data", protocol.getData());
+			}
+			return result;
 		}
+
 		return null;
 	}
 }

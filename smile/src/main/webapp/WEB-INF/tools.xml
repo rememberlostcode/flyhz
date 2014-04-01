@@ -25,5 +25,7 @@
   	<data type="boolean" key="xhtml" value="true"/>
     <data type="boolean" key="isSimple" value="true"/>
     <data type="number" key="version" value="2.0"/>
+    <data type="string" key="server_name" value="http://10.22.22.40:8088/smile"></data>
+    <data type="string" key="static_server_name" value="http://10.22.22.40/smile"></data>
     <!-- <data type="string" key="static_server_name" value="http://com.smile.sapp"></data> -->
 </tools>

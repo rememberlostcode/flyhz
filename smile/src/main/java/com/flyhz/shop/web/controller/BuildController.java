@@ -19,6 +19,6 @@ public class BuildController {
 	@RequestMapping(value = "/build")
 	public String build(Model model) {
 		buildService.buildData();
-		return "";
+		return "build";
 	}
 }
