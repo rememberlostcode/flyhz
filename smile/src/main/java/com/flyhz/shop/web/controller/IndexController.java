@@ -19,12 +19,6 @@ public class IndexController {
 		return "index";
 	}
 
-	@RequestMapping(value = { "register" })
-	public String register(Model model) {
-		model.addAttribute("hello", "Hello Smile SApp!");
-		return "register2";
-	}
-
 	@RequestMapping(value = { "search" })
 	public String search(Model model) {
 		model.addAttribute("search", "Search Smile SApp!");

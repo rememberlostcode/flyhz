@@ -2,12 +2,14 @@
 package com.flyhz.shop.web.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.flyhz.shop.dto.UserDetail;
+import com.flyhz.shop.dto.UserDetailDto;
 
 /**
  * 
@@ -19,6 +21,8 @@ import com.flyhz.shop.dto.UserDetail;
 @Controller
 @RequestMapping(value = "/user")
 public class UserController {
+	protected Logger	log	= LoggerFactory.getLogger(UserController.class);
+
 	@RequestMapping(value = { "register" })
 	public String register(Model model) {
 		model.addAttribute("hello", "Hello Smile SApp!");
@@ -26,7 +30,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = { "saveRegister" })
-	public String saveRegister(Model model, @ModelAttribute UserDetail userDetail) {
+	public String saveRegister(Model model, @ModelAttribute UserDetailDto userDetail) {
 		Integer code = 0;
 		if (userDetail != null) {
 			if (StringUtils.isNotBlank(userDetail.getUsername())

@@ -1,11 +1,11 @@
 
 package com.flyhz.shop.persistence.dao;
 
-import com.flyhz.framework.lang.BusinessException;
-import com.flyhz.shop.dto.UserDetail;
+import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.persistence.entity.UserModel;
 
-public interface UserDao extends GenericDao<UserDetail> {
+public interface UserDao extends GenericDao<UserModel> {
 
-	public void register(UserDetail userDetail) throws BusinessException;
+	public void register(UserModel userModel) throws ValidateException;
 
 }

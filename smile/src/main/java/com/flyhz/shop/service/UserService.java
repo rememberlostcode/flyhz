@@ -2,9 +2,9 @@
 package com.flyhz.shop.service;
 
 import com.flyhz.framework.lang.ValidateException;
-import com.flyhz.shop.dto.Consignee;
-import com.flyhz.shop.dto.User;
-import com.flyhz.shop.dto.UserDetail;
+import com.flyhz.shop.dto.UserDetailDto;
+import com.flyhz.shop.dto.UserDto;
+import com.flyhz.shop.persistence.entity.ConsigneeModel;
 
 public interface UserService {
 	/**
@@ -13,17 +13,18 @@ public interface UserService {
 	 * @param userDetail
 	 * @return User
 	 */
-	public User register(UserDetail userDetail);
+	public UserDto register(UserDetailDto userDetail);
 
-	public User login(String username, String password, String verifycode) throws ValidateException;
+	public UserDto login(String username, String password, String verifycode)
+			throws ValidateException;
 
 	public void logout(Integer userId);
 
-	public Consignee getConsignee(Integer userId, Integer consigneeId);
+	public ConsigneeModel getConsignee(Integer userId, Integer consigneeId);
 
-	public Consignee addConsignee(Consignee consignee);
+	public ConsigneeModel addConsignee(ConsigneeModel consignee);
 
-	public Consignee modifyConsignee(Consignee consignee);
+	public ConsigneeModel modifyConsignee(ConsigneeModel consignee);
 
 	public void removeConsignee(Integer userId, Integer consigneeId);
 
@@ -31,7 +32,7 @@ public interface UserService {
 
 	public void setPersonalInformation(Integer userId, String field, Object value);
 
-	public UserDetail getPersonalInformation(Integer userId);
+	public UserDetailDto getPersonalInformation(Integer userId);
 
 	public void resetpwd(Integer userId, String oldpwd, String newpwd);
 

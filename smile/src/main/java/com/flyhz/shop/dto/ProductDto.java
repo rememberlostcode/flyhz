@@ -3,13 +3,13 @@ package com.flyhz.shop.dto;
 
 import java.math.BigDecimal;
 
-public class Product {
+public class ProductDto {
 
 	private Integer		id;				// 主键ID
 
 	private String		name;
 
-	private Brand		brand;
+	private BrandDto	brand;
 
 	private BigDecimal	puarchasingPrice;
 
@@ -29,11 +29,11 @@ public class Product {
 		this.name = name;
 	}
 
-	public Brand getBrand() {
+	public BrandDto getBrand() {
 		return brand;
 	}
 
-	public void setBrand(Brand brand) {
+	public void setBrand(BrandDto brand) {
 		this.brand = brand;
 	}
 
