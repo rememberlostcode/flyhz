@@ -35,7 +35,6 @@ public class UserController {
 
 	@RequestMapping(value = { "register" })
 	public String register(Model model) {
-		model.addAttribute("hello", "Hello Smile SApp!");
 		return "register";
 	}
 

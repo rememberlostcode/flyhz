@@ -20,7 +20,7 @@
     		async : false,
 			data:{"username":uname,"password":pwd,"email":email},
     		success : function(data) {
-    			alert(data);
+    			alert(data.code +"-----"+ data.data);
     		},
     		error : function() {
     		}
