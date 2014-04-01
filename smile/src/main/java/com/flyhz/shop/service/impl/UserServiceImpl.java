@@ -1,16 +1,43 @@
 
 package com.flyhz.shop.service.impl;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.dto.UserDetailDto;
+import com.flyhz.shop.dto.UserDto;
+import com.flyhz.shop.persistence.dao.UserDao;
+import com.flyhz.shop.persistence.entity.ConsigneeModel;
+import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
+	@Resource
+	private UserDao	userDao;
 
-	@Override
-	public UserDto register(UserDetailDto userDetail) {
-		return null;
+	public UserDto register(UserDetailDto userDetail) throws ValidateException {
+		if (userDetail == null)
+			throw new ValidateException("");
+		if (StringUtils.isBlank(userDetail.getUsername()))
+			throw new ValidateException("");
+		if (StringUtils.isBlank(userDetail.getPassword()))
+			throw new ValidateException("");
+		UserModel userModel = new UserModel();
+		userModel.setUsername(userDetail.getUsername());
+		userModel.setPassword(userDetail.getPassword());
+		if (StringUtils.isNotBlank(userDetail.getEmail())) {
+
+		}
+		userModel.setEmail(userDetail.getEmail());
+		userDao.register(userModel);
+		UserDto userDto = new UserDto();
+		userDto.setId(userModel.getId());
+		userDto.setUsername(userModel.getUsername());
+		return userDto;
 	}
 
 	@Override

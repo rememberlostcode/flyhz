@@ -24,7 +24,11 @@
     <typeAliases>
     	<!-- 配置Model别名 -->
         <typeAlias alias="CartitemModel" type="com.flyhz.shop.persistence.entity.CartitemModel"/>
+        <typeAlias alias="UserModel" type="com.flyhz.shop.persistence.entity.UserModel"/>
+        <typeAlias alias="ProductModel" type="com.flyhz.shop.persistence.entity.ProductModel"/>
+        <typeAlias alias="PageModel" type="com.flyhz.framework.solr.PageModel"/>
         <!-- 配置Dto别名 -->
+        <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
     </typeAliases>
     <plugins>
 		<plugin interceptor="com.flyhz.shop.persistence.SqlPlugin">

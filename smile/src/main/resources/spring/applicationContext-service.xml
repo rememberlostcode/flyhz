@@ -10,4 +10,15 @@ http://www.springframework.org/schema/aop
 http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
     <!-- Scans within the base package of the application for @Service to configure as beans -->
 	<context:component-scan base-package="*.*.*.service.impl" /> 
+	
+	<bean id="cacheRepository" class="com.flyhz.framework.redis.impl.RCacheRepository"></bean>
+	<bean id="cache.prefixs" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<entry key="com.flyhz.shop.persistence.entity.ProductModel">
+					<value>smile@product</value>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
 </beans>
