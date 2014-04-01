@@ -8,7 +8,7 @@ import com.flyhz.shop.persistence.entity.CartitemModel;
  * 
  * @author fuwb 20140401
  */
-public interface CartItemDao {
+public interface CartItemDao extends GenericDao<CartitemModel> {
 	/**
 	 * 删除购物车商品
 	 * 

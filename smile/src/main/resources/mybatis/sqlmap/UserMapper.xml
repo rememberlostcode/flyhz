@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.entity.UserModel">
+	<delete id="delete" parameterType="UserModel">
+		delete from user where id=#{id}
+    </delete>
+    <update id="updateEmail" parameterType="UserModel">
+    	update user set eamil=#{email} where id=#{id}
+    </update>
+    <update id="updatePwd" parameterType="UserModel">
+    	update user set password=#{password} where id=#{id}
+    </update>
+    <update id="updateMobilePhone" parameterType="UserModel">
+    	update user set mobilephone=#{mobilephone} where id=#{id}
+    </update>
+    
+    <insert id="insert" parameterType="UserModel">
+    	insert into user(username,password,email,gmt_create) values(#{username},#{password},#{email},#{gmtCreate})
+    </insert>
+    
+    <insert id="register" parameterType="UserModel">
+    	insert into user(username,password,email,gmt_create) values(#{username},#{password},#{email},#{gmtCreate})
+    </insert>
+    
+    <select id="getModel" parameterType="UserModel" resultType="UserModel">
+    	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify from user  
+    	where id=#{id}
+    </select>
+</mapper>
