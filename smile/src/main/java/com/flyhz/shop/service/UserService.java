@@ -13,7 +13,7 @@ public interface UserService {
 	 * @param userDetail
 	 * @return User
 	 */
-	public UserDto register(UserDetailDto userDetail);
+	public UserDto register(UserDetailDto userDetail) throws ValidateException;
 
 	public UserDto login(String username, String password, String verifycode)
 			throws ValidateException;
