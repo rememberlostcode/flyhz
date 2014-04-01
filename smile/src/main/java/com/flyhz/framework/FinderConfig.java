@@ -63,7 +63,6 @@ public class FinderConfig implements ServletContextAware, ResourceLoaderAware, I
 	 */
 	private static final String	DEFAULT_WEB_VM_SCREEN_ROOT_PATH					= "org.lost.finder.vm.screen.root.path";
 
-	private static final String	DEFAULT_WEB_ENCODING							= "org.lost.finder.encoding";
 	private static final String	DEFAULT_WEB_CONTENT_TYPE						= "org.lost.finder.content.type";
 
 	private static final String	DEFAULT_FILE_UPLOAD_PATH						= "org.lost.finder.fileupload.path";
@@ -89,7 +88,6 @@ public class FinderConfig implements ServletContextAware, ResourceLoaderAware, I
 	 */
 	public static String		WEB_VM_SCREEN_ROOT_PATH							= DEFAULT_WEB_VM_SCREEN_ROOT_PATH;
 
-	public static String		WEB_ENCODING									= DEFAULT_WEB_ENCODING;
 	public static String		WEB_CONTENT_TYPE								= DEFAULT_WEB_CONTENT_TYPE;
 
 	public static String		FILE_UPLOAD_PATH								= DEFAULT_FILE_UPLOAD_PATH;
