@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.flyhz.shop.persistence.entity.UserModel">
+<mapper namespace="com.flyhz.shop.persistence.dao.UserDao">
 	<delete id="delete" parameterType="UserModel">
 		delete from user where id=#{id}
     </delete>
@@ -66,4 +66,44 @@
 	      and token=#{token}
         </if>
     </select>
+    <update id="update" parameterType="UserModel">
+        update user set id = #{id}
+        <if test="gmtCreate!=null">
+	      ,gmt_create=#{gmtCreate}
+        </if>
+        <if test="gmtModify!=null">
+	      ,gmt_modify=#{gmtModify}
+        </if>
+        <if test="gmtRegister!=null">
+	      ,gmt_register=#{gmtRegister}
+        </if>
+        <if test="username!=null and username!=''">
+	      ,username=#{username}
+        </if>
+        <if test="password!=null and password!=''">
+	      ,password=#{password}
+        </if>
+        <if test="email!=null and email!=''">
+	      ,email=#{email}
+        </if>
+        <if test="mobilephone!=null and mobilephone!=''">
+	      ,mobilephone=#{mobilephone}
+        </if>       
+        <if test="qq!=null and qq!=''">
+	      ,qq=#{qq}
+        </if>
+        <if test="weixin!=null and weixin!=''">
+	      ,weixin=#{weixin}
+        </if>
+        <if test="weibo!=null and weibo!=''">
+	      ,weibo=#{weibo}
+        </if>
+        <if test="identitycard!=null and identitycard!=''">
+	      ,identitycard=#{identitycard}
+        </if>
+        <if test="token!=null and token!=''">
+	      ,token=#{token}
+        </if>
+        where id = #{id}
+    </update>
 </mapper>
