@@ -3,13 +3,13 @@ package com.flyhz.shop.dto;
 
 import java.math.BigDecimal;
 
-public class CartItem {
+public class CartItemDto {
 
 	private Integer		id;
 
 	private Short		qty;
 
-	private Product		product;
+	private ProductDto	product;
 
 	private BigDecimal	total;
 
@@ -29,11 +29,11 @@ public class CartItem {
 		this.qty = qty;
 	}
 
-	public Product getProduct() {
+	public ProductDto getProduct() {
 		return product;
 	}
 
-	public void setProduct(Product product) {
+	public void setProduct(ProductDto product) {
 		this.product = product;
 	}
 

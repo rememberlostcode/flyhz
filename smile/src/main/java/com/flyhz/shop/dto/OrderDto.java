@@ -4,21 +4,21 @@ package com.flyhz.shop.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Order {
+public class OrderDto {
 
-	private Integer			id;
+	private Integer				id;
 
-	private String			details;
+	private String				details;
 
-	private Character		status;
+	private Character			status;
 
-	private ConsigneeDetail	consigneeDetail;
+	private ConsigneeDetailDto	consigneeDetail;
 
-	private BigDecimal		total;
+	private BigDecimal			total;
 
-	private List<Voucher>	vouchers;
+	private List<VoucherDto>	vouchers;
 
-	private User			user;
+	private UserDto				user;
 
 	public Integer getId() {
 		return id;
@@ -44,11 +44,11 @@ public class Order {
 		this.status = status;
 	}
 
-	public ConsigneeDetail getConsigneeDetail() {
+	public ConsigneeDetailDto getConsigneeDetail() {
 		return consigneeDetail;
 	}
 
-	public void setConsigneeDetail(ConsigneeDetail consigneeDetail) {
+	public void setConsigneeDetail(ConsigneeDetailDto consigneeDetail) {
 		this.consigneeDetail = consigneeDetail;
 	}
 
@@ -60,19 +60,19 @@ public class Order {
 		this.total = total;
 	}
 
-	public List<Voucher> getVouchers() {
+	public List<VoucherDto> getVouchers() {
 		return vouchers;
 	}
 
-	public void setVouchers(List<Voucher> vouchers) {
+	public void setVouchers(List<VoucherDto> vouchers) {
 		this.vouchers = vouchers;
 	}
 
-	public User getUser() {
+	public UserDto getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(UserDto user) {
 		this.user = user;
 	}
 

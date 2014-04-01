@@ -1,7 +1,7 @@
 
 package com.flyhz.shop.dto;
 
-public class Brand {
+public class BrandDto {
 
 	private Integer	id;
 
