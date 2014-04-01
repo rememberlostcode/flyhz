@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 public class Product {
 
-	private Integer		id;
+	private Integer		id;					// wsasa
 
 	private String		name;
 
