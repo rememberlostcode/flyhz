@@ -3,6 +3,7 @@ package com.flyhz.shop.service.impl;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.ValidateException;
@@ -20,12 +21,33 @@ public class UserServiceImpl implements UserService {
 	private UserDao	userDao;
 
 	@Override
-	public UserDto register(UserDetailDto userDetail) {
-		return null;
+	public UserDto register(UserDetailDto userDetail) throws ValidateException {
+		if (userDetail == null)
+			throw new ValidateException("");
+		if (StringUtils.isBlank(userDetail.getUsername()))
+			throw new ValidateException("");
+		if (StringUtils.isBlank(userDetail.getPassword()))
+			throw new ValidateException("");
+		UserModel userModel = new UserModel();
+		userModel.setUsername(userDetail.getUsername());
+		userModel.setPassword(userDetail.getPassword());
+		if (StringUtils.isNotBlank(userDetail.getEmail())) {
+
+		}
+		userModel.setEmail(userDetail.getEmail());
+		userDao.register(userModel);
+		UserDto userDto = new UserDto();
+		userDto.setId(userModel.getId());
+		userDto.setUsername(userModel.getUsername());
+		return userDto;
 	}
 
 	@Override
-	public UserDto login(String username, String password, String verifycode) {
+	public UserDto login(String username, String password, String verifycode)
+			throws ValidateException {
+		if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+			throw new ValidateException("");
+		}
 		UserModel userTemp = new UserModel();
 		userTemp.setUsername(username);
 		userTemp.setPassword(password);
@@ -47,6 +69,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto loginAuto(Integer userId, String token, String verifycode)
 			throws ValidateException {
+		if (userId == null || StringUtils.isBlank(token)) {
+			throw new ValidateException("");
+		}
 		UserModel userTemp = new UserModel();
 		userTemp.setId(userId);
 		userTemp.setToken(token);
@@ -63,7 +88,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void logout(Integer userId) {
+	public void logout(Integer userId) throws ValidateException {
+		if (userId == null) {
+			throw new ValidateException("");
+		}
 		UserModel userTemp = new UserModel();
 		userTemp.setId(userId);
 		UserModel userModel = userDao.getModel(userTemp);

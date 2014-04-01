@@ -30,6 +30,8 @@ public class UserModel implements Serializable {
 
 	private String				username;
 
+	private String				email;
+
 	private String				weibo;
 
 	private String				weixin;
@@ -125,6 +127,14 @@ public class UserModel implements Serializable {
 
 	public void setWeixin(String weixin) {
 		this.weixin = weixin;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getToken() {

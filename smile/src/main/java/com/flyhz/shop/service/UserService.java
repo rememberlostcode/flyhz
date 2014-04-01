@@ -13,7 +13,7 @@ public interface UserService {
 	 * @param userDetail
 	 * @return User
 	 */
-	public UserDto register(UserDetailDto userDetail);
+	public UserDto register(UserDetailDto userDetail) throws ValidateException;
 
 	/**
 	 * 用户名密码登录
@@ -51,7 +51,7 @@ public interface UserService {
 	 * @param userId
 	 *            用户id
 	 */
-	public void logout(Integer userId);
+	public void logout(Integer userId) throws ValidateException;
 
 	public ConsigneeModel getConsignee(Integer userId, Integer consigneeId);
 
