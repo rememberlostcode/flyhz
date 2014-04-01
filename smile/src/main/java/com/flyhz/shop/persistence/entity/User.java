@@ -34,6 +34,8 @@ public class User implements Serializable {
 
 	private String				weixin;
 
+	private String				token;
+
 	public User() {
 	}
 
@@ -123,6 +125,14 @@ public class User implements Serializable {
 
 	public void setWeixin(String weixin) {
 		this.weixin = weixin;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

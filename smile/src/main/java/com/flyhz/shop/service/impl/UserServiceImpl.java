@@ -1,12 +1,18 @@
 
 package com.flyhz.shop.service.impl;
 
+import javax.annotation.Resource;
+
+import com.flyhz.framework.util.RandomString;
 import com.flyhz.shop.dto.Consignee;
 import com.flyhz.shop.dto.User;
 import com.flyhz.shop.dto.UserDetail;
+import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.service.UserService;
 
 public class UserServiceImpl implements UserService {
+	@Resource
+	private UserDao	userDao;
 
 	@Override
 	public User register(UserDetail userDetail) {
@@ -14,8 +20,23 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User login(String username, String passwod, String verifycode) {
-		return null;
+	public User login(String username, String password, String verifycode) {
+		com.flyhz.shop.persistence.entity.User userTemp = new com.flyhz.shop.persistence.entity.User();
+		userTemp.setUsername(username);
+		userTemp.setPassword(password);
+		com.flyhz.shop.persistence.entity.User userModel = userDao.getModel(userTemp);
+		if (userModel == null) {
+			return null;
+		} else {
+			String token = RandomString.generateRandomString16();
+			userModel.setToken(token);
+			userDao.update(userModel);
+			User user = new User();
+			user.setId(userModel.getId());
+			user.setUsername(userModel.getUsername());
+			user.setToken(token);
+			return user;
+		}
 	}
 
 	@Override

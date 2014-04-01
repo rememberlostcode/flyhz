@@ -7,6 +7,8 @@ public class User {
 
 	private String	username;
 
+	private String	token;
+
 	public String getUsername() {
 		return username;
 	}
@@ -21,6 +23,14 @@ public class User {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }
