@@ -12,7 +12,7 @@ import java.util.Date;
 public class UserModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
 
-	private int					id;
+	private Integer				id;
 
 	private Date				gmtCreate;
 
@@ -41,11 +41,11 @@ public class UserModel implements Serializable {
 	public UserModel() {
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

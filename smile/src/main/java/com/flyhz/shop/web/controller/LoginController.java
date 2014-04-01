@@ -38,6 +38,11 @@ public class LoginController {
 			user = userService.login(username, password, verifycode);
 			if (user != null) {
 				auth.mark(user.getId(), request, response);
+				protocol.setCode(0);
+				protocol.setData("login success");
+			} else {
+				protocol.setCode(1);
+				protocol.setData("login fail");
 			}
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());
