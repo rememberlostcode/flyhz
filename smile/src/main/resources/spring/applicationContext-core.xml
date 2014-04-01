@@ -15,8 +15,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
         </property>
         <property name="locations">
         	<array>
-       			<value>file:${HOME}/iwork.properties</value>
-        		<value>file:${USERPROFILE}/iwork.properties</value>
+       			<value>file:${HOME}/smile_work.properties</value>
+        		<value>file:${USERPROFILE}/smile_work.properties</value>
         	</array>
         </property> 
     </bean>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.ProductDao">
+    
+    <select id="getCountOfAll" resultType="Integer">
+		select count(1) count from product t
+    </select>
+    
+    <select id="findAll" parameterType="PageModel" resultType="ProductBuildDto">
+		select p.id,p.name,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') gmt_modify,p.imgs,p.description,p.purchasingprice,p.localprice,p.brand_id,b.name brand_name,p.category_id,c.name category_name from product p,brand b,category c where p.category_id=c.id and p.brand_id=b.id limit #{start},#{num}
+    </select>
+    
+</mapper>
