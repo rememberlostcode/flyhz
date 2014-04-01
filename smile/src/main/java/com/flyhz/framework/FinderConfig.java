@@ -74,10 +74,6 @@ public class FinderConfig implements ServletContextAware, ResourceLoaderAware, I
 	private static String		DEFAULT_FILE_STATUS_CLEAN_PERIOD				= "org.lost.fileupload.status.clean.period";
 	private static String		DEFAULT_FILE_STATUS_CLEAN_DELAY					= "org.lost.fileupload.status.clean.delay";
 
-	private static String		DEFAULT_WEB_PAGE_LOGIN							= "org.lost.finder.web.login";
-	private static String		DEFAULT_WEB_PAGE_INDEX							= "org.lost.finder.web.index";
-	private static String		DEFAULT_WEB_PAGE_LOGGED							= "org.lost.finder.web.logged";
-
 	public static String		SPRING_URL_BASED_VIEW_RESOLVER_SUFFIX			= DEFAULT_SPRING_URL_BASED_VIEW_RESOLVER_SUFFIX;
 	public static String		SPRING_RESOURCE_LOADER							= DEFAULT_SPRING_RESOURCE_LOADER;
 	public static String		VELOCITY_PROPERTIES_RESOURCE					= DEFAULT_VELOCITY_PROPERTIES_RESOURCE;
@@ -104,10 +100,6 @@ public class FinderConfig implements ServletContextAware, ResourceLoaderAware, I
 	//
 	public static String		FILE_STATUS_CLEAN_PERIOD						= DEFAULT_FILE_STATUS_CLEAN_PERIOD;
 	public static String		FILE_STATUS_CLEAN_DELAY							= DEFAULT_FILE_STATUS_CLEAN_DELAY;
-
-	public static String		WEB_PAGE_LOGIN									= DEFAULT_WEB_PAGE_LOGIN;
-	public static String		WEB_PAGE_LOGGED									= DEFAULT_WEB_PAGE_LOGGED;
-	public static String		WEB_PAGE_INDEX									= DEFAULT_WEB_PAGE_INDEX;
 
 	public Object getConfig(String key) {
 		return this.properties.get(key);

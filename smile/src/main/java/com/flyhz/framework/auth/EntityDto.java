@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.flyhz.framework.lang.log.PropDto;
+
 /**
  * 
  * 实体Dto

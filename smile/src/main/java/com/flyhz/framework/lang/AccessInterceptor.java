@@ -27,8 +27,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter implements Init
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		webPageLoginIndex = (config.getConfig(FinderConfig.WEB_PAGE_LOGIN) != null ? (String) config.getConfig(FinderConfig.WEB_PAGE_LOGIN)
-				: "/login");
+		webPageLoginIndex = "/login";
 	}
 
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,

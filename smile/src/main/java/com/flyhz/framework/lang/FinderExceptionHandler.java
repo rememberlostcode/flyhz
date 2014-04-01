@@ -12,7 +12,7 @@ public class FinderExceptionHandler implements HandlerExceptionResolver {
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response,
 			Object handler, Exception ex) {
-		if (ex instanceof BusinessException) {
+		if (ex instanceof ValidateException) {
 
 		}
 		return null;

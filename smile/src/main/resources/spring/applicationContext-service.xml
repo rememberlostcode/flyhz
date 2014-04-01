@@ -9,6 +9,5 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd
 http://www.springframework.org/schema/aop 
 http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
     <!-- Scans within the base package of the application for @Service to configure as beans -->
-	<context:component-scan base-package="*.*.*.biz.service.impl" /> 
-	<context:component-scan base-package="*.*.*.sys.service.impl" /> 
+	<context:component-scan base-package="*.*.*.service.impl" /> 
 </beans>

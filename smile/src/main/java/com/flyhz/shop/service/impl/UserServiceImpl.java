@@ -10,13 +10,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User register(UserDetail userDetail) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public User login(String username, String passwod, String verifycode) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

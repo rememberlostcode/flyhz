@@ -1,15 +1,21 @@
 
 package com.flyhz.shop.service;
 
+import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.Consignee;
 import com.flyhz.shop.dto.User;
 import com.flyhz.shop.dto.UserDetail;
 
 public interface UserService {
-
+	/**
+	 * 用户注册
+	 * 
+	 * @param userDetail
+	 * @return User
+	 */
 	public User register(UserDetail userDetail);
 
-	public User login(String username, String passwod, String verifycode);
+	public User login(String username, String password, String verifycode) throws ValidateException;
 
 	public void logout(Integer userId);
 

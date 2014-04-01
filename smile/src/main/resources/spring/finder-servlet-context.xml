@@ -74,6 +74,12 @@
 		  <!-- JSON View -->
 		  <beans:bean
 			class="com.flyhz.framework.lang.content.FinderJsonView">
+			<beans:property name="modelKeys">
+		        <beans:set>
+		        	<beans:value>code</beans:value>
+					<beans:value>data</beans:value>
+		        </beans:set>
+		    </beans:property>
 		  </beans:bean>
  
 		  <!-- RSS View -->

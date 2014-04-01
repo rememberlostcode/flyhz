@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.auth;
+package com.flyhz.framework.lang.log;
 
 import java.io.Serializable;
 
