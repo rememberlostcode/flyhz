@@ -1,11 +1,14 @@
 
 package com.flyhz.shop.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.flyhz.shop.dto.Consignee;
 import com.flyhz.shop.dto.User;
 import com.flyhz.shop.dto.UserDetail;
 import com.flyhz.shop.service.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Override
