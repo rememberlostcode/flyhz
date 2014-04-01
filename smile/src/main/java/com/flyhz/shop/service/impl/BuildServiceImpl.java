@@ -65,6 +65,7 @@ public class BuildServiceImpl implements BuildService {
 					doc.addField("lp", product.getLocalprice());
 					doc.addField("pp", product.getPurchasingprice());
 					doc.addField("p", product.getImgs());
+					doc.addField("t", product.getGmtModify());
 
 					fraction.setLastUpadteTime(product.getGmtModify());
 					doc.addField("fraction", productFraction.getProductFraction(fraction));
