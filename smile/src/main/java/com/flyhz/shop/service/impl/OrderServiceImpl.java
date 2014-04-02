@@ -97,10 +97,13 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 
-		String number = "ND000001";
+		if (orderDetails.isEmpty())
+			throw new ValidateException("产品为空！");
+
+		String number = "ND000002";
 		OrderDto orderDto = new OrderDto();
 		orderDto.setNumber(number);
-		orderDto.setDetails(orderDetails);
+		orderDto.setDetails(null);
 		orderDto.setConsignee(consigneeDto);
 		orderDto.setTotal(total);
 		orderDto.setUser(user);
@@ -117,8 +120,9 @@ public class OrderServiceImpl implements OrderService {
 		order.setStatus('0');
 		order.setDetail(detail);
 		order.setTotal(total);
-		order.setGmtCreate(new Date());
-		order.setGmtModify(new Date());
+		Date date = new Date();
+		order.setGmtCreate(date);
+		order.setGmtModify(date);
 		orderDao.generateOrder(order);
 		return detail;
 	}

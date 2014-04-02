@@ -22,11 +22,17 @@
 	</select>
 	<select id="getModel" parameterType="ConsigneeModel" resultType="ConsigneeModel">
 	    select id,name,contury,city,province,address,zipcode,mobilephone,user_id userId 
-	    from consignee where id = #{id} and user_id = #{userId}
+	    from consignee 
+	    where id = #{id} and user_id = #{userId}
 	</select>
 	<select id="getConsigneesByUserId" parameterType="Integer" resultType="ConsigneeDetailDto">
 	    select id, name,contury,city,province,address,zipcode,mobilephone,user_id userId
 	    from consignee
 	    where user_id = #{id}
+	</select>
+	<select id="getConsigneeByModel" parameterType="ConsigneeModel" resultType="ConsigneeDetailDto">
+	    select id,name,contury,city,province,address,zipcode,mobilephone,user_id userId 
+	    from consignee 
+	    where id = #{id} and user_id = #{userId}
 	</select>
 </mapper>
