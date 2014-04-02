@@ -15,7 +15,7 @@
 	    from consignee
 	    where id = #{id} and user_id = #{userId}
 	</select>
-	<select id="getConsigneesByUserId" parameterType="Integer" resultType="ConsigneeDto">
+	<select id="getConsigneesByUserId" parameterType="Integer" resultType="ConsigneeDetailDto">
 	    select id, name,contury,city,province,address,zipcode,mobilephone,user_id userId
 	    from consignee
 	    where user_id = #{id}

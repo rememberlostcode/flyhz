@@ -15,6 +15,7 @@ import com.flyhz.framework.util.RandomString;
 import com.flyhz.framework.util.RegexUtils;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.ValidateUtil;
+import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.ConsigneeDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
@@ -217,12 +218,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<ConsigneeDto> listConsignees(Integer userId) {
+	public List<ConsigneeDetailDto> listConsignees(Integer userId) {
 		if (userId == null)
 			return null;
 		UserModel user = userDao.getModelById(userId);
 		if (user != null) {
-			List<ConsigneeDto> consigneeList = consigneeDao.getConsigneesByUserId(userId);
+			List<ConsigneeDetailDto> consigneeList = consigneeDao.getConsigneesByUserId(userId);
 			if (consigneeList != null && !consigneeList.isEmpty()) {
 				for (ConsigneeDto consignee : consigneeList) {
 					UserDto userDto = new UserDto();

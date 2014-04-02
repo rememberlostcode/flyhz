@@ -3,6 +3,7 @@ package com.flyhz.shop.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,18 +14,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.util.JSONUtil;
+import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.dto.UserDto;
+import com.flyhz.shop.dto.VoucherDto;
 import com.flyhz.shop.persistence.dao.ConsigneeDao;
 import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
-import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.OrderService;
+import com.flyhz.shop.service.ProductService;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -37,6 +41,8 @@ public class OrderServiceImpl implements OrderService {
 	private ConsigneeDao	consigneeDao;
 	@Resource
 	private ProductDao		productDao;
+	@Resource
+	private ProductService	productService;
 
 	@Override
 	public String generateOrder(Integer userId, Integer consigneeId, String[] productIds)
@@ -48,15 +54,21 @@ public class OrderServiceImpl implements OrderService {
 		if (productIds == null || productIds.length <= 0)
 			throw new ValidateException("产品ID为空！");
 
-		UserModel user = userDao.getModelById(userId);
+		UserDto user = userDao.getUserById(userId);
 		if (user == null)
 			throw new ValidateException("您还不是会员，请注册后再购买！");
 
-		ConsigneeModel consignee = consigneeDao.getModelById(consigneeId);
-		if (consignee == null)
+		ConsigneeModel consignee = new ConsigneeModel();
+		consignee.setId(consigneeId);
+		consignee.setUserId(userId);
+		ConsigneeDetailDto consigneeDto = consigneeDao.getConsigneeByModel(consignee);
+		if (consigneeDto == null)
 			throw new ValidateException("收件人地址为空！");
+		consigneeDto.setUser(user);
 
+		// 处理商品信息
 		List<OrderDetailDto> orderDetails = new ArrayList<OrderDetailDto>();
+		BigDecimal total = new BigDecimal(0);
 		for (String pidstr : productIds) {
 			if (StringUtils.isBlank(pidstr))
 				continue;
@@ -66,15 +78,18 @@ public class OrderServiceImpl implements OrderService {
 				if (qty <= 0)
 					continue;
 
-				ProductDto product = productDao.getProductById(Integer.parseInt(pid_qty[0]));
+				ProductDto product = productService.getProductFromRedis(String.valueOf(pid_qty[0]));
 				if (product != null) {
 					OrderDetailDto orderDetailDto = new OrderDetailDto();
 					orderDetailDto.setProduct(product);
 					orderDetailDto.setQty((short) qty);
 					if (product.getPurchasingPrice() != null) {
-						orderDetailDto.setTotal(product.getPurchasingPrice().multiply(
-								BigDecimal.valueOf(qty)));
+						BigDecimal detailTotal = product.getPurchasingPrice().multiply(
+								BigDecimal.valueOf(qty));
+						orderDetailDto.setTotal(detailTotal);
+						total.add(detailTotal);
 					}
+					orderDetails.add(orderDetailDto);
 				}
 			} catch (Exception e) {
 				log.error("生成订单出错：", e.getMessage());
@@ -82,13 +97,30 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 
+		String number = "ND000001";
 		OrderDto orderDto = new OrderDto();
+		orderDto.setNumber(number);
+		orderDto.setDetails(orderDetails);
+		orderDto.setConsignee(consigneeDto);
+		orderDto.setTotal(total);
+		orderDto.setUser(user);
+
+		// 优惠卷
+		List<VoucherDto> vouchers = null;
+		orderDto.setVouchers(vouchers);
+
+		String detail = JSONUtil.getEntity2Json(orderDto);
 
 		OrderModel order = new OrderModel();
+		order.setNumber(number);
 		order.setUserId(userId);
 		order.setStatus('0');
-		// orderDao.generateOrder(order);
-		return null;
+		order.setDetail(detail);
+		order.setTotal(total);
+		order.setGmtCreate(new Date());
+		order.setGmtModify(new Date());
+		orderDao.generateOrder(order);
+		return detail;
 	}
 
 	@Override

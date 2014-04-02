@@ -34,7 +34,9 @@
         <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>
         <typeAlias alias="OrderDto" type="com.flyhz.shop.dto.OrderDto"/>
+        <typeAlias alias="UserDto" type="com.flyhz.shop.dto.UserDto"/>
         <typeAlias alias="ConsigneeDto" type="com.flyhz.shop.dto.ConsigneeDto"/>
+        <typeAlias alias="ConsigneeDetailDto" type="com.flyhz.shop.dto.ConsigneeDetailDto"/>
     </typeAliases>
     <plugins>
 		<plugin interceptor="com.flyhz.shop.persistence.SqlPlugin">

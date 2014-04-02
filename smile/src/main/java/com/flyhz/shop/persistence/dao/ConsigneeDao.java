@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.flyhz.shop.dto.ConsigneeDto;
+import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
 
 public interface ConsigneeDao extends GenericDao<ConsigneeModel> {
 
-	public List<ConsigneeDto> getConsigneesByUserId(@Param(value = "id") Integer userId);
+	public List<ConsigneeDetailDto> getConsigneesByUserId(@Param(value = "id") Integer userId);
+
+	public ConsigneeDetailDto getConsigneeByModel(ConsigneeModel consignee);
 
 	/**
 	 * 增加收件人地址

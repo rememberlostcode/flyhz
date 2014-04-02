@@ -13,6 +13,7 @@ import java.util.Date;
 public class OrderModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
 	private Integer				id;
+	private String				number;
 	private String				detail;
 	private Date				gmtCreate;
 	private Date				gmtModify;
@@ -30,6 +31,14 @@ public class OrderModel implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
 	public String getDetail() {

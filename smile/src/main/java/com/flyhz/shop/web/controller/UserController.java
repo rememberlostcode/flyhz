@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
-import com.flyhz.shop.dto.ConsigneeDto;
+import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.service.OrderService;
@@ -78,7 +78,7 @@ public class UserController {
 	public String getConsinee(Model model) {
 		Protocol protocol = new Protocol();
 		Integer code = 0;
-		List<ConsigneeDto> consigneeDtoList = null;
+		List<ConsigneeDetailDto> consigneeDtoList = null;
 		try {
 			consigneeDtoList = userService.listConsignees(1);
 		} catch (Exception e) {
@@ -99,16 +99,16 @@ public class UserController {
 	 * @param orderDto
 	 * @return
 	 */
-	@RequestMapping(value = { "user/confirmOrder" }, method = RequestMethod.POST)
-	public String confirmOrder(Model model, @RequestParam String[] pIds, @RequestParam Integer cid) {
+	@RequestMapping(value = { "user/confirmOrder" })
+	public String confirmOrder(Model model, @RequestParam String[] pids, @RequestParam Integer cid) {
 		Protocol protocol = new Protocol();
 		Integer code = 0;
 		String details = "";
-		if ((pIds == null || pIds.length == 0) || cid == null)
+		if ((pids == null || pids.length == 0) || cid == null)
 			code = 5;
 
 		try {
-			details = orderService.generateOrder(1, cid, pIds);
+			details = orderService.generateOrder(1, cid, pids);
 			code = 1;
 		} catch (ValidateException e) {
 			code = 4;
