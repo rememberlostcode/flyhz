@@ -31,6 +31,7 @@
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
         <typeAlias alias="OrderDto" type="com.flyhz.shop.dto.OrderDto"/>
+        <typeAlias alias="ConsigneeDto" type="com.flyhz.shop.dto.ConsigneeDto"/>
     </typeAliases>
     <plugins>
 		<plugin interceptor="com.flyhz.shop.persistence.SqlPlugin">

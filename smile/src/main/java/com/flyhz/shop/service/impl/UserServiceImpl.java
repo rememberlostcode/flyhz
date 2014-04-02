@@ -2,18 +2,22 @@
 package com.flyhz.shop.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.RandomString;
 import com.flyhz.framework.util.RegexUtils;
 import com.flyhz.framework.util.StringUtil;
+import com.flyhz.shop.dto.ConsigneeDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
+import com.flyhz.shop.persistence.dao.ConsigneeDao;
 import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.persistence.entity.UserModel;
@@ -22,7 +26,9 @@ import com.flyhz.shop.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 	@Resource
-	private UserDao	userDao;
+	private UserDao			userDao;
+	@Resource
+	private ConsigneeDao	consigneeDao;
 
 	@Override
 	public UserDto register(UserDetailDto userDetail) throws ValidateException {
@@ -122,7 +128,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ConsigneeModel getConsignee(Integer userId, Integer consigneeId) {
-		return null;
+		ConsigneeModel model = new ConsigneeModel();
+		model.setId(consigneeId);
+		model.setUserId(userId);
+		return consigneeDao.getModel(model);
 	}
 
 	@Override
@@ -156,8 +165,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void listConsignees(Integer userId) {
-
+	public List<ConsigneeDto> listConsignees(Integer userId) {
+		if (userId == null)
+			return null;
+		UserModel user = userDao.getModelById(userId);
+		if (user != null) {
+			List<ConsigneeDto> consigneeList = consigneeDao.getConsigneesByUserId(userId);
+			if (consigneeList != null && !consigneeList.isEmpty()) {
+				for (ConsigneeDto consignee : consigneeList) {
+					UserDto userDto = new UserDto();
+					BeanUtils.copyProperties(user, userDto);
+					consignee.setUser(userDto);
+				}
+				return consigneeList;
+			}
+		}
+		return null;
 	}
 
 	@Override
