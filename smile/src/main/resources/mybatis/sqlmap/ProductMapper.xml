@@ -10,4 +10,16 @@
 		select p.id,p.name n,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,p.imgs p,p.description d,p.purchasingprice pp,p.localprice lp,p.brand_id bid,b.name be,p.category_id cid,c.name ce from product p,brand b,category c where p.category_id=c.id and p.brand_id=b.id order by p.gmt_modify asc limit #{start},#{num}
     </select>
     
+    <select id="getModelById" parameterType="Integer" resultType="ProductModel">
+		select p.id,p.name,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,p.imgs,p.description,p.purchasingprice,p.localprice,p.brand_id brandId,b.name brandName
+		from product p,brand b
+		where p.id = #{id} and p.brand_id=b.id
+    </select>
+    
+    <select id="getProductById" parameterType="Integer" resultType="ProductParamDto">
+		select p.id,p.name,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,p.imgs,p.description,p.purchasingprice,p.localprice,p.brand_id brandId,b.name brandName
+		from product p,brand b
+		where p.id = #{id} and p.brand_id=b.id
+    </select>
+    
 </mapper>

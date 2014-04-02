@@ -6,19 +6,21 @@ import java.util.List;
 
 public class OrderDto {
 
-	private Integer				id;
+	private Integer					id;
 
-	private String				details;
+	private List<OrderDetailDto>	orderDetails;
 
-	private Character			status;
+	private String					details;
 
-	private ConsigneeDetailDto	consigneeDetail;
+	private Character				status;
 
-	private BigDecimal			total;
+	private ConsigneeDetailDto		consigneeDetail;
 
-	private List<VoucherDto>	vouchers;
+	private BigDecimal				total;
 
-	private UserDto				user;
+	private List<VoucherDto>		vouchers;
+
+	private UserDto					user;
 
 	public Integer getId() {
 		return id;
@@ -26,6 +28,14 @@ public class OrderDto {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public List<OrderDetailDto> getOrderDetails() {
+		return orderDetails;
+	}
+
+	public void setOrderDetails(List<OrderDetailDto> orderDetails) {
+		this.orderDetails = orderDetails;
 	}
 
 	public String getDetails() {

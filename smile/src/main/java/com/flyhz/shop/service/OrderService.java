@@ -8,7 +8,19 @@ import com.flyhz.shop.dto.OrderDto;
 
 public interface OrderService {
 
-	public OrderDto generateOrder(OrderDto order) throws ValidateException;
+	/**
+	 * 生成订单
+	 * 
+	 * @param productId
+	 *            产品ID
+	 * @param consigneeId
+	 *            收件人ID
+	 * @param qty
+	 * @return
+	 * @throws ValidateException
+	 */
+	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds)
+			throws ValidateException;
 
 	public OrderDto getOrder(Integer userId, Integer orderId);
 

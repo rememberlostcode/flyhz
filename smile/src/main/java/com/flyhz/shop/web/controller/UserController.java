@@ -13,12 +13,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.shop.dto.ConsigneeDto;
-import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.service.OrderService;
@@ -93,33 +93,37 @@ public class UserController {
 	}
 
 	/**
-	 * 生成订单
+	 * 确认订单信息并生成订单
 	 * 
 	 * @param model
 	 * @param orderDto
 	 * @return
 	 */
-	@RequestMapping(value = { "user/saveOrder" }, method = RequestMethod.POST)
-	public String saveOrder(Model model, @ModelAttribute OrderDto orderDto) {
+	@RequestMapping(value = { "user/confirmOrder" }, method = RequestMethod.POST)
+	public String confirmOrder(Model model, @RequestParam Integer pid, @RequestParam Integer cid,
+			@RequestParam Integer qty) {
 		Protocol protocol = new Protocol();
 		Integer code = 0;
 		String msg = "";
-		if (orderDto != null) {
-			if (StringUtils.isNotBlank(orderDto.getDetails())) {
-				try {
-					orderService.generateOrder(orderDto);
-					code = 1;
-				} catch (ValidateException e) {
-					code = 4;
-					msg = e.getMessage();
-					log.error("=======在生成订单时=========" + e.getMessage());
-				}
-			} else {
-				code = 3;
-			}
-		} else {
-			code = 2;
-		}
+		if (pid != null || cid != null || qty != null)
+			code = 5;
+
+		// if (orderDto != null) {
+		// if (StringUtils.isNotBlank(orderDto.getDetails())) {
+		// try {
+		// orderService.generateOrder(orderDto);
+		// code = 1;
+		// } catch (ValidateException e) {
+		// code = 4;
+		// msg = e.getMessage();
+		// log.error("=======在生成订单时=========" + e.getMessage());
+		// }
+		// } else {
+		// code = 3;
+		// }
+		// } else {
+		// code = 2;
+		// }
 		protocol.setCode(code);
 		protocol.setData(msg);
 		model.addAttribute("protocol", protocol);
