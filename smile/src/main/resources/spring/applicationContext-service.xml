@@ -16,7 +16,7 @@ http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 	<bean id="cache.prefixs" class="java.util.HashMap">
 		<constructor-arg>
 			<map>
-				<entry key="com.flyhz.shop.persistence.entity.ProductModel">
+				<entry key="com.flyhz.shop.dto.ProductBuildDto">
 					<value>smile@product</value>
 				</entry>
 			</map>
