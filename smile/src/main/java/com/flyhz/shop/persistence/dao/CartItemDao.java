@@ -1,6 +1,8 @@
 
 package com.flyhz.shop.persistence.dao;
 
+import java.util.List;
+
 import com.flyhz.shop.persistence.entity.CartitemModel;
 
 /**
@@ -15,7 +17,7 @@ public interface CartItemDao extends GenericDao<CartitemModel> {
 	 * @param cartItem
 	 * @return int
 	 */
-	public int deleteCartItem(CartitemModel cartItem);
+	public int deleteCartItem(CartitemModel cartitemModel);
 
 	/**
 	 * 查找购物车商品
@@ -23,7 +25,15 @@ public interface CartItemDao extends GenericDao<CartitemModel> {
 	 * @param cartItem
 	 * @return cartItem
 	 */
-	public CartitemModel getCartItem(CartitemModel cartItem);
+	public CartitemModel getCartItemById(CartitemModel cartitemModel);
+
+	/**
+	 * 查找购物车商品
+	 * 
+	 * @param cartItem
+	 * @return cartItem
+	 */
+	public CartitemModel getCartItemByProductId(CartitemModel cartitemModel);
 
 	/**
 	 * 更新购物车商品
@@ -31,7 +41,7 @@ public interface CartItemDao extends GenericDao<CartitemModel> {
 	 * @param cartItem
 	 * @return int
 	 */
-	public int updateCartItem(CartitemModel cartItem);
+	public int updateCartItem(CartitemModel cartitemModel);
 
 	/**
 	 * 插入购物车商品
@@ -39,5 +49,13 @@ public interface CartItemDao extends GenericDao<CartitemModel> {
 	 * @param cartItem
 	 * @return int
 	 */
-	public int insertCartItem(CartitemModel cartItem);
+	public int insertCartItem(CartitemModel cartitemModel);
+
+	/**
+	 * 查询用户购物车商品列表
+	 * 
+	 * @param cartItem
+	 * @return List<CartitemModel>
+	 */
+	public List<CartitemModel> getCartItemList(CartitemModel cartitemModel);
 }

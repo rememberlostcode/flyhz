@@ -9,64 +9,54 @@ import java.io.Serializable;
  */
 public class ConsigneeModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
-
-	private int					id;
-
+	private Integer				id;
 	private String				address;
-
-	private short				city;
-
-	private short				contury;
-
+	private Short				city;
+	private Short				contury;
 	private String				idcard;
-
 	private String				mobilephone;
-
 	private String				name;
-
-	private short				province;
-
-	private int					userId;
-
+	private Short				province;
+	private Integer				userId;
 	private String				zipcode;
 
 	public ConsigneeModel() {
 	}
 
-	public int getId() {
-		return this.id;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
 	public String getAddress() {
-		return this.address;
+		return address;
 	}
 
 	public void setAddress(String address) {
 		this.address = address;
 	}
 
-	public short getCity() {
-		return this.city;
+	public Short getCity() {
+		return city;
 	}
 
-	public void setCity(short city) {
+	public void setCity(Short city) {
 		this.city = city;
 	}
 
-	public short getContury() {
-		return this.contury;
+	public Short getContury() {
+		return contury;
 	}
 
-	public void setContury(short contury) {
+	public void setContury(Short contury) {
 		this.contury = contury;
 	}
 
 	public String getIdcard() {
-		return this.idcard;
+		return idcard;
 	}
 
 	public void setIdcard(String idcard) {
@@ -74,7 +64,7 @@ public class ConsigneeModel implements Serializable {
 	}
 
 	public String getMobilephone() {
-		return this.mobilephone;
+		return mobilephone;
 	}
 
 	public void setMobilephone(String mobilephone) {
@@ -82,35 +72,34 @@ public class ConsigneeModel implements Serializable {
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public short getProvince() {
-		return this.province;
+	public Short getProvince() {
+		return province;
 	}
 
-	public void setProvince(short province) {
+	public void setProvince(Short province) {
 		this.province = province;
 	}
 
-	public int getUserId() {
-		return this.userId;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 
 	public String getZipcode() {
-		return this.zipcode;
+		return zipcode;
 	}
 
 	public void setZipcode(String zipcode) {
 		this.zipcode = zipcode;
 	}
-
 }

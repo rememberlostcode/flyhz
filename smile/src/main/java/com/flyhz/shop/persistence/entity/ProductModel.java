@@ -12,68 +12,56 @@ import java.util.Date;
 
 public class ProductModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
-
-	private int					id;
-
-	private int					brandId;
-
+	private Integer				id;
+	private Integer				brandId;
 	private String				brandstyle;
-
-	private int					categoryId;
-
+	private Integer				categoryId;
 	private String				description;
-
 	private Date				gmtCreate;
-
 	private Date				gmtModify;
-
 	private String				imgs;
-
 	private BigDecimal			localprice;
-
 	private String				name;
-
 	private BigDecimal			purchasingprice;
-
 	private String				style;
 
 	public ProductModel() {
 	}
 
-	public int getId() {
-		return this.id;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getBrandId() {
-		return this.brandId;
+	public Integer getBrandId() {
+		return brandId;
 	}
 
-	public void setBrandId(int brandId) {
+	public void setBrandId(Integer brandId) {
 		this.brandId = brandId;
 	}
 
 	public String getBrandstyle() {
-		return this.brandstyle;
+		return brandstyle;
 	}
 
 	public void setBrandstyle(String brandstyle) {
 		this.brandstyle = brandstyle;
 	}
 
-	public int getCategoryId() {
-		return this.categoryId;
+	public Integer getCategoryId() {
+		return categoryId;
 	}
 
-	public void setCategoryId(int categoryId) {
+	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
 
 	public String getDescription() {
-		return this.description;
+		return description;
 	}
 
 	public void setDescription(String description) {
@@ -81,7 +69,7 @@ public class ProductModel implements Serializable {
 	}
 
 	public Date getGmtCreate() {
-		return this.gmtCreate;
+		return gmtCreate;
 	}
 
 	public void setGmtCreate(Date gmtCreate) {
@@ -89,7 +77,7 @@ public class ProductModel implements Serializable {
 	}
 
 	public Date getGmtModify() {
-		return this.gmtModify;
+		return gmtModify;
 	}
 
 	public void setGmtModify(Date gmtModify) {
@@ -97,7 +85,7 @@ public class ProductModel implements Serializable {
 	}
 
 	public String getImgs() {
-		return this.imgs;
+		return imgs;
 	}
 
 	public void setImgs(String imgs) {
@@ -105,7 +93,7 @@ public class ProductModel implements Serializable {
 	}
 
 	public BigDecimal getLocalprice() {
-		return this.localprice;
+		return localprice;
 	}
 
 	public void setLocalprice(BigDecimal localprice) {
@@ -113,7 +101,7 @@ public class ProductModel implements Serializable {
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public void setName(String name) {
@@ -121,7 +109,7 @@ public class ProductModel implements Serializable {
 	}
 
 	public BigDecimal getPurchasingprice() {
-		return this.purchasingprice;
+		return purchasingprice;
 	}
 
 	public void setPurchasingprice(BigDecimal purchasingprice) {
@@ -129,11 +117,10 @@ public class ProductModel implements Serializable {
 	}
 
 	public String getStyle() {
-		return this.style;
+		return style;
 	}
 
 	public void setStyle(String style) {
 		this.style = style;
 	}
-
 }

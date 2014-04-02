@@ -12,17 +12,11 @@ import java.util.Date;
 
 public class OrderModel implements Serializable {
 	private static final long	serialVersionUID	= 1L;
-
-	private int					id;
-
+	private Integer				id;
 	private String				detail;
-
 	private Date				gmtCreate;
-
 	private Date				gmtModify;
-
 	private Character			status;
-
 	private BigDecimal			total;
 
 	private Integer				userId;
@@ -30,11 +24,11 @@ public class OrderModel implements Serializable {
 	public OrderModel() {
 	}
 
-	public int getId() {
-		return this.id;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

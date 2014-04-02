@@ -4,13 +4,12 @@ package com.flyhz.shop.service;
 import java.util.List;
 
 import com.flyhz.framework.lang.ValidateException;
-import com.flyhz.shop.persistence.entity.CartitemModel;
+import com.flyhz.shop.dto.CartItemDto;
 
 public interface ShoppingCartService {
 	/**
 	 * 添加商品到购物车
 	 * 
-	 * @author fuwb
 	 * @param userId
 	 * @param productId
 	 * @return
@@ -26,10 +25,16 @@ public interface ShoppingCartService {
 	 */
 	public void removeItem(Integer userId, Integer itemId) throws ValidateException;
 
-	public List<CartitemModel> listItems(Integer userId);
+	/**
+	 * 查询购物车物品列表
+	 * 
+	 * @param userId
+	 * @return List<CartItemDto>
+	 */
+	public List<CartItemDto> listItems(Integer userId) throws ValidateException;
 
 	/**
-	 * 设置购物车商品梳理
+	 * 设置购物车商品数量
 	 * 
 	 * @param userId
 	 * @param itemId
