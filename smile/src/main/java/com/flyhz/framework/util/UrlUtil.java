@@ -114,7 +114,7 @@ public class UrlUtil {
 	}
 
 	/**
-	 * get请求，参数不用URLEncoder处理
+	 * get请求，参数不经过URLEncoder处理，参数要自己处理好
 	 * 
 	 * @param path
 	 * @param param

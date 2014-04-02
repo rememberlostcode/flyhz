@@ -3,6 +3,8 @@ package com.flyhz.shop.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.UserDetailDto;
@@ -61,6 +63,13 @@ public interface UserService {
 	 */
 	public UserDto logout(Integer userId, String token, String verifycode) throws ValidateException;
 
+	/**
+	 * 查询收件人地址
+	 * 
+	 * @param userId
+	 * @param consigneeId
+	 * @return ConsigneeModel
+	 */
 	public ConsigneeModel getConsignee(Integer userId, Integer consigneeId);
 
 	/**
@@ -101,8 +110,18 @@ public interface UserService {
 	public void setPersonalInformation(Integer userId, String field, Object value)
 			throws ValidateException;
 
+	/**
+	 * 收件人地址上传身份证照片
+	 * 
+	 * @param userId
+	 * @param consigneeId
+	 * @param multipartFile
+	 * @return
+	 */
+	public void setIdCardImg(Integer userId, Integer consigneeId, MultipartFile multipartFile)
+			throws ValidateException;
+
 	public UserDetailDto getPersonalInformation(Integer userId);
 
 	public void resetpwd(Integer userId, String oldpwd, String newpwd);
-
 }

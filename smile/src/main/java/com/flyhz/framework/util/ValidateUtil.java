@@ -58,7 +58,7 @@ public class ValidateUtil {
 	public static boolean isValidZipcode(String zipcode) {
 		boolean flag = false;
 		try {
-			Pattern p = Pattern.compile("[1-9]\\d{5}(?!\\d)");
+			Pattern p = Pattern.compile("^\\d{6}$");
 			Matcher m = p.matcher(zipcode);
 			flag = m.matches();
 		} catch (Exception e) {

@@ -1,6 +1,8 @@
 
 package com.flyhz.shop.service.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -9,8 +11,11 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.lang.file.FileRepository;
+import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.RandomString;
 import com.flyhz.framework.util.RegexUtils;
 import com.flyhz.framework.util.StringUtil;
@@ -31,6 +36,8 @@ public class UserServiceImpl implements UserService {
 	private UserDao			userDao;
 	@Resource
 	private ConsigneeDao	consigneeDao;
+	@Resource
+	private FileRepository	fileRepository;
 
 	@Override
 	public UserDto register(UserDetailDto userDetail) throws ValidateException {
@@ -153,46 +160,59 @@ public class UserServiceImpl implements UserService {
 	public ConsigneeModel addConsignee(ConsigneeModel consignee) throws ValidateException {
 		// 收件人对象不能为空
 		if (consignee == null) {
-			throw new ValidateException("");
-			// 登陆用户ID不能为空
-		} else if (consignee.getUserId() == null) {
-			throw new ValidateException("");
-			// 收件人姓名不能为空
-		} else if (StringUtil.isBlank(consignee.getName())) {
-			throw new ValidateException("");
-			// 收件人姓名最大为16个英文字符
-		} else if (StringUtil.length(consignee.getName()) > 16) {
-			throw new ValidateException("");
-			// 收件人国家不能为空
-		} else if (consignee.getContury() == null) {
-			throw new ValidateException("");
-			// 收件人省份不能为空
-		} else if (consignee.getProvince() == null) {
-			throw new ValidateException("");
-			// 收件人市不能为空
-		} else if (consignee.getCity() == null) {
-			throw new ValidateException("");
-			// 收件人区不能为空
-		} else if (consignee.getTown() == null) {
-			throw new ValidateException("");
-			// 收件人街道地址不能为空
-		} else if (StringUtil.isBlank(consignee.getAddress())) {
-			throw new ValidateException("");
-			// 收件人街道地址最大128个英文字符
-		} else if (StringUtil.length(consignee.getAddress()) > 128) {
-			throw new ValidateException("");
-			// 邮编不能为空
-		} else if (StringUtil.isBlank(consignee.getZipcode())) {
-			throw new ValidateException("");
-			// 邮编格式错误
-		} else if (!ValidateUtil.isValidZipcode(consignee.getZipcode())) {
-			throw new ValidateException("");
-			// 收件人手机号不能为空
-		} else if (StringUtil.isBlank(consignee.getMobilephone())) {
-			throw new ValidateException("");
-			// 手机号码格式错误
-		} else if (!ValidateUtil.isMobileNO(consignee.getMobilephone())) {
-			throw new ValidateException("");
+			throw new ValidateException(101001);
+		}
+		// 登陆用户ID不能为空
+		if (consignee.getUserId() == null) {
+			throw new ValidateException(101002);
+		}
+		// 收件人姓名不能为空
+		if (StringUtil.isBlank(consignee.getName())) {
+			throw new ValidateException(101003);
+		}
+		// 收件人姓名最大为16个字符
+		if (StringUtil.length(consignee.getName()) > 16) {
+			throw new ValidateException(101004);
+		}
+		// 收件人国家不能为空
+		if (consignee.getContury() == null) {
+			throw new ValidateException(101005);
+		}
+		// 收件人省份不能为空
+		if (consignee.getProvince() == null) {
+			throw new ValidateException(101006);
+		}
+		// 收件人市不能为空
+		if (consignee.getCity() == null) {
+			throw new ValidateException(101007);
+		}
+		// 收件人区不能为空
+		if (consignee.getTown() == null) {
+			throw new ValidateException(101008);
+		}
+		// 收件人街道地址不能为空
+		if (StringUtil.isBlank(consignee.getAddress())) {
+			throw new ValidateException(101009);
+		}
+		// 收件人街道地址最大128个字符
+		if (StringUtil.length(consignee.getAddress()) > 128) {
+			throw new ValidateException(101010);
+		}
+		// 邮编不能为空
+		if (StringUtil.isBlank(consignee.getZipcode())) {
+			throw new ValidateException(101011);
+		}
+		// 邮编格式错误
+		if (!ValidateUtil.isValidZipcode(consignee.getZipcode())) {
+			throw new ValidateException(101012);
+		}
+		// 收件人手机号不能为空
+		if (StringUtil.isBlank(consignee.getMobilephone())) {
+			throw new ValidateException(101013);
+		}
+		// 手机号码格式错误
+		if (!ValidateUtil.isMobileNO(consignee.getMobilephone())) {
+			throw new ValidateException(101014);
 		}
 		consigneeDao.insertConsignee(consignee);
 		return consignee;
@@ -200,21 +220,89 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ConsigneeModel modifyConsignee(ConsigneeModel consignee) throws ValidateException {
-		if (consignee == null) {
-			throw new ValidateException("");
+		// 收件人对象不能为空
+		if (consignee == null || consignee.getId() == null) {
+			throw new ValidateException(101001);
 		}
-		return null;
+		// 登陆用户ID不能为空
+		if (consignee.getUserId() == null) {
+			throw new ValidateException(101002);
+		}
+		// 收件人姓名不能为空
+		if (StringUtil.isBlank(consignee.getName())) {
+			throw new ValidateException(101003);
+		}
+		// 收件人姓名最大为16个字符
+		if (StringUtil.length(consignee.getName()) > 16) {
+			throw new ValidateException(101004);
+		}
+		// 收件人国家不能为空
+		if (consignee.getContury() == null) {
+			throw new ValidateException(101005);
+		}
+		// 收件人省份不能为空
+		if (consignee.getProvince() == null) {
+			throw new ValidateException(101006);
+		}
+		// 收件人市不能为空
+		if (consignee.getCity() == null) {
+			throw new ValidateException(101007);
+		}
+		// 收件人区不能为空
+		if (consignee.getTown() == null) {
+			throw new ValidateException(101008);
+		}
+		// 收件人街道地址不能为空
+		if (StringUtil.isBlank(consignee.getAddress())) {
+			throw new ValidateException(101009);
+		}
+		// 收件人街道地址最大128个字符
+		if (StringUtil.length(consignee.getAddress()) > 128) {
+			throw new ValidateException(101010);
+		}
+		// 邮编不能为空
+		if (StringUtil.isBlank(consignee.getZipcode())) {
+			throw new ValidateException(101011);
+		}
+		// 邮编格式错误
+		if (!ValidateUtil.isValidZipcode(consignee.getZipcode())) {
+			throw new ValidateException(101012);
+		}
+		// 收件人手机号不能为空
+		if (StringUtil.isBlank(consignee.getMobilephone())) {
+			throw new ValidateException(101013);
+		}
+		// 手机号码格式错误
+		if (!ValidateUtil.isMobileNO(consignee.getMobilephone())) {
+			throw new ValidateException(101014);
+		}
+		// 查询旧收件人地址
+		ConsigneeModel consigneeModelOld = consigneeDao.getModel(consignee);
+		if (consigneeModelOld == null) {
+			throw new ValidateException(101001);
+		}
+		consigneeDao.updateConsignee(consignee);
+		return consignee;
 	}
 
 	@Override
 	public void removeConsignee(Integer userId, Integer consigneeId) throws ValidateException {
+		// 登陆用户ID不能为空
 		if (userId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101002);
 		}
+		// 收件人地址ID不能为空
 		if (consigneeId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101001);
 		}
-		// ConsigneeModel consigneeModel
+		ConsigneeModel consigneeModel = new ConsigneeModel();
+		consigneeModel.setId(consigneeId);
+		consigneeModel.setUserId(userId);
+		consigneeModel = consigneeDao.getModel(consigneeModel);
+		if (consigneeModel == null) {
+			throw new ValidateException(101001);
+		}
+		consigneeDao.deleteConsignee(consigneeModel);
 	}
 
 	@Override
@@ -239,48 +327,56 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void setPersonalInformation(Integer userId, String field, Object value)
 			throws ValidateException {
+		// 登陆用户ID不能为空
 		if (userId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101002);
 		}
+		// 待修改用户属性不能为空
 		if (StringUtils.isBlank(field)) {
-			throw new ValidateException("");
+			throw new ValidateException(101015);
 		}
 		UserModel userModel = new UserModel();
 		userModel.setId(userId);
 		userModel = userDao.getModel(userModel);
+		// 登陆用户不能为空
 		if (userModel == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101002);
 		}
 		// 判断是更新电话、邮箱、密码
 		if (field.equals("email")) {
 			// 校验email格式是否正确
 			String valueStr = String.valueOf(value);
+			String emailOld = userModel.getEmail();
 			if (StringUtil.isNotBlank(valueStr)) {
-				// 邮箱长度最大为64个英文字符
+				// 邮箱长度最大为64个字符
 				if (StringUtil.length(valueStr) > 64) {
-					throw new ValidateException("");
+					throw new ValidateException(101016);
 				} else if (!ValidateUtil.checkEmail(valueStr)) {
-					throw new ValidateException("");
+					throw new ValidateException(101017);
 				}
 			}
 			userModel.setEmail(valueStr);
 			userDao.updateEmail(userModel);
+			// 新旧邮箱不同，发送校验邮件
+			if (StringUtil.isNotBlank(valueStr) && valueStr.equalsIgnoreCase(emailOld)) {
+
+			}
 		} else if (field.equals("mphone")) {
 			// 校验电话格式是否正确
 			String valueStr = String.valueOf(value);
 			if (StringUtil.isNotBlank(valueStr) && !ValidateUtil.isMobileNO(valueStr)) {
-				throw new ValidateException("");
+				throw new ValidateException(101014);
 			}
 			userModel.setMobilephone(valueStr);
 			userDao.updateMobilePhone(userModel);
 		} else if (field.equals("pwd")) {
 			// 密码不能设置为空
-			// 密码长度最大为16个英文字符
+			// 密码长度最大为16个字符
 			String valueStr = String.valueOf(value);
 			if (StringUtil.isBlank(valueStr)) {
-				throw new ValidateException("");
+				throw new ValidateException(101018);
 			} else if (StringUtil.length(valueStr) > 16) {
-				throw new ValidateException("");
+				throw new ValidateException(101019);
 			}
 			userModel.setPassword(valueStr);
 			userDao.updatePwd(userModel);
@@ -288,14 +384,47 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void setIdCardImg(Integer userId, Integer consigneeId, MultipartFile multipartFile)
+			throws ValidateException {
+		// 登陆用户ID不能为空
+		if (userId == null) {
+			throw new ValidateException(101002);
+		}
+		// 收件人地址ID不能为空
+		if (consigneeId == null) {
+			throw new ValidateException(101001);
+		}
+		ConsigneeModel consigneeModel = new ConsigneeModel();
+		consigneeModel.setId(consigneeId);
+		consigneeModel.setUserId(userId);
+		consigneeModel = consigneeDao.getModel(consigneeModel);
+		// 查询旧收件人地址
+		if (consigneeModel == null) {
+			throw new ValidateException(101001);
+		}
+		// 保存收件人地址身份证照片
+		try {
+			// 生成新文件名
+			String origName = multipartFile.getOriginalFilename();
+			origName = DateUtil.dateToStrMSec(new Date()) + consigneeId
+					+ origName.substring(origName.lastIndexOf("."));
+			fileRepository.saveToTemp(multipartFile.getInputStream(), origName);
+			// 更新收件人地址中身份证照片路径
+			consigneeModel.setIdcard(File.separator + origName);
+			consigneeDao.updateConsigneeIdCard(consigneeModel);
+		} catch (IOException e) {
+			// 文件保存失败
+			throw new ValidateException(101020);
+		}
+	}
+
+	@Override
 	public UserDetailDto getPersonalInformation(Integer userId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void resetpwd(Integer userId, String oldpwd, String newpwd) {
-		// TODO Auto-generated method stub
 
 	}
 }

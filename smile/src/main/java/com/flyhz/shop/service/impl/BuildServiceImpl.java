@@ -12,17 +12,22 @@ import javax.annotation.Resource;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.CacheRepository;
+import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.JSONUtil;
+import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
 import com.flyhz.shop.build.solr.Fraction;
 import com.flyhz.shop.build.solr.PageModel;
 import com.flyhz.shop.build.solr.ProductFraction;
 import com.flyhz.shop.build.solr.SolrServer;
+import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.CategoryDao;
@@ -30,12 +35,12 @@ import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.persistence.entity.BrandModel;
 import com.flyhz.shop.persistence.entity.CategoryModel;
-import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.BuildService;
+import com.flyhz.shop.service.OrderService;
 
 @Service
 public class BuildServiceImpl implements BuildService {
-
+	private Logger			log	= LoggerFactory.getLogger(BuildServiceImpl.class);
 	@Resource
 	private ProductDao		productDao;
 	@Resource
@@ -46,26 +51,29 @@ public class BuildServiceImpl implements BuildService {
 	private OrderDao		orderDao;
 	@Resource
 	@Value(value = "${smile.solr.url}")
-	public String			server_url;
+	private String			server_url;
 	@Resource
 	private CacheRepository	cacheRepository;
 	@Resource
 	private ProductFraction	productFraction;
+	@Resource
+	private OrderService	orderService;
 
-	@Override
 	public void buildData() {
-		System.out.println("buildData开始...");
+		// TODO Auto-generated method stub
+		log.info("buildData开始...");
 		try {
 			buildSolr();
 			buildRedis();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
-		System.out.println("buildData结束");
+		log.info("buildData结束");
 	}
 
 	public void buildSolr() {
-		System.out.println("buildSolr开始...");
+		// TODO Auto-generated method stub
+		log.info("buildSolr开始...");
 		// 500条数据查询一次并插入数据库
 		int resultSize = 500;
 		int thisNum = 0;
@@ -117,16 +125,17 @@ public class BuildServiceImpl implements BuildService {
 				solrServer.add(docs);
 				solrServer.commit();
 			} catch (SolrServerException e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
-		System.out.println("buildSolr结束");
+		log.info("buildSolr结束");
 	}
 
 	public void buildRedis() {
-		System.out.println("buildRedis开始...");
+		// TODO Auto-generated method stub
+		log.info("buildRedis开始...");
 
 		/******** build商品详情 start *******/
 		int resultSize = 500;// 500条数据查询一次数据库
@@ -146,14 +155,13 @@ public class BuildServiceImpl implements BuildService {
 		/******** build商品详情 end *******/
 
 		/******** build订单 start *******/
-		buildOrders();
+		// buildOrders();
 		/******** build订单 end *******/
 
 		/******** build推荐商品 start *******/
 		cacheRepository.set(Constants.PREFIX_RECOMMEND, "index",
 				getProductsStringBySolr(null, null));
-		System.out.println("index="
-				+ cacheRepository.getString(Constants.PREFIX_RECOMMEND, "index"));
+		log.info("index=" + cacheRepository.getString(Constants.PREFIX_RECOMMEND, "index"));
 		/******** build商品详情 end *******/
 
 		/******** build商品品牌分类 start *******/
@@ -183,7 +191,7 @@ public class BuildServiceImpl implements BuildService {
 			}
 		}
 		/******** build商品品牌分类 end *******/
-		System.out.println("buildRedis结束");
+		log.info("buildRedis结束");
 	}
 
 	/**
@@ -211,24 +219,15 @@ public class BuildServiceImpl implements BuildService {
 		return productDao.findAll(page);
 	}
 
-	/**
-	 * Build所有订单
-	 */
-	private void buildOrders() {
-		List<OrderModel> orderList = orderDao.getModelList();
-		for (int i = 0; i < orderList.size(); i++) {
-			buildOrder(orderList.get(i));
-		}
-	}
-
-	/**
-	 * build订单
-	 * 
-	 * @param orderModel
-	 */
-	public void buildOrder(OrderModel orderModel) {
-		cacheRepository.set(String.valueOf(orderModel.getId()), JSONUtil.getEntity2Json(orderModel));
-	}
+	// /**
+	// * Build所有订单
+	// */
+	// private void buildOrders() {
+	// List<OrderModel> orderList = orderDao.getModelList();
+	// for (int i = 0; i < orderList.size(); i++) {
+	// buildOrder(orderList.get(i));
+	// }
+	// }
 
 	/**
 	 * 从solr获得对应品牌和分类的商品
@@ -316,5 +315,41 @@ public class BuildServiceImpl implements BuildService {
 	private String getDocsString(String str) {
 		int index = str.indexOf("\"docs\":[");
 		return str.substring(index + 7, str.length() - 2);
+	}
+
+	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException {
+		// TODO Auto-generated method stub
+		OrderDto orderDto = null;
+		String orderJson = cacheRepository.getString(String.valueOf(orderId), OrderDto.class);
+		if (StringUtil.isNotBlank(orderJson)) {
+			orderDto = JSONUtil.getJson2Entity(orderJson, OrderDto.class);
+		}
+		if (orderDto == null) {// 如果为null，先查找数据库，如存在再更新redis
+			orderDto = new OrderDto();
+
+			cacheRepository.set(String.valueOf(orderDto.getId()), orderDto);
+		}
+		return orderDto;
+	}
+
+	public List<OrderDto> getOrders(Integer userId) throws ValidateException {
+		// TODO Auto-generated method stub
+		if (userId == null) {
+			throw new ValidateException("userId为null！");
+		}
+		List<OrderDto> orderList = null;
+		String orderJson = cacheRepository.getString(Constants.PREFIX_USER_ORDERS,
+				String.valueOf(userId));
+		if (StringUtil.isNotBlank(orderJson)) {
+			orderList = JSONUtil.getJson2EntityList(orderJson, List.class, OrderDto.class);
+		}
+
+		if (orderList == null) {// 如果为null，先查找数据库，如存在再更新redis
+			orderList = new ArrayList<OrderDto>();
+
+			cacheRepository.set(Constants.PREFIX_USER_ORDERS, String.valueOf(userId),
+					JSONUtil.getEntity2Json(orderList));
+		}
+		return orderList;
 	}
 }

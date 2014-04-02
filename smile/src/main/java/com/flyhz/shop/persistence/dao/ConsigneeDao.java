@@ -31,4 +31,20 @@ public interface ConsigneeDao extends GenericDao<ConsigneeModel> {
 	 * @return int
 	 */
 	public int updateConsignee(ConsigneeModel consigneeModel);
+
+	/**
+	 * 删除收件人地址
+	 * 
+	 * @param consigneeModel
+	 * @return int
+	 */
+	public int deleteConsignee(ConsigneeModel consigneeModel);
+
+	/**
+	 * 更新收件人地址身份证照片路径
+	 * 
+	 * @param consigneeModel
+	 * @return int
+	 */
+	public int updateConsigneeIdCard(ConsigneeModel consigneeModel);
 }

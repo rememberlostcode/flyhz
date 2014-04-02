@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
@@ -118,5 +119,18 @@ public class UserController {
 		protocol.setData(details);
 		model.addAttribute("protocol", protocol);
 		return "";
+	}
+
+	@RequestMapping(value = "user/setInfo")
+	public void setInfo(@Identify Integer userId, @RequestParam(value = "field") String field,
+			@RequestParam(value = "fval") Object fval, Model model) {
+		Protocol protocol = new Protocol();
+		try {
+			userService.setPersonalInformation(userId, field, fval);
+			protocol.setCode(200000);
+		} catch (ValidateException e) {
+			protocol.setCode(e.getCode());
+		}
+		model.addAttribute("protocol", protocol);
 	}
 }
