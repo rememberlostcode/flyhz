@@ -26,9 +26,11 @@ import com.flyhz.shop.build.solr.SolrServer;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.CategoryDao;
+import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.persistence.entity.BrandModel;
 import com.flyhz.shop.persistence.entity.CategoryModel;
+import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.BuildService;
 
 @Service
@@ -40,6 +42,8 @@ public class BuildServiceImpl implements BuildService {
 	private CategoryDao		categoryDao;
 	@Resource
 	private BrandDao		brandDao;
+	@Resource
+	private OrderDao		orderDao;
 	@Resource
 	@Value(value = "${smile.solr.url}")
 	public String			server_url;
@@ -141,12 +145,23 @@ public class BuildServiceImpl implements BuildService {
 		}
 		/******** build商品详情 end *******/
 
+		/******** build订单 start *******/
+		buildOrders();
+		/******** build订单 end *******/
+
+		/******** build推荐商品 start *******/
+		cacheRepository.set(Constants.PREFIX_RECOMMEND, "index",
+				getProductsStringBySolr(null, null));
+		System.out.println("index="
+				+ cacheRepository.getString(Constants.PREFIX_RECOMMEND, "index"));
+		/******** build商品详情 end *******/
+
 		/******** build商品品牌分类 start *******/
 		List<CategoryModel> catList = categoryDao.getModelList();
 		List<BrandModel> brandList = brandDao.getModelList();
 
 		// build所有分类
-		cacheRepository.set(Constants.PREFIX_CATS, "all", JSONUtil.getEntity2Json(catList));
+		cacheRepository.set(Constants.PREFIX_CATES, "all", JSONUtil.getEntity2Json(catList));
 		// build所有品牌
 		cacheRepository.set(Constants.PREFIX_BRANDS, "all", JSONUtil.getEntity2Json(brandList));
 
@@ -163,24 +178,56 @@ public class BuildServiceImpl implements BuildService {
 						brandList.get(j).getId());
 				System.out.println(catList.get(i).getName() + "&" + brandList.get(j).getName()
 						+ "=" + allCatesAndBrands);
-				cacheRepository.set(Constants.PREFIX_BRANDS_CATS, catList.get(i).getId() + "_"
+				cacheRepository.set(Constants.PREFIX_BRANDS_CATES, catList.get(i).getId() + "_"
 						+ brandList.get(j).getId(), allCatesAndBrands);
 			}
 		}
-		System.out.println(cacheRepository.getString(Constants.PREFIX_BRANDS_CATS, "1_2"));
 		/******** build商品品牌分类 end *******/
 		System.out.println("buildRedis结束");
 	}
 
-	public int getCountOfAll() {
+	/**
+	 * 获取商品总数
+	 * 
+	 * @return
+	 */
+	private int getCountOfAll() {
 		return productDao.getCountOfAll();
 	}
 
-	public List<ProductBuildDto> findAll(int start, int num) {
+	/**
+	 * 分页获取商品
+	 * 
+	 * @param start
+	 *            开始序号
+	 * @param num
+	 *            取得条数
+	 * @return
+	 */
+	private List<ProductBuildDto> findAll(int start, int num) {
 		PageModel page = new PageModel();
 		page.setStart(start);
 		page.setNum(num);
 		return productDao.findAll(page);
+	}
+
+	/**
+	 * Build所有订单
+	 */
+	private void buildOrders() {
+		List<OrderModel> orderList = orderDao.getModelList();
+		for (int i = 0; i < orderList.size(); i++) {
+			buildOrder(orderList.get(i));
+		}
+	}
+
+	/**
+	 * build订单
+	 * 
+	 * @param orderModel
+	 */
+	public void buildOrder(OrderModel orderModel) {
+		cacheRepository.set(String.valueOf(orderModel.getId()), JSONUtil.getEntity2Json(orderModel));
 	}
 
 	/**
@@ -195,19 +242,19 @@ public class BuildServiceImpl implements BuildService {
 	@SuppressWarnings("unused")
 	private List<ProductBuildDto> getProductsListBySolr(Integer cid, Integer bid) {
 		List<ProductBuildDto> list = new ArrayList<ProductBuildDto>();
-		String rStr = "";
+		String resultStr = "";
 		HashMap<String, String> param = getBaseParams();
-		rStr = getSolrResult(param);
+		resultStr = getSolrResult(param);
 
-		if (rStr != null && !"".equals(rStr)) {
-			rStr = getDocsString(rStr);
-			list = JSONUtil.getJson2EntityList(rStr, List.class, ProductBuildDto.class);
+		if (resultStr != null && !"".equals(resultStr)) {
+			resultStr = getDocsString(resultStr);
+			list = JSONUtil.getJson2EntityList(resultStr, List.class, ProductBuildDto.class);
 		}
 		return list;
 	}
 
 	/**
-	 * 从solr获得对应品牌和分类的商品
+	 * 从solr获得指定品牌和分类的商品
 	 * 
 	 * @param cid
 	 *            分类ID
@@ -217,12 +264,18 @@ public class BuildServiceImpl implements BuildService {
 	 */
 	private String getProductsStringBySolr(Integer cid, Integer bid) {
 		String rStr = "";
-		if (bid == null)
-			return rStr;
+		String t = "*%3A*";
 		HashMap<String, String> param = getBaseParams();
-		String t = "bid%3A" + bid;
-		if (cid != null)
-			t += "+AND+cid%3A" + cid;
+
+		if (bid == null && cid == null)
+			;
+		else if (bid != null && cid == null)
+			t = "bid%3A" + bid;
+		else if (cid != null && bid == null)
+			t = "cid%3A" + cid;
+		else
+			t = "bid%3A" + bid + "+AND+cid%3A" + cid;
+
 		param.put("q", t);
 		rStr = getSolrResult(param);
 
@@ -230,6 +283,16 @@ public class BuildServiceImpl implements BuildService {
 			rStr = getDocsString(rStr);
 		}
 		return rStr;
+	}
+
+	/**
+	 * 从solr取得结果
+	 * 
+	 * @param param
+	 * @return
+	 */
+	private String getSolrResult(HashMap<String, String> param) {
+		return UrlUtil.getStringByGetNotEncod(server_url + Constants.SEARCH_URL, param);
 	}
 
 	/**
@@ -242,16 +305,6 @@ public class BuildServiceImpl implements BuildService {
 		param.put("sort", "sf+desc");
 		param.put("rows", "10");
 		return param;
-	}
-
-	/**
-	 * 从solr取得结果
-	 * 
-	 * @param param
-	 * @return
-	 */
-	private String getSolrResult(HashMap<String, String> param) {
-		return UrlUtil.getStringByGetNotEncod(server_url + Constants.SEARCH_URL, param);
 	}
 
 	/**
