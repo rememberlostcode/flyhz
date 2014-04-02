@@ -16,7 +16,7 @@
 		where p.id = #{id} and p.brand_id=b.id
     </select>
     
-    <select id="getProductById" parameterType="Integer" resultType="ProductParamDto">
+    <select id="getProductById" parameterType="Integer" resultType="ProductDto">
 		select p.id,p.name,p.imgs,p.description desc,p.purchasingprice,p.brand_id brandId,b.name brandName
 		from product p,brand b
 		where p.id = #{id} and p.brand_id=b.id

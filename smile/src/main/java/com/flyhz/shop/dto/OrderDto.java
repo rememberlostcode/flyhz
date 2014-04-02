@@ -8,13 +8,11 @@ public class OrderDto {
 
 	private Integer					id;
 
-	private List<OrderDetailDto>	orderDetails;
+	private String					number;
 
-	private String					details;
+	private List<OrderDetailDto>	details;
 
-	private Character				status;
-
-	private ConsigneeDetailDto		consigneeDetail;
+	private ConsigneeDetailDto		consignee;
 
 	private BigDecimal				total;
 
@@ -30,36 +28,28 @@ public class OrderDto {
 		this.id = id;
 	}
 
-	public List<OrderDetailDto> getOrderDetails() {
-		return orderDetails;
+	public String getNumber() {
+		return number;
 	}
 
-	public void setOrderDetails(List<OrderDetailDto> orderDetails) {
-		this.orderDetails = orderDetails;
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
-	public String getDetails() {
+	public List<OrderDetailDto> getDetails() {
 		return details;
 	}
 
-	public void setDetails(String details) {
+	public void setDetails(List<OrderDetailDto> details) {
 		this.details = details;
 	}
 
-	public Character getStatus() {
-		return status;
+	public ConsigneeDetailDto getConsignee() {
+		return consignee;
 	}
 
-	public void setStatus(Character status) {
-		this.status = status;
-	}
-
-	public ConsigneeDetailDto getConsigneeDetail() {
-		return consigneeDetail;
-	}
-
-	public void setConsigneeDetail(ConsigneeDetailDto consigneeDetail) {
-		this.consigneeDetail = consigneeDetail;
+	public void setConsignee(ConsigneeDetailDto consignee) {
+		this.consignee = consignee;
 	}
 
 	public BigDecimal getTotal() {

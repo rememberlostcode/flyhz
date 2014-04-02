@@ -32,7 +32,7 @@
         <typeAlias alias="CategoryModel" type="com.flyhz.shop.persistence.entity.CategoryModel"/>
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
-        <typeAlias alias="ProductParamDto" type="com.flyhz.shop.dto.ProductParamDto"/>
+        <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>
         <typeAlias alias="OrderDto" type="com.flyhz.shop.dto.OrderDto"/>
         <typeAlias alias="ConsigneeDto" type="com.flyhz.shop.dto.ConsigneeDto"/>
     </typeAliases>

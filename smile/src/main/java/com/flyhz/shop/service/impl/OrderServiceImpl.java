@@ -13,11 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.ValidateException;
-import com.flyhz.shop.dto.BrandDto;
 import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductDto;
-import com.flyhz.shop.dto.ProductParamDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.dao.ConsigneeDao;
 import com.flyhz.shop.persistence.dao.OrderDao;
@@ -70,21 +68,13 @@ public class OrderServiceImpl implements OrderService {
 				if (qty <= 0)
 					continue;
 
-				ProductParamDto product = productDao.getProductById(Integer.parseInt(pid_qty[0]));
+				ProductDto product = productDao.getProductById(Integer.parseInt(pid_qty[0]));
 				if (product != null) {
 					OrderDetailDto orderDetailDto = new OrderDetailDto();
-					ProductDto productDto = new ProductDto();
-					productDto.setId(product.getId());
-					productDto.setName(product.getName());
-					productDto.setImgs(product.getImgs());
-					BrandDto brand = new BrandDto();
-					brand.setId(product.getBrandId());
-					brand.setName(product.getBrandName());
-					productDto.setBrand(brand);
-					orderDetailDto.setProduct(productDto);
+					orderDetailDto.setProduct(product);
 					orderDetailDto.setQty((short) qty);
-					if (product.getPurchasingprice() != null) {
-						orderDetailDto.setTotal(product.getPurchasingprice().multiply(
+					if (product.getPurchasingPrice() != null) {
+						orderDetailDto.setTotal(product.getPurchasingPrice().multiply(
 								BigDecimal.valueOf(qty)));
 					}
 				}
@@ -144,8 +134,6 @@ public class OrderServiceImpl implements OrderService {
 			return null;
 		OrderDto orderDto = new OrderDto();
 		orderDto.setId(orderModel.getId());
-		orderDto.setDetails(orderModel.getDetail());
-		orderDto.setStatus(orderModel.getStatus());
 		orderDto.setTotal(orderModel.getTotal());
 		UserDto user = new UserDto();
 		user.setId(orderModel.getUserId());
