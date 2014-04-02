@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.RandomString;
+import com.flyhz.framework.util.RegexUtils;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
 		userModel.setUsername(userDetail.getUsername());
 		userModel.setPassword(userDetail.getPassword());
 		if (StringUtils.isNotBlank(userDetail.getEmail())) {
-			if (StringUtil.validEmail(userDetail.getEmail())) {
+			if (RegexUtils.checkEmail(userDetail.getEmail())) {
 				userModel.setEmail(userDetail.getEmail());
 			} else {
 				throw new ValidateException("电子邮箱输入不正确");
