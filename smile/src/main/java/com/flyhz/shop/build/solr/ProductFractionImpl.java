@@ -5,6 +5,6 @@ public class ProductFractionImpl implements ProductFraction {
 
 	@Override
 	public Double getProductFraction(Fraction fraction) {
-		return (double) fraction.getLastUpadteTime().getTime();
+		return (double) fraction.getLastUpadteTime().getTime() / 1000000000;
 	}
 }
