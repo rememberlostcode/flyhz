@@ -10,14 +10,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.flyhz.shop.service.BuildService;
 
 @Controller
-@RequestMapping(value = "/")
+@RequestMapping(value = "/build")
 public class BuildController {
 
 	@Resource
 	private BuildService	buildService;
 
-	@RequestMapping(value = "/build")
-	public String build(Model model) {
+	@RequestMapping(value = "/solr")
+	public String solr(Model model) {
+		buildService.buildData();
+		return "build";
+	}
+
+	@RequestMapping(value = "/redis")
+	public String redis(Model model) {
 		buildService.buildData();
 		return "build";
 	}

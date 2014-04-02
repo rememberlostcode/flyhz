@@ -11,6 +11,7 @@ import java.util.Date;
  */
 public class Fraction {
 
+	private int		productId;
 	/**
 	 * 已购买数
 	 */
@@ -23,6 +24,14 @@ public class Fraction {
 	 * 最后更新时间
 	 */
 	private Date	lastUpadteTime;
+
+	public int getProductId() {
+		return productId;
+	}
+
+	public void setProductId(int productId) {
+		this.productId = productId;
+	}
 
 	public int getPurchasedNum() {
 		return purchasedNum;

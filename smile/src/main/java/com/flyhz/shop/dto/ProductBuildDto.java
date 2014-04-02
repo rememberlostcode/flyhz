@@ -52,6 +52,8 @@ public class ProductBuildDto {
 	private String		ce;
 	private String		cc;
 
+	private String		_version_;
+
 	public Integer getId() {
 		return id;
 	}
@@ -178,6 +180,14 @@ public class ProductBuildDto {
 
 	public void setCc(String cc) {
 		this.cc = cc;
+	}
+
+	public String get_version_() {
+		return _version_;
+	}
+
+	public void set_version_(String _version_) {
+		this._version_ = _version_;
 	}
 
 }

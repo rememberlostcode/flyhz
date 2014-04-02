@@ -11,21 +11,25 @@ public interface CacheRepository {
 
 	public void set(String key, Object value);
 
+	public void set(String prefix, String key, String value);
+
 	public void set(Map<String, Object> map);
 
 	public void setNull(String key, Object value);
-	
+
 	/**
 	 * 设置string字符串
+	 * 
 	 * @param prefix
-	 * 前缀
+	 *            前缀
 	 * @param key
 	 * @param value
 	 */
 	public void setString(String prefix, String key, String value);
-	
+
 	/**
 	 * 设置string字符串为空
+	 * 
 	 * @param prefix
 	 * @param key
 	 */

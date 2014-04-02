@@ -2,11 +2,15 @@
 package com.flyhz.framework.util;
 
 public class Constants {
-
+	/***************************** solr start *************************/
 	/**
 	 * solr搜索链接
 	 */
-	public static final String	SEARCH_URL			= "/solr/common/select";
+	public static final String	SEARCH_URL			= "/solr/smile/select";
+	/**
+	 * 静态图片路径前缀，拼接时前面加上服务器地址，后门加上数据库中的字段，
+	 * 结果如：http://10.22.22.40/smile/static/cacoh/images/tmp.jpg
+	 */
 	public static final String	IMAGES_URL			= "/static";
 
 	/**
@@ -27,5 +31,20 @@ public class Constants {
 	public static final String	MESSAGE_LAST		= "已经是最后一条";
 	public static final String	MESSAGE_EXCEPTION	= "获取数据异常";
 	public static final String	MESSAGE_NET			= "获取数据失败，请检查网络";
+	/***************************** solr end *************************/
 
+	/***************************** redis start *************************/
+	/**
+	 * 分类前缀
+	 */
+	public static final String	PREFIX_CATS			= "smile@cats";
+	/**
+	 * 品牌前缀
+	 */
+	public static final String	PREFIX_BRANDS		= "smile@brands";
+	/**
+	 * 各品牌各分类推荐商品前缀
+	 */
+	public static final String	PREFIX_BRANDS_CATS	= "smile@brands&cats";
+	/***************************** redis end *************************/
 }

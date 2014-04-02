@@ -1,6 +1,7 @@
 
 package com.flyhz.shop.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.CacheRepository;
 import com.flyhz.framework.util.Constants;
+import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.UrlUtil;
 import com.flyhz.shop.build.solr.Fraction;
 import com.flyhz.shop.build.solr.PageModel;
@@ -22,6 +25,8 @@ import com.flyhz.shop.build.solr.ProductFraction;
 import com.flyhz.shop.build.solr.SolrServer;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.persistence.dao.ProductDao;
+import com.flyhz.shop.persistence.entity.BrandModel;
+import com.flyhz.shop.persistence.entity.CategoryModel;
 import com.flyhz.shop.service.BuildService;
 
 @Service
@@ -39,76 +44,117 @@ public class BuildServiceImpl implements BuildService {
 
 	@Override
 	public void buildData() {
-
 		System.out.println("buildData开始...");
-
 		try {
-
-			int maxIdCount = getCountOfAll();
-			// 500条数据查询一次并插入数据库
-			int resultSize = 500;
-			int thisNum = 0;
-			List<ProductBuildDto> productList = null;
-
-			System.out.println("solr start...");
-			HttpSolrServer solrServer = null;
-			Fraction fraction = new Fraction();
-			Collection<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
-			while (thisNum < maxIdCount) {
-
-				productList = findAll(thisNum, resultSize);
-				ProductBuildDto product = null;
-				SolrInputDocument doc = null;
-
-				for (int i = 0; i < productList.size(); i++) {
-					product = productList.get(i);
-					doc = new SolrInputDocument();
-					doc.addField("id", product.getId());
-					doc.addField("n", product.getN());
-					doc.addField("d", product.getD());
-					doc.addField("lp", product.getLp());
-					doc.addField("pp", product.getPp());
-					if (product.getLp() != null && product.getPp() != null)
-						doc.addField("sp", product.getLp().subtract(product.getPp()));
-					doc.addField("p", product.getP());
-					doc.addField("t", product.getT());
-
-					doc.addField("bid", product.getBid());
-					doc.addField("be", product.getBe());
-
-					doc.addField("cid", product.getCid());
-					doc.addField("ce", product.getCe());
-
-					fraction.setLastUpadteTime(product.getT());
-					doc.addField("sf", productFraction.getProductFraction(fraction).intValue());// 分数排序
-					doc.addField("st", i);// 时间排序
-
-					docs.add(doc);
-
-					System.out.println(cacheRepository.getObject(String.valueOf(product.getId()),
-							product.getClass()));
-					// cacheRepository.set(String.valueOf(product.getId()),
-					// product);
-				}
-
-				// 设置新的分页查询参数
-				thisNum += resultSize;
-
-				// 提交到solr
-				solrServer = SolrServer.getServer();
-				solrServer.add(docs);
-				solrServer.commit();
-			}
-			System.out.println("solr end");
-
-			System.out.println("redis start...");
-			// do some things
-			System.out.println("redis end");
-
+			buildSolr();
+			buildRedis();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("buildData结束");
+	}
+
+	public void buildSolr() {
+		System.out.println("buildSolr开始...");
+		// 500条数据查询一次并插入数据库
+		int resultSize = 500;
+		int thisNum = 0;
+
+		int maxIdCount = getCountOfAll();
+		List<ProductBuildDto> productList = null;
+
+		HttpSolrServer solrServer = null;
+		Fraction fraction = new Fraction();
+		Collection<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
+		while (thisNum < maxIdCount) {
+
+			productList = findAll(thisNum, resultSize);
+			ProductBuildDto product = null;
+			SolrInputDocument doc = null;
+
+			for (int i = 0; i < productList.size(); i++) {
+				product = productList.get(i);
+				doc = new SolrInputDocument();
+				doc.addField("id", product.getId());
+				doc.addField("n", product.getN());
+				doc.addField("d", product.getD());
+				doc.addField("lp", product.getLp());
+				doc.addField("pp", product.getPp());
+				if (product.getLp() != null && product.getPp() != null)
+					doc.addField("sp", product.getLp().subtract(product.getPp()));
+				doc.addField("p", product.getP());
+				doc.addField("t", product.getT());
+
+				doc.addField("bid", product.getBid());
+				doc.addField("be", product.getBe());
+
+				doc.addField("cid", product.getCid());
+				doc.addField("ce", product.getCe());
+
+				fraction.setProductId(product.getId());
+				fraction.setLastUpadteTime(product.getT());
+				doc.addField("sf", productFraction.getProductFraction(fraction));// 分数排序
+				doc.addField("st", i);// 时间排序
+				docs.add(doc);
+			}
+
+			// 设置新的分页查询参数
+			thisNum += resultSize;
+
+			// 提交到solr
+			solrServer = SolrServer.getServer();
+			try {
+				solrServer.add(docs);
+				solrServer.commit();
+			} catch (SolrServerException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("buildSolr结束");
+	}
+
+	public void buildRedis() {
+		System.out.println("buildRedis开始...");
+
+		/******** build商品详情 start *******/
+		int resultSize = 500;// 500条数据查询一次数据库
+		int thisNum = 0;
+		int maxIdCount = getCountOfAll();
+		List<ProductBuildDto> productList = null;
+		while (thisNum < maxIdCount) {
+			productList = findAll(thisNum, resultSize);
+			for (int i = 0; i < productList.size(); i++) {
+				if (productList.get(i).getId() != null)
+					cacheRepository.set(String.valueOf(productList.get(i).getId()),
+							productList.get(i));
+			}
+			// 设置新的分页查询参数
+			thisNum += resultSize;
+		}
+		/******** build商品详情 end *******/
+
+		/******** build商品品牌分类 start *******/
+		List<CategoryModel> catList = new ArrayList<CategoryModel>();
+		List<BrandModel> brandList = new ArrayList<BrandModel>();
+
+		// build所有分类
+		cacheRepository.set(Constants.PREFIX_CATS, "all", JSONUtil.getEntity2Json(catList));
+		// build所有品牌
+		cacheRepository.set(Constants.PREFIX_BRANDS, "all", JSONUtil.getEntity2Json(brandList));
+
+		// build各品牌各分类推荐商品
+		for (int i = 0; i < catList.size(); i++) {
+			for (int j = 0; j < brandList.size(); j++) {
+				String allCatesAndBrands = getProductsStringByCidBid(catList.get(i).getId(),
+						brandList.get(j).getId());
+				cacheRepository.set(Constants.PREFIX_BRANDS_CATS, catList.get(i).getId() + "_"
+						+ brandList.get(j).getId(), allCatesAndBrands);
+			}
+		}
+		/******** build商品品牌分类 end *******/
+		System.out.println("buildRedis结束");
 	}
 
 	public int getCountOfAll() {
@@ -122,59 +168,62 @@ public class BuildServiceImpl implements BuildService {
 		return productDao.findAll(page);
 	}
 
-	private List<ProductBuildDto> getProductsByCidBid(Integer cid, Integer bid) {
+	@SuppressWarnings("unused")
+	private List<ProductBuildDto> getProductsListByCidBid(Integer cid, Integer bid) {
 		List<ProductBuildDto> list = new ArrayList<ProductBuildDto>();
-
 		String rStr = "";
-		HashMap<String, String> param = new HashMap<String, String>();
+		HashMap<String, String> param = getBaseParams();
+		rStr = getSolrResult(param);
 
-		param.put("q", "*%3A*");
-		// param.put("fq", "seqorder_time%3A%5B" + (seqorder + 1) + "+TO+*%5D");
-
-		param.put("sort", "seqorder_time+desc");
-		param.put("wt", "json");
-		param.put("fl", Constants.PARAM_STRING);
-		param.put("rows", "10");
-		rStr = UrlUtil.getStringByGet(server_url + Constants.SEARCH_URL, param);
-
-		// if (rStr != null && !"".equals(rStr)) {
-		// JSONObject datas;
-		// try {
-		// datas = new JSONObject(rStr);
-		// // .replaceAll("\"\\\\[", "[").replaceAll("\\\\]\"", "]")
-		// String docs = datas.getJSONObject("response").getString("docs");
-		// int numFound = datas.getJSONObject("response").getInt("numFound");
-		// SolrGood[] solr = JSONUtil.getJson2Entity(docs, SolrGood[].class);
-		// if (solr != null) {
-		// for (int i = 0; i < solr.length; i++) {
-		// results.add(new JGoods(solr[i]));
-		// }
-		// }
-		//
-		// ValidateDto vd = new ValidateDto();
-		// if (results.size() == 0) {
-		// if (refresh) {
-		// vd.setMessage(Constants.MESSAGE_NODATA);
-		// } else {
-		// vd.setMessage(Constants.MESSAGE_LAST);
-		// }
-		// }
-		// if (refresh && numFound > Constants.INIT_NUM) {
-		// vd.setOption("3");
-		// }
-		// rvd.setValidate(vd);
-		// } catch (JSONException e) {
-		// e.printStackTrace();
-		// ValidateDto vd = new ValidateDto();
-		// vd.setMessage(Constants.MESSAGE_EXCEPTION);
-		// rvd.setValidate(vd);
-		// }
-		// } else {
-		// ValidateDto vd = new ValidateDto();
-		// vd.setMessage(Constants.MESSAGE_NET);
-		// rvd.setValidate(vd);
-		// }
-
+		if (rStr != null && !"".equals(rStr)) {
+			rStr = getDocsString(rStr);
+			list = JSONUtil.getJson2EntityList(rStr, List.class, ProductBuildDto.class);
+		}
 		return list;
+	}
+
+	private String getProductsStringByCidBid(Integer cid, Integer bid) {
+		String rStr = "";
+		HashMap<String, String> param = getBaseParams();
+		rStr = getSolrResult(param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			rStr = getDocsString(rStr);
+		}
+		return rStr;
+	}
+
+	/**
+	 * 获得slor基础参数
+	 * 
+	 * @return
+	 */
+	private HashMap<String, String> getBaseParams() {
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("q", "*%3A*");
+		param.put("sort", "sf+desc");
+		param.put("rows", "10");
+		return param;
+	}
+
+	/**
+	 * 从solr取得结果
+	 * 
+	 * @param param
+	 * @return
+	 */
+	private String getSolrResult(HashMap<String, String> param) {
+		return UrlUtil.getStringByGet(server_url + Constants.SEARCH_URL, param);
+	}
+
+	/**
+	 * 去除不必要的字符，只需要docs
+	 * 
+	 * @param str
+	 * @return
+	 */
+	private String getDocsString(String str) {
+		int index = str.indexOf("\"docs\":[");
+		return str.substring(index + 7, str.length() - 2);
 	}
 }

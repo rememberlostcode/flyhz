@@ -15,6 +15,6 @@ public interface ProductFraction {
 	 * @param fraction
 	 * @return
 	 */
-	public Double getProductFraction(Fraction fraction);
+	public int getProductFraction(Fraction fraction);
 
 }
