@@ -26,8 +26,10 @@
         <typeAlias alias="UserModel" type="com.flyhz.shop.persistence.entity.UserModel"/>
         <typeAlias alias="ProductModel" type="com.flyhz.shop.persistence.entity.ProductModel"/>
         <typeAlias alias="PageModel" type="com.flyhz.shop.build.solr.PageModel"/>
+        <typeAlias alias="OrderModel" type="com.flyhz.shop.persistence.entity.OrderModel"/>
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
+        <typeAlias alias="OrderDto" type="com.flyhz.shop.dto.OrderDto"/>
     </typeAliases>
     <plugins>
 		<plugin interceptor="com.flyhz.shop.persistence.SqlPlugin">

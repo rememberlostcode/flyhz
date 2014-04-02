@@ -18,6 +18,10 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.ProductDao"></property>
 	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	<bean id="orderDao" name="orderDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.OrderDao"></property>
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 </beans>
 
 

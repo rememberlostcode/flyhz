@@ -25,6 +25,8 @@ public class OrderModel implements Serializable {
 
 	private BigDecimal			total;
 
+	private Integer				userId;
+
 	public OrderModel() {
 	}
 
@@ -74,6 +76,14 @@ public class OrderModel implements Serializable {
 
 	public void setTotal(BigDecimal total) {
 		this.total = total;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 }
