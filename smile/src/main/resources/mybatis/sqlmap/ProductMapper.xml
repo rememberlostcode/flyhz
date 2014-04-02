@@ -17,7 +17,7 @@
     </select>
     
     <select id="getProductById" parameterType="Integer" resultType="ProductParamDto">
-		select p.id,p.name,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,p.imgs,p.description,p.purchasingprice,p.localprice,p.brand_id brandId,b.name brandName
+		select p.id,p.name,p.imgs,p.description desc,p.purchasingprice,p.brand_id brandId,b.name brandName
 		from product p,brand b
 		where p.id = #{id} and p.brand_id=b.id
     </select>

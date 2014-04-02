@@ -1,15 +1,19 @@
 
 package com.flyhz.shop.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.dto.BrandDto;
 import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductDto;
@@ -26,6 +30,7 @@ import com.flyhz.shop.service.OrderService;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+	private Logger			log	= LoggerFactory.getLogger(OrderServiceImpl.class);
 	@Resource
 	private OrderDao		orderDao;
 	@Resource
@@ -59,12 +64,33 @@ public class OrderServiceImpl implements OrderService {
 		for (String pidstr : productIds) {
 			if (StringUtils.isBlank(pidstr))
 				continue;
+			try {
+				String[] pid_qty = pidstr.split("_");// 格式是pid_qty,如：1_2
+				int qty = Integer.parseInt(pid_qty[1]);
+				if (qty <= 0)
+					continue;
 
-			String[] pid_qty = pidstr.split("_");
-			ProductParamDto product = productDao.getProductById(Integer.parseInt(pid_qty[0]));
-			if (product != null) {
-				ProductDto productDto = new ProductDto();
-				productDto.setId(product.getId());
+				ProductParamDto product = productDao.getProductById(Integer.parseInt(pid_qty[0]));
+				if (product != null) {
+					OrderDetailDto orderDetailDto = new OrderDetailDto();
+					ProductDto productDto = new ProductDto();
+					productDto.setId(product.getId());
+					productDto.setName(product.getName());
+					productDto.setImgs(product.getImgs());
+					BrandDto brand = new BrandDto();
+					brand.setId(product.getBrandId());
+					brand.setName(product.getBrandName());
+					productDto.setBrand(brand);
+					orderDetailDto.setProduct(productDto);
+					orderDetailDto.setQty((short) qty);
+					if (product.getPurchasingprice() != null) {
+						orderDetailDto.setTotal(product.getPurchasingprice().multiply(
+								BigDecimal.valueOf(qty)));
+					}
+				}
+			} catch (Exception e) {
+				log.error("生成订单出错：", e.getMessage());
+				continue;
 			}
 		}
 

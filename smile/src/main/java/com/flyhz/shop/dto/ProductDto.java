@@ -9,9 +9,11 @@ public class ProductDto {
 
 	private String		name;
 
+	private String		imgs;
+
 	private BrandDto	brand;
 
-	private BigDecimal	puarchasingPrice;
+	private BigDecimal	purchasingPrice;
 
 	public Integer getId() {
 		return id;
@@ -37,11 +39,20 @@ public class ProductDto {
 		this.brand = brand;
 	}
 
-	public BigDecimal getPuarchasingPrice() {
-		return puarchasingPrice;
+	public String getImgs() {
+		return imgs;
 	}
 
-	public void setPuarchasingPrice(BigDecimal puarchasingPrice) {
-		this.puarchasingPrice = puarchasingPrice;
+	public void setImgs(String imgs) {
+		this.imgs = imgs;
 	}
+
+	public BigDecimal getPurchasingPrice() {
+		return purchasingPrice;
+	}
+
+	public void setPurchasingPrice(BigDecimal purchasingPrice) {
+		this.purchasingPrice = purchasingPrice;
+	}
+
 }
