@@ -49,12 +49,17 @@ public interface UserService {
 			throws ValidateException;
 
 	/**
-	 * 注销
 	 * 
 	 * @param userId
 	 *            用户id
+	 * @param token
+	 *            用户token
+	 * @param verifycode
+	 *            保留
+	 * @return
+	 * @throws ValidateException
 	 */
-	public void logout(Integer userId) throws ValidateException;
+	public UserDto logout(Integer userId, String token, String verifycode) throws ValidateException;
 
 	public ConsigneeModel getConsignee(Integer userId, Integer consigneeId);
 
