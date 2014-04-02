@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.shop.service.BuildService;
-import com.flyhz.shop.service.ProductService;
 
 @Controller
 @RequestMapping(value = "/build")
@@ -17,7 +17,7 @@ public class BuildController {
 	@Resource
 	private BuildService	buildService;
 	@Resource
-	private ProductService	productService;
+	private RedisRepository	redisRepository;
 
 	@RequestMapping(value = "/all")
 	public String all(Model model) {
@@ -39,7 +39,7 @@ public class BuildController {
 
 	@RequestMapping(value = "/test")
 	public String test(Model model) {
-		System.out.println(productService.getProductFromRedis("50"));
+		System.out.println(redisRepository.getProductFromRedis("50"));
 		return "build";
 	}
 }

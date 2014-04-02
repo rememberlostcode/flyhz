@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
@@ -28,7 +29,6 @@ import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.OrderService;
-import com.flyhz.shop.service.ProductService;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
 	@Resource
 	private ProductDao		productDao;
 	@Resource
-	private ProductService	productService;
+	private RedisRepository	redisRepository;
 
 	@Override
 	public String generateOrder(Integer userId, Integer consigneeId, String[] productIds)
@@ -78,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
 				if (qty <= 0)
 					continue;
 
-				ProductDto product = productService.getProductFromRedis(String.valueOf(pid_qty[0]));
+				ProductDto product = redisRepository.getProductFromRedis(String.valueOf(pid_qty[0]));
 				if (product != null) {
 					OrderDetailDto orderDetailDto = new OrderDetailDto();
 					orderDetailDto.setProduct(product);

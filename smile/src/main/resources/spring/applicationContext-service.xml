@@ -12,6 +12,7 @@ http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 	<context:component-scan base-package="*.*.*.service.impl" /> 
 	
 	<bean id="productFraction" class="com.flyhz.shop.build.solr.ProductFractionImpl"></bean>
+	<bean id="redisRepository" class="com.flyhz.shop.persistence.RedisRepositoryImpl"></bean>
 	<bean id="cacheRepository" class="com.flyhz.shop.persistence.RCacheRepository"></bean>
 	<bean id="cache.prefixs" class="java.util.HashMap">
 		<constructor-arg>
