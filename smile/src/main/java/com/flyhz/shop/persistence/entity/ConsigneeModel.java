@@ -19,6 +19,7 @@ public class ConsigneeModel implements Serializable {
 	private Short				province;
 	private Integer				userId;
 	private String				zipcode;
+	private Short				town;
 
 	public ConsigneeModel() {
 	}
@@ -101,5 +102,13 @@ public class ConsigneeModel implements Serializable {
 
 	public void setZipcode(String zipcode) {
 		this.zipcode = zipcode;
+	}
+
+	public Short getTown() {
+		return town;
+	}
+
+	public void setTown(Short town) {
+		this.town = town;
 	}
 }

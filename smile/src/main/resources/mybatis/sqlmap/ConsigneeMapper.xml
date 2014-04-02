@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.flyhz.shop.persistence.dao.ConsigneeDao">
 	<insert id="insertConsignee">
-		insert into consignee(name,contury,city,province,address,zipcode,mobilephone,user_id) 
-		values(#{name},#{contury},#{city},#{province},#{address},#{zipcode},#{mobilephone},#{userId})
+		insert into consignee(name,contury,city,province,town,address,zipcode,mobilephone,user_id) 
+		values(#{name},#{contury},#{city},#{province},#{town},#{address},#{zipcode},#{mobilephone},#{userId})
 	</insert>
 	<select id="getModelById" parameterType="Integer" resultType="ConsigneeModel">
 	    select id, name,contury,city,province,address,zipcode,mobilephone,user_id userId

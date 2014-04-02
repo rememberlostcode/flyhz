@@ -24,6 +24,8 @@ import com.flyhz.shop.build.solr.PageModel;
 import com.flyhz.shop.build.solr.ProductFraction;
 import com.flyhz.shop.build.solr.SolrServer;
 import com.flyhz.shop.dto.ProductBuildDto;
+import com.flyhz.shop.persistence.dao.BrandDao;
+import com.flyhz.shop.persistence.dao.CategoryDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.persistence.entity.BrandModel;
 import com.flyhz.shop.persistence.entity.CategoryModel;
@@ -34,6 +36,10 @@ public class BuildServiceImpl implements BuildService {
 
 	@Resource
 	private ProductDao		productDao;
+	@Resource
+	private CategoryDao		categoryDao;
+	@Resource
+	private BrandDao		brandDao;
 	@Resource
 	@Value(value = "${smile.solr.url}")
 	public String			server_url;
@@ -136,23 +142,32 @@ public class BuildServiceImpl implements BuildService {
 		/******** build商品详情 end *******/
 
 		/******** build商品品牌分类 start *******/
-		List<CategoryModel> catList = new ArrayList<CategoryModel>();
-		List<BrandModel> brandList = new ArrayList<BrandModel>();
+		List<CategoryModel> catList = categoryDao.getModelList();
+		List<BrandModel> brandList = brandDao.getModelList();
 
 		// build所有分类
 		cacheRepository.set(Constants.PREFIX_CATS, "all", JSONUtil.getEntity2Json(catList));
 		// build所有品牌
 		cacheRepository.set(Constants.PREFIX_BRANDS, "all", JSONUtil.getEntity2Json(brandList));
 
+		// 每个品牌的推荐商品
+		for (int j = 0; j < brandList.size(); j++) {
+			cacheRepository.set(Constants.PREFIX_BRANDS_RECOMMEND,
+					String.valueOf(brandList.get(j).getId()),
+					getProductsStringBySolr(null, brandList.get(j).getId()));
+		}
 		// build各品牌各分类推荐商品
 		for (int i = 0; i < catList.size(); i++) {
 			for (int j = 0; j < brandList.size(); j++) {
-				String allCatesAndBrands = getProductsStringByCidBid(catList.get(i).getId(),
+				String allCatesAndBrands = getProductsStringBySolr(catList.get(i).getId(),
 						brandList.get(j).getId());
+				System.out.println(catList.get(i).getName() + "&" + brandList.get(j).getName()
+						+ "=" + allCatesAndBrands);
 				cacheRepository.set(Constants.PREFIX_BRANDS_CATS, catList.get(i).getId() + "_"
 						+ brandList.get(j).getId(), allCatesAndBrands);
 			}
 		}
+		System.out.println(cacheRepository.getString(Constants.PREFIX_BRANDS_CATS, "1_2"));
 		/******** build商品品牌分类 end *******/
 		System.out.println("buildRedis结束");
 	}
@@ -168,8 +183,17 @@ public class BuildServiceImpl implements BuildService {
 		return productDao.findAll(page);
 	}
 
+	/**
+	 * 从solr获得对应品牌和分类的商品
+	 * 
+	 * @param cid
+	 *            分类ID
+	 * @param bid
+	 *            品牌ID
+	 * @return
+	 */
 	@SuppressWarnings("unused")
-	private List<ProductBuildDto> getProductsListByCidBid(Integer cid, Integer bid) {
+	private List<ProductBuildDto> getProductsListBySolr(Integer cid, Integer bid) {
 		List<ProductBuildDto> list = new ArrayList<ProductBuildDto>();
 		String rStr = "";
 		HashMap<String, String> param = getBaseParams();
@@ -182,9 +206,24 @@ public class BuildServiceImpl implements BuildService {
 		return list;
 	}
 
-	private String getProductsStringByCidBid(Integer cid, Integer bid) {
+	/**
+	 * 从solr获得对应品牌和分类的商品
+	 * 
+	 * @param cid
+	 *            分类ID
+	 * @param bid
+	 *            品牌ID
+	 * @return json格式字符串
+	 */
+	private String getProductsStringBySolr(Integer cid, Integer bid) {
 		String rStr = "";
+		if (bid == null)
+			return rStr;
 		HashMap<String, String> param = getBaseParams();
+		String t = "bid%3A" + bid;
+		if (cid != null)
+			t += "+AND+cid%3A" + cid;
+		param.put("q", t);
 		rStr = getSolrResult(param);
 
 		if (rStr != null && !"".equals(rStr)) {
@@ -200,7 +239,6 @@ public class BuildServiceImpl implements BuildService {
 	 */
 	private HashMap<String, String> getBaseParams() {
 		HashMap<String, String> param = new HashMap<String, String>();
-		param.put("q", "*%3A*");
 		param.put("sort", "sf+desc");
 		param.put("rows", "10");
 		return param;
@@ -213,7 +251,7 @@ public class BuildServiceImpl implements BuildService {
 	 * @return
 	 */
 	private String getSolrResult(HashMap<String, String> param) {
-		return UrlUtil.getStringByGet(server_url + Constants.SEARCH_URL, param);
+		return UrlUtil.getStringByGetNotEncod(server_url + Constants.SEARCH_URL, param);
 	}
 
 	/**

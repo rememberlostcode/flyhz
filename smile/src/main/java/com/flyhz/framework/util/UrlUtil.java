@@ -62,6 +62,13 @@ public class UrlUtil {
 		return retu;
 	}
 
+	/**
+	 * 发送get请求
+	 * 
+	 * @param url
+	 *            地址
+	 * @return
+	 */
 	public static String sendGet(String url) {
 		String result = "";
 		BufferedReader in = null;
@@ -106,7 +113,14 @@ public class UrlUtil {
 		return result;
 	}
 
-	public static String getStringByGet(String path, HashMap<String, String> param) {
+	/**
+	 * get请求，参数不用URLEncoder处理
+	 * 
+	 * @param path
+	 * @param param
+	 * @return
+	 */
+	public static String getStringByGetNotEncod(String path, HashMap<String, String> param) {
 		if (path == null || "".equals(path.trim())) {
 			return null;
 		}
@@ -126,6 +140,63 @@ public class UrlUtil {
 					// paramsBuffer.append(key + "=" + URLEncoder.encode(value,
 					// "UTF-8"));
 					paramsBuffer.append(key + "=" + value);
+					count++;
+				}
+			}
+			String params = paramsBuffer.toString();
+			if (params != null && !"".equals(params.trim())) {
+				if (path.indexOf("?") == -1) {
+					path = path + "?" + params;
+				} else if (path.indexOf("?") == path.length() - 1) {
+					path = path + params;
+				} else {
+					path = path + "&" + params;
+				}
+			}
+			URL url = new URL(path);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+			conn.setConnectTimeout(5000);
+			conn.setReadTimeout(3000);
+			conn.setRequestMethod("GET");
+			conn.setDoInput(true);
+			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
+			// conn.setRequestProperty("Cookie",
+			// MyApplication.getInstance().getSessionId());
+			conn.connect();
+			if (conn.getResponseCode() == 200) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(
+						conn.getInputStream(), "UTF-8"));
+				String lines;
+				while ((lines = reader.readLine()) != null) {
+					result.append(lines);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return result.toString();
+	}
+
+	public static String getStringByGet(String path, HashMap<String, String> param) {
+		if (path == null || "".equals(path.trim())) {
+			return null;
+		}
+		StringBuffer result = new StringBuffer();
+		try {
+			StringBuffer paramsBuffer = new StringBuffer();
+			if (param != null && param.size() > 0) {
+				Set<String> set = param.keySet();
+				Iterator<String> it = set.iterator();
+				int count = 0;
+				while (it.hasNext()) {
+					String key = it.next();
+					String value = param.get(key);
+					if (count > 0) {
+						paramsBuffer.append("&");
+					}
+					paramsBuffer.append(key + "=" + URLEncoder.encode(value, "UTF-8"));
 					count++;
 				}
 			}

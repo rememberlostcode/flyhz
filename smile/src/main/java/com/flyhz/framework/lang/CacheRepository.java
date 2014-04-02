@@ -13,6 +13,8 @@ public interface CacheRepository {
 
 	public void set(String prefix, String key, String value);
 
+	public String getString(String prefix, String key);
+
 	public void set(Map<String, Object> map);
 
 	public void setNull(String key, Object value);
