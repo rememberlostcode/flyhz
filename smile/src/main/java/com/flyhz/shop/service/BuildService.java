@@ -1,7 +1,10 @@
 
 package com.flyhz.shop.service;
 
-import com.flyhz.shop.persistence.entity.OrderModel;
+import java.util.List;
+
+import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.dto.OrderDto;
 
 /**
  * build接口，用于build数据到solr和redis
@@ -27,9 +30,21 @@ public interface BuildService {
 	public void buildRedis();
 
 	/**
-	 * build订单
+	 * 从redis获取指定订单
 	 * 
-	 * @param orderModel
+	 * @param userId
+	 *            用户ID，不能null
+	 * @param orderId
+	 * @return
 	 */
-	public void buildOrder(OrderModel orderModel);
+	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException;
+
+	/**
+	 * 获取指定用户的所有订单
+	 * 
+	 * @param userId
+	 *            用户ID，不能null
+	 * @return
+	 */
+	public List<OrderDto> getOrders(Integer userId) throws ValidateException;
 }
