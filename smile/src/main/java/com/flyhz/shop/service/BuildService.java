@@ -1,9 +1,7 @@
 
 package com.flyhz.shop.service;
 
-import java.util.List;
-
-import com.flyhz.shop.dto.ProductBuildDto;
+import com.flyhz.shop.persistence.entity.OrderModel;
 
 /**
  * build接口，用于build数据到solr和redis
@@ -29,20 +27,9 @@ public interface BuildService {
 	public void buildRedis();
 
 	/**
-	 * 获取商品总数
+	 * build订单
 	 * 
-	 * @return
+	 * @param orderModel
 	 */
-	public int getCountOfAll();
-
-	/**
-	 * 分页获取商品
-	 * 
-	 * @param start
-	 *            开始序号
-	 * @param num
-	 *            取得条数
-	 * @return
-	 */
-	public List<ProductBuildDto> findAll(int start, int num);
+	public void buildOrder(OrderModel orderModel);
 }

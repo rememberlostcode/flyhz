@@ -166,15 +166,24 @@ public class RCacheRepository implements CacheRepository, InitializingBean {
 	}
 
 	@Override
-	public void setNull(String key, Object value) {
+	public void delete(String key, Object value) {
 		if (StringUtils.isNotBlank(key) && !STRING_NAME.equals(value.getClass().getName())
 				&& value != null) {
 			String prefix = prefixs.get(value.getClass().getName());
 			Jedis jedis = getJedis();
 			if (jedis != null && StringUtils.isNotBlank(prefix)) {
-				jedis.set(prefix + "@" + key, "");
+				jedis.del(prefix + "@" + key);
 				pool.returnResource(jedis);
 			}
+		}
+	}
+
+	@Override
+	public void delete(String key) {
+		Jedis jedis = getJedis();
+		if (jedis != null) {
+			jedis.del(key);
+			pool.returnResource(jedis);
 		}
 	}
 

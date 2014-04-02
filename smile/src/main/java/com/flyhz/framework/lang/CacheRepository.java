@@ -17,7 +17,9 @@ public interface CacheRepository {
 
 	public void set(Map<String, Object> map);
 
-	public void setNull(String key, Object value);
+	public void delete(String key, Object value);
+
+	public void delete(String key);
 
 	/**
 	 * 设置string字符串
