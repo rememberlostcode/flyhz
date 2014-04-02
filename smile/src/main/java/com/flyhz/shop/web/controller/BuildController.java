@@ -16,15 +16,21 @@ public class BuildController {
 	@Resource
 	private BuildService	buildService;
 
+	@RequestMapping(value = "/all")
+	public String all(Model model) {
+		buildService.buildData();
+		return "build";
+	}
+
 	@RequestMapping(value = "/solr")
 	public String solr(Model model) {
-		buildService.buildData();
+		buildService.buildSolr();
 		return "build";
 	}
 
 	@RequestMapping(value = "/redis")
 	public String redis(Model model) {
-		buildService.buildData();
+		buildService.buildRedis();
 		return "build";
 	}
 }

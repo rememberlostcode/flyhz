@@ -41,7 +41,7 @@ public interface BuildService {
 	 * @param start
 	 *            开始序号
 	 * @param num
-	 *            取得跳数
+	 *            取得条数
 	 * @return
 	 */
 	public List<ProductBuildDto> findAll(int start, int num);

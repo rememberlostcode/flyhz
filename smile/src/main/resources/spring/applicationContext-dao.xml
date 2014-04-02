@@ -26,6 +26,14 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.ConsigneeDao"></property>
 	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	<bean id="categoryDao" name="categoryDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.CategoryDao"></property>
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
+	<bean id="brandDao" name="brandDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.BrandDao"></property>
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 </beans>
 
 
