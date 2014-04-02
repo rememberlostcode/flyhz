@@ -19,7 +19,7 @@ public interface OrderService {
 	 * @return
 	 * @throws ValidateException
 	 */
-	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds)
+	public String generateOrder(Integer userId, Integer consigneeId, String[] productIds)
 			throws ValidateException;
 
 	public OrderDto getOrder(Integer userId, Integer orderId);

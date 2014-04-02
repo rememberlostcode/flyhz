@@ -100,32 +100,22 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/confirmOrder" }, method = RequestMethod.POST)
-	public String confirmOrder(Model model, @RequestParam Integer pid, @RequestParam Integer cid,
-			@RequestParam Integer qty) {
+	public String confirmOrder(Model model, @RequestParam String[] pIds, @RequestParam Integer cid) {
 		Protocol protocol = new Protocol();
 		Integer code = 0;
-		String msg = "";
-		if (pid != null || cid != null || qty != null)
+		String details = "";
+		if ((pIds == null || pIds.length == 0) || cid == null)
 			code = 5;
 
-		// if (orderDto != null) {
-		// if (StringUtils.isNotBlank(orderDto.getDetails())) {
-		// try {
-		// orderService.generateOrder(orderDto);
-		// code = 1;
-		// } catch (ValidateException e) {
-		// code = 4;
-		// msg = e.getMessage();
-		// log.error("=======在生成订单时=========" + e.getMessage());
-		// }
-		// } else {
-		// code = 3;
-		// }
-		// } else {
-		// code = 2;
-		// }
+		try {
+			details = orderService.generateOrder(1, cid, pIds);
+			code = 1;
+		} catch (ValidateException e) {
+			code = 4;
+			log.error("=======在生成订单时=========" + e.getMessage());
+		}
 		protocol.setCode(code);
-		protocol.setData(msg);
+		protocol.setData(details);
 		model.addAttribute("protocol", protocol);
 		return "";
 	}

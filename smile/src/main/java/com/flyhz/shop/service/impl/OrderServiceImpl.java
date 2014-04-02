@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
 	private ProductDao		productDao;
 
 	@Override
-	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds)
+	public String generateOrder(Integer userId, Integer consigneeId, String[] productIds)
 			throws ValidateException {
 		if (userId == null)
 			throw new ValidateException("您没有登录！");
@@ -57,8 +57,6 @@ public class OrderServiceImpl implements OrderService {
 			throw new ValidateException("收件人地址为空！");
 
 		List<OrderDetailDto> orderDetails = new ArrayList<OrderDetailDto>();
-		List<ProductDto> productDtoList = new ArrayList<ProductDto>();
-
 		for (String pidstr : productIds) {
 			if (StringUtils.isBlank(pidstr))
 				continue;
