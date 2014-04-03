@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
 			OrderModel order = new OrderModel();
 			order.setNumber(number);
 			order.setUserId(userId);
-			order.setStatus('0');
+			order.setStatus('0');// 0表示待支付，1表示支付，2表示关闭
 			order.setDetail(detail);
 			order.setTotal(total);
 			Date date = new Date();
@@ -139,17 +139,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException {
-		OrderModel order = new OrderModel();
-		order.setId(orderId);
-		order.setUserId(userId);
-		OrderModel orderModel = orderDao.getModel(order);
-		if (orderModel != null) {
-			redisRepository.getOrderFromRedis(userId, orderId);
-			OrderDto orderDto = convertOrderModelToOrderDto(orderModel);
-			return orderDto;
-		}
-		return null;
+	public String getOrder(Integer userId, Integer orderId) throws ValidateException {
+		return redisRepository.getOrderFromRedis(userId, orderId);
 	}
 
 	@Override
@@ -161,8 +152,9 @@ public class OrderServiceImpl implements OrderService {
 		if (orderList != null && !orderList.isEmpty()) {
 			List<OrderDto> orderDtoList = new ArrayList<OrderDto>();
 			for (OrderModel orderModel : orderList) {
-				OrderDto orderDto = convertOrderModelToOrderDto(orderModel);
-				orderDtoList.add(orderDto);
+				OrderDto orderDto = JSONUtil.getJson2Entity(orderModel.getDetail(), OrderDto.class);
+				if (orderDto != null)
+					orderDtoList.add(orderDto);
 			}
 			return orderDtoList;
 		}
@@ -170,9 +162,21 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public OrderDto pay() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean pay(Integer userId, String number) throws ValidateException {
+		if (userId == null)
+			throw new ValidateException("您没有登录！");
+		if (number == null)
+			throw new ValidateException("订单ID不能为空！");
+		boolean flag = false;
+		OrderModel orderModel = new OrderModel();
+		orderModel.setNumber(number);
+		orderModel.setUserId(userId);
+		orderModel = orderDao.getModel(orderModel);
+		if (orderModel != null && "1".equals(orderModel.getStatus())) {// 表示已付款
+			flag = true;
+			redisRepository.reBuildOrderToRedis(userId, orderModel.getId());
+		}
+		return flag;
 	}
 
 	@Override
@@ -180,17 +184,6 @@ public class OrderServiceImpl implements OrderService {
 		if (orderPayDto == null || orderPayDto.getUserId() == null || orderPayDto.getId() == null)
 			return null;
 		return orderDao.getOrderPay(orderPayDto);
-	}
-
-	private OrderDto convertOrderModelToOrderDto(OrderModel orderModel) {
-		if (orderModel == null)
-			return null;
-		OrderDto orderDto = new OrderDto();
-		orderDto.setId(orderModel.getId());
-		orderDto.setTotal(orderModel.getTotal());
-		UserDto user = new UserDto();
-		user.setId(orderModel.getUserId());
-		return orderDto;
 	}
 
 }

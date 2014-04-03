@@ -25,11 +25,24 @@ public interface OrderService {
 	public String generateOrder(Integer userId, Integer consigneeId, String[] productId,
 			boolean flag) throws ValidateException;
 
-	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException;
+	/**
+	 * 获取订单
+	 * 
+	 * @param userId
+	 * @param orderId
+	 * @return
+	 * @throws ValidateException
+	 */
+	public String getOrder(Integer userId, Integer orderId) throws ValidateException;
 
 	public List<OrderDto> listOrders(Integer userId, Character status);
 
-	public OrderDto pay();
+	/**
+	 * 支付成功后的操作
+	 * 
+	 * @return
+	 */
+	public boolean pay(Integer userId, String number) throws ValidateException;
 
 	public OrderPayDto getOrderPay(OrderPayDto orderPayDto);
 
