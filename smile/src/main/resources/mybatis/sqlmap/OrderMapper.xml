@@ -21,7 +21,13 @@
 	<select id="getModel" parameterType="OrderModel" resultType="OrderModel">
 	    select id, number,gmt_create,gmt_modify,detail,status,total,user_id userId
 	    from order
-	    where number = #{number} and user_id = #{userId}
+	    where user_id = #{userId} 
+	    <if test="number!=null and number != ''">
+	        and number = #{number}
+	    </if>
+	    <if test="id!=null">
+	        and id = #{id}
+	    </if>
 	</select>
 	<select id="getModelList" parameterType="OrderModel" resultType="OrderModel">
 	    select id, number,gmt_create,gmt_modify,detail,status,total,user_id userId
