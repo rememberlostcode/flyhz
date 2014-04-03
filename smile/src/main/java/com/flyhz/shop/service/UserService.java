@@ -97,6 +97,12 @@ public interface UserService {
 	 */
 	public void removeConsignee(Integer userId, Integer consigneeId) throws ValidateException;
 
+	/**
+	 * 查询用户全部收件人地址列表
+	 * 
+	 * @param userId
+	 * @return List<ConsigneeDetailDto>
+	 */
 	public List<ConsigneeDetailDto> listConsignees(Integer userId);
 
 	/**
@@ -120,6 +126,14 @@ public interface UserService {
 	 */
 	public void setIdCardImg(Integer userId, Integer consigneeId, MultipartFile multipartFile)
 			throws ValidateException;
+
+	/**
+	 * 用户解除绑定邮箱
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public void relieveEmail(Integer userId) throws ValidateException;
 
 	public UserDetailDto getPersonalInformation(Integer userId);
 

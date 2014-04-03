@@ -232,6 +232,14 @@ public class UserController {
 		return "";
 	}
 
+	/**
+	 * 设置用户信息，包括邮箱、密码和手机号
+	 * 
+	 * @param userId
+	 * @param field
+	 * @param fval
+	 * @param model
+	 */
 	@RequestMapping(value = "user/setInfo")
 	public void setInfo(@Identify Integer userId, @RequestParam(value = "field") String field,
 			@RequestParam(value = "fval") Object fval, Model model) {
@@ -242,6 +250,39 @@ public class UserController {
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());
 		}
+		model.addAttribute("protocol", protocol);
+	}
+
+	/**
+	 * 解除绑定邮箱
+	 * 
+	 * @param userId
+	 * @param model
+	 */
+	@RequestMapping(value = "user/releiveEmail")
+	public void releiveEmail(@Identify Integer userId, Model model) {
+		Protocol protocol = new Protocol();
+		try {
+			userService.relieveEmail(userId);
+			protocol.setCode(200000);
+		} catch (ValidateException e) {
+			protocol.setCode(e.getCode());
+		}
+		model.addAttribute("protocol", protocol);
+	}
+
+	/**
+	 * 查询用户个人信息
+	 * 
+	 * @param userId
+	 * @param model
+	 */
+	@RequestMapping(value = "user/getPInfo", method = RequestMethod.GET)
+	public void getPersonalInfo(@Identify Integer userId, Model model) {
+		Protocol protocol = new Protocol();
+		userId = 1;
+		protocol.setCode(200000);
+		protocol.setData(JSONUtil.getEntity2Json(userService.getPersonalInformation(userId)));
 		model.addAttribute("protocol", protocol);
 	}
 }
