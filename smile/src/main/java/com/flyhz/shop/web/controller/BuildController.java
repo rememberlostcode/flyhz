@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.flyhz.framework.lang.RedisRepository;
+import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.service.BuildService;
 
 @Controller
@@ -39,7 +40,11 @@ public class BuildController {
 
 	@RequestMapping(value = "/test")
 	public String test(Model model) {
-		System.out.println(redisRepository.getProductFromRedis("50"));
+		try {
+			System.out.println(redisRepository.getProductFromRedis("50"));
+		} catch (ValidateException e) {
+			e.printStackTrace();
+		}
 		return "build";
 	}
 }

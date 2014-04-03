@@ -1,6 +1,7 @@
 
 package com.flyhz.framework.lang;
 
+import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductDto;
 
 /**
@@ -10,12 +11,48 @@ import com.flyhz.shop.dto.ProductDto;
  * 
  */
 public interface RedisRepository {
+
 	/**
 	 * 从redis获得单个物品信息
 	 * 
 	 * @param productId
 	 *            物品ID
 	 * @return
+	 * @throws ValidateException
 	 */
-	public ProductDto getProductFromRedis(String productId);
+	public ProductDto getProductFromRedis(String productId) throws ValidateException;
+
+	/**
+	 * 从redis获得单个订单信息
+	 * 
+	 * @param userId
+	 *            用户ID
+	 * @param orderId
+	 *            订单ID
+	 * @return
+	 * @throws ValidateException
+	 */
+	public OrderDto getOrderFromRedis(Integer userId, Integer orderId) throws ValidateException;
+
+	/**
+	 * 把订单build到redis（确认订单后使用）
+	 * 
+	 * @param userId
+	 *            用户ID
+	 * @param orderDto
+	 *            订单
+	 * @throws ValidateException
+	 */
+	public void buildOrderToRedis(Integer userId, OrderDto orderDto) throws ValidateException;
+
+	/**
+	 * 把订单build到redis（订单付款后使用）
+	 * 
+	 * @param userId
+	 *            用户ID
+	 * @param orderDto
+	 *            订单
+	 * @throws ValidateException
+	 */
+	public void reBuildOrderToRedis(Integer userId, OrderDto orderDto) throws ValidateException;
 }

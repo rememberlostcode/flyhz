@@ -15,6 +15,8 @@ public class ProductDto {
 
 	private BigDecimal	purchasingPrice;
 
+	private short		qty;
+
 	public Integer getId() {
 		return id;
 	}
@@ -53,6 +55,14 @@ public class ProductDto {
 
 	public void setPurchasingPrice(BigDecimal purchasingPrice) {
 		this.purchasingPrice = purchasingPrice;
+	}
+
+	public short getQty() {
+		return qty;
+	}
+
+	public void setQty(short qty) {
+		this.qty = qty;
 	}
 
 }

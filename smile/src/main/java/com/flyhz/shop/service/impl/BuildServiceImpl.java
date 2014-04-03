@@ -159,9 +159,8 @@ public class BuildServiceImpl implements BuildService {
 		/******** build订单 end *******/
 
 		/******** build推荐商品 start *******/
-		cacheRepository.set(Constants.PREFIX_RECOMMEND, "index",
+		cacheRepository.setString(Constants.REDIS_KEY_RECOMMEND_INDEX,
 				getProductsStringBySolr(null, null));
-		log.info("index=" + cacheRepository.getString(Constants.PREFIX_RECOMMEND, "index"));
 		/******** build商品详情 end *******/
 
 		/******** build商品品牌分类 start *******/
@@ -169,25 +168,45 @@ public class BuildServiceImpl implements BuildService {
 		List<BrandModel> brandList = brandDao.getModelList();
 
 		// build所有分类
-		cacheRepository.set(Constants.PREFIX_CATES, "all", JSONUtil.getEntity2Json(catList));
-		// build所有品牌
-		cacheRepository.set(Constants.PREFIX_BRANDS, "all", JSONUtil.getEntity2Json(brandList));
-
-		// 每个品牌的推荐商品
-		for (int j = 0; j < brandList.size(); j++) {
-			cacheRepository.set(Constants.PREFIX_BRANDS_RECOMMEND,
-					String.valueOf(brandList.get(j).getId()),
-					getProductsStringBySolr(null, brandList.get(j).getId()));
+		for (int i = 0; i < catList.size(); i++) {
+			if (catList.get(i) != null && catList.get(i).getId() != null) {
+				cacheRepository.hset(Constants.REDIS_KEY_CATES, "cate@" + catList.get(i).getId(),
+						JSONUtil.getEntity2Json(catList.get(i)));
+			} else {
+				log.warn("分类ID为空！");
+			}
 		}
-		// build各品牌各分类推荐商品
+		// build所有品牌
+		for (int i = 0; i < brandList.size(); i++) {
+			if (brandList.get(i) != null && brandList.get(i).getId() != null) {
+				cacheRepository.hset(Constants.REDIS_KEY_BRANDS, brandList.get(i).getId()
+																			.toString(),
+						JSONUtil.getEntity2Json(brandList.get(i)));
+			} else {
+				log.warn("品牌ID为空！");
+			}
+		}
+
+		// build每个品牌的推荐商品（前10个）
+		for (int i = 0; i < brandList.size(); i++) {
+			if (brandList.get(i) != null && brandList.get(i).getId() != null) {
+				cacheRepository.setString(Constants.PREFIX_BRANDS_RECOMMEND,
+						String.valueOf(brandList.get(i).getId()),
+						getProductsStringBySolr(null, brandList.get(i).getId()));
+			}
+		}
+		// build各品牌各分类推荐商品（前10个）
 		for (int i = 0; i < catList.size(); i++) {
 			for (int j = 0; j < brandList.size(); j++) {
-				String allCatesAndBrands = getProductsStringBySolr(catList.get(i).getId(),
-						brandList.get(j).getId());
-				System.out.println(catList.get(i).getName() + "&" + brandList.get(j).getName()
-						+ "=" + allCatesAndBrands);
-				cacheRepository.set(Constants.PREFIX_BRANDS_CATES, catList.get(i).getId() + "_"
-						+ brandList.get(j).getId(), allCatesAndBrands);
+				if (catList.get(i) != null && catList.get(i).getId() != null
+						&& brandList.get(j) != null && brandList.get(j).getId() != null) {
+					String allCatesAndBrands = getProductsStringBySolr(catList.get(i).getId(),
+							brandList.get(j).getId());
+					System.out.println(catList.get(i).getName() + "&" + brandList.get(j).getName()
+							+ "=" + allCatesAndBrands);
+					cacheRepository.setString(Constants.PREFIX_BRANDS_CATES, catList.get(i).getId()
+							+ "_" + brandList.get(j).getId(), allCatesAndBrands);
+				}
 			}
 		}
 		/******** build商品品牌分类 end *******/
@@ -266,15 +285,14 @@ public class BuildServiceImpl implements BuildService {
 		String t = "*%3A*";
 		HashMap<String, String> param = getBaseParams();
 
-		if (bid == null && cid == null)
-			;
-		else if (bid != null && cid == null)
+		if (bid == null && cid == null) {
+		} else if (bid != null && cid == null) {
 			t = "bid%3A" + bid;
-		else if (cid != null && bid == null)
+		} else if (cid != null && bid == null) {
 			t = "cid%3A" + cid;
-		else
+		} else {
 			t = "bid%3A" + bid + "+AND+cid%3A" + cid;
-
+		}
 		param.put("q", t);
 		rStr = getSolrResult(param);
 
@@ -347,7 +365,7 @@ public class BuildServiceImpl implements BuildService {
 		if (orderList == null) {// 如果为null，先查找数据库，如存在再更新redis
 			orderList = new ArrayList<OrderDto>();
 
-			cacheRepository.set(Constants.PREFIX_USER_ORDERS, String.valueOf(userId),
+			cacheRepository.setString(Constants.PREFIX_USER_ORDERS, String.valueOf(userId),
 					JSONUtil.getEntity2Json(orderList));
 		}
 		return orderList;

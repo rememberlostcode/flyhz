@@ -1,6 +1,7 @@
 
 package com.flyhz.shop.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -110,6 +111,13 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 			} catch (ValidateException e) {
 				e.printStackTrace();
 			}
+			if (productDto != null) {
+				if (productDto.getPurchasingPrice() != null) {
+					BigDecimal detailTotal = productDto.getPurchasingPrice().multiply(
+							BigDecimal.valueOf(cartItemDto.getQty()));
+					cartItemDto.setTotal(detailTotal);
+				}
+			}
 			cartItemDto.setProduct(productDto);
 			return cartItemDto;
 		}
@@ -117,7 +125,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	}
 
 	@Override
-	public void setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException {
+	public CartItemDto setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException {
 		// 登陆用户ID不能为空
 		if (userId == null) {
 			throw new ValidateException("");
@@ -141,6 +149,8 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		cartitemModel.setQty(qty);
 		cartitemModel.setGmtModify(new Date());
 		cartItemDao.updateCartItem(cartitemModel);
+
+		return getCartItemDto(cartitemModel);
 	}
 
 	@Override
