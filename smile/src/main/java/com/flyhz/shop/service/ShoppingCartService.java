@@ -42,7 +42,7 @@ public interface ShoppingCartService {
 	 * @param qty
 	 * @return
 	 */
-	public void setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException;
+	public CartItemDto setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException;
 
 	/**
 	 * 查询购物车物品列表

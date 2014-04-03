@@ -7,4 +7,5 @@ import com.flyhz.shop.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+
 }
