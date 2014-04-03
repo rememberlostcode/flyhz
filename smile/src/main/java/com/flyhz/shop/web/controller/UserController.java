@@ -179,6 +179,9 @@ public class UserController {
 	public String orderInform(Model model, String[] pids, Integer[] cartIds) {
 		Protocol protocol = new Protocol();
 		Integer code = 0;
+		Integer userId = 2;
+		if (userId == null)
+			code = 1;
 		String details = "";
 		if ((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
 			code = 5;
@@ -191,7 +194,7 @@ public class UserController {
 		}
 
 		try {
-			details = orderService.generateOrder(2, null, pids, false);
+			details = orderService.generateOrder(userId, null, pids, false);
 		} catch (ValidateException e) {
 			code = 4;
 			log.error("=======在生成订单时=========" + e.getMessage());
@@ -214,14 +217,16 @@ public class UserController {
 			@RequestParam Integer cid) {
 		Protocol protocol = new Protocol();
 		Integer code = 0;
+		Integer userId = 1;
+		if (userId == null)
+			code = 1;
 		String details = "";
 		if (((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
 				|| cid == null)
 			code = 5;
 
 		try {
-			details = orderService.generateOrder(1, cid, pids, true);
-			code = 1;
+			details = orderService.generateOrder(userId, cid, pids, true);
 		} catch (ValidateException e) {
 			code = 4;
 			log.error("=======在生成订单时=========" + e.getMessage());

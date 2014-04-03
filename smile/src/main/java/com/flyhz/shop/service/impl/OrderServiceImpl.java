@@ -132,6 +132,7 @@ public class OrderServiceImpl implements OrderService {
 			order.setGmtCreate(date);
 			order.setGmtModify(date);
 			orderDao.generateOrder(order);
+			log.debug("====={}", order.getId());
 		}
 		return detail;
 	}

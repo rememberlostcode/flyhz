@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.flyhz.shop.persistence.dao.OrderDao">
-	<insert id="generateOrder">
+	<insert id="generateOrder" parameterType="OrderModel">
 		insert into `order`(number,gmt_create,gmt_modify,detail,status,total,user_id)
 		values (#{number},#{gmtCreate},#{gmtModify},#{detail},#{status},#{total},#{userId})
+		<selectKey resultType="int" keyProperty="id">
+            <![CDATA[SELECT LAST_INSERT_ID() AS id ]]>
+        </selectKey>
 	</insert>
 	<select id="getModelById" parameterType="Integer" resultType="OrderModel">
 	    select id, number,gmt_create,gmt_modify,detail,status,total,user_id userId
