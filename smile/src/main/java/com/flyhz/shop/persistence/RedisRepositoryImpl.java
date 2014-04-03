@@ -83,7 +83,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 		if (orderId == null) {
 			throw new ValidateException("订单ID不能为空！");
 		}
-		String orderJson = cacheRepository.hget(Constants.REDIS_KEY_ORDERS_USER + "@" + userId,
+		String orderJson = cacheRepository.hget(Constants.PREFIX_ORDERS_USER + userId,
 				String.valueOf(orderId));
 		if (StringUtil.isBlank(orderJson)) {
 			OrderModel orderModel = new OrderModel();
@@ -91,7 +91,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 			orderModel.setUserId(userId);
 			orderModel = orderDao.getModel(orderModel);
 			if (orderModel != null && orderModel.getId() != null) {
-				cacheRepository.hset(Constants.REDIS_KEY_ORDERS_USER + "@" + userId,
+				cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
 						String.valueOf(orderModel.getId()), orderModel.getDetail());
 				orderJson = orderModel.getDetail();
 			}
@@ -112,10 +112,9 @@ public class RedisRepositoryImpl implements RedisRepository {
 		if (StringUtil.isBlank(orderDetal)) {
 			throw new ValidateException("订单内容不能为空！");
 		}
-		cacheRepository.hset(Constants.REDIS_KEY_ORDERS_USER + "@" + userId,
-				String.valueOf(orderId), orderDetal);
-		cacheRepository.lpush(Constants.REDIS_KEY_ORDERS_UNFINISHED + "@" + userId,
-				String.valueOf(orderId));
+		cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId, String.valueOf(orderId),
+				orderDetal);
+		cacheRepository.lpush(Constants.PREFIX_ORDERS_UNFINISHED + userId, String.valueOf(orderId));
 	}
 
 	@Override
@@ -127,7 +126,6 @@ public class RedisRepositoryImpl implements RedisRepository {
 		if (orderId == null) {
 			throw new ValidateException("订单ID不能为空！");
 		}
-		cacheRepository.lrem(Constants.REDIS_KEY_ORDERS_UNFINISHED + "@" + userId,
-				String.valueOf(orderId));
+		cacheRepository.lrem(Constants.PREFIX_ORDERS_UNFINISHED + userId, String.valueOf(orderId));
 	}
 }

@@ -28,23 +28,38 @@ public class Constants {
 
 	/***************************** redis start *************************/
 	/**
-	 * 指定用户的订单key前缀，redis中完整的key=smile@user@orders@%userId%
+	 * 指定用户的订单KEY前缀，redis中完整的key=smile@user@orders@%userId%
 	 */
 	public static final String	PREFIX_USER_ORDERS			= "smile@user@orders";
 	/**
-	 * 品牌推荐商品key前缀（即不选分类时），redis中完整的key=smile@brands@recommend@%bid%
+	 * 品牌推荐商品KEY前缀（即不选分类时），redis中完整的key=smile@brands@recommend@%bid%
 	 */
 	public static final String	PREFIX_BRANDS_RECOMMEND		= "smile@brands@recommend";
 	/**
-	 * 各品牌各分类推荐商品key前缀，redis中完整的key=smile@brands&cates@%cid%_%bid%
+	 * 各品牌各分类推荐商品KEY前缀，redis中完整的key=smile@brands&cates@%cid%_%bid%
 	 */
 	public static final String	PREFIX_BRANDS_CATES			= "smile@brands&cates";
+	/**
+	 * 用户所有的订单KEY前缀，使用时再加上用户ID，如smile@orders@user@1234
+	 */
+	public static final String	PREFIX_ORDERS_USER			= "smile@orders@user@";
+	/**
+	 * 用户未完成订单KEY前缀，使用时再加上用户ID，如smile@orders@unfinished@1234
+	 */
+	public static final String	PREFIX_ORDERS_UNFINISHED	= "smile@orders@unfinished@";
 
+	/**
+	 * 首页活动推荐商品KEY
+	 */
 	public static final String	REDIS_KEY_RECOMMEND_INDEX	= "smile@recommend@index";
+	/**
+	 * 所有分类KEY
+	 */
 	public static final String	REDIS_KEY_CATES				= "smile@cates@all";
+	/**
+	 * 所有品牌KEY
+	 */
 	public static final String	REDIS_KEY_BRANDS			= "smile@brands@all";
-	public static final String	REDIS_KEY_ORDERS_UNFINISHED	= "smile@orders@unfinished";
-	public static final String	REDIS_KEY_ORDERS_USER		= "smile@orders@user";
 	/***************************** redis end *************************/
 
 	public static final String	MESSAGE_NODATA				= "暂无更新";
