@@ -39,20 +39,23 @@ public interface RedisRepository {
 	 * 
 	 * @param userId
 	 *            用户ID
-	 * @param orderDto
-	 *            订单
+	 * @param orderId
+	 *            订单ID
+	 * @param orderDetal
+	 *            订单详情
 	 * @throws ValidateException
 	 */
-	public void buildOrderToRedis(Integer userId, OrderDto orderDto) throws ValidateException;
+	public void buildOrderToRedis(Integer userId, Integer orderId, String orderDetal)
+			throws ValidateException;
 
 	/**
 	 * 把订单build到redis（订单付款后使用）
 	 * 
 	 * @param userId
 	 *            用户ID
-	 * @param orderDto
-	 *            订单
+	 * @param orderId
+	 *            订单ID
 	 * @throws ValidateException
 	 */
-	public void reBuildOrderToRedis(Integer userId, OrderDto orderDto) throws ValidateException;
+	public void reBuildOrderToRedis(Integer userId, Integer orderId) throws ValidateException;
 }

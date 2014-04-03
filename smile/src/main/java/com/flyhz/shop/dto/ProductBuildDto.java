@@ -44,11 +44,23 @@ public class ProductBuildDto {
 	 */
 	private Integer		st;
 
+	/**
+	 * 品牌ID
+	 */
 	private Integer		bid;
+	/**
+	 * 品牌名称
+	 */
 	private String		be;
 	private String		bc;
 
+	/**
+	 * 分类ID
+	 */
 	private Integer		cid;
+	/**
+	 * 分类名称
+	 */
 	private String		ce;
 	private String		cc;
 
