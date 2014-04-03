@@ -25,7 +25,7 @@ public interface OrderService {
 	public String generateOrder(Integer userId, Integer consigneeId, String[] productId,
 			boolean flag) throws ValidateException;
 
-	public OrderDto getOrder(Integer userId, Integer orderId);
+	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException;
 
 	public List<OrderDto> listOrders(Integer userId, Character status);
 

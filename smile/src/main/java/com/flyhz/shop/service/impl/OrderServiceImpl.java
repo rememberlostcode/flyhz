@@ -133,17 +133,19 @@ public class OrderServiceImpl implements OrderService {
 			order.setGmtModify(date);
 			orderDao.generateOrder(order);
 			log.debug("====={}", order.getId());
+			redisRepository.buildOrderToRedis(userId, order.getId(), detail);
 		}
 		return detail;
 	}
 
 	@Override
-	public OrderDto getOrder(Integer userId, Integer orderId) {
+	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException {
 		OrderModel order = new OrderModel();
 		order.setId(orderId);
 		order.setUserId(userId);
 		OrderModel orderModel = orderDao.getModel(order);
 		if (orderModel != null) {
+			redisRepository.getOrderFromRedis(userId, orderId);
 			OrderDto orderDto = convertOrderModelToOrderDto(orderModel);
 			return orderDto;
 		}
