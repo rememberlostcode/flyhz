@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.CartItemDto;
+import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.persistence.dao.CartItemDao;
 import com.flyhz.shop.persistence.entity.CartitemModel;
@@ -135,5 +136,22 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		cartitemModel.setQty(qty);
 		cartitemModel.setGmtModify(new Date());
 		cartItemDao.updateCartItem(cartitemModel);
+	}
+
+	@Override
+	public String[] listItemsByUserIdAndIds(CartItemParamDto cartItemParam) {
+		if (cartItemParam == null || cartItemParam.getUserId() == null
+				|| cartItemParam.getItemIds() == null || cartItemParam.getItemIds().length == 0)
+			return null;
+		List<CartitemModel> list = cartItemDao.listItemsByUserIdAndIds(cartItemParam);
+		if (list != null && !list.isEmpty()) {
+			String[] ids = new String[list.size()];
+			for (int i = 0; i < list.size(); i++) {
+				CartitemModel item = list.get(i);
+				ids[i] = item.getProductId() + "_" + item.getQty();
+			}
+			return ids;
+		}
+		return null;
 	}
 }

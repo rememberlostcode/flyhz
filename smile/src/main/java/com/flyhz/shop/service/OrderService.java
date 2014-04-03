@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.OrderDto;
+import com.flyhz.shop.dto.OrderPayDto;
 
 public interface OrderService {
 
@@ -29,5 +30,7 @@ public interface OrderService {
 	public List<OrderDto> listOrders(Integer userId, Character status);
 
 	public OrderDto pay();
+
+	public OrderPayDto getOrderPay(OrderPayDto orderPayDto);
 
 }

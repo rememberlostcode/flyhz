@@ -16,9 +16,11 @@ import org.springframework.stereotype.Service;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
+import com.flyhz.framework.util.RandomString;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
+import com.flyhz.shop.dto.OrderPayDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.dto.VoucherDto;
@@ -49,8 +51,6 @@ public class OrderServiceImpl implements OrderService {
 			boolean flag) throws ValidateException {
 		if (userId == null)
 			throw new ValidateException("您没有登录！");
-		if (consigneeId == null)
-			throw new ValidateException("收件人地址为空！");
 		if (productIds == null || productIds.length <= 0)
 			throw new ValidateException("产品ID为空！");
 
@@ -58,13 +58,16 @@ public class OrderServiceImpl implements OrderService {
 		if (user == null)
 			throw new ValidateException("您还不是会员，请注册后再购买！");
 
-		ConsigneeModel consignee = new ConsigneeModel();
-		consignee.setId(consigneeId);
-		consignee.setUserId(userId);
-		ConsigneeDetailDto consigneeDto = consigneeDao.getConsigneeByModel(consignee);
-		if (consigneeDto == null)
-			throw new ValidateException("收件人地址为空！");
-		consigneeDto.setUser(user);
+		ConsigneeDetailDto consigneeDto = null;
+		if (flag) {
+			ConsigneeModel consignee = new ConsigneeModel();
+			consignee.setId(consigneeId);
+			consignee.setUserId(userId);
+			consigneeDto = consigneeDao.getConsigneeByModel(consignee);
+			if (consigneeDto == null)
+				throw new ValidateException("收件人地址为空！");
+			consigneeDto.setUser(user);
+		}
 
 		// 处理商品信息
 		List<OrderDetailDto> orderDetails = new ArrayList<OrderDetailDto>();
@@ -87,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
 						BigDecimal detailTotal = product.getPurchasingPrice().multiply(
 								BigDecimal.valueOf(qty));
 						orderDetailDto.setTotal(detailTotal);
-						total.add(detailTotal);
+						total = total.add(detailTotal);
 					}
 					orderDetails.add(orderDetailDto);
 				}
@@ -111,8 +114,9 @@ public class OrderServiceImpl implements OrderService {
 		orderDto.setVouchers(vouchers);
 		String detail = null;
 
-		String number = "ND000002";
+		String number = null;
 		if (flag) {
+			number = RandomString.generateRandomString8();
 			orderDto.setNumber(number);
 		}
 		detail = JSONUtil.getEntity2Json(orderDto);
@@ -166,6 +170,13 @@ public class OrderServiceImpl implements OrderService {
 	public OrderDto pay() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public OrderPayDto getOrderPay(OrderPayDto orderPayDto) {
+		if (orderPayDto == null || orderPayDto.getUserId() == null || orderPayDto.getId() == null)
+			return null;
+		return orderDao.getOrderPay(orderPayDto);
 	}
 
 	private OrderDto convertOrderModelToOrderDto(OrderModel orderModel) {

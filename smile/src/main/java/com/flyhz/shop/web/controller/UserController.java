@@ -19,10 +19,12 @@ import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
+import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.service.OrderService;
+import com.flyhz.shop.service.ShoppingCartService;
 import com.flyhz.shop.service.UserService;
 
 /**
@@ -35,12 +37,14 @@ import com.flyhz.shop.service.UserService;
 @Controller
 @RequestMapping(value = "/")
 public class UserController {
-	protected Logger		log	= LoggerFactory.getLogger(UserController.class);
+	protected Logger			log	= LoggerFactory.getLogger(UserController.class);
 
 	@Resource
-	private UserService		userService;
+	private UserService			userService;
 	@Resource
-	private OrderService	orderService;
+	private OrderService		orderService;
+	@Resource
+	private ShoppingCartService	shoppingCartService;
 
 	@RequestMapping(value = { "register" })
 	public String register(Model model) {
@@ -94,6 +98,33 @@ public class UserController {
 	}
 
 	/**
+	 * 针对直接购买：修改订单商品数量,这时还没有生成订单
+	 * 
+	 * @param model
+	 * @param orderDto
+	 * @return
+	 */
+	@RequestMapping(value = { "user/updateQty" })
+	public String updateQty(Model model, Integer pid, Integer qty) {
+		Protocol protocol = new Protocol();
+		Integer code = 0;
+		String details = "";
+		if (pid == null)
+			code = 5;
+		try {
+			String[] pids = new String[] { pid + "_" + qty };
+			details = orderService.generateOrder(2, null, pids, false);
+		} catch (ValidateException e) {
+			code = 4;
+			log.error("=======在修改购买数量时=========" + e.getMessage());
+		}
+		protocol.setCode(code);
+		protocol.setData(details);
+		model.addAttribute("protocol", protocol);
+		return "";
+	}
+
+	/**
 	 * 订单确认信息,这时还没有生成订单
 	 * 
 	 * @param model
@@ -101,16 +132,22 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/orderInform" })
-	public String orderInform(Model model, @RequestParam String[] pids, @RequestParam Integer cid) {
+	public String orderInform(Model model, String[] pids, Integer[] cartIds) {
 		Protocol protocol = new Protocol();
 		Integer code = 0;
 		String details = "";
-		if ((pids == null || pids.length == 0) || cid == null)
+		if ((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
 			code = 5;
 
+		if (cartIds != null && cartIds.length > 0) {
+			CartItemParamDto cartItemParam = new CartItemParamDto();
+			cartItemParam.setUserId(2);
+			cartItemParam.setItemIds(cartIds);
+			pids = shoppingCartService.listItemsByUserIdAndIds(cartItemParam);
+		}
+
 		try {
-			details = orderService.generateOrder(1, cid, pids, false);
-			code = 1;
+			details = orderService.generateOrder(2, null, pids, false);
 		} catch (ValidateException e) {
 			code = 4;
 			log.error("=======在生成订单时=========" + e.getMessage());
@@ -129,11 +166,13 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/confirmOrder" })
-	public String confirmOrder(Model model, @RequestParam String[] pids, @RequestParam Integer cid) {
+	public String confirmOrder(Model model, String[] pids, String[] cartIds,
+			@RequestParam Integer cid) {
 		Protocol protocol = new Protocol();
 		Integer code = 0;
 		String details = "";
-		if ((pids == null || pids.length == 0) || cid == null)
+		if (((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
+				|| cid == null)
 			code = 5;
 
 		try {

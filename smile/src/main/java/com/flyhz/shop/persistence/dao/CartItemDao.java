@@ -3,6 +3,8 @@ package com.flyhz.shop.persistence.dao;
 
 import java.util.List;
 
+import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.persistence.entity.CartitemModel;
 
 /**
@@ -50,4 +52,14 @@ public interface CartItemDao extends GenericDao<CartitemModel> {
 	 * @return List<CartitemModel>
 	 */
 	public List<CartitemModel> getCartItemList(CartitemModel cartitemModel);
+
+	/**
+	 * 查询用户购物车商品列表
+	 * 
+	 * @param userId
+	 * @param itemIds
+	 * @return
+	 * @throws ValidateException
+	 */
+	public List<CartitemModel> listItemsByUserIdAndIds(CartItemParamDto cartItemParam);
 }

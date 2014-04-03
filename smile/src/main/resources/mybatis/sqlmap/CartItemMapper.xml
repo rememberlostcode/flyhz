@@ -22,4 +22,12 @@
     	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
     	where user_id=#{userId} 
     </select>
+    <select id="listItemsByUserIdAndIds" parameterType="CartItemParamDto" resultType="CartitemModel">
+    	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify 
+    	from cartitem  
+    	where user_id=#{userId} and id in 
+	   	<foreach collection="itemIds" index="index" item="item" open="(" separator="," close=")">
+	        #{item}
+	    </foreach> 
+    </select>
 </mapper>
