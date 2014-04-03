@@ -45,8 +45,8 @@ public class OrderServiceImpl implements OrderService {
 	private RedisRepository	redisRepository;
 
 	@Override
-	public String generateOrder(Integer userId, Integer consigneeId, String[] productIds)
-			throws ValidateException {
+	public String generateOrder(Integer userId, Integer consigneeId, String[] productIds,
+			boolean flag) throws ValidateException {
 		if (userId == null)
 			throw new ValidateException("您没有登录！");
 		if (consigneeId == null)
@@ -100,10 +100,8 @@ public class OrderServiceImpl implements OrderService {
 		if (orderDetails.isEmpty())
 			throw new ValidateException("产品为空！");
 
-		String number = "ND000002";
 		OrderDto orderDto = new OrderDto();
-		orderDto.setNumber(number);
-		orderDto.setDetails(null);
+		orderDto.setDetails(orderDetails);
 		orderDto.setConsignee(consigneeDto);
 		orderDto.setTotal(total);
 		orderDto.setUser(user);
@@ -111,19 +109,26 @@ public class OrderServiceImpl implements OrderService {
 		// 优惠卷
 		List<VoucherDto> vouchers = null;
 		orderDto.setVouchers(vouchers);
+		String detail = null;
 
-		String detail = JSONUtil.getEntity2Json(orderDto);
+		String number = "ND000002";
+		if (flag) {
+			orderDto.setNumber(number);
+		}
+		detail = JSONUtil.getEntity2Json(orderDto);
 
-		OrderModel order = new OrderModel();
-		order.setNumber(number);
-		order.setUserId(userId);
-		order.setStatus('0');
-		order.setDetail(detail);
-		order.setTotal(total);
-		Date date = new Date();
-		order.setGmtCreate(date);
-		order.setGmtModify(date);
-		orderDao.generateOrder(order);
+		if (flag) {
+			OrderModel order = new OrderModel();
+			order.setNumber(number);
+			order.setUserId(userId);
+			order.setStatus('0');
+			order.setDetail(detail);
+			order.setTotal(total);
+			Date date = new Date();
+			order.setGmtCreate(date);
+			order.setGmtModify(date);
+			orderDao.generateOrder(order);
+		}
 		return detail;
 	}
 

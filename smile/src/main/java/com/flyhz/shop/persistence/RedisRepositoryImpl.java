@@ -23,6 +23,9 @@ public class RedisRepositoryImpl implements RedisRepository {
 		String productJson = cacheRepository.getString(productId, ProductBuildDto.class);
 		ProductBuildDto productBuildDto = JSONUtil.getJson2Entity(productJson,
 				ProductBuildDto.class);
+		if (productBuildDto == null)
+			return null;
+
 		productDto.setId(productBuildDto.getId());
 		productDto.setName(productBuildDto.getN());
 		productDto.setPurchasingPrice(productBuildDto.getPp());

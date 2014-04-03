@@ -94,6 +94,34 @@ public class UserController {
 	}
 
 	/**
+	 * 订单确认信息,这时还没有生成订单
+	 * 
+	 * @param model
+	 * @param orderDto
+	 * @return
+	 */
+	@RequestMapping(value = { "user/orderInform" })
+	public String orderInform(Model model, @RequestParam String[] pids, @RequestParam Integer cid) {
+		Protocol protocol = new Protocol();
+		Integer code = 0;
+		String details = "";
+		if ((pids == null || pids.length == 0) || cid == null)
+			code = 5;
+
+		try {
+			details = orderService.generateOrder(1, cid, pids, false);
+			code = 1;
+		} catch (ValidateException e) {
+			code = 4;
+			log.error("=======在生成订单时=========" + e.getMessage());
+		}
+		protocol.setCode(code);
+		protocol.setData(details);
+		model.addAttribute("protocol", protocol);
+		return "";
+	}
+
+	/**
 	 * 确认订单信息并生成订单
 	 * 
 	 * @param model
@@ -109,7 +137,7 @@ public class UserController {
 			code = 5;
 
 		try {
-			details = orderService.generateOrder(1, cid, pids);
+			details = orderService.generateOrder(1, cid, pids, true);
 			code = 1;
 		} catch (ValidateException e) {
 			code = 4;

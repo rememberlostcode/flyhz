@@ -16,11 +16,13 @@ public interface OrderService {
 	 * @param consigneeId
 	 *            收件人ID
 	 * @param qty
+	 * @param flag
+	 *            说明：flag为true即要生成订单，为false不生成订单
 	 * @return
 	 * @throws ValidateException
 	 */
-	public String generateOrder(Integer userId, Integer consigneeId, String[] productIds)
-			throws ValidateException;
+	public String generateOrder(Integer userId, Integer consigneeId, String[] productId,
+			boolean flag) throws ValidateException;
 
 	public OrderDto getOrder(Integer userId, Integer orderId);
 
