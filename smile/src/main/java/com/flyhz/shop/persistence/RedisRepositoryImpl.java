@@ -96,40 +96,38 @@ public class RedisRepositoryImpl implements RedisRepository {
 	}
 
 	@Override
-	public void buildOrderToRedis(Integer userId, OrderDto orderDto) throws ValidateException {
+	public void buildOrderToRedis(Integer userId, Integer orderId, String orderDetal)
+			throws ValidateException {
 		// TODO Auto-generated method stub
-		if (userId != null && orderDto != null && orderDto.getId() != null) {
+		if (userId != null && orderId != null && StringUtil.isNotBlank(orderDetal)) {
 			cacheRepository.hset(Constants.REDIS_KEY_ORDERS_USER + "@" + userId,
-					String.valueOf(orderDto.getId()), JSONUtil.getEntity2Json(orderDto));
+					String.valueOf(orderId), orderDetal);
 			cacheRepository.lpush(Constants.REDIS_KEY_ORDERS_UNFINISHED + "@" + userId,
-					String.valueOf(orderDto.getId()));
+					String.valueOf(orderId));
 		} else {
 			if (userId == null) {
 				throw new ValidateException("用户ID不能为空！");
 			}
-			if (orderDto == null) {
-				throw new ValidateException("订单不能为空！");
-			}
-			if (orderDto.getId() == null) {
+			if (orderId == null) {
 				throw new ValidateException("订单ID不能为空！");
+			}
+			if (StringUtil.isBlank(orderDetal)) {
+				throw new ValidateException("订单内容不能为空！");
 			}
 		}
 	}
 
 	@Override
-	public void reBuildOrderToRedis(Integer userId, OrderDto orderDto) throws ValidateException {
+	public void reBuildOrderToRedis(Integer userId, Integer orderId) throws ValidateException {
 		// TODO Auto-generated method stub
-		if (userId != null && orderDto != null && orderDto.getId() != null) {
+		if (userId != null && orderId != null) {
 			cacheRepository.lrem(Constants.REDIS_KEY_ORDERS_UNFINISHED + "@" + userId,
-					String.valueOf(orderDto.getId()));
+					String.valueOf(orderId));
 		} else {
 			if (userId == null) {
 				throw new ValidateException("用户ID不能为空！");
 			}
-			if (orderDto == null) {
-				throw new ValidateException("订单不能为空！");
-			}
-			if (orderDto.getId() == null) {
+			if (orderId == null) {
 				throw new ValidateException("订单ID不能为空！");
 			}
 		}

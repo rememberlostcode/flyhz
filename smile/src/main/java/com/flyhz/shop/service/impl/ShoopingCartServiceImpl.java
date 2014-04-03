@@ -30,15 +30,15 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	public void addItem(Integer userId, Integer productId, Byte qty) throws ValidateException {
 		// 登陆用户ID不能为空
 		if (userId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101002);
 		}
 		// 商品ID不能为空
 		if (productId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101021);
 		}
 		// 商品数量错误
 		if (qty == null || qty <= 0) {
-			throw new ValidateException("");
+			throw new ValidateException(101022);
 		}
 		// 查询购物车是否已有该物品
 		CartitemModel cartitemModel = new CartitemModel();
@@ -63,11 +63,11 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	public void removeItem(Integer userId, Integer itemId) throws ValidateException {
 		// 登陆用户ID不能为空
 		if (userId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101002);
 		}
 		// 购物车商品ID不能为空
 		if (itemId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101023);
 		}
 		CartitemModel cartitemModel = new CartitemModel();
 		cartitemModel.setUserId(userId);
@@ -79,7 +79,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	public List<CartItemDto> listItems(Integer userId) throws ValidateException {
 		// 登陆用户ID不能为空
 		if (userId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101002);
 		}
 		CartitemModel cartitemModel = new CartitemModel();
 		cartitemModel.setUserId(userId);
@@ -128,15 +128,15 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	public CartItemDto setQty(Integer userId, Integer itemId, Byte qty) throws ValidateException {
 		// 登陆用户ID不能为空
 		if (userId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101002);
 		}
 		// 购物车商品ID不能为空
 		if (itemId == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101023);
 		}
 		// 商品数量错误
 		if (qty == null || qty <= 0) {
-			throw new ValidateException("");
+			throw new ValidateException(101022);
 		}
 		CartitemModel cartitemModel = new CartitemModel();
 		cartitemModel.setUserId(userId);
@@ -144,12 +144,11 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		cartitemModel = cartItemDao.getCartItem(cartitemModel);
 		// 购物车商品不能为空
 		if (cartitemModel == null) {
-			throw new ValidateException("");
+			throw new ValidateException(101023);
 		}
 		cartitemModel.setQty(qty);
 		cartitemModel.setGmtModify(new Date());
 		cartItemDao.updateCartItem(cartitemModel);
-
 		return getCartItemDto(cartitemModel);
 	}
 
