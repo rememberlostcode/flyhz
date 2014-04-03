@@ -1,7 +1,6 @@
 
 package com.flyhz.framework.lang;
 
-import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductDto;
 
 /**
@@ -32,7 +31,7 @@ public interface RedisRepository {
 	 * @return
 	 * @throws ValidateException
 	 */
-	public OrderDto getOrderFromRedis(Integer userId, Integer orderId) throws ValidateException;
+	public String getOrderFromRedis(Integer userId, Integer orderId) throws ValidateException;
 
 	/**
 	 * 把订单build到redis（确认订单后使用）

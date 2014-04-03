@@ -12,20 +12,20 @@ import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.BrandDto;
-import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.dto.ProductDto;
+import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.persistence.entity.BrandModel;
+import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.persistence.entity.ProductModel;
-import com.flyhz.shop.service.OrderService;
 
 @Service
 public class RedisRepositoryImpl implements RedisRepository {
 	@Resource
 	private CacheRepository	cacheRepository;
 	@Resource
-	private OrderService	orderService;
+	private OrderDao		orderDao;
 	@Resource
 	private ProductDao		productDao;
 
@@ -74,7 +74,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 	}
 
 	@Override
-	public OrderDto getOrderFromRedis(Integer userId, Integer orderId) throws ValidateException {
+	public String getOrderFromRedis(Integer userId, Integer orderId) throws ValidateException {
 		// TODO Auto-generated method stub
 		if (userId == null) {
 			throw new ValidateException("用户ID不能为空！");
@@ -84,15 +84,18 @@ public class RedisRepositoryImpl implements RedisRepository {
 		}
 		String orderJson = cacheRepository.hget(Constants.REDIS_KEY_ORDERS_USER + "@" + userId,
 				String.valueOf(orderId));
-		OrderDto orderDto = JSONUtil.getJson2Entity(orderJson, OrderDto.class);
-		if (orderDto == null) {
-			orderDto = orderService.getOrder(userId, orderId);
-			if (orderDto != null && orderDto.getId() != null) {
+		if (StringUtil.isBlank(orderJson)) {
+			OrderModel orderModel = new OrderModel();
+			orderModel.setId(orderId);
+			orderModel.setUserId(userId);
+			orderModel = orderDao.getModel(orderModel);
+			if (orderModel != null && orderModel.getId() != null) {
 				cacheRepository.hset(Constants.REDIS_KEY_ORDERS_USER + "@" + userId,
-						String.valueOf(orderDto.getId()), JSONUtil.getEntity2Json(orderDto));
+						String.valueOf(orderModel.getId()), orderModel.getDetail());
+				orderJson = orderModel.getDetail();
 			}
 		}
-		return orderDto;
+		return orderJson;
 	}
 
 	@Override
