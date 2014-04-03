@@ -27,14 +27,14 @@ import com.flyhz.shop.build.solr.Fraction;
 import com.flyhz.shop.build.solr.PageModel;
 import com.flyhz.shop.build.solr.ProductFraction;
 import com.flyhz.shop.build.solr.SolrServer;
+import com.flyhz.shop.dto.BrandBuildDto;
+import com.flyhz.shop.dto.CategoryBuildDto;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.CategoryDao;
 import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
-import com.flyhz.shop.persistence.entity.BrandModel;
-import com.flyhz.shop.persistence.entity.CategoryModel;
 import com.flyhz.shop.service.BuildService;
 import com.flyhz.shop.service.OrderService;
 
@@ -104,10 +104,10 @@ public class BuildServiceImpl implements BuildService {
 				doc.addField("t", product.getT());
 
 				doc.addField("bid", product.getBid());
-				doc.addField("be", product.getBe());
+				// doc.addField("be", product.getBe());
 
 				doc.addField("cid", product.getCid());
-				doc.addField("ce", product.getCe());
+				// doc.addField("ce", product.getCe());
 
 				fraction.setProductId(product.getId());
 				fraction.setLastUpadteTime(product.getT());
@@ -164,8 +164,8 @@ public class BuildServiceImpl implements BuildService {
 		/******** build商品详情 end *******/
 
 		/******** build商品品牌分类 start *******/
-		List<CategoryModel> catList = categoryDao.getModelList();
-		List<BrandModel> brandList = brandDao.getModelList();
+		List<CategoryBuildDto> catList = categoryDao.getCategoryBuildDtoList();
+		List<BrandBuildDto> brandList = brandDao.getBrandBuildDtoList();
 
 		// build所有分类
 		for (int i = 0; i < catList.size(); i++) {

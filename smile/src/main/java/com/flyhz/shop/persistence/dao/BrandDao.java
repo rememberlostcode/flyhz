@@ -1,6 +1,9 @@
 
 package com.flyhz.shop.persistence.dao;
 
+import java.util.List;
+
+import com.flyhz.shop.dto.BrandBuildDto;
 import com.flyhz.shop.persistence.entity.BrandModel;
 
 /**
@@ -10,4 +13,6 @@ import com.flyhz.shop.persistence.entity.BrandModel;
  * 
  */
 public interface BrandDao extends GenericDao<BrandModel> {
+
+	public List<BrandBuildDto> getBrandBuildDtoList();
 }

@@ -31,7 +31,6 @@
         <typeAlias alias="BrandModel" type="com.flyhz.shop.persistence.entity.BrandModel"/>
         <typeAlias alias="CategoryModel" type="com.flyhz.shop.persistence.entity.CategoryModel"/>
         <!-- 配置Dto别名 -->
-        <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>
         <typeAlias alias="OrderDto" type="com.flyhz.shop.dto.OrderDto"/>
         <typeAlias alias="OrderPayDto" type="com.flyhz.shop.dto.OrderPayDto"/>
@@ -39,6 +38,11 @@
         <typeAlias alias="ConsigneeDto" type="com.flyhz.shop.dto.ConsigneeDto"/>
         <typeAlias alias="ConsigneeDetailDto" type="com.flyhz.shop.dto.ConsigneeDetailDto"/>
         <typeAlias alias="CartItemParamDto" type="com.flyhz.shop.dto.CartItemParamDto"/>
+        
+        <!-- 配置build Dto别名 -->
+        <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
+        <typeAlias alias="CategoryBuildDto" type="com.flyhz.shop.dto.CategoryBuildDto"/>
+        <typeAlias alias="BrandBuildDto" type="com.flyhz.shop.dto.BrandBuildDto"/>
     </typeAliases>
     <plugins>
 		<plugin interceptor="com.flyhz.shop.persistence.SqlPlugin">

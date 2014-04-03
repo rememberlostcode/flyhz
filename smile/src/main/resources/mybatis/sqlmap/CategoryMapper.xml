@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.flyhz.shop.persistence.dao.CategoryDao">
-    <select id="getModelList" resultType="CategoryModel">
-		select id,name,date_format(gmt_create, '%Y-%m-%d %H:%i:%s') gmtCreate,date_format(gmt_modify, '%Y-%m-%d %H:%i:%s') gmtModify from category 
+    <select id="getCategoryBuildDtoList" resultType="CategoryBuildDto">
+		select id,name from category 
     </select>
 </mapper>

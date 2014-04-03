@@ -1,6 +1,9 @@
 
 package com.flyhz.shop.persistence.dao;
 
+import java.util.List;
+
+import com.flyhz.shop.dto.CategoryBuildDto;
 import com.flyhz.shop.persistence.entity.CategoryModel;
 
 /**
@@ -10,4 +13,6 @@ import com.flyhz.shop.persistence.entity.CategoryModel;
  * 
  */
 public interface CategoryDao extends GenericDao<CategoryModel> {
+
+	public List<CategoryBuildDto> getCategoryBuildDtoList();
 }
