@@ -4,10 +4,6 @@ package com.flyhz.framework.util;
 public class Constants {
 	/***************************** solr start *************************/
 	/**
-	 * solr搜索链接
-	 */
-	public static final String	SEARCH_URL					= "/solr/smile/select";
-	/**
 	 * 静态图片路径前缀，拼接时前面加上服务器地址，后门加上数据库中的字段，
 	 * 结果如：http://10.22.22.40/smile/static/cacoh/images/tmp.jpg
 	 */
@@ -43,10 +39,6 @@ public class Constants {
 	 * 用户所有的订单KEY前缀，使用时再加上用户ID，如smile@orders@user@%userId%
 	 */
 	public static final String	PREFIX_ORDERS_USER			= "smile@orders@user@";
-	/**
-	 * 用户未完成订单KEY前缀，使用时再加上用户ID，如smile@orders@unfinished@%userId%
-	 */
-	public static final String	PREFIX_ORDERS_UNFINISHED	= "smile@orders@unfinished@";
 
 	/**
 	 * 商品KEY前缀，类型为map<productId,productJson>

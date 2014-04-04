@@ -44,13 +44,12 @@ public class BuildController {
 		try {
 			model.addAttribute("result",
 					JSONUtil.getEntity2Json(redisRepository.getProductFromRedis("50")));
-			String orderJson = redisRepository.getOrderFromRedis(100, 1);
+			String orderJson = redisRepository.getOrderFromRedis(1, 18);
 			System.out.println(orderJson);
 
-			// redisRepository.buildOrderToRedis(100, 1,
-			// "测试订单buildOrderToRedis");
-			// orderJson = redisRepository.getOrderFromRedis(100, 1);
-			// System.out.println(orderJson);
+			redisRepository.buildOrderToRedis(1, 1001, "测试订单buildOrderToRedis");
+			orderJson = redisRepository.getOrderFromRedis(1001, 1);
+			System.out.println(orderJson);
 
 			// redisRepository.reBuildOrderToRedis(1, 1);
 
