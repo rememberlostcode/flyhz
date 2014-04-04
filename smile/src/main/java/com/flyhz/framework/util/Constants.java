@@ -4,10 +4,6 @@ package com.flyhz.framework.util;
 public class Constants {
 	/***************************** solr start *************************/
 	/**
-	 * solr搜索链接
-	 */
-	public static final String	SEARCH_URL					= "/solr/smile/select";
-	/**
 	 * 静态图片路径前缀，拼接时前面加上服务器地址，后门加上数据库中的字段，
 	 * 结果如：http://10.22.22.40/smile/static/cacoh/images/tmp.jpg
 	 */
