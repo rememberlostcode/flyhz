@@ -48,6 +48,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		// 购物车无此商品
 		if (cartitemModelNew == null) {
 			cartitemModel.setGmtCreate(new Date());
+			cartitemModel.setGmtModify(new Date());
 			cartitemModel.setQty(qty);
 			cartItemDao.insertCartItem(cartitemModel);
 		} else {

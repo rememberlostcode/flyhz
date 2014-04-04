@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.flyhz.shop.persistence.dao.ConsigneeDao">
 	<insert id="insertConsignee" parameterType="ConsigneeModel">
-		insert into consignee(name,contury,city,province,town,address,zipcode,mobilephone,user_id) 
-		values(#{name},#{contury},#{city},#{province},#{town},#{address},#{zipcode},#{mobilephone},#{userId})
+		insert into consignee(name,contury_id,city_id,province_id,district_id,address,zipcode,mobilephone,user_id) 
+		values(#{name},#{conturyId},#{cityId},#{provinceId},#{districtId},#{address},#{zipcode},#{mobilephone},#{userId})
 	</insert>
 	<update id="updateConsignee" parameterType="ConsigneeModel">
-		update consignee set name=#{name},contury=#{contury},city=#{city},province=#{province},town=#{town},
-		address=#{address},zipcode=#{zipcode},mobilephone=#{mobilephone},user_id=#{userId} where id=#{id} 
-		and user_id=#{userId}
+		update consignee set name=#{name},contury_id=#{conturyId},city_id=#{cityId},province_id=#{provinceId},
+		district_id=#{districtId},address=#{address},zipcode=#{zipcode},mobilephone=#{mobilephone},user_id=#{userId} 
+		where id=#{id} and user_id=#{userId}
 	</update>
 	<update id="updateConsigneeIdCard" parameterType="ConsigneeModel">
 		update consignee set idcard=#{idcard} where id=#{id} and user_id=#{userId}
@@ -17,22 +17,21 @@
 		delete from consignee where id=#{id} and user_id=#{userId}
 	</delete>
 	<select id="getModelById" parameterType="Integer" resultType="ConsigneeModel">
-	    select id, name,contury,city,province,address,town,zipcode,mobilephone,user_id userId 
-	    from consignee where id = #{id} and user_id=#{userId}
+	    select id,name,contury_id conturyId,city_id cityId,province_id provinceId,district_id districtId,address,
+	    zipcode,mobilephone,user_id userId from consignee where id = #{id} and user_id=#{userId}
 	</select>
 	<select id="getModel" parameterType="ConsigneeModel" resultType="ConsigneeModel">
-	    select id,name,contury,city,province,address,zipcode,mobilephone,user_id userId 
-	    from consignee 
-	    where id = #{id} and user_id = #{userId}
+	    select id,name,contury_id conturyId,city_id cityId,province_id provinceId,district_id districtId,address,
+	    zipcode,mobilephone,user_id userId from consignee where id = #{id} and user_id = #{userId}
 	</select>
 	<select id="getConsigneesByUserId" parameterType="Integer" resultType="ConsigneeDetailDto">
-	    select id, name,contury,city,province,address,zipcode,mobilephone,user_id userId
-	    from consignee
-	    where user_id = #{id}
+	    select id,name,contury_id conturyId,city_id cityId,province_id provinceId,district_id districtId,address,
+	    zipcode,mobilephone,user_id userId from consignee where user_id = #{id}
 	</select>
 	<select id="getConsigneeByModel" parameterType="ConsigneeModel" resultType="ConsigneeDetailDto">
-	   select a. id, a.name,a.contury,a.province,a.city,a.town,CONCAT(p.proname,c.cityname,d.disname,a.address) as address ,a.zipcode,a.mobilephone,a.user_id userId 
-	   from consignee  a inner join district d on a.town=d.districtid  inner join city c on d.cityid = c.cityid  inner join  province p on  c.proid=p.proid
-	   where id = #{id} and user_id = #{userId}
+	   select a.id,a.name,a.contury_id conturyId,a.city_id cityId,a.province_id provinceId,a.district_id districtId,
+	   CONCAT(p.name,c.name,d.name,a.address) as address,a.zipcode,a.mobilephone,a.user_id userId from consignee a 
+	   inner join district d on a.district_id=d.id inner join city c on d.city_id = c.id inner join province p 
+	   on c.province_id=p.id where a.id = #{id} and a.user_id = #{userId}
 	</select>
 </mapper>
