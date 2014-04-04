@@ -52,7 +52,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 		}
 		ProductBuildDto productBuildDto = JSONUtil.getJson2Entity(productJson,
 				ProductBuildDto.class);
-		if (productBuildDto == null) {// 如果为null，先查找数据库，如存在再更新redis
+		if (productBuildDto == null) {// 如果为null，先查找数据库，如数据库存在则更新到redis
 			ProductModel productModel = productDao.getModelById(Integer.parseInt(productId));
 			if (productModel != null && productModel.getBrandId() != null) {
 
@@ -101,15 +101,15 @@ public class RedisRepositoryImpl implements RedisRepository {
 		}
 		String orderJson = cacheRepository.hget(Constants.PREFIX_ORDERS_USER + userId,
 				String.valueOf(orderId));
-		if (StringUtil.isBlank(orderJson)) {
+		if (StringUtil.isBlank(orderJson)) {// redis里没有找到就从数据库找
 			OrderModel orderModel = new OrderModel();
 			orderModel.setId(orderId);
 			orderModel.setUserId(userId);
 			orderModel = orderDao.getModel(orderModel);
-			if (orderModel != null && orderModel.getId() != null) {
+			if (orderModel != null && orderModel.getId() != null) {// 数据库找到了，在build到redis
 				cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
 						String.valueOf(orderModel.getId()), orderModel.getDetail());
-				orderJson = orderModel.getDetail();
+				orderJson = orderModel.getDetail();// 设置返回结果
 			}
 		}
 		return orderJson;
@@ -128,8 +128,10 @@ public class RedisRepositoryImpl implements RedisRepository {
 		if (StringUtil.isBlank(orderDetal)) {
 			throw new ValidateException("订单内容不能为空！");
 		}
+		// build到redis
 		cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId, String.valueOf(orderId),
 				orderDetal);
+		// solr建立订单索引
 		solrData.submitOrder(userId, orderId, null, null);
 	}
 
@@ -142,6 +144,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 		if (orderId == null) {
 			throw new ValidateException("订单ID不能为空！");
 		}
+		// solr修改订单索引
 		solrData.submitOrder(userId, orderId, "1", null);
 	}
 }

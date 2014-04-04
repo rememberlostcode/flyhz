@@ -39,10 +39,6 @@ public class Constants {
 	 * 用户所有的订单KEY前缀，使用时再加上用户ID，如smile@orders@user@%userId%
 	 */
 	public static final String	PREFIX_ORDERS_USER			= "smile@orders@user@";
-	/**
-	 * 用户未完成订单KEY前缀，使用时再加上用户ID，如smile@orders@unfinished@%userId%
-	 */
-	public static final String	PREFIX_ORDERS_UNFINISHED	= "smile@orders@unfinished@";
 
 	/**
 	 * 商品KEY前缀，类型为map<productId,productJson>
