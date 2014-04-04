@@ -172,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
 		orderModel.setNumber(number);
 		orderModel.setUserId(userId);
 		orderModel = orderDao.getModel(orderModel);
-		if (orderModel != null && "1".equals(orderModel.getStatus())) {// 表示已付款
+		if (orderModel != null && orderModel.getStatus() != null && orderModel.getStatus() == '1') {// 表示已付款
 			flag = true;
 			redisRepository.reBuildOrderToRedis(userId, orderModel.getId());
 		}
