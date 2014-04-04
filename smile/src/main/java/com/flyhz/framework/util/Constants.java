@@ -49,17 +49,25 @@ public class Constants {
 	public static final String	PREFIX_ORDERS_UNFINISHED	= "smile@orders@unfinished@";
 
 	/**
-	 * 首页活动推荐商品KEY
+	 * 商品KEY前缀，类型为map<productId,productJson>
+	 */
+	public static final String	REDIS_KEY_PRODUCTS			= "smile@products";
+	/**
+	 * 首页活动推荐商品KEY，类型为String
 	 */
 	public static final String	REDIS_KEY_RECOMMEND_INDEX	= "smile@recommend@index";
 	/**
-	 * 所有分类KEY
+	 * 所有分类KEY，类型为map<catelogyId,catelogyJson>
 	 */
 	public static final String	REDIS_KEY_CATES				= "smile@cates@all";
 	/**
-	 * 所有品牌KEY
+	 * 所有品牌KEY，类型为map<brandId,brandJson>
 	 */
 	public static final String	REDIS_KEY_BRANDS			= "smile@brands@all";
+	/**
+	 * 商品款号和产品ID对应关系KEY，类型为map<cn,productId>
+	 */
+	public static final String	REDIS_KEY_PRODUCT_CN		= "smile@product&cn";
 	/***************************** redis end *************************/
 
 	public static final String	MESSAGE_NODATA				= "暂无更新";

@@ -39,20 +39,24 @@ public class RedisRepositoryImpl implements RedisRepository {
 			throw new ValidateException("商品ID不能为空！");
 		}
 		ProductDto productDto = new ProductDto();
-		String productJson = cacheRepository.getString(productId, ProductBuildDto.class);
+		String productJson = cacheRepository.hget(Constants.REDIS_KEY_PRODUCTS, productId);
 		if (StringUtil.isBlank(productJson)) {
 			log.warn("ID为" + productId + "的商品在redis中不存在！");
 			return null;
 		}
 		ProductBuildDto productBuildDto = JSONUtil.getJson2Entity(productJson,
 				ProductBuildDto.class);
-		if (productBuildDto == null) {
+		if (productBuildDto == null) {// 如果为null，先查找数据库，如存在再更新redis
 			ProductModel productModel = productDao.getModelById(Integer.parseInt(productId));
 			if (productModel != null && productModel.getBrandId() != null) {
+
+				// 通过品牌ID获取品牌信息
 				String brandJson = cacheRepository.hget(Constants.REDIS_KEY_BRANDS,
 						String.valueOf(productModel.getBrandId()));
 				BrandBuildDto brandBuildDto = JSONUtil.getJson2Entity(brandJson,
 						BrandBuildDto.class);
+
+				// 如果品牌不为空，把商品信息和品牌信息放入productDto
 				if (brandBuildDto != null) {
 					productDto.setId(productModel.getId());
 					productDto.setName(productModel.getName());

@@ -4,6 +4,12 @@ package com.flyhz.shop.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 商品dto
+ * 
+ * @author zhangb 2014年4月4日 下午2:01:38
+ * 
+ */
 public class ProductBuildDto {
 
 	private Integer		id;
@@ -15,6 +21,10 @@ public class ProductBuildDto {
 	 * 商品描述
 	 */
 	private String		d;
+	/**
+	 * 商品款号
+	 */
+	private String		bs;
 	/**
 	 * 商品封面
 	 */
@@ -52,7 +62,6 @@ public class ProductBuildDto {
 	 * 品牌名称
 	 */
 	private String		be;
-	private String		bc;
 
 	/**
 	 * 分类ID
@@ -62,7 +71,14 @@ public class ProductBuildDto {
 	 * 分类名称
 	 */
 	private String		ce;
-	private String		cc;
+	/**
+	 * 颜色
+	 */
+	private String		c;
+	/**
+	 * 颜色图片
+	 */
+	private String		ci;
 
 	private String		_version_;
 
@@ -80,6 +96,14 @@ public class ProductBuildDto {
 
 	public void setN(String n) {
 		this.n = n;
+	}
+
+	public String getBs() {
+		return bs;
+	}
+
+	public void setBs(String bs) {
+		this.bs = bs;
 	}
 
 	public String getP() {
@@ -162,14 +186,6 @@ public class ProductBuildDto {
 		this.be = be;
 	}
 
-	public String getBc() {
-		return bc;
-	}
-
-	public void setBc(String bc) {
-		this.bc = bc;
-	}
-
 	public Integer getCid() {
 		return cid;
 	}
@@ -186,12 +202,20 @@ public class ProductBuildDto {
 		this.ce = ce;
 	}
 
-	public String getCc() {
-		return cc;
+	public String getC() {
+		return c;
 	}
 
-	public void setCc(String cc) {
-		this.cc = cc;
+	public void setC(String c) {
+		this.c = c;
+	}
+
+	public String getCi() {
+		return ci;
+	}
+
+	public void setCi(String ci) {
+		this.ci = ci;
 	}
 
 	public String get_version_() {

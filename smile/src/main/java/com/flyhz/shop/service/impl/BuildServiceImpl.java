@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.CacheRepository;
-import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
@@ -29,7 +28,6 @@ import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.build.solr.SolrServer;
 import com.flyhz.shop.dto.BrandBuildDto;
 import com.flyhz.shop.dto.CategoryBuildDto;
-import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.CategoryDao;
@@ -147,9 +145,22 @@ public class BuildServiceImpl implements BuildService {
 		while (thisNum < maxIdCount) {
 			productList = findAll(thisNum, resultSize);
 			for (int i = 0; i < productList.size(); i++) {
-				if (productList.get(i).getId() != null)
-					cacheRepository.set(String.valueOf(productList.get(i).getId()),
-							productList.get(i));
+				if (productList.get(i) != null && productList.get(i).getId() != null
+						|| StringUtil.isNotBlank(productList.get(i).getBs())) {
+					cacheRepository.hset(Constants.REDIS_KEY_PRODUCTS, productList.get(i).getId()
+																					.toString(),
+							JSONUtil.getEntity2Json(productList.get(i)));
+					cacheRepository.hset(Constants.REDIS_KEY_PRODUCT_CN,
+							productList.get(i).getBs(), productList.get(i).getId().toString());
+				} else {
+					if (productList.get(i) == null) {
+						log.warn("build商品时，商品为空！");
+					} else if (productList.get(i).getId() == null) {
+						log.warn("build商品时，商品ID为空！");
+					} else if (StringUtil.isNotBlank(productList.get(i).getBs())) {
+						log.warn("build商品时，商品款号为空！");
+					}
+				}
 			}
 			// 设置新的分页查询参数
 			thisNum += resultSize;
@@ -172,7 +183,7 @@ public class BuildServiceImpl implements BuildService {
 		// build所有分类
 		for (int i = 0; i < catList.size(); i++) {
 			if (catList.get(i) != null && catList.get(i).getId() != null) {
-				cacheRepository.hset(Constants.REDIS_KEY_CATES, "cate@" + catList.get(i).getId(),
+				cacheRepository.hset(Constants.REDIS_KEY_CATES, catList.get(i).getId().toString(),
 						JSONUtil.getEntity2Json(catList.get(i)));
 			} else {
 				log.warn("分类ID为空！");
@@ -215,42 +226,6 @@ public class BuildServiceImpl implements BuildService {
 		}
 		/******** build商品品牌分类 end *******/
 		log.info("buildRedis结束");
-	}
-
-	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException {
-		// TODO Auto-generated method stub
-		OrderDto orderDto = null;
-		String orderJson = cacheRepository.getString(String.valueOf(orderId), OrderDto.class);
-		if (StringUtil.isNotBlank(orderJson)) {
-			orderDto = JSONUtil.getJson2Entity(orderJson, OrderDto.class);
-		}
-		if (orderDto == null) {// 如果为null，先查找数据库，如存在再更新redis
-			orderDto = new OrderDto();
-
-			cacheRepository.set(String.valueOf(orderDto.getId()), orderDto);
-		}
-		return orderDto;
-	}
-
-	public List<OrderDto> getOrders(Integer userId) throws ValidateException {
-		// TODO Auto-generated method stub
-		if (userId == null) {
-			throw new ValidateException("userId为null！");
-		}
-		List<OrderDto> orderList = null;
-		String orderJson = cacheRepository.getString(Constants.PREFIX_USER_ORDERS
-				+ String.valueOf(userId));
-		if (StringUtil.isNotBlank(orderJson)) {
-			orderList = JSONUtil.getJson2EntityList(orderJson, List.class, OrderDto.class);
-		}
-
-		if (orderList == null) {// 如果为null，先查找数据库，如存在再更新redis
-			orderList = new ArrayList<OrderDto>();
-
-			cacheRepository.setString(Constants.PREFIX_USER_ORDERS + String.valueOf(userId),
-					JSONUtil.getEntity2Json(orderList));
-		}
-		return orderList;
 	}
 
 	public double getDollarExchangeRate() {

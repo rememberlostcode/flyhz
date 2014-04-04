@@ -6,16 +6,6 @@ import java.util.Map;
 
 public interface CacheRepository {
 
-	public String getString(String key, Class<?> clazz);
-
-	public Object getObject(String key, Class<?> clazz);
-
-	public void set(String key, Object value);
-
-	public void set(Map<String, Object> map);
-
-	public void delete(String key, Object value);
-
 	public void delete(String key);
 
 	/**
