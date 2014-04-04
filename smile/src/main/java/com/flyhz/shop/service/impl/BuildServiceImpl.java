@@ -24,8 +24,8 @@ import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
 import com.flyhz.shop.build.solr.Fraction;
-import com.flyhz.shop.build.solr.PageModel;
 import com.flyhz.shop.build.solr.ProductFraction;
+import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.build.solr.SolrServer;
 import com.flyhz.shop.dto.BrandBuildDto;
 import com.flyhz.shop.dto.CategoryBuildDto;
@@ -128,6 +128,8 @@ public class BuildServiceImpl implements BuildService {
 				log.error(e.getMessage());
 			} catch (IOException e) {
 				log.error(e.getMessage());
+			} finally {
+				solrServer.shutdown();
 			}
 		}
 		log.info("buildSolr结束");
@@ -190,8 +192,9 @@ public class BuildServiceImpl implements BuildService {
 		// build每个品牌的推荐商品（前10个）
 		for (int i = 0; i < brandList.size(); i++) {
 			if (brandList.get(i) != null && brandList.get(i).getId() != null) {
-				cacheRepository.setString(Constants.PREFIX_BRANDS_RECOMMEND,
-						String.valueOf(brandList.get(i).getId()),
+				cacheRepository.setString(
+						Constants.PREFIX_BRANDS_RECOMMEND
+								+ String.valueOf(brandList.get(i).getId()),
 						getProductsStringBySolr(null, brandList.get(i).getId()));
 			}
 		}
@@ -204,13 +207,71 @@ public class BuildServiceImpl implements BuildService {
 							brandList.get(j).getId());
 					System.out.println(catList.get(i).getName() + "&" + brandList.get(j).getName()
 							+ "=" + allCatesAndBrands);
-					cacheRepository.setString(Constants.PREFIX_BRANDS_CATES, catList.get(i).getId()
-							+ "_" + brandList.get(j).getId(), allCatesAndBrands);
+					cacheRepository.setString(Constants.PREFIX_BRANDS_CATES
+							+ catList.get(i).getId() + "_" + brandList.get(j).getId(),
+							allCatesAndBrands);
 				}
 			}
 		}
 		/******** build商品品牌分类 end *******/
 		log.info("buildRedis结束");
+	}
+
+	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException {
+		// TODO Auto-generated method stub
+		OrderDto orderDto = null;
+		String orderJson = cacheRepository.getString(String.valueOf(orderId), OrderDto.class);
+		if (StringUtil.isNotBlank(orderJson)) {
+			orderDto = JSONUtil.getJson2Entity(orderJson, OrderDto.class);
+		}
+		if (orderDto == null) {// 如果为null，先查找数据库，如存在再更新redis
+			orderDto = new OrderDto();
+
+			cacheRepository.set(String.valueOf(orderDto.getId()), orderDto);
+		}
+		return orderDto;
+	}
+
+	public List<OrderDto> getOrders(Integer userId) throws ValidateException {
+		// TODO Auto-generated method stub
+		if (userId == null) {
+			throw new ValidateException("userId为null！");
+		}
+		List<OrderDto> orderList = null;
+		String orderJson = cacheRepository.getString(Constants.PREFIX_USER_ORDERS
+				+ String.valueOf(userId));
+		if (StringUtil.isNotBlank(orderJson)) {
+			orderList = JSONUtil.getJson2EntityList(orderJson, List.class, OrderDto.class);
+		}
+
+		if (orderList == null) {// 如果为null，先查找数据库，如存在再更新redis
+			orderList = new ArrayList<OrderDto>();
+
+			cacheRepository.setString(Constants.PREFIX_USER_ORDERS + String.valueOf(userId),
+					JSONUtil.getEntity2Json(orderList));
+		}
+		return orderList;
+	}
+
+	public double getDollarExchangeRate() {
+		// TODO Auto-generated method stub
+		log.info("开始获取美元汇率...");
+		double dollarExchangeRate = 6.5;
+		String response = UrlUtil.sendGet("http://download.finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s=USDCNY=x");
+		if (StringUtil.isNotBlank(response)) {
+			String[] responses = response.split(",");
+			for (int i = 0; i < responses.length; i++) {
+				log.info(responses[i]);
+			}
+			try {
+				dollarExchangeRate = Double.parseDouble(responses[1]);
+				log.info("当前美元汇率为" + dollarExchangeRate);
+			} catch (Exception e) {
+				log.error("获取美元汇率失败！！！" + e.getLocalizedMessage());
+			}
+		}
+		log.info("获取美元汇率结束");
+		return dollarExchangeRate;
 	}
 
 	/**
@@ -232,7 +293,7 @@ public class BuildServiceImpl implements BuildService {
 	 * @return
 	 */
 	private List<ProductBuildDto> findAll(int start, int num) {
-		PageModel page = new PageModel();
+		SolrPage page = new SolrPage();
 		page.setStart(start);
 		page.setNum(num);
 		return productDao.findAll(page);
@@ -309,6 +370,31 @@ public class BuildServiceImpl implements BuildService {
 	 * @return
 	 */
 	private String getSolrResult(HashMap<String, String> param) {
+		// HttpSolrServer solrServer = SolrServer.getServer();
+		// // 创建查询参数以及设定的查询参数
+		// SolrQuery params = new SolrQuery();
+		// params.set("q", "*:*");
+		//
+		// // 查询并获取相应的结果！
+		// QueryResponse response = null;
+		// try {
+		// response = solrServer.query(params);
+		// } catch (SolrServerException e) {
+		// System.err.println(e.getMessage());
+		// e.printStackTrace();
+		// } catch (Exception e) {
+		// System.err.println(e.getMessage());
+		// e.printStackTrace();
+		// } finally {
+		// solrServer.shutdown();
+		// }
+		//
+		// // 获取相关的查询结果
+		// if (response != null) {
+		// System.out.println("查询耗时（ms）：" + response.getQTime());
+		// SolrDocumentList list = response.getResults();
+		// System.out.println(response.toString());
+		// }
 		return UrlUtil.getStringByGetNotEncod(server_url + Constants.SEARCH_URL, param);
 	}
 
@@ -333,41 +419,5 @@ public class BuildServiceImpl implements BuildService {
 	private String getDocsString(String str) {
 		int index = str.indexOf("\"docs\":[");
 		return str.substring(index + 7, str.length() - 2);
-	}
-
-	public OrderDto getOrder(Integer userId, Integer orderId) throws ValidateException {
-		// TODO Auto-generated method stub
-		OrderDto orderDto = null;
-		String orderJson = cacheRepository.getString(String.valueOf(orderId), OrderDto.class);
-		if (StringUtil.isNotBlank(orderJson)) {
-			orderDto = JSONUtil.getJson2Entity(orderJson, OrderDto.class);
-		}
-		if (orderDto == null) {// 如果为null，先查找数据库，如存在再更新redis
-			orderDto = new OrderDto();
-
-			cacheRepository.set(String.valueOf(orderDto.getId()), orderDto);
-		}
-		return orderDto;
-	}
-
-	public List<OrderDto> getOrders(Integer userId) throws ValidateException {
-		// TODO Auto-generated method stub
-		if (userId == null) {
-			throw new ValidateException("userId为null！");
-		}
-		List<OrderDto> orderList = null;
-		String orderJson = cacheRepository.getString(Constants.PREFIX_USER_ORDERS,
-				String.valueOf(userId));
-		if (StringUtil.isNotBlank(orderJson)) {
-			orderList = JSONUtil.getJson2EntityList(orderJson, List.class, OrderDto.class);
-		}
-
-		if (orderList == null) {// 如果为null，先查找数据库，如存在再更新redis
-			orderList = new ArrayList<OrderDto>();
-
-			cacheRepository.setString(Constants.PREFIX_USER_ORDERS, String.valueOf(userId),
-					JSONUtil.getEntity2Json(orderList));
-		}
-		return orderList;
 	}
 }

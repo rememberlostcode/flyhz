@@ -47,4 +47,11 @@ public interface BuildService {
 	 * @return
 	 */
 	public List<OrderDto> getOrders(Integer userId) throws ValidateException;
+
+	/**
+	 * 获取当前美元汇率
+	 * 
+	 * @return
+	 */
+	public double getDollarExchangeRate();
 }

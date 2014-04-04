@@ -53,6 +53,9 @@ public class BuildController {
 			// System.out.println(orderJson);
 
 			// redisRepository.reBuildOrderToRedis(1, 1);
+
+			buildService.getDollarExchangeRate();
+
 		} catch (ValidateException e) {
 			e.printStackTrace();
 		}

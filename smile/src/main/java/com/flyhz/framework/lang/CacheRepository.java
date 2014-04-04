@@ -12,8 +12,6 @@ public interface CacheRepository {
 
 	public void set(String key, Object value);
 
-	public String getString(String prefix, String key);
-
 	public void set(Map<String, Object> map);
 
 	public void delete(String key, Object value);
@@ -21,22 +19,20 @@ public interface CacheRepository {
 	public void delete(String key);
 
 	/**
-	 * 设置string字符串
+	 * 获取指定key的值
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public String getString(String key);
+
+	/**
+	 * 设置指定key的值
 	 * 
 	 * @param key
 	 * @param value
 	 */
 	public void setString(String key, String value);
-
-	/**
-	 * 设置string字符串
-	 * 
-	 * @param prefix
-	 *            前缀
-	 * @param key
-	 * @param value
-	 */
-	public void setString(String prefix, String key, String value);
 
 	/**
 	 * 向名称为key的hash中添加元素field<—>value
@@ -105,7 +101,7 @@ public interface CacheRepository {
 	public void lrem(String key, String value);
 
 	/**
-	 * 返回名称为key的所有元素
+	 * 返回名称为key的list中的所有元素
 	 * 
 	 * @param key
 	 * @return

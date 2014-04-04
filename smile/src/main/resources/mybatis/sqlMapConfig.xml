@@ -26,7 +26,7 @@
         <typeAlias alias="UserModel" type="com.flyhz.shop.persistence.entity.UserModel"/>
 		<typeAlias alias="ConsigneeModel" type="com.flyhz.shop.persistence.entity.ConsigneeModel"/>
         <typeAlias alias="ProductModel" type="com.flyhz.shop.persistence.entity.ProductModel"/>
-        <typeAlias alias="PageModel" type="com.flyhz.shop.build.solr.PageModel"/>
+        <typeAlias alias="SolrPage" type="com.flyhz.shop.build.solr.SolrPage"/>
         <typeAlias alias="OrderModel" type="com.flyhz.shop.persistence.entity.OrderModel"/>
         <typeAlias alias="BrandModel" type="com.flyhz.shop.persistence.entity.BrandModel"/>
         <typeAlias alias="CategoryModel" type="com.flyhz.shop.persistence.entity.CategoryModel"/>

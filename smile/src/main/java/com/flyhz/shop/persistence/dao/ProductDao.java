@@ -3,7 +3,7 @@ package com.flyhz.shop.persistence.dao;
 
 import java.util.List;
 
-import com.flyhz.shop.build.solr.PageModel;
+import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.persistence.entity.ProductModel;
 
@@ -17,5 +17,5 @@ public interface ProductDao extends GenericDao<ProductModel> {
 
 	public int getCountOfAll();
 
-	public List<ProductBuildDto> findAll(PageModel page);
+	public List<ProductBuildDto> findAll(SolrPage page);
 }

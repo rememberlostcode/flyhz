@@ -1,7 +1,7 @@
 
 package com.flyhz.shop.build.solr;
 
-public class PageModel {
+public class SolrPage {
 
 	private Integer	start;
 	private Integer	num;

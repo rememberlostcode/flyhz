@@ -345,21 +345,27 @@ public class UrlUtil {
 	}
 
 	public static void main(String[] args) {
-		boolean res = isConnect("www.baidu.com");
-		System.out.println(res);
+		// boolean res = isConnect("www.baidu.com");
+		// System.out.println(res);
 
 		// res = isConnect("www.google.com");
 		// System.out.println(res);
+		//
+		// res = isConnect("zuir2.zju.edu.cn");
+		// System.out.println(res);
+		//
+		// res = isConnect("zuir3.zju.edu.cn");
+		// System.out.println(res);
+		//
+		// res = isConnect("10.202.37.11");
+		// System.out.println(res);
 
-		res = isConnect("zuir2.zju.edu.cn");
-		System.out.println(res);
-
-		res = isConnect("zuir3.zju.edu.cn");
-		System.out.println(res);
-
-		res = isConnect("10.202.37.11");
-		System.out.println(res);
-
+		// String tt =
+		// sendGet("http://download.finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s=USDCNY=x");
+		// String[] ss = tt.split(",");
+		// for (int i = 0; i < ss.length; i++) {
+		// System.out.println(ss[i]);
+		// }
 		System.exit(0);
 	}
 

@@ -3,6 +3,8 @@ package com.flyhz.shop.persistence;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.CacheRepository;
@@ -22,6 +24,7 @@ import com.flyhz.shop.persistence.entity.ProductModel;
 
 @Service
 public class RedisRepositoryImpl implements RedisRepository {
+	private Logger			log	= LoggerFactory.getLogger(RedisRepositoryImpl.class);
 	@Resource
 	private CacheRepository	cacheRepository;
 	@Resource
@@ -37,8 +40,10 @@ public class RedisRepositoryImpl implements RedisRepository {
 		}
 		ProductDto productDto = new ProductDto();
 		String productJson = cacheRepository.getString(productId, ProductBuildDto.class);
-		if (StringUtil.isBlank(productJson))
+		if (StringUtil.isBlank(productJson)) {
+			log.warn("ID为" + productId + "的商品在redis中不存在！");
 			return null;
+		}
 		ProductBuildDto productBuildDto = JSONUtil.getJson2Entity(productJson,
 				ProductBuildDto.class);
 		if (productBuildDto == null) {
@@ -59,6 +64,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 					productDto.setBrand(brand);
 				}
 			} else {
+				log.warn("ID为" + productId + "的商品在redis和数据库中都不存在！");
 				return null;
 			}
 		} else {

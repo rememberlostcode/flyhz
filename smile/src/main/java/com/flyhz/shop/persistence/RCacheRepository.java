@@ -59,6 +59,45 @@ public class RCacheRepository implements CacheRepository, InitializingBean {
 
 	}
 
+	public static void main(String[] args) {
+		final Jedis jedis = new Jedis("10.22.23.64");
+		for (int i = 0; i < 10; i++) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					System.out.println(jedis.get("n500"));
+				}
+			}).start();
+		}
+	}
+
+	protected Jedis getJedis() {
+		Jedis jedis = null;
+		try {
+			jedis = pool.getResource();
+			return jedis;
+		} catch (JedisConnectionException e) {
+			log.error("", e);
+			if (jedis != null)
+				pool.returnBrokenResource(jedis);
+		}
+		return null;
+
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		if (pool == null) {
+			JedisPoolConfig config = new JedisPoolConfig();
+			config.setMaxActive(maxActive);
+			config.setMaxIdle(maxIdle);
+			config.setMaxWait(maxWait);
+			config.setTestOnBorrow(true);
+			config.setTestOnReturn(true);
+			config.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
+			pool = new JedisPool(config, ip, port);
+		}
+	}
+
 	@Override
 	public String getString(String key, Class<?> clazz) {
 		if (StringUtils.isNotBlank(key) && clazz != null && !STRING_NAME.equals(clazz.getName())) {
@@ -113,19 +152,6 @@ public class RCacheRepository implements CacheRepository, InitializingBean {
 	}
 
 	@Override
-	public String getString(String prefix, String key) {
-		if (StringUtils.isNotBlank(key)) {
-			Jedis jedis = getJedis();
-			if (jedis != null && StringUtils.isNotBlank(prefix)) {
-				String value = jedis.get(prefix + "@" + key);
-				pool.returnResource(jedis);
-				return value;
-			}
-		}
-		return null;
-	}
-
-	@Override
 	public void set(Map<String, Object> map) {
 		try {
 			if (map != null && !map.isEmpty()) {
@@ -177,43 +203,17 @@ public class RCacheRepository implements CacheRepository, InitializingBean {
 		}
 	}
 
-	protected Jedis getJedis() {
-		Jedis jedis = null;
-		try {
-			jedis = pool.getResource();
-			return jedis;
-		} catch (JedisConnectionException e) {
-			log.error("", e);
-			if (jedis != null)
-				pool.returnBrokenResource(jedis);
+	@Override
+	public String getString(String key) {
+		if (StringUtils.isNotBlank(key)) {
+			Jedis jedis = getJedis();
+			if (jedis != null) {
+				String value = jedis.get(key);
+				pool.returnResource(jedis);
+				return value;
+			}
 		}
 		return null;
-
-	}
-
-	public static void main(String[] args) {
-		final Jedis jedis = new Jedis("10.22.23.64");
-		for (int i = 0; i < 10; i++) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					System.out.println(jedis.get("n500"));
-				}
-			}).start();
-		}
-	}
-
-	public void afterPropertiesSet() throws Exception {
-		if (pool == null) {
-			JedisPoolConfig config = new JedisPoolConfig();
-			config.setMaxActive(maxActive);
-			config.setMaxIdle(maxIdle);
-			config.setMaxWait(maxWait);
-			config.setTestOnBorrow(true);
-			config.setTestOnReturn(true);
-			config.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
-			pool = new JedisPool(config, ip, port);
-		}
 	}
 
 	public void setString(String key, String value) {
@@ -221,16 +221,6 @@ public class RCacheRepository implements CacheRepository, InitializingBean {
 			Jedis jedis = getJedis();
 			if (jedis != null) {
 				jedis.set(key, value);
-				pool.returnResource(jedis);
-			}
-		}
-	}
-
-	public void setString(String prefix, String key, String value) {
-		if (StringUtils.isNotBlank(key) && value != null) {
-			Jedis jedis = getJedis();
-			if (jedis != null && StringUtils.isNotBlank(prefix)) {
-				jedis.set(prefix + "@" + key, value);
 				pool.returnResource(jedis);
 			}
 		}
