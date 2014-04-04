@@ -57,10 +57,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 			if (productModel != null && productModel.getBrandId() != null) {
 
 				// 通过品牌ID获取品牌信息
-				String brandJson = cacheRepository.hget(Constants.REDIS_KEY_BRANDS,
-						String.valueOf(productModel.getBrandId()));
-				BrandBuildDto brandBuildDto = JSONUtil.getJson2Entity(brandJson,
-						BrandBuildDto.class);
+				BrandBuildDto brandBuildDto = getBrandFromRedis(productModel.getBrandId());
 
 				// 如果品牌不为空，把商品信息和品牌信息放入productDto
 				if (brandBuildDto != null) {
@@ -78,16 +75,30 @@ public class RedisRepositoryImpl implements RedisRepository {
 				return null;
 			}
 		} else {
+			// 通过品牌ID获取品牌信息
+			BrandBuildDto brandBuildDto = getBrandFromRedis(productBuildDto.getBid());
+
 			productDto.setId(productBuildDto.getId());
 			productDto.setName(productBuildDto.getN());
 			productDto.setPurchasingPrice(productBuildDto.getPp());
 			productDto.setImgs(productBuildDto.getP());
 			BrandDto brand = new BrandDto();
-			brand.setId(productBuildDto.getBid());
-			brand.setName(productBuildDto.getBe());
+			brand.setId(brandBuildDto.getId());
+			brand.setName(brandBuildDto.getName());
 			productDto.setBrand(brand);
 		}
 		return productDto;
+	}
+
+	/**
+	 * 通过品牌ID获取品牌信息
+	 * 
+	 * @param bid
+	 * @return
+	 */
+	private BrandBuildDto getBrandFromRedis(Integer bid) {
+		String brandJson = cacheRepository.hget(Constants.REDIS_KEY_BRANDS, String.valueOf(bid));
+		return JSONUtil.getJson2Entity(brandJson, BrandBuildDto.class);
 	}
 
 	@Override
