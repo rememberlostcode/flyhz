@@ -21,6 +21,7 @@ import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
+import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
@@ -57,17 +58,17 @@ public class UserController {
 		return "register";
 	}
 
-	@RequestMapping(value = { "saveRegister" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "saveRegister" }, method = RequestMethod.GET)
 	public String saveRegister(Model model, @ModelAttribute UserDetailDto userDetail) {
 		Protocol protocol = new Protocol();
-		Integer code = 0;
+		Integer code = 200000;
 		String msg = "";
+		UserDto user = null;
 		if (userDetail != null) {
 			if (StringUtils.isNotBlank(userDetail.getUsername())
 					&& StringUtils.isNotBlank(userDetail.getPassword())) {
 				try {
-					UserDto user = userService.register(userDetail);
-					code = 1;
+					user = userService.register(userDetail);
 				} catch (ValidateException e) {
 					code = 4;
 					msg = e.getMessage();
@@ -77,21 +78,33 @@ public class UserController {
 				code = 3;// 用户名或者密码错误
 			}
 		} else {
-			code = 2;
+			code = 5;
 		}
 		protocol.setCode(code);
-		protocol.setData(msg);
+		if (user != null) {
+			protocol.setData(JSONUtil.getEntity2Json(user));
+		} else {
+			protocol.setData(msg);
+		}
 		model.addAttribute("protocol", protocol);
 		return "";
 	}
 
-	@RequestMapping(value = { "user/consignees" })
-	public String getConsinee(Model model) {
+	/**
+	 * 查询收件人信息
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = { "user/consignees" }, method = RequestMethod.GET)
+	public String getConsinee(Model model, @RequestParam Integer userId) {
 		Protocol protocol = new Protocol();
-		Integer code = 0;
+		Integer code = 200000;
+		if (userId == null)
+			code = 100000;
 		List<ConsigneeDetailDto> consigneeDtoList = null;
 		try {
-			consigneeDtoList = userService.listConsignees(1);
+			consigneeDtoList = userService.listConsignees(userId);
 		} catch (Exception e) {
 			code = 4;
 			e.printStackTrace();
@@ -111,9 +124,12 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/updateQty" })
-	public String updateQty(Model model, String pid, Integer qty) {
+	public String updateQty(Model model, @RequestParam Integer userId, @RequestParam String pid,
+			@RequestParam Integer qty) {
 		Protocol protocol = new Protocol();
-		Integer code = 0;
+		Integer code = 200000;
+		if (userId == null)
+			code = 100000;
 		if (pid == null)
 			code = 5;
 		if (qty == null || qty == 0)
@@ -125,9 +141,11 @@ public class UserController {
 				product.setQty(qty.shortValue());
 				product.setPurchasingPrice(product.getPurchasingPrice().multiply(
 						BigDecimal.valueOf(qty)));
+			} else {
+				code = 300000;// 商品不存在
 			}
 		} catch (Exception e) {
-			code = 4;
+			code = 4;// 错误
 			log.error("=======在修改购买数量时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
@@ -144,13 +162,13 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/updateCartQty" })
-	public String updateCartQty(Model model, String id, Integer qty) {
+	public String updateCartQty(Model model, @RequestParam Integer userId, @RequestParam String id,
+			@RequestParam Integer qty) {
 		Protocol protocol = new Protocol();
-		Integer code = 0;
+		Integer code = 200000;
 
-		Integer userId = 1;
 		if (userId == null)
-			code = 1;
+			code = 100000;
 		if (id == null)
 			code = 5;
 		if (qty == null || qty == 0)
@@ -176,19 +194,19 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/orderInform" })
-	public String orderInform(Model model, String[] pids, Integer[] cartIds) {
+	public String orderInform(Model model, @RequestParam Integer userId, String[] pids,
+			Integer[] cartIds) {
 		Protocol protocol = new Protocol();
-		Integer code = 0;
-		Integer userId = 2;
+		Integer code = 200000;
 		if (userId == null)
-			code = 1;
+			code = 100000;
 		String details = "";
 		if ((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
 			code = 5;
 
 		if (cartIds != null && cartIds.length > 0) {
 			CartItemParamDto cartItemParam = new CartItemParamDto();
-			cartItemParam.setUserId(2);
+			cartItemParam.setUserId(userId);
 			cartItemParam.setItemIds(cartIds);
 			pids = shoppingCartService.listItemsByUserIdAndIds(cartItemParam);
 		}
@@ -213,13 +231,12 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/confirmOrder" })
-	public String confirmOrder(Model model, String[] pids, String[] cartIds,
-			@RequestParam Integer cid) {
+	public String confirmOrder(Model model, @RequestParam Integer userId, String[] pids,
+			String[] cartIds, @RequestParam Integer cid) {
 		Protocol protocol = new Protocol();
-		Integer code = 0;
-		Integer userId = 1;
+		Integer code = 200000;
 		if (userId == null)
-			code = 1;
+			code = 100000;
 		String details = "";
 		if (((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
 				|| cid == null)
@@ -227,6 +244,39 @@ public class UserController {
 
 		try {
 			details = orderService.generateOrder(userId, cid, pids, true);
+		} catch (ValidateException e) {
+			code = 4;
+			log.error("=======在生成订单时=========" + e.getMessage());
+		}
+		protocol.setCode(code);
+		protocol.setData(details);
+		model.addAttribute("protocol", protocol);
+		return "";
+	}
+
+	/**
+	 * 支付成功后返回结果
+	 * 
+	 * @param model
+	 * @param orderDto
+	 * @return
+	 */
+	@RequestMapping(value = { "user/pay" })
+	public String pay(Model model, @RequestParam Integer userId, @RequestParam String num) {
+		Protocol protocol = new Protocol();
+		Integer code = 200000;
+		if (userId == null)
+			code = 100000;
+		String details = "";
+		if (StringUtil.isBlank(num))
+			code = 5;
+
+		try {
+			if (orderService.pay(userId, num)) {
+				details = "支付成功！";
+			} else {
+				code = 300000;
+			}
 		} catch (ValidateException e) {
 			code = 4;
 			log.error("=======在生成订单时=========" + e.getMessage());
