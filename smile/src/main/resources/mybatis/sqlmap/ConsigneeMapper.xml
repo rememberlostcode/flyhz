@@ -31,8 +31,8 @@
 	    where user_id = #{id}
 	</select>
 	<select id="getConsigneeByModel" parameterType="ConsigneeModel" resultType="ConsigneeDetailDto">
-	    select id,name,contury,city,province,address,zipcode,mobilephone,user_id userId 
-	    from consignee 
-	    where id = #{id} and user_id = #{userId}
+	   select a. id, a.name,a.contury,a.province,a.city,a.town,CONCAT(p.proname,c.cityname,d.disname,a.address) as address ,a.zipcode,a.mobilephone,a.user_id userId 
+	   from consignee  a inner join district d on a.town=d.districtid  inner join city c on d.cityid = c.cityid  inner join  province p on  c.proid=p.proid
+	   where id = #{id} and user_id = #{userId}
 	</select>
 </mapper>
