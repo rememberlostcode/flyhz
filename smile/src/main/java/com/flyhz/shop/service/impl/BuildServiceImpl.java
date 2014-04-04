@@ -77,6 +77,8 @@ public class BuildServiceImpl implements BuildService {
 			// 设置新的分页查询参数
 			thisNum += resultSize;
 		}
+
+		// solr建立索引
 		solrData.reBuildOrder();
 
 		log.info("buildSolr结束");
