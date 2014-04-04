@@ -299,6 +299,7 @@ public class UserController {
 	@RequestMapping(value = "user/setInfo")
 	public void setInfo(@Identify Integer userId, @RequestParam(value = "field") String field,
 			@RequestParam(value = "fval") Object fval, Model model) {
+		userId = 1;
 		Protocol protocol = new Protocol();
 		try {
 			userService.setPersonalInformation(userId, field, fval);

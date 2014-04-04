@@ -48,7 +48,6 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-
 		<!-- jetty -->
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
@@ -97,7 +96,12 @@
 			<version>1.4</version> </dependency> <dependency> <groupId>axis</groupId> 
 			<artifactId>axis-wsdl4j</artifactId> <version>1.5.1</version> </dependency> -->
 		<!-- Spring Dependencies -->
-
+		<!-- Javamail API -->
+	    <dependency>
+	        <groupId>javax.mail</groupId>
+	        <artifactId>mail</artifactId>
+	        <version>1.4.4</version>
+	    </dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -109,7 +113,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>

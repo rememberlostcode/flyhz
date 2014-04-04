@@ -100,6 +100,24 @@
 	  </beans:property>
 	</beans:bean>
 	
+	<!-- Email Sender Bean -->
+	<beans:bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<beans:property name="host">
+			<beans:value>stmp.163.com</beans:value>
+		</beans:property>
+		<beans:property name="javaMailProperties">
+			<beans:props>
+				<beans:prop key="mail.smtp.auth">true</beans:prop>
+				<beans:prop key="mail.smtp.timeout">25000</beans:prop>
+			</beans:props>
+		</beans:property>
+		<beans:property name="username">
+			<beans:value>syqf1027@163.com</beans:value>
+		</beans:property>
+		<beans:property name="password">
+			<beans:value>574515</beans:value>
+		</beans:property>
+	</beans:bean>
 	
 	<!-- Imports user-defined @Controller beans that process client requests -->
 	<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />

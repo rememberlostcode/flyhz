@@ -75,7 +75,6 @@ public class JSONUtil {
 		try {
 			jsonGenerator = mapper.getJsonFactory().createJsonGenerator(System.out,
 					JsonEncoding.UTF8);
-
 			json = mapper.writeValueAsString(obj);
 		} catch (Exception e) {
 			e.printStackTrace();
