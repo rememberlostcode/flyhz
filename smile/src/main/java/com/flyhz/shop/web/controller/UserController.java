@@ -97,7 +97,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/consignees" }, method = RequestMethod.GET)
-	public String getConsinee(Model model, @RequestParam Integer userId) {
+	public String getConsinee(Model model, @Identify Integer userId) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
@@ -124,7 +124,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/updateQty" })
-	public String updateQty(Model model, @RequestParam Integer userId, @RequestParam String pid,
+	public String updateQty(Model model, @Identify Integer userId, @RequestParam String pid,
 			@RequestParam Integer qty) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
@@ -162,7 +162,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/updateCartQty" })
-	public String updateCartQty(Model model, @RequestParam Integer userId, @RequestParam String id,
+	public String updateCartQty(Model model, @Identify Integer userId, @RequestParam String id,
 			@RequestParam Integer qty) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
@@ -194,8 +194,8 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/orderInform" })
-	public String orderInform(Model model, @RequestParam Integer userId, String[] pids,
-			Integer[] cartIds) {
+	public String orderInform(Model model, @Identify Integer userId, String[] pids,
+			Integer[] cartIds, Integer cid) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
@@ -212,7 +212,7 @@ public class UserController {
 		}
 
 		try {
-			details = orderService.generateOrder(userId, null, pids, false);
+			details = orderService.generateOrder(userId, cid, pids, false);
 		} catch (ValidateException e) {
 			code = 4;
 			log.error("=======在生成订单时=========" + e.getMessage());
@@ -231,8 +231,8 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/confirmOrder" })
-	public String confirmOrder(Model model, @RequestParam Integer userId, String[] pids,
-			String[] cartIds, @RequestParam Integer cid) {
+	public String confirmOrder(Model model, @Identify Integer userId, String[] pids,
+			Integer[] cartIds, @RequestParam Integer cid) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
@@ -241,6 +241,13 @@ public class UserController {
 		if (((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
 				|| cid == null)
 			code = 5;
+
+		if (cartIds != null && cartIds.length > 0) {
+			CartItemParamDto cartItemParam = new CartItemParamDto();
+			cartItemParam.setUserId(userId);
+			cartItemParam.setItemIds(cartIds);
+			pids = shoppingCartService.listItemsByUserIdAndIds(cartItemParam);
+		}
 
 		try {
 			details = orderService.generateOrder(userId, cid, pids, true);
@@ -262,7 +269,7 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping(value = { "user/pay" })
-	public String pay(Model model, @RequestParam Integer userId, @RequestParam String num) {
+	public String pay(Model model, @Identify Integer userId, @RequestParam String num) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)

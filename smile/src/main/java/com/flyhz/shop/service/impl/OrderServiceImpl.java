@@ -58,16 +58,16 @@ public class OrderServiceImpl implements OrderService {
 		if (user == null)
 			throw new ValidateException("您还不是会员，请注册后再购买！");
 
-		ConsigneeDetailDto consigneeDto = null;
+		ConsigneeModel consignee = new ConsigneeModel();
+		consignee.setId(consigneeId);
+		consignee.setUserId(userId);
+		ConsigneeDetailDto consigneeDto = consigneeDao.getConsigneeByModel(consignee);
 		if (flag) {
-			ConsigneeModel consignee = new ConsigneeModel();
-			consignee.setId(consigneeId);
-			consignee.setUserId(userId);
-			consigneeDto = consigneeDao.getConsigneeByModel(consignee);
 			if (consigneeDto == null)
 				throw new ValidateException("收件人地址为空！");
-			consigneeDto.setUser(user);
 		}
+		if (consigneeDto != null)
+			consigneeDto.setUser(user);
 
 		// 处理商品信息
 		List<OrderDetailDto> orderDetails = new ArrayList<OrderDetailDto>();
