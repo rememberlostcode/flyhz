@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:id="@+id/brand_head"
+        android:layout_width="fill_parent"
+	    android:layout_height="40dip"
+	    android:gravity="center_vertical"
+	    android:orientation="horizontal"
+	    android:background="#ffffff">
+        <TextView 
+            android:id="@+id/list_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="列表描述"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            />
+        
+         <TextView
+            android:id="@+id/list_more"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="查看更多"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            />
+    </RelativeLayout>
+     <HorizontalScrollView
+        android:id="@+id/app_grid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF" 
+        android:scrollbars="none">
+ 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+ 
+            <com.holding.smile.myview.MyGridView
+                android:id="@+id/gridview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+</LinearLayout>

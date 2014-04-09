@@ -1,0 +1,237 @@
+{"data":[],
+    "brandData": [
+        {
+            "brandName": "品牌1", 
+            "goodData": [
+                {
+                    "i": 2, 
+                    "b": "Enzo Angiolini", 
+                    "n": "象牙色高跟单鞋", 
+                    "pn": "220", 
+                    "po": "680", 
+                    "s": "460", 
+                    "d": "2月1日", 
+                    "p": [
+                        "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2rH3nXmJXXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2g67nXkdXXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img03.taobaocdn.com/imgextra/i3/27537717/T2kun0XaVbXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img01.taobaocdn.com/imgextra/i1/27537717/T2vjRGXlFNXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img03.taobaocdn.com/imgextra/i3/27537717/T29.iiXnXcXXXXXXXX_!!27537717.jpg"
+                    ]
+                }, 
+                {
+                    "i": 5, 
+                    "b": "EsteeLauder/雅诗兰黛", 
+                    "n": "即时修护特润眼部精华霜", 
+                    "pn": "365", 
+                    "po": "540", 
+                    "s": "175", 
+                    "d": "1月26日", 
+                    "p": [
+                        "http://img01.taobaocdn.com/imgextra/i1/1892240257/T2qGxCXERXXXXXXXXX-1892240257A.jpg"
+                    ]
+                }, 
+                {
+                    "i": 6, 
+                    "b": "Nike", 
+                    "n": "全掌气垫运动鞋", 
+                    "pn": "499", 
+                    "po": "865", 
+                    "s": "366", 
+                    "d": "1月20日", 
+                    "p": [
+                        "http://dir4.zerowork.cn/repic.asp?k=T471C788186&u=http://img03.resetdomian/resetzerowork/i3/1920599116/T2Ak5oXANaXXXXXXXX_!!1920599116.jpg"
+                    ]
+                }, 
+                {
+                    "i": 4, 
+                    "b": "UGG", 
+                    "n": "羊皮毛一体雪地靴", 
+                    "pn": "480", 
+                    "po": "1400", 
+                    "s": "920", 
+                    "d": "1月9日", 
+                    "p": [
+                        "http://img02.taobaocdn.com/imgextra/i2/921029473/T2uX1GXvlaXXXXXXXX_!!921029473.jpg"
+                    ]
+                }
+            ]
+        },
+        {
+            "brandName": "品牌2", 
+            "goodData": [
+                {
+                    "i": 2, 
+                    "b": "Enzo Angiolini", 
+                    "n": "象牙色高跟单鞋", 
+                    "pn": "220", 
+                    "po": "680", 
+                    "s": "460", 
+                    "d": "2月1日", 
+                    "p": [
+                        "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2rH3nXmJXXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2g67nXkdXXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img03.taobaocdn.com/imgextra/i3/27537717/T2kun0XaVbXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img01.taobaocdn.com/imgextra/i1/27537717/T2vjRGXlFNXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img03.taobaocdn.com/imgextra/i3/27537717/T29.iiXnXcXXXXXXXX_!!27537717.jpg"
+                    ]
+                }, 
+                {
+                    "i": 5, 
+                    "b": "EsteeLauder/雅诗兰黛", 
+                    "n": "即时修护特润眼部精华霜", 
+                    "pn": "365", 
+                    "po": "540", 
+                    "s": "175", 
+                    "d": "1月26日", 
+                    "p": [
+                        "http://img01.taobaocdn.com/imgextra/i1/1892240257/T2qGxCXERXXXXXXXXX-1892240257A.jpg"
+                    ]
+                }, 
+                {
+                    "i": 6, 
+                    "b": "Nike", 
+                    "n": "全掌气垫运动鞋", 
+                    "pn": "499", 
+                    "po": "865", 
+                    "s": "366", 
+                    "d": "1月20日", 
+                    "p": [
+                        "http://dir4.zerowork.cn/repic.asp?k=T471C788186&u=http://img03.resetdomian/resetzerowork/i3/1920599116/T2Ak5oXANaXXXXXXXX_!!1920599116.jpg"
+                    ]
+                }, 
+                {
+                    "i": 4, 
+                    "b": "UGG", 
+                    "n": "羊皮毛一体雪地靴", 
+                    "pn": "480", 
+                    "po": "1400", 
+                    "s": "920", 
+                    "d": "1月9日", 
+                    "p": [
+                        "http://img02.taobaocdn.com/imgextra/i2/921029473/T2uX1GXvlaXXXXXXXX_!!921029473.jpg"
+                    ]
+                }
+            ]
+        },
+        {
+            "brandName": "品牌3", 
+            "goodData": [
+                {
+                    "i": 2, 
+                    "b": "Enzo Angiolini", 
+                    "n": "象牙色高跟单鞋", 
+                    "pn": "220", 
+                    "po": "680", 
+                    "s": "460", 
+                    "d": "2月1日", 
+                    "p": [
+                        "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2rH3nXmJXXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2g67nXkdXXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img03.taobaocdn.com/imgextra/i3/27537717/T2kun0XaVbXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img01.taobaocdn.com/imgextra/i1/27537717/T2vjRGXlFNXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img03.taobaocdn.com/imgextra/i3/27537717/T29.iiXnXcXXXXXXXX_!!27537717.jpg"
+                    ]
+                }, 
+                {
+                    "i": 5, 
+                    "b": "EsteeLauder/雅诗兰黛", 
+                    "n": "即时修护特润眼部精华霜", 
+                    "pn": "365", 
+                    "po": "540", 
+                    "s": "175", 
+                    "d": "1月26日", 
+                    "p": [
+                        "http://img01.taobaocdn.com/imgextra/i1/1892240257/T2qGxCXERXXXXXXXXX-1892240257A.jpg"
+                    ]
+                }, 
+                {
+                    "i": 6, 
+                    "b": "Nike", 
+                    "n": "全掌气垫运动鞋", 
+                    "pn": "499", 
+                    "po": "865", 
+                    "s": "366", 
+                    "d": "1月20日", 
+                    "p": [
+                        "http://dir4.zerowork.cn/repic.asp?k=T471C788186&u=http://img03.resetdomian/resetzerowork/i3/1920599116/T2Ak5oXANaXXXXXXXX_!!1920599116.jpg"
+                    ]
+                }, 
+                {
+                    "i": 4, 
+                    "b": "UGG", 
+                    "n": "羊皮毛一体雪地靴", 
+                    "pn": "480", 
+                    "po": "1400", 
+                    "s": "920", 
+                    "d": "1月9日", 
+                    "p": [
+                        "http://img02.taobaocdn.com/imgextra/i2/921029473/T2uX1GXvlaXXXXXXXX_!!921029473.jpg"
+                    ]
+                }
+            ]
+        },
+        {
+            "brandName": "品牌4", 
+            "goodData": [
+                {
+                    "i": 2, 
+                    "b": "Enzo Angiolini", 
+                    "n": "象牙色高跟单鞋", 
+                    "pn": "220", 
+                    "po": "680", 
+                    "s": "460", 
+                    "d": "2月1日", 
+                    "p": [
+                        "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2rH3nXmJXXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2g67nXkdXXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img03.taobaocdn.com/imgextra/i3/27537717/T2kun0XaVbXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img01.taobaocdn.com/imgextra/i1/27537717/T2vjRGXlFNXXXXXXXX_!!27537717.jpg", 
+                        "http://img.taobaocdn.com/imgextra/http://img03.taobaocdn.com/imgextra/i3/27537717/T29.iiXnXcXXXXXXXX_!!27537717.jpg"
+                    ]
+                }, 
+                {
+                    "i": 5, 
+                    "b": "EsteeLauder/雅诗兰黛", 
+                    "n": "即时修护特润眼部精华霜", 
+                    "pn": "365", 
+                    "po": "540", 
+                    "s": "175", 
+                    "d": "1月26日", 
+                    "p": [
+                        "http://img01.taobaocdn.com/imgextra/i1/1892240257/T2qGxCXERXXXXXXXXX-1892240257A.jpg"
+                    ]
+                }, 
+                {
+                    "i": 6, 
+                    "b": "Nike", 
+                    "n": "全掌气垫运动鞋", 
+                    "pn": "499", 
+                    "po": "865", 
+                    "s": "366", 
+                    "d": "1月20日", 
+                    "p": [
+                        "http://dir4.zerowork.cn/repic.asp?k=T471C788186&u=http://img03.resetdomian/resetzerowork/i3/1920599116/T2Ak5oXANaXXXXXXXX_!!1920599116.jpg"
+                    ]
+                }, 
+                {
+                    "i": 4, 
+                    "b": "UGG", 
+                    "n": "羊皮毛一体雪地靴", 
+                    "pn": "480", 
+                    "po": "1400", 
+                    "s": "920", 
+                    "d": "1月9日", 
+                    "p": [
+                        "http://img02.taobaocdn.com/imgextra/i2/921029473/T2uX1GXvlaXXXXXXXX_!!921029473.jpg"
+                    ]
+                }
+            ]
+        }
+    ], 
+    "code": 200000, 
+    "validate": {
+        "option": "0", 
+        "message": null
+    }
+}

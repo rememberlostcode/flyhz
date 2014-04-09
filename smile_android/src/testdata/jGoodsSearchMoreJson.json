@@ -1,0 +1,19 @@
+{
+    "data": [
+        {
+            "i": 3,
+            "b": "Breitling",
+            "n": "男士手表",
+            "pn": "39670",
+            "po": "52058",
+            "s": "12388",
+            "d": "1月5日",
+            "p": "http://img04.taobaocdn.com/bao/uploaded/i4/T1mqgbFjtdXXXXXXXX_!!0-item_pic.jpg"
+        }
+    ],
+    "code": 200000,
+    "validate": {
+        "option": "0",
+        "message": null
+    }
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="server_url">http://zuir2.zju.edu.cn/X</string>
+    <string name="app_name">Smile</string>
+    <string name="action_settings">Settings</string>
+    <string name="delete">删除</string>
+    <string name="gu">图片</string>
+    
+    <!-- 搜索 -->
+    <string name="search">搜索</string>
+    <string name="search_hint">search</string>
+    <string name="search_persons">找人</string>
+    <string name="search_goods">找物品</string>
+    <string name="search_best_hot">目前最火热的</string>
+
+</resources>

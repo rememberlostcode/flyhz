@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#3f3f3f"
+    android:gravity="center_vertical|left"
+    android:orientation="horizontal"
+    android:padding="5dp" >
+    
+    <ImageView
+	     android:id="@+id/back_normal"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:layout_alignParentLeft="true"
+	     android:layout_centerVertical="true"
+	     android:contentDescription="@string/gu"
+	     android:src="@drawable/back_normal" />
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/back_normal"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:background="@drawable/search_bg"
+        android:padding="5dp" >
+        
+        <ImageView
+            android:id="@+id/search_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/search"
+            android:src="@drawable/ic_search" />
+
+        <EditText
+            android:id="@+id/search_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:singleLine="true" 
+            android:maxLength="20" />
+	        
+    </LinearLayout>
+    
+    <ImageView
+        android:id="@+id/search_pic_content_del"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/delete"
+        android:src="@drawable/clear_click" />
+    
+
+
+</RelativeLayout>

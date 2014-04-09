@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- Header aligned to top -->
+
+    <include
+        android:id="@+id/head"
+        layout="@layout/header"
+        android:visibility="gone" />
+
+    <!-- Footer aligned to bottom -->
+
+    <include
+        android:id="@+id/foot"
+        layout="@layout/footer"
+        android:visibility="gone" />
+
+    <!-- Content below header and above footer -->
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/foot"
+        android:layout_below="@id/head"
+        android:background="#e5e5e5"
+        android:gravity="center|top"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/load_progressbar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
+</RelativeLayout>
