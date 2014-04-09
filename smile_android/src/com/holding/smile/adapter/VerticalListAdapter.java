@@ -3,7 +3,9 @@ package com.holding.smile.adapter;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +14,10 @@ import android.widget.GridView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.activity.BaseActivity;
+import com.holding.smile.activity.MainTwoActivity;
 import com.holding.smile.dto.BrandJGoods;
 import com.holding.smile.myview.MyGridView;
 
@@ -82,7 +85,7 @@ public class VerticalListAdapter extends BaseAdapter {
 			if (brandJGoods != null) {
 
 				HorizontalGridViewAdapter hlAdapter = new HorizontalGridViewAdapter(context,
-						brandJGoods.getGoodData());
+						brandJGoods.getGs());
 				int ii = hlAdapter.getCount();
 				LayoutParams params = new LayoutParams(ii * cWidth, LayoutParams.WRAP_CONTENT);
 				holder.gridView.setLayoutParams(params);
@@ -93,12 +96,16 @@ public class VerticalListAdapter extends BaseAdapter {
 				holder.gridView.setAdapter(hlAdapter);
 				hlAdapter.notifyDataSetChanged();
 
-				holder.brand.setText(brandJGoods.getBrandName());
+				holder.brand.setText(brandJGoods.getN());
 				holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
-						Toast.makeText(context, "您点了查看更多……", Toast.LENGTH_LONG).show();
+						Intent intent = new Intent(context, MainTwoActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						Activity activity = (Activity) context;
+						activity.startActivityForResult(intent, BaseActivity.MORE_CODE);
+						activity.overridePendingTransition(0, 0);
 					}
 				});
 			}

@@ -48,19 +48,30 @@ public class ImageAdapter extends BaseAdapter {
 		return position;
 	}
 
+	static class ViewHolder {
+		ImageView	p;
+	}
+
 	public View getView(final int position, View convertView, ViewGroup parent) {
+		ViewHolder holder;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.good_pic_item, parent,
 					false);
+			holder = new ViewHolder();
+			holder.p = (ImageView) convertView.findViewById(R.id.good_pic);
+			convertView.setTag(holder);
+		} else {
+			holder = (ViewHolder) convertView.getTag();
 		}
+		// holder.p.setImageResource(R.drawable.empty_photo);
+
 		if (picList != null && !picList.isEmpty()) {
-			ImageView imageView = (ImageView) convertView.findViewById(R.id.good_pic);
 			Bitmap bitmap = MyApplication.getInstance().getBitmapFromMemoryCache(
 					picList.get(position));
 			if (bitmap != null) {
 				// Bitmap 縮放
 				bitmap = BitmapUtils.resizeBitmap(bitmap, maxWidth, maxHeight);
-				imageView.setImageBitmap(bitmap);
+				holder.p.setImageBitmap(bitmap);
 			} else {
 				// 在后台开始下载图片
 				bitmap = ImgUtil.getInstance().getBitmap(picList.get(position));
@@ -70,13 +81,12 @@ public class ImageAdapter extends BaseAdapter {
 							bitmap);
 					// Bitmap 縮放
 					bitmap = BitmapUtils.resizeBitmap(bitmap, maxWidth, maxHeight);
-					imageView.setImageBitmap(bitmap);
+					holder.p.setImageBitmap(bitmap);
 				} else {
-					imageView.setImageResource(R.drawable.empty_photo);
+					holder.p.setImageResource(R.drawable.empty_photo);
 				}
 			}
-			// imageView.setTag(picList.get(position));
-			convertView.setTag(imageView);
+			holder.p.setTag(picList.get(position));
 		}
 		return convertView;
 	}

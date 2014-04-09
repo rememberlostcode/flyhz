@@ -26,12 +26,12 @@
             android:contentDescription="@string/gu"
             android:visibility="gone" />
         
-        <Button
+        <TextView
             android:id="@+id/btn_cate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/category"
-            android:textSize="12sp"
+            android:textSize="22sp"
             android:visibility="gone" />
     </LinearLayout>
 

@@ -12,7 +12,6 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
@@ -53,7 +52,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.smile_main);
 
-		Button cateBtn = displayHeaderCate();
+		TextView cateBtn = displayHeaderCate();
 		cateBtn.setOnClickListener(this);
 
 		ImageView button = (ImageView) findViewById(R.id.btn_search);
@@ -97,7 +96,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
+		if (requestCode == SEARCH_CODE || requestCode == MORE_CODE || resultCode == RESULT_CANCELED) {
 			MyApplication.getInstance().setmImgList(listView);
 			MyApplication.getInstance().addImgList(reGridView);
 		}
@@ -232,7 +231,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 														reGoodsAdapter.notifyDataSetChanged();
 													}
 												}
-												//mPullToRefreshView.onHeaderRefreshComplete();
+												// mPullToRefreshView.onHeaderRefreshComplete();
 												break;
 											}
 											case WHAT_DID_REFRESH: {

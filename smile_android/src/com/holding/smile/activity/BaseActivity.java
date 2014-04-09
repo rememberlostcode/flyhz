@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -33,6 +32,7 @@ import com.holding.smile.R;
  */
 public class BaseActivity extends Activity {
 
+	public static final int		MORE_CODE			= 9;
 	public static final int		SEARCH_CODE			= 10;
 	protected static final int	UPLOAD_IMAGE_CODE	= 11;
 
@@ -139,12 +139,12 @@ public class BaseActivity extends Activity {
 		return button;
 	}
 
-	public Button displayHeaderCate() {
+	public TextView displayHeaderCate() {
 		setHeadVisible();
 		int id = R.id.btn_cate;
-		Button button = (Button) findViewById(id);
+		TextView textView = (TextView) findViewById(id);
 		setVisible(id);
-		return button;
+		return textView;
 	}
 
 	public ImageView displayHeaderSearch() {

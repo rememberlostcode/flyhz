@@ -44,6 +44,9 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.activity_main);
+		ImageView backBtn = displayHeaderBack();
+		backBtn.setOnClickListener(this);
+
 		ImageView button = (ImageView) findViewById(R.id.btn_search);
 		button.setOnClickListener(this);
 
@@ -70,6 +73,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
+			case R.id.btn_back: {
+				finish();
+				break;
+			}
 			case R.id.btn_search: {
 				Intent intent = new Intent(this, SearchGoodsActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -175,6 +182,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			mGridView.destroyDrawingCache();
 			mGridView = null;
 		}
+		setResult(MORE_CODE, null);
 	};
 
 	@SuppressLint("HandlerLeak")
