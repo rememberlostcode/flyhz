@@ -19,17 +19,6 @@
         />
 
     <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#88252525"
-        android:ellipsize="end"
-        android:paddingLeft="5dip"
-        android:singleLine="true"
-        android:textColor="#FFF"
-        android:textSize="12sp" />
-
-    <TextView
         android:id="@+id/tv_pn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

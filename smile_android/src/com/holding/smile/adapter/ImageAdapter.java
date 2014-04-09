@@ -55,13 +55,6 @@ public class ImageAdapter extends BaseAdapter {
 		}
 		if (picList != null && !picList.isEmpty()) {
 			ImageView imageView = (ImageView) convertView.findViewById(R.id.good_pic);
-			// Bitmap bm = BitmapUtils.decodeFile(picList.get(position),
-			// MyApplication.getInstance().getScreenWidth(), 0);
-			// if (bm != null) {
-			// imageView.setImageBitmap(bm);
-			// } else {
-			// imageView.setImageResource(R.drawable.empty_photo);
-			// }
 			Bitmap bitmap = MyApplication.getInstance().getBitmapFromMemoryCache(
 					picList.get(position));
 			if (bitmap != null) {

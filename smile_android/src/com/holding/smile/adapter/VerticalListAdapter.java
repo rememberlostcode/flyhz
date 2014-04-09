@@ -70,8 +70,6 @@ public class VerticalListAdapter extends BaseAdapter {
 			convertView = mInflater.inflate(R.layout.horizontallistview, null);
 			holder.brand = (TextView) convertView.findViewById(R.id.list_brand);
 			holder.moreText = (TextView) convertView.findViewById(R.id.list_more);
-			// holder.hlv = (HorizontalListView)
-			// convertView.findViewById(R.id.horizontallistview1);
 			holder.relativeLayout = (RelativeLayout) convertView.findViewById(R.id.brand_head);
 			holder.gridView = (MyGridView) convertView.findViewById(R.id.gridview);
 			convertView.setTag(holder);
@@ -85,7 +83,6 @@ public class VerticalListAdapter extends BaseAdapter {
 
 				HorizontalGridViewAdapter hlAdapter = new HorizontalGridViewAdapter(context,
 						brandJGoods.getGoodData());
-				// holder.hlv.setAdapter(hlAdapter);
 				int ii = hlAdapter.getCount();
 				LayoutParams params = new LayoutParams(ii * cWidth, LayoutParams.WRAP_CONTENT);
 				holder.gridView.setLayoutParams(params);
@@ -101,7 +98,7 @@ public class VerticalListAdapter extends BaseAdapter {
 
 					@Override
 					public void onClick(View arg0) {
-						Toast.makeText(context, "您点了查看更多……", Toast.LENGTH_LONG);
+						Toast.makeText(context, "您点了查看更多……", Toast.LENGTH_LONG).show();
 					}
 				});
 			}

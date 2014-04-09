@@ -96,11 +96,11 @@ public class DataService {
 	}
 
 	/**
-	 * 首页最新物品初始化
+	 * 首页活动区初始化
 	 * 
 	 * @return
 	 */
-	public RtnValueDto getJGoodsListInit() {
+	public RtnValueDto getRecommendJGoodsListInit() {
 		RtnValueDto obj = null;
 		if (getDataFromNet) {
 			obj = getLastestGoods(null, null, true);

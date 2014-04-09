@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -134,6 +135,14 @@ public class BaseActivity extends Activity {
 		setHeadVisible();
 		int id = R.id.btn_back;
 		ImageView button = (ImageView) findViewById(id);
+		setVisible(id);
+		return button;
+	}
+
+	public Button displayHeaderCate() {
+		setHeadVisible();
+		int id = R.id.btn_cate;
+		Button button = (Button) findViewById(id);
 		setVisible(id);
 		return button;
 	}

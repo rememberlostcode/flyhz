@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.holding.smile.R;
 import com.holding.smile.service.DataService;
@@ -185,7 +184,7 @@ public class MyApplication extends Application implements OnScrollListener {
 	/**
 	 * ListView的实例
 	 */
-	private AbsListView					imgList;
+	private List<AbsListView>			imgList;
 
 	/**
 	 * 给ImageView设置图片。首先从LruCache中取出图片的缓存，设置到ImageView上。如果LruCache中没有该图片的缓存，
@@ -273,22 +272,26 @@ public class MyApplication extends Application implements OnScrollListener {
 	 */
 	private void loadBitmaps(int firstVisibleItem, int visibleItemCount) {// step-3
 		try {
-			for (int i = 0; i < 0 + visibleItemCount; i++) {
-				List<View> views = getAllChildViews(imgList.getChildAt(i));
-				for (View view : views) {
-					if (view instanceof ImageView) {
-						ImageView imageView = (ImageView) view;
-						if (imageView.getTag() != null) {
-							String imageUrl = (String) imageView.getTag();
-							if (imageUrl != null && !"".equals(imageUrl.trim())) {
-								Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
-								if (bitmap == null) {
-									BitmapWorkerTask task = new BitmapWorkerTask();
-									taskCollection.add(task);
-									task.execute(imageUrl);
-								} else {
-									if (imageView != null && bitmap != null) {
-										imageView.setImageBitmap(bitmap);
+			if (imgList != null && !imgList.isEmpty()) {
+				for (AbsListView mImgList : imgList) {
+					for (int i = 0; i < 0 + visibleItemCount; i++) {
+						List<View> views = getAllChildViews(mImgList.getChildAt(i));
+						for (View view : views) {
+							if (view instanceof ImageView) {
+								ImageView imageView = (ImageView) view;
+								if (imageView.getTag() != null) {
+									String imageUrl = (String) imageView.getTag();
+									if (imageUrl != null && !"".equals(imageUrl.trim())) {
+										Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
+										if (bitmap == null) {
+											BitmapWorkerTask task = new BitmapWorkerTask();
+											taskCollection.add(task);
+											task.execute(imageUrl);
+										} else {
+											if (imageView != null && bitmap != null) {
+												imageView.setImageBitmap(bitmap);
+											}
+										}
 									}
 								}
 							}
@@ -353,16 +356,27 @@ public class MyApplication extends Application implements OnScrollListener {
 		protected void onPostExecute(Bitmap bitmap) {
 			super.onPostExecute(bitmap);
 			// 根据Tag找到相应的ImageView控件，将下载好的图片显示出来。
-			ImageView imageView = (ImageView) imgList.findViewWithTag(imageUrl);
-			if (imageView != null && bitmap != null) {
-				imageView.setImageBitmap(bitmap);
+			if (imgList != null && !imgList.isEmpty()) {
+				for (AbsListView mImgList : imgList) {
+					ImageView imageView = (ImageView) mImgList.findViewWithTag(imageUrl);
+					if (imageView != null && bitmap != null) {
+						imageView.setImageBitmap(bitmap);
+					}
+				}
 			}
 			taskCollection.remove(this);
 		}
 	}
 
 	public void setmImgList(AbsListView mImgList) {
-		this.imgList = mImgList;
-		this.imgList.setOnScrollListener(this);
+		imgList = new ArrayList<AbsListView>();
+		this.imgList.add(mImgList);
+		mImgList.setOnScrollListener(this);
 	}
+
+	public void addImgList(AbsListView childView) {
+		childView.setOnScrollListener(this);
+		imgList.add(childView);
+	}
+
 }

@@ -45,36 +45,38 @@ public final class R {
         public static final int search_btn_pressed=0x7f020015;
     }
     public static final class id {
-        public static final int action_settings=0x7f080034;
-        public static final int app_grid=0x7f08001c;
+        public static final int action_settings=0x7f080036;
+        public static final int app_grid=0x7f08001d;
         public static final int b=0x7f08000b;
-        public static final int back_normal=0x7f08002f;
-        public static final int brand_head=0x7f080019;
-        public static final int brand_list=0x7f080033;
+        public static final int back_normal=0x7f080030;
+        public static final int brand_head=0x7f08001a;
+        public static final int brand_list=0x7f080035;
         public static final int btn_back=0x7f080014;
-        public static final int btn_search=0x7f080016;
+        public static final int btn_cate=0x7f080015;
+        public static final int btn_search=0x7f080017;
         public static final int content=0x7f080004;
         public static final int d=0x7f080010;
         public static final int desc=0x7f080012;
         public static final int foot=0x7f080003;
         public static final int footer=0x7f080006;
+        public static final int good_n=0x7f08002b;
         public static final int good_pic=0x7f08000a;
         public static final int goods_pic_list=0x7f080011;
         public static final int gridview=0x7f080001;
         public static final int head=0x7f080002;
         public static final int header=0x7f080013;
-        public static final int header_description=0x7f080015;
-        public static final int history_search_name=0x7f080017;
-        public static final int iv_pic=0x7f08001e;
-        public static final int list_brand=0x7f08001a;
-        public static final int list_more=0x7f08001b;
+        public static final int header_description=0x7f080016;
+        public static final int history_search_name=0x7f080018;
+        public static final int iv_pic=0x7f08001f;
+        public static final int list_brand=0x7f08001b;
+        public static final int list_more=0x7f08001c;
         public static final int load_progressbar=0x7f080005;
         public static final int main_pull_refresh_view=0x7f080000;
         public static final int mainfooter=0x7f080007;
         public static final int mainfooter_one=0x7f080008;
         public static final int mainfooter_two=0x7f080009;
         public static final int n=0x7f08000c;
-        public static final int p=0x7f080018;
+        public static final int p=0x7f080019;
         public static final int pn=0x7f08000e;
         public static final int po=0x7f08000f;
         public static final int pull_to_load_center=0x7f080022;
@@ -87,16 +89,16 @@ public final class R {
         public static final int pull_to_refresh_progress=0x7f080029;
         public static final int pull_to_refresh_text=0x7f080027;
         public static final int pull_to_refresh_updated_at=0x7f080028;
-        public static final int rl=0x7f08001d;
+        public static final int recommend_goods=0x7f080034;
+        public static final int rl=0x7f08001e;
         public static final int save=0x7f08000d;
-        public static final int search=0x7f08002e;
-        public static final int search_content=0x7f080031;
-        public static final int search_pic=0x7f080030;
-        public static final int search_pic_content_del=0x7f080032;
-        public static final int search_pull_refresh_view=0x7f08002c;
-        public static final int searchgridview=0x7f08002d;
-        public static final int smart_options_list=0x7f08002b;
-        public static final int tv_name=0x7f08001f;
+        public static final int search=0x7f08002f;
+        public static final int search_content=0x7f080032;
+        public static final int search_pic=0x7f080031;
+        public static final int search_pic_content_del=0x7f080033;
+        public static final int search_pull_refresh_view=0x7f08002d;
+        public static final int searchgridview=0x7f08002e;
+        public static final int smart_options_list=0x7f08002c;
         public static final int tv_pn=0x7f080020;
     }
     public static final class layout {
@@ -112,9 +114,10 @@ public final class R {
         public static final int horizontallistview_item=0x7f030009;
         public static final int pulltorefresh_footer=0x7f03000a;
         public static final int pulltorefresh_header=0x7f03000b;
-        public static final int search_goods_view=0x7f03000c;
-        public static final int search_header=0x7f03000d;
-        public static final int smile_main=0x7f03000e;
+        public static final int recommend_good_item=0x7f03000c;
+        public static final int search_goods_view=0x7f03000d;
+        public static final int search_header=0x7f03000e;
+        public static final int smile_main=0x7f03000f;
     }
     public static final class menu {
         public static final int main=0x7f070000;
@@ -122,28 +125,30 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f050008;
         public static final int app_name=0x7f050007;
+        public static final int category=0x7f05000b;
         public static final int delete=0x7f050009;
         public static final int gu=0x7f05000a;
-        public static final int jGoodsTwo_more_url=0x7f050014;
-        public static final int jGoodsTwo_refresh_url=0x7f050013;
-        public static final int jGoods_more_url=0x7f050012;
-        public static final int jGoods_refresh_url=0x7f050011;
-        public static final int jGoods_search_more_url=0x7f050016;
-        public static final int jGoods_search_refresh_url=0x7f050015;
-        public static final int prefix_url=0x7f050010;
+        public static final int jGoodsTwo_more_url=0x7f050016;
+        public static final int jGoodsTwo_refresh_url=0x7f050015;
+        public static final int jGoods_more_url=0x7f050014;
+        public static final int jGoods_refresh_url=0x7f050013;
+        public static final int jGoods_search_more_url=0x7f050018;
+        public static final int jGoods_search_refresh_url=0x7f050017;
+        public static final int prefix_url=0x7f050012;
         public static final int pull_to_refresh_footer_pull_label=0x7f050004;
         public static final int pull_to_refresh_footer_refreshing_label=0x7f050005;
         public static final int pull_to_refresh_footer_release_label=0x7f050003;
         public static final int pull_to_refresh_pull_label=0x7f050000;
         public static final int pull_to_refresh_refreshing_label=0x7f050002;
         public static final int pull_to_refresh_release_label=0x7f050001;
+        public static final int recommend_goods=0x7f05000c;
         /**  搜索 
          */
-        public static final int search=0x7f05000b;
-        public static final int search_best_hot=0x7f05000f;
-        public static final int search_goods=0x7f05000e;
-        public static final int search_hint=0x7f05000c;
-        public static final int search_persons=0x7f05000d;
+        public static final int search=0x7f05000d;
+        public static final int search_best_hot=0x7f050011;
+        public static final int search_goods=0x7f050010;
+        public static final int search_hint=0x7f05000e;
+        public static final int search_persons=0x7f05000f;
         public static final int server_url=0x7f050006;
     }
     public static final class style {
