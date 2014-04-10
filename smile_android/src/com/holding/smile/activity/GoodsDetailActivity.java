@@ -28,6 +28,7 @@ import com.holding.smile.tools.SetExpandableListViewListViewHeight;
 public class GoodsDetailActivity extends BaseActivity implements OnClickListener {
 
 	private ImageAdapter	imageAdapter;
+	private ListView		listView;
 	private List<String>	picList	= new ArrayList<String>();
 
 	@Override
@@ -56,40 +57,38 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		TextView save = (TextView) findViewById(R.id.save);
 		TextView d = (TextView) findViewById(R.id.d);
 		TextView desc = (TextView) findViewById(R.id.desc);
-		ListView listView = (ListView) findViewById(R.id.goods_pic_list);
+		listView = (ListView) findViewById(R.id.goods_pic_list);
 
-		if(jGoods.getB() != null && !"".equals(jGoods.getB().trim())){
+		if (jGoods.getB() != null && !"".equals(jGoods.getB().trim())) {
 			b.setText(jGoods.getB().trim());
 		}
-		if(jGoods.getN() != null && !"".equals(jGoods.getN().trim())){
+		if (jGoods.getN() != null && !"".equals(jGoods.getN().trim())) {
 			n.setText(jGoods.getN().trim());
-		}		
-		if(jGoods.getPn() != null && !"".equals(jGoods.getPn().trim())){
+		}
+		if (jGoods.getPn() != null && !"".equals(jGoods.getPn().trim())) {
 			pn.setText("￥" + jGoods.getPn().trim());
 		}
-		if(jGoods.getPo() != null && !"".equals(jGoods.getPo().trim())){
+		if (jGoods.getPo() != null && !"".equals(jGoods.getPo().trim())) {
 			po.setText("￥" + jGoods.getPo().trim());
 			po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
-		}		
-		if(jGoods.getS() != null && !"".equals(jGoods.getS().trim())){
+		}
+		if (jGoods.getS() != null && !"".equals(jGoods.getS().trim())) {
 			save.setText("省￥" + jGoods.getS().trim());
-		}	
-		if(jGoods.getD() != null && !"".equals(jGoods.getD().trim())){
-			d.setText(jGoods.getD().trim());	
-		}	
-		if(jGoods.getDesc() != null && !"".equals(jGoods.getDesc().trim())){
+		}
+		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
+			d.setText(jGoods.getD().trim());
+		}
+		if (jGoods.getDesc() != null && !"".equals(jGoods.getDesc().trim())) {
 			desc.setText("物品描述：" + jGoods.getDesc().trim());
-		}		
+		}
 		for (int i = 0; i < jGoods.getP().length; i++) {
 			picList.add(jGoods.getP()[i]);
 		}
 
 		imageAdapter = new ImageAdapter(context, picList);
 		listView.setAdapter(imageAdapter);
-
-		MyApplication.getInstance().setmImgList(listView);
+		// MyApplication.getInstance().setmImgList(listView);
 		SetExpandableListViewListViewHeight.setListViewHeightOnChildren(listView);
-
 	}
 
 	@Override
@@ -103,7 +102,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				break;
 			}
 			case R.id.btn_back: {
-				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
 			}
@@ -116,11 +114,16 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		super.onDestroy();
 		picList.clear();
 		picList = null;
+		if (listView != null) {
+			listView.invalidate();
+			listView = null;
+		}
 		if (imageAdapter != null) {
 			imageAdapter.notifyDataSetChanged();
 			imageAdapter.notifyDataSetInvalidated();
 			imageAdapter = null;
 		}
 		// new RecycleBitmapUtil(true).recycle(listView);
+		setResult(RESULT_CANCELED, null);
 	}
 }

@@ -92,6 +92,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:divider="@android:color/transparent"
+            android:scrollbars="none"
             android:dividerHeight="1sp" />
 
         <View

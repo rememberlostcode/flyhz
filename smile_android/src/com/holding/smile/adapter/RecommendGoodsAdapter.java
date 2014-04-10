@@ -19,23 +19,13 @@ import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.entity.JGoods;
 
-/**
- * 
- * 类说明：水平列表适配器
- * 
- * @author robin 2014-3-23下午1:45:08
- * 
- */
-public class HorizontalGridViewAdapter extends BaseAdapter {
+public class RecommendGoodsAdapter extends BaseAdapter {
 
-	private LayoutInflater	mInflater;
 	private List<JGoods>	jGoodsList;
-	private Context			context;
 
-	public HorizontalGridViewAdapter(Context context, List<JGoods> jGoodsList) {
-		this.context = context;
-		this.mInflater = LayoutInflater.from(context);
-		this.jGoodsList = jGoodsList;
+	// 自己定义的构造函数
+	public RecommendGoodsAdapter(List<JGoods> contacts) {
+		this.jGoodsList = contacts;
 	}
 
 	@Override
@@ -45,12 +35,7 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
-		return position;
-	}
-
-	private static class ViewHolder {
-		private TextView	pn;
-		private ImageView	im;
+		return jGoodsList.get(position);
 	}
 
 	@Override
@@ -58,28 +43,32 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 		return position;
 	}
 
+	static class ViewHolder {
+		TextView	n;
+		ImageView	p;
+	}
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder = null;
+	public View getView(final int position, View convertView, final ViewGroup parent) {
+		final Context context = parent.getContext();
+		ViewHolder holder;
 		if (convertView == null) {
+			convertView = LayoutInflater.from(context).inflate(R.layout.recommend_good_item, null);
 			holder = new ViewHolder();
-			convertView = mInflater.inflate(R.layout.horizontallistview_item, null);
-			holder.im = (ImageView) convertView.findViewById(R.id.iv_pic);
-			holder.pn = (TextView) convertView.findViewById(R.id.tv_pn);
+			holder.n = (TextView) convertView.findViewById(R.id.good_n);
+			holder.p = (ImageView) convertView.findViewById(R.id.good_pic);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.im.setImageResource(R.drawable.empty_photo);
-
-		if (jGoodsList != null && !jGoodsList.isEmpty()) {
-			final JGoods jGoods = jGoodsList.get(position);
-			if (jGoods != null) {
-				holder.pn.setText("￥" + jGoods.getPn());
-				if (jGoods.getP() != null && jGoods.getP().length > 0) {
-					holder.im.setTag(jGoods.getP()[0]);
-				}
+		final JGoods jGoods = (JGoods) getItem(position);
+		if (jGoods != null) {
+			holder.n.setText(jGoods.getN());
+			if (jGoods.getP() != null && jGoods.getP().length > 0) {
+				holder.p.setTag(jGoods.getP()[0]);
 			}
+			holder.p.setImageResource(R.drawable.empty_photo);
+
 			convertView.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					Intent intent = new Intent(context, GoodsDetailActivity.class);

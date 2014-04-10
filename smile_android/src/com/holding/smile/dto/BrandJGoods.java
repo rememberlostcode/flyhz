@@ -12,23 +12,32 @@ import com.holding.smile.entity.JGoods;
  * 
  */
 public class BrandJGoods {
-	private String			brandName;	// 品牌名
-	private List<JGoods>	goodData;	// 返回数据
+	private Integer			i;	// 品牌ID
+	private String			n;	// 品牌名
+	private List<JGoods>	gs; // 返回数据
 
-	public String getBrandName() {
-		return brandName;
+	public Integer getI() {
+		return i;
 	}
 
-	public void setBrandName(String brandName) {
-		this.brandName = brandName;
+	public void setI(Integer i) {
+		this.i = i;
 	}
 
-	public List<JGoods> getGoodData() {
-		return goodData;
+	public String getN() {
+		return n;
 	}
 
-	public void setGoodData(List<JGoods> goodData) {
-		this.goodData = goodData;
+	public void setN(String n) {
+		this.n = n;
+	}
+
+	public List<JGoods> getGs() {
+		return gs;
+	}
+
+	public void setGs(List<JGoods> gs) {
+		this.gs = gs;
 	}
 
 }

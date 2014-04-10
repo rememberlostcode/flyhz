@@ -34,8 +34,8 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.MainTwoActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask">
+            android:finishOnTaskLaunch="true"
+            >
         </activity>
         <activity
             android:name="com.holding.smile.activity.SearchGoodsActivity"
@@ -49,11 +49,6 @@
             >
         </activity>
         
-        <activity
-            android:name="com.holding.smile.activity.HorizontalListViewActivity"
-            android:windowSoftInputMode="stateUnchanged|adjustPan"
-            android:screenOrientation="portrait" >
-        </activity>
     </application>
 
 </manifest>

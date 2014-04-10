@@ -32,6 +32,7 @@ import com.holding.smile.R;
  */
 public class BaseActivity extends Activity {
 
+	public static final int		MORE_CODE			= 9;
 	public static final int		SEARCH_CODE			= 10;
 	protected static final int	UPLOAD_IMAGE_CODE	= 11;
 
@@ -136,6 +137,14 @@ public class BaseActivity extends Activity {
 		ImageView button = (ImageView) findViewById(id);
 		setVisible(id);
 		return button;
+	}
+
+	public TextView displayHeaderCate() {
+		setHeadVisible();
+		int id = R.id.btn_cate;
+		TextView textView = (TextView) findViewById(id);
+		setVisible(id);
+		return textView;
 	}
 
 	public ImageView displayHeaderSearch() {

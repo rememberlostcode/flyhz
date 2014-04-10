@@ -10,4 +10,11 @@ public class MyListView extends ListView {
 		super(context);
 	}
 
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		// 注意这里,主要是把高度值改动了
+		int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
+		super.onMeasure(widthMeasureSpec, expandSpec);
+	}
+
 }

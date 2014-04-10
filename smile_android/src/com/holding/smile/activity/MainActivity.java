@@ -12,53 +12,69 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.adapter.RecommendGoodsAdapter;
 import com.holding.smile.adapter.VerticalListAdapter;
 import com.holding.smile.dto.BrandJGoods;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.entity.JGoods;
+import com.holding.smile.myview.MyGridView;
 import com.holding.smile.myview.PullToRefreshView;
+import com.holding.smile.myview.PullToRefreshView.OnFooterRefreshListener;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 
-public class MainActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener {
+public class MainActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener,
+		OnFooterRefreshListener {
 
-	private static final int	WHAT_DID_LOAD_DATA	= 0;
-	private static final int	WHAT_DID_REFRESH	= 1;
+	private static final int		WHAT_DID_LOAD_DATA		= 0;
+	private static final int		WHAT_DID_REFRESH		= 1;
+	private static final int		WHAT_DID_RECOMMEND_DATA	= 2;
 
-	private VerticalListAdapter	vlAdapter;
-	private ListView			listView;
-	private List<BrandJGoods>	brandJGoodsList		= new ArrayList<BrandJGoods>();
+	private MyGridView				reGridView;
+	private RecommendGoodsAdapter	reGoodsAdapter;
 
-	private PullToRefreshView	mPullToRefreshView;
+	private VerticalListAdapter		vlAdapter;
+	private ListView				listView;
+	private List<JGoods>			recGoodsList			= new ArrayList<JGoods>();		// 活动商品
+	private List<BrandJGoods>		brandJGoodsList			= new ArrayList<BrandJGoods>();
+
+	private PullToRefreshView		mPullToRefreshView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.smile_main);
 
-		ImageView backBtn = displayHeaderBack();
-		backBtn.setOnClickListener(this);
+		TextView cateBtn = displayHeaderCate();
+		cateBtn.setOnClickListener(this);
 
 		ImageView button = (ImageView) findViewById(R.id.btn_search);
 		button.setOnClickListener(this);
 
 		displayHeaderSearch();
 		TextView headerDescription = displayHeaderDescription();
-		headerDescription.setText(R.string.app_name);
+		headerDescription.setText(R.string.recommend_goods);
 		displayFooterMain(R.id.mainfooter_one);
 
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
+		reGridView = (MyGridView) findViewById(R.id.recommend_goods);
+		reGoodsAdapter = new RecommendGoodsAdapter(recGoodsList);
+		reGridView.setAdapter(reGoodsAdapter);
+
 		listView = (ListView) findViewById(R.id.brand_list);
 		vlAdapter = new VerticalListAdapter(context, brandJGoodsList);
 		listView.setAdapter(vlAdapter);
-		vlAdapter.notifyDataSetChanged();
 
 		startTask();
 		MyApplication.getInstance().setmImgList(listView);
+		MyApplication.getInstance().addImgList(reGridView);
 
 	}
 
@@ -71,13 +87,18 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 				startActivityForResult(intent, SEARCH_CODE);
 				break;
 			}
+			case R.id.btn_cate: {
+				Toast.makeText(context, "您点了类别！", Toast.LENGTH_LONG).show();
+				break;
+			}
 		}
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
+		if (requestCode == SEARCH_CODE || requestCode == MORE_CODE || resultCode == RESULT_CANCELED) {
 			MyApplication.getInstance().setmImgList(listView);
+			MyApplication.getInstance().addImgList(reGridView);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -98,8 +119,25 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		}, 1000);
 	}
 
+	/**
+	 * 加载活动商品
+	 */
+	public void loadRecommendData() {
+		recGoodsList.clear();
+		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
+											.getRecommendJGoodsListInit();
+		if (rGoods != null) {
+			Message msg = mUIHandler.obtainMessage(WHAT_DID_RECOMMEND_DATA);
+			msg.obj = rGoods;
+			msg.sendToTarget();
+		} else {
+			Toast.makeText(context, "活动区暂无数据", Toast.LENGTH_SHORT).show();
+		}
+	}
+
 	@Override
 	public void loadData() {
+		loadRecommendData();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getBrandJGoodsListInit();
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
@@ -111,6 +149,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 	}
 
 	public void onRefresh() {
+		loadRecommendData();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getBrandJGoodsListInit();
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
@@ -130,6 +169,22 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 			vlAdapter.notifyDataSetChanged();
 			vlAdapter.notifyDataSetInvalidated();
 			vlAdapter = null;
+		}
+		if (listView != null) {
+			listView.invalidate();
+			listView = null;
+		}
+
+		recGoodsList.clear();
+		recGoodsList = null;
+		if (reGoodsAdapter != null) {
+			reGoodsAdapter.notifyDataSetChanged();
+			reGoodsAdapter.notifyDataSetInvalidated();
+			reGoodsAdapter = null;
+		}
+		if (reGridView != null) {
+			reGridView.invalidate();
+			reGridView = null;
 		}
 	};
 
@@ -153,6 +208,30 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 													}
 												}
 												mPullToRefreshView.onHeaderRefreshComplete();
+												break;
+											}
+											case WHAT_DID_RECOMMEND_DATA: {
+												if (msg.obj != null) {
+													RtnValueDto obj = (RtnValueDto) msg.obj;
+													List<JGoods> strings = obj.getData();
+													if (strings != null && !strings.isEmpty()) {
+														for (int i = 0; i < strings.size(); i++) {
+															JGoods each = strings.get(i);
+															recGoodsList.add(each);
+														}
+														int ii = reGoodsAdapter.getCount();
+														int cWidth = MyApplication.getInstance()
+																					.getScreenWidth();
+														LayoutParams params = new LayoutParams(ii
+																* cWidth, LayoutParams.WRAP_CONTENT);
+														reGridView.setLayoutParams(params);
+														reGridView.setColumnWidth(cWidth);
+														reGridView.setStretchMode(GridView.NO_STRETCH);
+														reGridView.setNumColumns(ii);
+														reGoodsAdapter.notifyDataSetChanged();
+													}
+												}
+												// mPullToRefreshView.onHeaderRefreshComplete();
 												break;
 											}
 											case WHAT_DID_REFRESH: {
@@ -187,5 +266,16 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 										}
 									}
 								};
+
+	@Override
+	public void onFooterRefresh(PullToRefreshView view) {
+		mPullToRefreshView.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				// onLoadMore();
+			}
+		}, 1000);
+
+	}
 
 }
