@@ -20,11 +20,9 @@ import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.util.DateUtil;
-import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
 import com.flyhz.shop.dto.ProductBuildDto;
-import com.flyhz.shop.dto.RProductDto;
 
 @Service
 public class SolrDataImpl implements SolrData {
@@ -80,7 +78,6 @@ public class SolrDataImpl implements SolrData {
 	}
 
 	public void submitProductList(List<ProductBuildDto> productList) {
-		Fraction fraction = new Fraction();
 		Collection<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
 
 		ProductBuildDto product = null;
@@ -107,9 +104,7 @@ public class SolrDataImpl implements SolrData {
 			doc.addField("be", product.getBe());// 品牌名称
 			doc.addField("cid", product.getCid());// 分类ID
 
-			fraction.setProductId(product.getId());
-			fraction.setLastUpadteTime(DateUtil.strToDateLong(product.getT()));
-			doc.addField("sf", productFraction.getProductFraction(fraction));// 分数
+			doc.addField("sf", productFraction.getProductFraction(product));// 分数
 			doc.addField("st", product.getSt());// 时间排序值
 			doc.addField("sd", product.getSd());// 折扣排序值
 			doc.addField("ss", product.getSs());// 销售量排序值
@@ -202,8 +197,9 @@ public class SolrDataImpl implements SolrData {
 		int index = str.indexOf("\"docs\":[");
 		String ssss = str.substring(index + 7, str.length() - 2).replace("\"[", "[")
 							.replace("]\"", "]").replace("\\", "");
-		RProductDto[] sz = JSONUtil.getJson2Entity(ssss, RProductDto[].class);
-		System.out.println(sz);
+		// RProductDto[] sz = JSONUtil.getJson2Entity(ssss,
+		// RProductDto[].class);
+		// System.out.println(sz);
 		return ssss;
 	}
 }

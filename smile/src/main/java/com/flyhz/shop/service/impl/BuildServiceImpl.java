@@ -158,29 +158,29 @@ public class BuildServiceImpl implements BuildService {
 			}
 		}
 
-		// build每个品牌的推荐商品（前10个）
+		// build每个品牌的推荐商品（前10个）（首页不选分类时）
 		StringBuilder brandProducts = new StringBuilder(100);
+		String gs = "";
 		brandProducts.append("[");
 		for (int i = 0; i < brandList.size(); i++) {
 			if (brandList.get(i) != null && brandList.get(i).getId() != null) {
-				// cacheRepository.setString(
-				// Constants.PREFIX_BRANDS_RECOMMEND
-				// + String.valueOf(brandList.get(i).getId()),
-				// solrData.getProductsString(null, brandList.get(i).getId()));
-				if (brandProducts.length() > 1) {
-					brandProducts.append(",");
+				gs = solrData.getProductsString(null, brandList.get(i).getId());
+				if (StringUtil.isNotBlank(gs) && !"[]".equals(gs)) {// 该品牌没有商品就跳过
+					if (brandProducts.length() > 1) {
+						brandProducts.append(",");
+					}
+					brandProducts.append("{\"id\":\"" + brandList.get(i).getId() + "\",");
+					brandProducts.append("\"n\":\"" + brandList.get(i).getName() + "\",");
+					brandProducts.append("\"gs\":");
+					brandProducts.append(gs);
+					brandProducts.append("}");
 				}
-				brandProducts.append("{\"id\":\"" + brandList.get(i).getId() + "\",");
-				brandProducts.append("\"n\":\"" + brandList.get(i).getName() + "\",");
-				brandProducts.append("\"gs\":");
-				brandProducts.append(solrData.getProductsString(null, brandList.get(i).getId()));
-				brandProducts.append("}");
 			}
 		}
 		brandProducts.append("]");
 		cacheRepository.setString(Constants.REDIS_KEY_BRANDS_RECOMMEND, brandProducts.toString());
 
-		// build各品牌各分类推荐商品（前10个）
+		// build各品牌各分类推荐商品（前10个）（首页选分类时）
 		StringBuilder brandCateProducts = new StringBuilder(100);
 		for (int i = 0; i < catList.size(); i++) {
 			brandCateProducts.append("[");
@@ -188,15 +188,18 @@ public class BuildServiceImpl implements BuildService {
 				if (catList.get(i) != null && catList.get(i).getId() != null
 						&& brandList.get(j) != null && brandList.get(j).getId() != null) {
 
-					if (brandCateProducts.length() > 1) {
-						brandCateProducts.append(",");
+					gs = solrData.getProductsString(catList.get(i).getId(), brandList.get(j)
+																						.getId());
+					if (StringUtil.isNotBlank(gs) && !"[]".equals(gs)) {// 该品牌没有商品就跳过
+						if (brandCateProducts.length() > 1) {
+							brandCateProducts.append(",");
+						}
+						brandCateProducts.append("{\"id\":\"" + brandList.get(j).getId() + "\",");
+						brandCateProducts.append("\"n\":\"" + brandList.get(j).getName() + "\",");
+						brandCateProducts.append("\"gs\":");
+						brandCateProducts.append(gs);
+						brandCateProducts.append("}");
 					}
-					brandCateProducts.append("{\"i\":\"" + brandList.get(j).getId() + "\",");
-					brandCateProducts.append("\"n\":\"" + brandList.get(j).getName() + "\",");
-					brandCateProducts.append("\"gs\":");
-					brandCateProducts.append(solrData.getProductsString(catList.get(i).getId(),
-							brandList.get(j).getId()));
-					brandCateProducts.append("}");
 				}
 			}
 			brandCateProducts.append("]");

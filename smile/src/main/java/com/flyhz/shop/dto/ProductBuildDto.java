@@ -89,6 +89,10 @@ public class ProductBuildDto {
 	 * 销售数量
 	 */
 	private Integer		sn;
+	/**
+	 * 前一周销售数量
+	 */
+	private Integer		zsn;
 
 	public Integer getId() {
 		return id;
@@ -248,5 +252,13 @@ public class ProductBuildDto {
 
 	public void setSn(Integer sn) {
 		this.sn = sn;
+	}
+
+	public Integer getZsn() {
+		return zsn;
+	}
+
+	public void setZsn(Integer zsn) {
+		this.zsn = zsn;
 	}
 }

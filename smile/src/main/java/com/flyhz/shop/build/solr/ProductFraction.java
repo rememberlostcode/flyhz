@@ -1,6 +1,8 @@
 
 package com.flyhz.shop.build.solr;
 
+import com.flyhz.shop.dto.ProductBuildDto;
+
 /**
  * 商品计算分数工具接口
  * 
@@ -12,9 +14,9 @@ public interface ProductFraction {
 	/**
 	 * 获取商品的分数
 	 * 
-	 * @param fraction
+	 * @param product
 	 * @return
 	 */
-	public int getProductFraction(Fraction fraction);
+	public double getProductFraction(ProductBuildDto product);
 
 }

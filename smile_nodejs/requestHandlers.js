@@ -210,11 +210,11 @@ function brand(query,response) {
 //                        result += ',\"sp\":';
 //                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
 
+                        result += ',\"pp\":';
+                        result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
-                            result += ',\"pp\":';
-                            result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         } else if(seqorderType=='time'){
                             result += JSON.stringify(docs[i].st);
                         } else if(seqorderType=='sales'){
@@ -354,11 +354,11 @@ function brandmore(query,response) {
 //                        result += ',\"sp\":';
 //                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
 
+                        result += ',\"pp\":';
+                        result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
-                            result += ',\"pp\":';
-                            result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         } else if(seqorderType=='time'){
                             result += JSON.stringify(docs[i].st);
                         } else if(seqorderType=='sales'){
@@ -665,12 +665,11 @@ function search(query,response) {
 //                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
 //                        result += ',\"sp\":';
 //                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
-
+                        result += ',\"pp\":';
+                        result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
-                            result += ',\"pp\":';
-                            result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         } else if(seqorderType=='time'){
                             result += JSON.stringify(docs[i].st);
                         } else {
@@ -788,12 +787,11 @@ function searchmore(query,response) {
 //                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
 //                        result += ',\"sp\":';
 //                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
-
+                        result += ',\"pp\":';
+                        result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
-                            result += ',\"pp\":';
-                            result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         } else if(seqorderType=='time'){
                             result += JSON.stringify(docs[i].st);
                         } else {
