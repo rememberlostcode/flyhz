@@ -4,12 +4,12 @@ package com.flyhz.shop.dto;
 import java.math.BigDecimal;
 
 /**
- * 商品dto
+ * 商品dto（返回的json字符串转换的对象）
  * 
  * @author zhangb 2014年4月4日 下午2:01:38
  * 
  */
-public class ProductBuildDto {
+public class RProductDto {
 
 	private Integer		id;
 	/**
@@ -27,7 +27,7 @@ public class ProductBuildDto {
 	/**
 	 * 商品封面
 	 */
-	private String		p;
+	private String[]	p;
 	/**
 	 * 商品最后更新时间
 	 */
@@ -90,6 +90,8 @@ public class ProductBuildDto {
 	 */
 	private Integer		sn;
 
+	private String		_version_;
+
 	public Integer getId() {
 		return id;
 	}
@@ -114,11 +116,11 @@ public class ProductBuildDto {
 		this.bs = bs;
 	}
 
-	public String getP() {
+	public String[] getP() {
 		return p;
 	}
 
-	public void setP(String p) {
+	public void setP(String[] p) {
 		this.p = p;
 	}
 
@@ -249,4 +251,13 @@ public class ProductBuildDto {
 	public void setSn(Integer sn) {
 		this.sn = sn;
 	}
+
+	public String get_version_() {
+		return _version_;
+	}
+
+	public void set_version_(String _version_) {
+		this._version_ = _version_;
+	}
+
 }

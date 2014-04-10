@@ -30,6 +30,7 @@
         <typeAlias alias="OrderModel" type="com.flyhz.shop.persistence.entity.OrderModel"/>
         <typeAlias alias="BrandModel" type="com.flyhz.shop.persistence.entity.BrandModel"/>
         <typeAlias alias="CategoryModel" type="com.flyhz.shop.persistence.entity.CategoryModel"/>
+        <typeAlias alias="SalesvolumeModel" type="com.flyhz.shop.persistence.entity.SalesvolumeModel"/>
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>
         <typeAlias alias="OrderDto" type="com.flyhz.shop.dto.OrderDto"/>

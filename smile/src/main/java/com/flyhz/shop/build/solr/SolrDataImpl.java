@@ -19,9 +19,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.SolrData;
+import com.flyhz.framework.util.DateUtil;
+import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
 import com.flyhz.shop.dto.ProductBuildDto;
+import com.flyhz.shop.dto.RProductDto;
 
 @Service
 public class SolrDataImpl implements SolrData {
@@ -86,23 +89,31 @@ public class SolrDataImpl implements SolrData {
 		for (int i = 0; i < productList.size(); i++) {
 			product = productList.get(i);
 			doc = new SolrInputDocument();
-			doc.addField("id", product.getId());
-			doc.addField("n", product.getN());
-			doc.addField("d", product.getD());
-			doc.addField("lp", product.getLp());
-			doc.addField("pp", product.getPp());
+			doc.addField("id", product.getId());// ID
+			doc.addField("n", product.getN());// 名称
+			doc.addField("d", product.getD());// 说明
+			doc.addField("lp", product.getLp());// 本地价格
+			doc.addField("pp", product.getPp());// 代购价格
+
+			// 计算差价
 			if (product.getLp() != null && product.getPp() != null) {
 				doc.addField("sp", product.getLp().subtract(product.getPp()));
+			} else {
+				doc.addField("sp", 0);
 			}
-			doc.addField("p", product.getP());
-			doc.addField("t", product.getT());
-			doc.addField("bid", product.getBid());
-			doc.addField("cid", product.getCid());
+			doc.addField("p", product.getP());// 封面
+			doc.addField("t", DateUtil.strToDateLong(product.getT()));// 时间
+			doc.addField("bid", product.getBid());// 品牌ID
+			doc.addField("be", product.getBe());// 品牌名称
+			doc.addField("cid", product.getCid());// 分类ID
 
 			fraction.setProductId(product.getId());
-			fraction.setLastUpadteTime(product.getT());
-			doc.addField("sf", productFraction.getProductFraction(fraction));// 分数排序
-			doc.addField("st", i);// 时间排序
+			fraction.setLastUpadteTime(DateUtil.strToDateLong(product.getT()));
+			doc.addField("sf", productFraction.getProductFraction(fraction));// 分数
+			doc.addField("st", product.getSt());// 时间排序值
+			doc.addField("sd", product.getSd());// 折扣排序值
+			doc.addField("ss", product.getSs());// 销售量排序值
+			doc.addField("sn", product.getSn());// 销售量
 			docs.add(doc);
 		}
 
@@ -176,7 +187,7 @@ public class SolrDataImpl implements SolrData {
 	 */
 	private HashMap<String, String> getBaseParams() {
 		HashMap<String, String> param = new HashMap<String, String>();
-		param.put("sort", "sf+desc");
+		param.put("sort", "sf+desc");// 按照分数来推荐
 		param.put("rows", "10");
 		return param;
 	}
@@ -189,6 +200,10 @@ public class SolrDataImpl implements SolrData {
 	 */
 	private String getDocsString(String str) {
 		int index = str.indexOf("\"docs\":[");
-		return str.substring(index + 7, str.length() - 2);
+		String ssss = str.substring(index + 7, str.length() - 2).replace("\"[", "[")
+							.replace("]\"", "]").replace("\\", "");
+		RProductDto[] sz = JSONUtil.getJson2Entity(ssss, RProductDto[].class);
+		System.out.println(sz);
+		return ssss;
 	}
 }
