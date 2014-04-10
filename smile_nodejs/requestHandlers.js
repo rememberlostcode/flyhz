@@ -220,7 +220,7 @@ function brand(query,response) {
                         } else if(seqorderType=='sales'){
                             result += JSON.stringify(docs[i].ss);
                             result += ',\"sn\":';
-                            result += JSON.stringify(docs[i].cn?docs[i].sn:0);
+                            result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         } else {
                             result += JSON.stringify(docs[i].ss);
                             result += ',\"sn\":';
@@ -402,7 +402,28 @@ function brandmore(query,response) {
     });
     req.end();
 }
+function sorttype(query,response){
+    var result = '[';
 
+    result += '{';
+    result += '"n":"销售量","v":"sales"';
+    result += '}';
+
+    result += ',';
+    result += '{';
+    result += '"n":"折扣","v":"discount"';
+    result += '}';
+
+    result += ']';
+
+    response.writeHead(200, {
+        "Content-Type": applicationJson,
+        "Access-Control-Allow-Origin":"*",
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+    response.write(addData(result));
+    response.end();
+}
 /**
  * 所有排行
  * @param query
@@ -866,6 +887,7 @@ exports.category = category;
 exports.recommendactivity = recommendactivity;
 exports.brand = brand;
 exports.brandmore = brandmore;
+exports.sorttype = sorttype;
 exports.sort = sort;
 exports.rankingdiscount = rankingdiscount;
 exports.rankingsales = rankingsales;
