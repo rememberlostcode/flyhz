@@ -74,11 +74,12 @@ public class ImageAdapter extends BaseAdapter {
 				holder.p.setImageBitmap(bitmap);
 			} else {
 				// 在后台开始下载图片
-				bitmap = ImgUtil.getInstance().getBitmap(picList.get(position));
+				String imageUrl = context.getString(R.string.jGoods_img_url)
+						+ picList.get(position);
+				bitmap = ImgUtil.getInstance().getBitmap(imageUrl);
 				if (bitmap != null) {
 					// 图片下载完成后缓存到LrcCache中
-					MyApplication.getInstance().addBitmapToMemoryCache(picList.get(position),
-							bitmap);
+					MyApplication.getInstance().addBitmapToMemoryCache(imageUrl, bitmap);
 					// Bitmap 縮放
 					bitmap = BitmapUtils.resizeBitmap(bitmap, maxWidth, maxHeight);
 					holder.p.setImageBitmap(bitmap);

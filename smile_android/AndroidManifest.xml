@@ -34,7 +34,8 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.MainTwoActivity"
-            android:finishOnTaskLaunch="true"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait" >
             >
         </activity>
         <activity
@@ -48,6 +49,12 @@
             android:finishOnTaskLaunch="true"
             >
         </activity>
+        
+        <activity
+            android:name="com.holding.smile.activity.CategoryActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait"
+            />
         
     </application>
 

@@ -1,13 +1,13 @@
 {
     "data": [
         {
-            "i": 3,
-            "b": "Breitling",
+            "id": 3,
+            "be": "Breitling",
             "n": "男士手表",
-            "pn": "39670",
-            "po": "52058",
-            "s": "12388",
-            "d": "1月5日",
+            "pp": "39670",
+            "lp": "52058",
+            "sp": "12388",
+            "t": "1月5日",
             "p": "http://img04.taobaocdn.com/bao/uploaded/i4/T1mqgbFjtdXXXXXXXX_!!0-item_pic.jpg"
         }
     ],

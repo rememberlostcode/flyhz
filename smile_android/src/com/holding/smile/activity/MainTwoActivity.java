@@ -21,6 +21,7 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.MyJGoodsAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
+import com.holding.smile.entity.SortType;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnFooterRefreshListener;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
@@ -39,6 +40,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 	private PullToRefreshView	mPullToRefreshView;
 	private GridView			mGridView;
+	private Integer				bid					= null;						// 品牌ID
+	private Integer				cid					= null;						// 分类ID
+	private String				seqorderType		= null;						// 选中的排序类型
+	private List<SortType>		sorttypeList		= new ArrayList<SortType>();	// 排序类型列表
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +52,14 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 
-		ImageView button = (ImageView) findViewById(R.id.btn_search);
-		button.setOnClickListener(this);
+		Intent intent = this.getIntent();
+		bid = (Integer) intent.getExtras().getSerializable("bid");
+		cid = (Integer) intent.getExtras().getSerializable("cid");
+		String bn = (String) intent.getExtras().getString("bn");
 
-		displayHeaderSearch();
 		TextView headerDescription = displayHeaderDescription();
-		headerDescription.setText(R.string.app_name);
-		displayFooterMain(R.id.mainfooter_two);
+		headerDescription.setText(bn);
+		displayFooterMain(0);
 
 		adapter = new MyJGoodsAdapter(mStrings);
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
@@ -75,12 +81,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		switch (view.getId()) {
 			case R.id.btn_back: {
 				finish();
-				break;
-			}
-			case R.id.btn_search: {
-				Intent intent = new Intent(this, SearchGoodsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResult(intent, SEARCH_CODE);
 				break;
 			}
 		}
@@ -122,7 +122,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 	@Override
 	public void loadData() {
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getJGoodsTwoListInit();
+		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
+											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rGoods;
@@ -133,13 +134,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	}
 
 	public void onRefresh() {
-		JGoods jGoodsFirst = null;
-		Object obj = mGridView.getItemAtPosition(0);
-		if (obj != null) {
-			jGoodsFirst = (JGoods) obj;
-		}
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
-											.getJGoodsTwoListRefresh(jGoodsFirst);
+											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
 			msg.obj = rGoods;
@@ -159,8 +155,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		if (obj != null) {
 			jGoodsLast = (JGoods) obj;
 		}
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
-											.getJGoodsTwoListMore(jGoodsLast);
+		RtnValueDto rGoods = MyApplication.getInstance()
+											.getDataService()
+											.getBrandJGoodsListMore(bid, cid, seqorderType,
+													jGoodsLast.getSeq());
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_MORE);
 			msg.obj = rGoods;

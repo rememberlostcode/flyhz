@@ -196,6 +196,7 @@ public class MyApplication extends Application implements OnScrollListener {
 	 *            用于显示图片的控件。
 	 */
 	public void setImageView(String imageUrl, ImageView imageView) {
+
 		Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
 		if (bitmap != null) {
 			imageView.setImageBitmap(bitmap);
@@ -213,6 +214,9 @@ public class MyApplication extends Application implements OnScrollListener {
 	 *            LruCache的键，这里传入从网络上下载的Bitmap对象。
 	 */
 	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+		if (key != null && key.indexOf("http://") < 0) {
+			key = getApplicationContext().getString(R.string.jGoods_img_url) + key;
+		}
 		if (getBitmapFromMemoryCache(key) == null) {
 			imgMemoryCache.put(key, bitmap);
 		}
@@ -228,6 +232,9 @@ public class MyApplication extends Application implements OnScrollListener {
 	public Bitmap getBitmapFromMemoryCache(String key) {// step-4
 		if (key == null || key.equals(""))
 			return null;
+		if (key != null && key.indexOf("http://") < 0) {
+			key = getApplicationContext().getString(R.string.jGoods_img_url) + key;
+		}
 		return imgMemoryCache.get(key);
 	}
 
@@ -343,6 +350,9 @@ public class MyApplication extends Application implements OnScrollListener {
 		@Override
 		protected Bitmap doInBackground(String... params) {
 			imageUrl = params[0];
+			if (imageUrl != null && imageUrl.indexOf("http://") < 0) {
+				imageUrl = getApplicationContext().getString(R.string.jGoods_img_url) + imageUrl;
+			}
 			// 在后台开始下载图片
 			Bitmap bitmap = ImgUtil.getInstance().getBitmap(imageUrl);
 			if (bitmap != null) {

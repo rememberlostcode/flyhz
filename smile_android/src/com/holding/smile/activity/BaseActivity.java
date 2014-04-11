@@ -32,6 +32,7 @@ import com.holding.smile.R;
  */
 public class BaseActivity extends Activity {
 
+	public static final int		CATE_CODE			= 8;
 	public static final int		MORE_CODE			= 9;
 	public static final int		SEARCH_CODE			= 10;
 	protected static final int	UPLOAD_IMAGE_CODE	= 11;
@@ -325,21 +326,10 @@ public class BaseActivity extends Activity {
 		int mainfooterTwoId = R.id.mainfooter_two;
 		View mainfooterTwo = view.findViewById(mainfooterTwoId);
 
-		if (idNow == mainfooterOneId) {
-			mainfooterOne.setSelected(true);
-			mainfooterTwo.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent();
-					intent.setClass(context, MainTwoActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-					startActivity(intent);
-					finish();
-					overridePendingTransition(0, 0);
-				}
-			});
-		} else if (idNow == mainfooterTwoId) {
-			mainfooterTwo.setSelected(true);
+		int mainfooterThreeId = R.id.mainfooter_three;
+		View mainfooterThree = view.findViewById(mainfooterThreeId);
+
+		if (idNow == 0) {
 			mainfooterOne.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -351,6 +341,85 @@ public class BaseActivity extends Activity {
 					overridePendingTransition(0, 0);
 				}
 			});
+			mainfooterTwo.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent();
+					intent.setClass(context, SearchGoodsActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					startActivity(intent);
+					overridePendingTransition(0, 0);
+				}
+			});
+			mainfooterThree.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+
+				}
+			});
+		} else {
+
+			if (idNow == mainfooterOneId) {
+				mainfooterOne.setSelected(true);
+				mainfooterTwo.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent();
+						intent.setClass(context, SearchGoodsActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						startActivity(intent);
+						overridePendingTransition(0, 0);
+					}
+				});
+				mainfooterThree.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				});
+			} else if (idNow == mainfooterTwoId) {
+				mainfooterTwo.setSelected(true);
+				mainfooterOne.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent();
+						intent.setClass(context, MainActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						startActivity(intent);
+						finish();
+						overridePendingTransition(0, 0);
+					}
+				});
+				mainfooterThree.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				});
+			} else if (idNow == mainfooterThreeId) {
+				mainfooterThree.setSelected(true);
+				mainfooterOne.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent();
+						intent.setClass(context, MainActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						startActivity(intent);
+						finish();
+						overridePendingTransition(0, 0);
+					}
+				});
+				mainfooterTwo.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent();
+						intent.setClass(context, SearchGoodsActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						startActivity(intent);
+						overridePendingTransition(0, 0);
+					}
+				});
+			}
 		}
 		return view;
 	}

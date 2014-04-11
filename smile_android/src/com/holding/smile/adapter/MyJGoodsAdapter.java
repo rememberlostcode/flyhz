@@ -75,25 +75,25 @@ public class MyJGoodsAdapter extends BaseAdapter {
 		}
 		final JGoods jGoods = (JGoods) getItem(position);
 
-		if(jGoods.getB() != null && !"".equals(jGoods.getB().trim())){
-			holder.b.setText(jGoods.getB().trim());
-		}		
-		if(jGoods.getN() != null && !"".equals(jGoods.getN().trim())){
-			holder.n.setText(jGoods.getN().trim());
-		}		
-		if(jGoods.getPn() != null && !"".equals(jGoods.getPn().trim())){
-			holder.pn.setText("￥" + jGoods.getPn().trim());			
+		if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
+			holder.b.setText(jGoods.getBe().trim());
 		}
-		if(jGoods.getPo() != null && !"".equals(jGoods.getPo().trim())){
-			holder.po.setText("￥" + jGoods.getPo().trim());
+		if (jGoods.getN() != null && !"".equals(jGoods.getN().trim())) {
+			holder.n.setText(jGoods.getN().trim());
+		}
+		if (jGoods.getPp() != null) {
+			holder.pn.setText("￥" + jGoods.getPp());
+		}
+		if (jGoods.getLp() != null) {
+			holder.po.setText("￥" + jGoods.getLp());
 			holder.po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
-		}				
-		if(jGoods.getS() != null && !"".equals(jGoods.getS().trim())){
-			holder.save.setText("省￥" + jGoods.getS().trim());
-		}		
-		if(jGoods.getD() != null && !"".equals(jGoods.getD().trim())){
+		}
+		if (jGoods.getSp() != null) {
+			holder.save.setText("省￥" + jGoods.getSp());
+		}
+		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
 			holder.d.setText(jGoods.getD().trim());
-		}		
+		}
 		if (jGoods.getP() != null && jGoods.getP().length > 0) {
 			holder.p.setTag(jGoods.getP()[0]);
 		}

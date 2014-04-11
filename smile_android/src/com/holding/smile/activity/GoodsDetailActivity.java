@@ -48,7 +48,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		}
 
 		TextView headerDesc = displayHeaderDescription();
-		headerDesc.setText(jGoods.getB());
+		headerDesc.setText(jGoods.getN());
 
 		TextView b = (TextView) findViewById(R.id.b);
 		TextView n = (TextView) findViewById(R.id.n);
@@ -59,27 +59,27 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		TextView desc = (TextView) findViewById(R.id.desc);
 		listView = (ListView) findViewById(R.id.goods_pic_list);
 
-		if (jGoods.getB() != null && !"".equals(jGoods.getB().trim())) {
-			b.setText(jGoods.getB().trim());
+		if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
+			b.setText(jGoods.getBe().trim());
 		}
 		if (jGoods.getN() != null && !"".equals(jGoods.getN().trim())) {
 			n.setText(jGoods.getN().trim());
 		}
-		if (jGoods.getPn() != null && !"".equals(jGoods.getPn().trim())) {
-			pn.setText("￥" + jGoods.getPn().trim());
+		if (jGoods.getPp() != null) {
+			pn.setText("￥" + jGoods.getPp());
 		}
-		if (jGoods.getPo() != null && !"".equals(jGoods.getPo().trim())) {
-			po.setText("￥" + jGoods.getPo().trim());
+		if (jGoods.getLp() != null) {
+			po.setText("￥" + jGoods.getLp());
 			po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
 		}
-		if (jGoods.getS() != null && !"".equals(jGoods.getS().trim())) {
-			save.setText("省￥" + jGoods.getS().trim());
+		if (jGoods.getSp() != null) {
+			save.setText("省￥" + jGoods.getSp());
 		}
 		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
 			d.setText(jGoods.getD().trim());
 		}
-		if (jGoods.getDesc() != null && !"".equals(jGoods.getDesc().trim())) {
-			desc.setText("物品描述：" + jGoods.getDesc().trim());
+		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
+			desc.setText("物品描述：" + jGoods.getD().trim());
 		}
 		for (int i = 0; i < jGoods.getP().length; i++) {
 			picList.add(jGoods.getP()[i]);

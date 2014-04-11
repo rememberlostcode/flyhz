@@ -75,7 +75,7 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 		if (jGoodsList != null && !jGoodsList.isEmpty()) {
 			final JGoods jGoods = jGoodsList.get(position);
 			if (jGoods != null) {
-				holder.pn.setText("￥" + jGoods.getPn());
+				holder.pn.setText("￥" + jGoods.getPp());
 				if (jGoods.getP() != null && jGoods.getP().length > 0) {
 					holder.im.setTag(jGoods.getP()[0]);
 				}

@@ -12,16 +12,16 @@ import com.holding.smile.entity.JGoods;
  * 
  */
 public class BrandJGoods {
-	private Integer			i;	// 品牌ID
+	private Integer			id; // 品牌ID
 	private String			n;	// 品牌名
 	private List<JGoods>	gs; // 返回数据
 
-	public Integer getI() {
-		return i;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setI(Integer i) {
-		this.i = i;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getN() {

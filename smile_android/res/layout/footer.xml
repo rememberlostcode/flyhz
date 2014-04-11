@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone" >
-
+        
         <LinearLayout
             android:id="@+id/mainfooter_one"
             android:layout_width="wrap_content"
@@ -23,14 +23,31 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <ImageView
+           <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/mainfooter_one_bg" />
+                android:src="@drawable/mainfooter_one_bg" 
+                android:contentDescription="@string/gu"/>
+        </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/mainfooter_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+           
+            <ImageView
+	            android:id="@+id/btn_search"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/btn_search_bg"
+	            android:contentDescription="@string/gu"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/mainfooter_two"
+            android:id="@+id/mainfooter_three"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -40,7 +57,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/mainfooter_two_bg" />
+                android:src="@drawable/mainfooter_two_bg" 
+                android:contentDescription="@string/gu"/>
         </LinearLayout>
     </LinearLayout>
 

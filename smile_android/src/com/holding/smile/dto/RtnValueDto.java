@@ -3,6 +3,7 @@ package com.holding.smile.dto;
 
 import java.util.List;
 
+import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JGoods;
 
 /**
@@ -15,6 +16,7 @@ public class RtnValueDto {
 	private Integer				code;		// 系统代码
 	private List<JGoods>		data;		// 返回数据
 	private List<BrandJGoods>	brandData;	// 返回按品牌分类的数据
+	private List<Category>		cateData;	// 返回分类数据
 	private ValidateDto			validate;	// 校验结果
 	private String				atData;
 
@@ -40,6 +42,14 @@ public class RtnValueDto {
 
 	public void setBrandData(List<BrandJGoods> brandData) {
 		this.brandData = brandData;
+	}
+
+	public List<Category> getCateData() {
+		return cateData;
+	}
+
+	public void setCateData(List<Category> cateData) {
+		this.cateData = cateData;
 	}
 
 	public ValidateDto getValidate() {

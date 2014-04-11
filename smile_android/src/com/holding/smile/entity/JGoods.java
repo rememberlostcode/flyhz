@@ -4,142 +4,98 @@ package com.holding.smile.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import com.holding.smile.tools.Constants;
-import com.holding.smile.tools.JSONUtil;
-
 public class JGoods implements Serializable {
 	private static final long	serialVersionUID	= -1956085742090097519L;
 
+	private Integer				id;
 	/**
-	 * 省钱排序号
-	 */
-	private Integer				seqorder;
-	/**
-	 * 时间排序号
-	 */
-	private Integer				seqorder_time;
-	/**
-	 * 物品ID
-	 */
-	private Integer				i;
-
-	/**
-	 * 品牌
-	 */
-	private String				b;
-
-	/**
-	 * 名称
+	 * 商品名称
 	 */
 	private String				n;
-
 	/**
-	 * 当前价格
-	 */
-	private String				pn;
-
-	/**
-	 * 原价
-	 */
-	private String				po;
-
-	/**
-	 * 省
-	 */
-	private String				s;
-
-	/**
-	 * 发布日期
+	 * 商品描述
 	 */
 	private String				d;
-
 	/**
-	 * 图片
+	 * 商品款号
+	 */
+	private String				bs;
+	/**
+	 * 商品封面
 	 */
 	private String[]			p;
+	/**
+	 * 商品最后更新时间
+	 */
+	private String				t;
+	/**
+	 * 本地价格
+	 */
+	private BigDecimal			lp;
+	/**
+	 * 代购价格
+	 */
+	private BigDecimal			pp;
+	/**
+	 * 差价
+	 */
+	private BigDecimal			sp;
+	/**
+	 * 分数，用于默认排序
+	 */
+	private Integer				sf;
+	/**
+	 * 时间排序值
+	 */
+	private Integer				st;
+	/**
+	 * 折扣排序值
+	 */
+	private Integer				sd;
+	/**
+	 * 销售量排序值
+	 */
+	private Integer				ss;
+	/**
+	 * 品牌ID
+	 */
+	private Integer				bid;
+	/**
+	 * 品牌名称
+	 */
+	private String				be;
 
 	/**
-	 * 描述
+	 * 分类ID
 	 */
-	private String				desc;
-
-	public JGoods() {
-	}
-
-	public JGoods(SolrGood solr) {
-		i = solr.getId();
-		n = solr.getName();
-		if (solr.getBrand_cn() == null) {
-			b = solr.getBrand_en();
-		} else {
-			b = solr.getBrand_cn();
-		}
-		if (solr.getPurchasing_price() != null) {
-			pn = String.valueOf(new BigDecimal(solr.getPurchasing_price()).setScale(0,
-					BigDecimal.ROUND_HALF_UP));
-		}
-		if (solr.getLocal_price() != null) {
-			po = String.valueOf(new BigDecimal(solr.getLocal_price()).setScale(0,
-					BigDecimal.ROUND_HALF_UP));
-		}
-		if (solr.getLocal_price() != null && solr.getPurchasing_price() != null) {
-			s = String.valueOf(Integer.parseInt(po) - Integer.parseInt(pn));
-		}
-		if (solr.getPost_time() != null) {
-			d = solr.getPost_time().replace("T", " ").replace("Z", "");
-		}
-		seqorder = solr.getSeqorder();
-		seqorder_time = solr.getSeqorder_time();
-		desc = solr.getDescription();
-
-		String[] olds = JSONUtil.getJson2Entity(solr.getImg_urls_m(), String[].class);
-		if (olds != null && olds.length > 0) {
-			p = new String[olds.length];
-			String preUrl = Constants.getImageUrlPre();
-			for (int i = 0; i < olds.length; i++) {
-				p[i] = preUrl + olds[i];
-			}
-		}
-
-	}
-
+	private Integer				cid;
 	/**
-	 * 提供精确的减法运算。
-	 * 
-	 * @param v1
-	 *            被减数
-	 * @param v2
-	 *            减数
-	 * @return 两个参数的差
+	 * 分类名称
 	 */
-	private double sub(double v1, double v2) {
-		BigDecimal b1 = new BigDecimal(Double.toString(v1));
-		BigDecimal b2 = new BigDecimal(Double.toString(v2));
-		return b1.subtract(b2).doubleValue();
+	private String				ce;
+	/**
+	 * 颜色
+	 */
+	private String				c;
+	/**
+	 * 颜色图片
+	 */
+	private String				ci;
+	/**
+	 * 销售数量
+	 */
+	private Integer				sn;
+
+	private Integer				seq;
+
+	private String				_version_;
+
+	public Integer getId() {
+		return id;
 	}
 
-	public Integer getSeqorder() {
-		return seqorder;
-	}
-
-	public void setSeqorder(Integer seqorder) {
-		this.seqorder = seqorder;
-	}
-
-	public Integer getI() {
-		return i;
-	}
-
-	public void setI(Integer i) {
-		this.i = i;
-	}
-
-	public String getB() {
-		return b;
-	}
-
-	public void setB(String b) {
-		this.b = b;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getN() {
@@ -150,36 +106,12 @@ public class JGoods implements Serializable {
 		this.n = n;
 	}
 
-	public String getPn() {
-		return pn;
+	public String getBs() {
+		return bs;
 	}
 
-	public void setPn(String pn) {
-		this.pn = pn;
-	}
-
-	public String getPo() {
-		return po;
-	}
-
-	public void setPo(String po) {
-		this.po = po;
-	}
-
-	public String getS() {
-		return s;
-	}
-
-	public void setS(String s) {
-		this.s = s;
-	}
-
-	public String getD() {
-		return d;
-	}
-
-	public void setD(String d) {
-		this.d = d;
+	public void setBs(String bs) {
+		this.bs = bs;
 	}
 
 	public String[] getP() {
@@ -190,20 +122,148 @@ public class JGoods implements Serializable {
 		this.p = p;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getT() {
+		return t;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setT(String t) {
+		this.t = t;
 	}
 
-	public Integer getSeqorder_time() {
-		return seqorder_time;
+	public BigDecimal getLp() {
+		return lp;
 	}
 
-	public void setSeqorder_time(Integer seqorder_time) {
-		this.seqorder_time = seqorder_time;
+	public void setLp(BigDecimal lp) {
+		this.lp = lp;
+	}
+
+	public BigDecimal getPp() {
+		return pp;
+	}
+
+	public void setPp(BigDecimal pp) {
+		this.pp = pp;
+	}
+
+	public BigDecimal getSp() {
+		return sp;
+	}
+
+	public void setSp(BigDecimal sp) {
+		this.sp = sp;
+	}
+
+	public Integer getSf() {
+		return sf;
+	}
+
+	public void setSf(Integer sf) {
+		this.sf = sf;
+	}
+
+	public Integer getSt() {
+		return st;
+	}
+
+	public void setSt(Integer st) {
+		this.st = st;
+	}
+
+	public String getD() {
+		return d;
+	}
+
+	public void setD(String d) {
+		this.d = d;
+	}
+
+	public Integer getBid() {
+		return bid;
+	}
+
+	public void setBid(Integer bid) {
+		this.bid = bid;
+	}
+
+	public String getBe() {
+		return be;
+	}
+
+	public void setBe(String be) {
+		this.be = be;
+	}
+
+	public Integer getCid() {
+		return cid;
+	}
+
+	public void setCid(Integer cid) {
+		this.cid = cid;
+	}
+
+	public String getCe() {
+		return ce;
+	}
+
+	public void setCe(String ce) {
+		this.ce = ce;
+	}
+
+	public String getC() {
+		return c;
+	}
+
+	public void setC(String c) {
+		this.c = c;
+	}
+
+	public String getCi() {
+		return ci;
+	}
+
+	public void setCi(String ci) {
+		this.ci = ci;
+	}
+
+	public Integer getSd() {
+		return sd;
+	}
+
+	public void setSd(Integer sd) {
+		this.sd = sd;
+	}
+
+	public Integer getSs() {
+		return ss;
+	}
+
+	public void setSs(Integer ss) {
+		this.ss = ss;
+	}
+
+	public Integer getSn() {
+		return sn;
+	}
+
+	public void setSn(Integer sn) {
+		this.sn = sn;
+	}
+
+	public Integer getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Integer seq) {
+		this.seq = seq;
+	}
+
+	public String get_version_() {
+		return _version_;
+	}
+
+	public void set_version_(String _version_) {
+		this._version_ = _version_;
 	}
 
 }

@@ -36,10 +36,12 @@ public class VerticalListAdapter extends BaseAdapter {
 	private int					hSpacing	= 2;
 	private LayoutInflater		mInflater;
 	private List<BrandJGoods>	brandJGoodsList;
+	private Integer				cid;
 
-	public VerticalListAdapter(Context context, List<BrandJGoods> brandJGoodsList) {
+	public VerticalListAdapter(Context context, List<BrandJGoods> brandJGoodsList, Integer cid) {
 		mInflater = LayoutInflater.from(context);
 		this.brandJGoodsList = brandJGoodsList;
+		this.cid = cid;
 	}
 
 	@Override
@@ -102,6 +104,9 @@ public class VerticalListAdapter extends BaseAdapter {
 					@Override
 					public void onClick(View arg0) {
 						Intent intent = new Intent(context, MainTwoActivity.class);
+						intent.putExtra("bid", brandJGoods.getId());
+						intent.putExtra("bn", brandJGoods.getN());
+						intent.putExtra("cid", cid);
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						Activity activity = (Activity) context;
 						activity.startActivityForResult(intent, BaseActivity.MORE_CODE);

@@ -1,13 +1,13 @@
 {
     "data": [
         {
-            "i": 2,
-            "b": "Enzo Angiolini",
+            "id": 2,
+            "be": "Enzo Angiolini",
             "n": "象牙色高跟单鞋",
-            "pn": "220",
-            "po": "680",
-            "s": "460",
-            "d": "2月1日",
+            "pp": "220",
+            "lp": "680",
+            "sp": "460",
+            "t": "2月1日",
             "p": "http://img.taobaocdn.com/imgextra/http://img02.taobaocdn.com/imgextra/i2/27537717/T2rH3nXmJXXXXXXXXX_!!27537717.jpg"
         }
     ],
