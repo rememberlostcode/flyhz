@@ -63,7 +63,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(R.layout.home_list, null);
 			holder = new ViewHolder();
 			holder.n = (TextView) convertView.findViewById(R.id.n);
-			holder.n.setWidth(sWidth - 190);
+			holder.n.setWidth((int) (sWidth - 190 * MyApplication.getInstance().getDensity()));
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
 			holder.lp = (TextView) convertView.findViewById(R.id.lp);
 			holder.sp = (TextView) convertView.findViewById(R.id.sp);
