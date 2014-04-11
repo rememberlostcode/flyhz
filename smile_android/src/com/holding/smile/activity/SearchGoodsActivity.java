@@ -309,7 +309,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	private void loadData(String keywords) {
 		progressBar.setVisibility(View.VISIBLE);
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
-											.getJGoodsSearchListInit(keywords);
+											.getJGoodsSearchListInit(keywords, null, null);
 		if (rGoods == null) {
 			rGoods = new RtnValueDto();
 			rGoods.setData(null);
@@ -328,7 +328,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 		RtnValueDto rGoods = MyApplication.getInstance()
 											.getDataService()
 											.getJGoodsSearchListRefresh(
-													editText.getText().toString(), jGoodsFirst);
+													editText.getText().toString(), jGoodsFirst,
+													null, null);
 		if (rGoods == null) {
 			rGoods = new RtnValueDto();
 			rGoods.setData(null);
@@ -351,7 +352,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 		RtnValueDto rGoods = MyApplication.getInstance()
 											.getDataService()
 											.getJGoodsSearchListMore(editText.getText().toString(),
-													jGoodsLast);
+													jGoodsLast, null, null);
 		if (rGoods == null) {
 			rGoods = new RtnValueDto();
 			rGoods.setData(null);

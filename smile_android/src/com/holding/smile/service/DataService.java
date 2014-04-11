@@ -5,8 +5,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,11 +34,8 @@ public class DataService {
 	public static boolean	getDataFromNet	= true;
 
 	private String			jGoodsInitJson;
-	private String			jGoodsRefreshJson;
-	private String			jGoodsMoreJson;
 
 	private String			jGoodsTwoInitJson;
-	private String			jGoodsTwoRefreshJson;
 	private String			jGoodsTwoMoreJson;
 
 	private String			jGoodsSearchInitJson;
@@ -56,14 +51,13 @@ public class DataService {
 	private String			jGoods_brand_url;
 	private String			jGoods_brand_more_url;
 	private String			jGoods_sorttype_url;
+	private String			jGoods_search_url;
+	private String			jGoods_search_more_url;
 
 	public DataService(Context context) {
 		jGoodsInitJson = setJson("jGoodsInitJson.json");
-		jGoodsRefreshJson = setJson("jGoodsRefreshJson.json");
-		jGoodsMoreJson = setJson("jGoodsMoreJson.json");
 
 		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
-		jGoodsTwoRefreshJson = setJson("jGoodsTwoRefreshJson.json");
 		jGoodsTwoMoreJson = setJson("jGoodsTwoMoreJson.json");
 
 		jGoodsSearchInitJson = setJson("jGoodsSearchInitJson.json");
@@ -79,6 +73,8 @@ public class DataService {
 		jGoods_brand_url = context.getString(R.string.jGoods_brand_url);
 		jGoods_brand_more_url = context.getString(R.string.jGoods_brand_more_url);
 		jGoods_sorttype_url = context.getString(R.string.jGoods_sorttype_url);
+		jGoods_search_url = context.getString(R.string.jGoods_search_refresh_url);
+		jGoods_search_more_url = context.getString(R.string.jGoods_search_more_url);
 	}
 
 	private String setJson(String fileName) {
@@ -126,27 +122,6 @@ public class DataService {
 			obj = getRecommendGoods();
 		} else {
 			obj = JSONUtil.changeJson2RtnValueDto(jGoodsInitJson);
-		}
-		return obj;
-	}
-
-	/**
-	 * 首页最新物品刷新
-	 * 
-	 * @param jGoodsFirst
-	 *            第一个物品
-	 * @return
-	 */
-	public RtnValueDto getJGoodsListRefresh(JGoods jGoodsFirst) {
-		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			if (jGoodsFirst != null && jGoodsFirst.getSt() != null) {
-				obj = getLastestGoods(null, jGoodsFirst.getSt(), true);
-			} else {
-				obj = getLastestGoods(null, null, true);
-			}
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(jGoodsRefreshJson);
 		}
 		return obj;
 	}
@@ -239,11 +214,12 @@ public class DataService {
 	 *            经纬度
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListInit(String keywords) {
+	public RtnValueDto getJGoodsSearchListInit(String keywords, String seqorderType,
+			Integer seqorderValue) {
 		RtnValueDto obj = null;
 		if (getDataFromNet) {
 			if (keywords != null && !"".equals(keywords.trim())) {
-				obj = getLastestGoods(keywords, null, true);
+				obj = searchGoods(keywords, null, seqorderType, seqorderValue);
 			}
 		} else {
 			obj = JSONUtil.changeJson2RtnValueDto(jGoodsSearchInitJson);
@@ -262,14 +238,15 @@ public class DataService {
 	 *            经纬度
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListRefresh(String keywords, JGoods jGoodsFirst) {
+	public RtnValueDto getJGoodsSearchListRefresh(String keywords, JGoods jGoodsFirst,
+			String seqorderType, Integer seqorderValue) {
 		RtnValueDto obj = null;
 		if (getDataFromNet) {
 			if (keywords != null && !"".equals(keywords.trim())) {
 				if (jGoodsFirst != null && jGoodsFirst.getSt() != null) {
-					obj = getLastestGoods(keywords, jGoodsFirst.getSt(), true);
+					obj = searchGoods(keywords, jGoodsFirst.getSt(), seqorderType, seqorderValue);
 				} else {
-					obj = getLastestGoods(keywords, null, true);
+					obj = searchGoods(keywords, null, seqorderType, seqorderValue);
 				}
 			}
 		} else {
@@ -289,14 +266,15 @@ public class DataService {
 	 *            经纬度
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListMore(String keywords, JGoods jGoodsLast) {
+	public RtnValueDto getJGoodsSearchListMore(String keywords, JGoods jGoodsLast,
+			String seqorderType, Integer seqorderValue) {
 		RtnValueDto obj = null;
 		if (getDataFromNet) {
 			if (keywords != null && !"".equals(keywords.trim())) {
 				if (jGoodsLast != null && jGoodsLast.getSt() != null) {
-					obj = getLastestGoods(keywords, jGoodsLast.getSt(), false);
+					obj = searchGoods(keywords, jGoodsLast.getSt(), seqorderType, seqorderValue);
 				} else {
-					obj = getLastestGoods(keywords, null, false);
+					obj = searchGoods(keywords, null, seqorderType, seqorderValue);
 				}
 			}
 		} else {
@@ -440,150 +418,47 @@ public class DataService {
 	}
 
 	/**
-	 * 最新物品
+	 * 搜索物品
 	 * 
+	 * @param keywords
+	 *            关键词
 	 * @param seqorder
 	 *            序号
-	 * @param refresh
-	 *            是否是刷新，true是，否则是更多
+	 * @param seqorderType
+	 * @param seqorderValue
 	 * @return
 	 */
-	public RtnValueDto getLastestGoods(String keywords, Integer seqorder, boolean refresh) {
+	public RtnValueDto searchGoods(String keywords, Integer seqorder, String seqorderType,
+			Integer seqorderValue) {
 		RtnValueDto rvd = new RtnValueDto();
 		List<JGoods> results = new ArrayList<JGoods>();
-		String rStr = "";
+		String url = prefix_url;
 		HashMap<String, String> param = new HashMap<String, String>();
-
-		int rows = Constants.MORE_NUM;
-		if (refresh) {
-			rows = Constants.INIT_NUM;
+		if (StrUtils.isNotEmpty(keywords)) {
+			param.put("key", keywords.trim());
 		}
-
-		if (keywords != null && !"".equals(keywords)) {
-			try {
-				param.put("q",
-						"name%3A" + URLEncoder.encode(keywords, "UTF-8") + "+OR+brand_cn%3A"
-								+ URLEncoder.encode(keywords, "UTF-8") + "+OR+description%3A"
-								+ URLEncoder.encode(keywords, "UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+		if (StrUtils.isNotEmpty(seqorderType)) {
+			param.put("seqorderType", seqorderType.trim());
+		}
+		if (seqorderValue != null) {
+			param.put("seqorderValue", String.valueOf(seqorderValue));
+			url += this.jGoods_search_more_url;
 		} else {
-			param.put("q", "*%3A*");
+			url += this.jGoods_search_url;
 		}
-		if (seqorder != null) {
-			if (refresh) {
-				param.put("fq", "seqorder_time%3A%5B" + (seqorder + 1) + "+TO+*%5D");
-			} else {
-				param.put("fq", "seqorder_time%3A%5B*+TO+" + (seqorder - 1) + "%5D");
-			}
-		}
-		param.put("sort", "seqorder_time+desc");
-		param.put("wt", "json");
-		param.put("fl", Constants.PARAM_STRING);
-		param.put("rows", String.valueOf(rows));
-		rStr = URLUtil.getStringByGet(Constants.SERVER_URL + Constants.SEARCH_URL, param);
+		String rStr = URLUtil.getStringByGet(url, param);
 
 		if (rStr != null && !"".equals(rStr)) {
 			JSONObject datas;
 			try {
 				datas = new JSONObject(rStr);
-				// .replaceAll("\"\\\\[", "[").replaceAll("\\\\]\"", "]")
-				String docs = datas.getJSONObject("response").getString("docs");
-				int numFound = datas.getJSONObject("response").getInt("numFound");
-				JGoods[] goods = JSONUtil.getJson2Entity(docs, JGoods[].class);
+				String data = datas.getString("data");
+				JGoods[] goods = JSONUtil.getJson2Entity(data, JGoods[].class);
 				if (goods != null) {
 					for (int i = 0; i < goods.length; i++) {
 						results.add(goods[i]);
 					}
 				}
-
-				ValidateDto vd = new ValidateDto();
-				if (results.size() == 0) {
-					if (refresh) {
-						vd.setMessage(Constants.MESSAGE_NODATA);
-					} else {
-						vd.setMessage(Constants.MESSAGE_LAST);
-					}
-				}
-				if (refresh && numFound > Constants.INIT_NUM) {
-					vd.setOption("3");
-				}
-				rvd.setValidate(vd);
-			} catch (JSONException e) {
-				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
-			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
-		}
-		rvd.setData(results);
-		return rvd;
-	}
-
-	/**
-	 * 最省钱物品
-	 * 
-	 * @param seqorder
-	 *            序号
-	 * @param refresh
-	 *            是否是刷新，true是，否则是更多
-	 * @return
-	 */
-	public RtnValueDto getMostEconomicalGoods(Integer seqorder, boolean refresh) {
-		RtnValueDto rvd = new RtnValueDto();
-		List<JGoods> results = new ArrayList<JGoods>();
-		String rStr = "";
-		HashMap<String, String> param = new HashMap<String, String>();
-
-		int rows = Constants.MORE_NUM;
-		if (refresh) {
-			rows = Constants.INIT_NUM;
-		}
-
-		param.put("q", "*%3A*");
-		if (seqorder != null) {
-			if (refresh) {
-				param.put("fq", "seqorder%3A%5B" + (seqorder + 1) + "+TO+*%5D");
-			} else {
-				param.put("fq", "seqorder%3A%5B*+TO+" + (seqorder - 1) + "%5D");
-			}
-		}
-		param.put("sort", "seqorder+desc");
-		param.put("wt", "json");
-		param.put("fl", Constants.PARAM_STRING);
-		param.put("rows", String.valueOf(rows));
-		rStr = URLUtil.getStringByGet(Constants.SERVER_URL + Constants.SEARCH_URL, param);
-
-		if (rStr != null && !"".equals(rStr.trim())) {
-			JSONObject datas;
-			try {
-				datas = new JSONObject(rStr);
-				String docs = datas.getJSONObject("response").getString("docs");
-				int numFound = datas.getJSONObject("response").getInt("numFound");
-				JGoods[] goods = JSONUtil.getJson2Entity(docs, JGoods[].class);
-				if (goods != null) {
-					for (int i = 0; i < goods.length; i++) {
-						results.add(goods[i]);
-					}
-				}
-
-				ValidateDto vd = new ValidateDto();
-				if (results.size() == 0) {
-					if (refresh) {
-						vd.setMessage(Constants.MESSAGE_NODATA);
-					} else {
-						vd.setMessage(Constants.MESSAGE_LAST);
-					}
-				}
-				if (refresh && numFound > Constants.MORE_NUM) {
-					vd.setOption("3");
-				}
-				rvd.setValidate(vd);
 			} catch (JSONException e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
