@@ -24,14 +24,12 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <GridView
-            android:id="@+id/searchgridview"
+        <ListView
+            android:id="@+id/searchlistview"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:horizontalSpacing="4dp"
-            android:numColumns="2"
             android:scrollbars="none"
-            android:verticalSpacing="4dip" />
+            />
     </com.holding.smile.myview.PullToRefreshView>
 
 </LinearLayout>

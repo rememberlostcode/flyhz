@@ -21,7 +21,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,7 +60,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	private List<JGoods>		mStrings			= new ArrayList<JGoods>();
 
 	private PullToRefreshView	mPullToRefreshView;
-	private GridView			mGridView;
+	private ListView			mListView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +71,10 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 		backBtn.setOnClickListener(this);
 
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.search_pull_refresh_view);
-		mGridView = (GridView) findViewById(R.id.searchgridview);
-		mGridView.setAdapter(adapter);
+		mListView = (ListView) findViewById(R.id.searchlistview);
+		mListView.setAdapter(adapter);
 		mPullToRefreshView.setOnHeaderRefreshListener(this);
 		mPullToRefreshView.setOnFooterRefreshListener(this);
-
-		if (MyApplication.getInstance().getScreenWidth() < 800) {
-			mGridView.setNumColumns(1);
-		}
 
 		editText = (EditText) findViewById(R.id.search_content);
 		editText.setOnClickListener(this);
@@ -220,11 +215,11 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	public void searchGoodsList(String keywords) {
 
 		mStrings.clear();
-		mGridView.setVisibility(ViewGroup.VISIBLE);
+		mListView.setVisibility(ViewGroup.VISIBLE);
 		if (adapter == null) {
 			adapter = new MyJGoodsAdapter(mStrings);
-			mGridView.setAdapter(adapter);
-			MyApplication.getInstance().setmImgList(mGridView);
+			mListView.setAdapter(adapter);
+			MyApplication.getInstance().setmImgList(mListView);
 		}
 		loadData(keywords);
 
@@ -261,7 +256,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
-			MyApplication.getInstance().setmImgList(mGridView);
+			MyApplication.getInstance().setmImgList(mListView);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -280,8 +275,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 			adapter.notifyDataSetChanged();
 			adapter.notifyDataSetInvalidated();
 			adapter = null;
-			mGridView.destroyDrawingCache();
-			mGridView = null;
+			mListView.destroyDrawingCache();
+			mListView = null;
 		}
 		System.gc();
 	}
@@ -321,7 +316,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 
 	public void onRefresh() {
 		JGoods jGoodsFirst = null;
-		Object obj = mGridView.getItemAtPosition(0);
+		Object obj = mListView.getItemAtPosition(0);
 		if (obj != null) {
 			jGoodsFirst = (JGoods) obj;
 		}
@@ -342,9 +337,9 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	public void onLoadMore() {
 		JGoods jGoodsLast = null;
 		Object obj = null;
-		Integer i = mGridView.getLastVisiblePosition();
+		Integer i = mListView.getLastVisiblePosition();
 		if (i >= 0) {
-			obj = mGridView.getItemAtPosition(i);
+			obj = mListView.getItemAtPosition(i);
 		}
 		if (obj != null) {
 			jGoodsLast = (JGoods) obj;
