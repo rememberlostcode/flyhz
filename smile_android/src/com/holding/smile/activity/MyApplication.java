@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import com.holding.smile.R;
 import com.holding.smile.service.DataService;
 import com.holding.smile.service.SQLiteService;
-import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.ImgUtil;
 import com.holding.smile.tools.LruCache;
 
@@ -86,7 +85,6 @@ public class MyApplication extends Application implements OnScrollListener {
 
 		// 初始化本地DB
 		MyApplication.getInstance().setSqliteService(new SQLiteService(context));
-		Constants.SERVER_URL = context.getString(R.string.server_url);
 	}
 
 	public DataService getDataService() {
