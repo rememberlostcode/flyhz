@@ -898,6 +898,6 @@ exports.goodsdetail = goodsdetail;
 function addData(tmp){
     var res = JSON.parse('{"data":null}');
     res.data = tmp;
-    return JSON.stringify(res);
-   // return '{"data":"'+tmp+'"}';
+    //return JSON.stringify(res);
+    return '{"data":'+tmp+'}';
 }

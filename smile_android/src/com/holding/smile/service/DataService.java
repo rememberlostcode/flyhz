@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 
 import com.holding.smile.R;
@@ -21,6 +18,10 @@ import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
+import com.holding.smile.protocol.PBrandJGoods;
+import com.holding.smile.protocol.PCategory;
+import com.holding.smile.protocol.PGoods;
+import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.StrUtils;
@@ -154,23 +155,8 @@ public class DataService {
 		List<SortType> results = new ArrayList<SortType>();
 		if (getDataFromNet) {
 			String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sorttype_url, null);
-
-			if (rStr != null && !"".equals(rStr)) {
-				JSONObject datas;
-				try {
-					datas = new JSONObject(rStr);
-					String data = datas.getString("data");
-					SortType[] sortTypes = JSONUtil.getJson2Entity(data, SortType[].class);
-					if (sortTypes != null) {
-						for (int i = 0; i < sortTypes.length; i++) {
-							results.add(sortTypes[i]);
-						}
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-					return null;
-				}
-			}
+			PSortTypes pst = JSONUtil.getJson2Entity(rStr, PSortTypes.class);
+			results = pst.getData();
 		} else {
 			SortType sort = new SortType();
 			sort.setN("销售量");
@@ -298,18 +284,10 @@ public class DataService {
 				param);
 
 		if (rStr != null && !"".equals(rStr)) {
-			JSONObject datas;
 			try {
-				datas = new JSONObject(rStr);
-				// .replaceAll("\"\\\\[", "[").replaceAll("\\\\]\"", "]")
-				String data = datas.getString("data");
-				BrandJGoods[] goods = JSONUtil.getJson2Entity(data, BrandJGoods[].class);
-				if (goods != null) {
-					for (int i = 0; i < goods.length; i++) {
-						results.add(goods[i]);
-					}
-				}
-			} catch (JSONException e) {
+				PBrandJGoods pg = JSONUtil.getJson2Entity(rStr, PBrandJGoods.class);
+				results = pg.getData();
+			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
 				vd.setMessage(Constants.MESSAGE_EXCEPTION);
@@ -335,18 +313,10 @@ public class DataService {
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_recommend_url, null);
 
 		if (rStr != null && !"".equals(rStr)) {
-			JSONObject datas;
 			try {
-				datas = new JSONObject(rStr);
-				// .replaceAll("\"\\\\[", "[").replaceAll("\\\\]\"", "]")
-				String data = datas.getString("data");
-				JGoods[] goods = JSONUtil.getJson2Entity(data, JGoods[].class);
-				if (goods != null) {
-					for (int i = 0; i < goods.length; i++) {
-						results.add(goods[i]);
-					}
-				}
-			} catch (JSONException e) {
+				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
+				results = pst.getData();
+			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
 				vd.setMessage(Constants.MESSAGE_EXCEPTION);
@@ -392,17 +362,10 @@ public class DataService {
 		String rStr = URLUtil.getStringByGet(url, param);
 
 		if (rStr != null && !"".equals(rStr)) {
-			JSONObject datas;
 			try {
-				datas = new JSONObject(rStr);
-				String data = datas.getString("data");
-				JGoods[] goods = JSONUtil.getJson2Entity(data, JGoods[].class);
-				if (goods != null) {
-					for (int i = 0; i < goods.length; i++) {
-						results.add(goods[i]);
-					}
-				}
-			} catch (JSONException e) {
+				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
+				results = pst.getData();
+			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
 				vd.setMessage(Constants.MESSAGE_EXCEPTION);
@@ -449,17 +412,10 @@ public class DataService {
 		String rStr = URLUtil.getStringByGet(url, param);
 
 		if (rStr != null && !"".equals(rStr)) {
-			JSONObject datas;
 			try {
-				datas = new JSONObject(rStr);
-				String data = datas.getString("data");
-				JGoods[] goods = JSONUtil.getJson2Entity(data, JGoods[].class);
-				if (goods != null) {
-					for (int i = 0; i < goods.length; i++) {
-						results.add(goods[i]);
-					}
-				}
-			} catch (JSONException e) {
+				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
+				results = pst.getData();
+			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
 				vd.setMessage(Constants.MESSAGE_EXCEPTION);
@@ -485,17 +441,10 @@ public class DataService {
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_cate_url, null);
 
 		if (rStr != null && !"".equals(rStr)) {
-			JSONObject datas;
 			try {
-				datas = new JSONObject(rStr);
-				String data = datas.getString("data");
-				Category[] cates = JSONUtil.getJson2Entity(data, Category[].class);
-				if (cates != null) {
-					for (int i = 0; i < cates.length; i++) {
-						results.add(cates[i]);
-					}
-				}
-			} catch (JSONException e) {
+				PCategory pc = JSONUtil.getJson2Entity(rStr, PCategory.class);
+				results = pc.getData();
+			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
 				vd.setMessage(Constants.MESSAGE_EXCEPTION);

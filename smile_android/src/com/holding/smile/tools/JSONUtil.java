@@ -1,19 +1,25 @@
+
 package com.holding.smile.tools;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.JavaType;
 
 import android.util.Log;
 
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
+
 /**
  * 
  * 类说明:Json工具类
@@ -23,9 +29,9 @@ import com.holding.smile.entity.JGoods;
  * 
  */
 public class JSONUtil {
-	public static final ObjectMapper objectMapper = new ObjectMapper();
+	public static final ObjectMapper	objectMapper	= new ObjectMapper();
 	@SuppressWarnings("unused")
-	private static JsonGenerator jsonGenerator = null;
+	private static JsonGenerator		jsonGenerator	= null;
 	static {
 		objectMapper.configure(Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 	}
@@ -50,8 +56,8 @@ public class JSONUtil {
 	public static <E> String getEntity2Json(Object obj) {
 		String json = null;
 		try {
-			jsonGenerator = objectMapper.getJsonFactory().createJsonGenerator(
-					System.out, JsonEncoding.UTF8);
+			jsonGenerator = objectMapper.getJsonFactory().createJsonGenerator(System.out,
+					JsonEncoding.UTF8);
 
 			json = objectMapper.writeValueAsString(obj);
 		} catch (Exception e) {
@@ -108,6 +114,31 @@ public class JSONUtil {
 			obj = JSONUtil.getJson2Entity(json, RtnValueDto.class);
 		}
 		return obj;
+	}
+
+	/**
+	 * JSON字符串转换为泛型list
+	 * 
+	 * @param <E>
+	 */
+	public static <E> List<E> getJson2EntityList(String json, Class<?> collectionClass,
+			Class<?>... elementClasses) {
+		Object obj = null;
+		try {
+			if (json == null || "".equals(json)) {
+				return null;
+			}
+			JavaType javaType = objectMapper.getTypeFactory().constructParametricType(
+					collectionClass, elementClasses);
+			obj = objectMapper.readValue(json, javaType);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return (List<E>) obj;
 	}
 
 }

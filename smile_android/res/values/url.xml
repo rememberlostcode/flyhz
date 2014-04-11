@@ -3,6 +3,8 @@
 
     <string name="prefix_url">http://211.149.175.138/smile</string>
     <string name="jGoods_img_url">http://211.149.175.138/smile/static</string>
+    <!-- <string name="prefix_url">http://10.22.22.40/smile</string>
+    <string name="jGoods_img_url">http://10.22.22.40/smile/static</string> -->
     <string name="jGoods_recommend_url">/node/recommend/activity</string>
     <string name="jGoods_brand_recommend_url">/node/recommend/brand</string>
     <string name="jGoods_cate_url">/node/category</string>
