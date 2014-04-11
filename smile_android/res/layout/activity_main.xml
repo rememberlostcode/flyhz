@@ -4,14 +4,19 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
+    
+    <com.holding.smile.myview.MyLinearLayout
+        android:id="@+id/sort_type"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/darker_gray"/>
 
-    <GridView
-        android:id="@+id/gridview"
+    <ListView
+        android:id="@+id/goods_list_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="none"
-        android:horizontalSpacing="4dp"
-        android:numColumns="2"
-        android:verticalSpacing="4dip" />
+       />
 
 </com.holding.smile.myview.PullToRefreshView>

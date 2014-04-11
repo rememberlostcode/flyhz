@@ -328,7 +328,7 @@ public class MyApplication extends Application implements OnScrollListener {
 	 * 取消所有正在下载或等待下载的任务。
 	 */
 	public void cancelAllTasks() {
-		if (taskCollection != null) {
+		if (taskCollection != null && !taskCollection.isEmpty()) {
 			for (BitmapWorkerTask task : taskCollection) {
 				task.cancel(false);
 			}

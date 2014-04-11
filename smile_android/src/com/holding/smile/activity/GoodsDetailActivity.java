@@ -48,7 +48,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		}
 
 		TextView headerDesc = displayHeaderDescription();
-		headerDesc.setText(jGoods.getN());
+		headerDesc.setText(R.string.good_detail);
 
 		TextView b = (TextView) findViewById(R.id.b);
 		TextView n = (TextView) findViewById(R.id.n);

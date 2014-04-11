@@ -18,10 +18,11 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
+import com.holding.smile.activity.MyApplication;
 import com.holding.smile.entity.JGoods;
 
 public class MyJGoodsAdapter extends BaseAdapter {
-
+	private Integer			sWidth	= MyApplication.getInstance().getScreenWidth();
 	private List<JGoods>	jGoodsList;
 
 	// 自己定义的构造函数
@@ -45,13 +46,13 @@ public class MyJGoodsAdapter extends BaseAdapter {
 	}
 
 	static class ViewHolder {
-		TextView	b;
 		TextView	n;
-		TextView	pn;
-		TextView	po;
-		TextView	save;
+		TextView	pp;
+		TextView	lp;
+		TextView	sp;
 		TextView	d;
 		ImageView	p;
+		TextView	sn;
 	}
 
 	@Override
@@ -61,12 +62,11 @@ public class MyJGoodsAdapter extends BaseAdapter {
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.home_list, null);
 			holder = new ViewHolder();
-			holder.b = (TextView) convertView.findViewById(R.id.b);
 			holder.n = (TextView) convertView.findViewById(R.id.n);
-			holder.pn = (TextView) convertView.findViewById(R.id.pn);
-			holder.po = (TextView) convertView.findViewById(R.id.po);
-			holder.save = (TextView) convertView.findViewById(R.id.save);
-			holder.d = (TextView) convertView.findViewById(R.id.d);
+			holder.n.setWidth(sWidth - 190);
+			holder.pp = (TextView) convertView.findViewById(R.id.pp);
+			holder.lp = (TextView) convertView.findViewById(R.id.lp);
+			holder.sp = (TextView) convertView.findViewById(R.id.sp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 
 			convertView.setTag(holder);
@@ -75,21 +75,20 @@ public class MyJGoodsAdapter extends BaseAdapter {
 		}
 		final JGoods jGoods = (JGoods) getItem(position);
 
-		if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
-			holder.b.setText(jGoods.getBe().trim());
-		}
 		if (jGoods.getN() != null && !"".equals(jGoods.getN().trim())) {
 			holder.n.setText(jGoods.getN().trim());
 		}
 		if (jGoods.getPp() != null) {
-			holder.pn.setText("￥" + jGoods.getPp());
+			holder.pp.setText("￥" + jGoods.getPp());
 		}
 		if (jGoods.getLp() != null) {
-			holder.po.setText("￥" + jGoods.getLp());
-			holder.po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
+			holder.lp.setText("￥" + jGoods.getLp());
+			holder.lp.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
+			holder.lp.setVisibility(ViewGroup.VISIBLE);
 		}
 		if (jGoods.getSp() != null) {
-			holder.save.setText("省￥" + jGoods.getSp());
+			holder.sp.setText("省￥" + jGoods.getSp());
+			holder.sp.setVisibility(ViewGroup.VISIBLE);
 		}
 		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
 			holder.d.setText(jGoods.getD().trim());

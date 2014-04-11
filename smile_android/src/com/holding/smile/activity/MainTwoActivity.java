@@ -12,8 +12,8 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +22,7 @@ import com.holding.smile.adapter.MyJGoodsAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
+import com.holding.smile.myview.MyLinearLayout;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnFooterRefreshListener;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
@@ -33,13 +34,12 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	private static final int	WHAT_DID_REFRESH	= 1;
 	private static final int	WHAT_DID_MORE		= 2;
 
-	private int					SEARCH_CODE			= 5;
 	private MyJGoodsAdapter		adapter;
 	private List<JGoods>		mStrings			= new ArrayList<JGoods>();
 	private static final int	LIMIT				= 20;
 
 	private PullToRefreshView	mPullToRefreshView;
-	private GridView			mGridView;
+	private ListView			mListView;
 	private Integer				bid					= null;						// 品牌ID
 	private Integer				cid					= null;						// 分类ID
 	private String				seqorderType		= null;						// 选中的排序类型
@@ -61,18 +61,37 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		headerDescription.setText(bn);
 		displayFooterMain(0);
 
+		setSortTypeLayout();// 设置排序标签
+
 		adapter = new MyJGoodsAdapter(mStrings);
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
-		mGridView = (GridView) findViewById(R.id.gridview);
-		mGridView.setAdapter(adapter);
+		mListView = (ListView) findViewById(R.id.goods_list_view);
+		mListView.setAdapter(adapter);
 		mPullToRefreshView.setOnHeaderRefreshListener(this);
 		mPullToRefreshView.setOnFooterRefreshListener(this);
 
-		MyApplication.getInstance().setmImgList(mGridView);
+		MyApplication.getInstance().setmImgList(mListView);
 		startTask();
 
-		if (MyApplication.getInstance().getScreenWidth() < 800) {
-			mGridView.setNumColumns(1);
+	}
+
+	/**
+	 * 设置排序标签布局
+	 */
+	private void setSortTypeLayout() {
+		MyLinearLayout sortTypeLayout = (MyLinearLayout) findViewById(R.id.sort_type);
+		sorttypeList = MyApplication.getInstance().getDataService().getSortTypeList();
+		sortTypeLayout.setSortTypeList(context, sorttypeList);
+		int childCount = sortTypeLayout.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			View v = sortTypeLayout.getChildAt(i);
+			v.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					seqorderType = v.getTag().toString();
+					loadData();
+				}
+			});
 		}
 	}
 
@@ -89,7 +108,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
-			MyApplication.getInstance().setmImgList(mGridView);
+			MyApplication.getInstance().setmImgList(mListView);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -148,9 +167,9 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	public void onLoadMore() {
 		JGoods jGoodsLast = null;
 		Object obj = null;
-		Integer i = mGridView.getLastVisiblePosition();
+		Integer i = mListView.getLastVisiblePosition();
 		if (i >= 0) {
-			obj = mGridView.getItemAtPosition(i);
+			obj = mListView.getItemAtPosition(i);
 		}
 		if (obj != null) {
 			jGoodsLast = (JGoods) obj;
@@ -171,14 +190,18 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		sorttypeList.clear();
+		sorttypeList = null;
 		mStrings.clear();
 		mStrings = null;
+		mPullToRefreshView.destroyDrawingCache();
+		mPullToRefreshView = null;
+		mListView.destroyDrawingCache();
+		mListView = null;
 		if (adapter != null) {
 			adapter.notifyDataSetChanged();
 			adapter.notifyDataSetInvalidated();
 			adapter = null;
-			mGridView.destroyDrawingCache();
-			mGridView = null;
 		}
 		setResult(MORE_CODE, null);
 	};
@@ -192,6 +215,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 										switch (msg.what) {
 											case WHAT_DID_LOAD_DATA: {
 												if (msg.obj != null) {
+													mStrings.clear();
 													RtnValueDto obj = (RtnValueDto) msg.obj;
 													List<JGoods> strings = obj.getData();
 													if (strings != null && !strings.isEmpty()) {
@@ -207,6 +231,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 											}
 											case WHAT_DID_REFRESH: {
 												if (msg.obj != null) {
+													mStrings.clear();
 													RtnValueDto obj = (RtnValueDto) msg.obj;
 													if (obj.getValidate() != null) {
 														String option = obj.getValidate()
