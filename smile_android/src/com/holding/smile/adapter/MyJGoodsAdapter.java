@@ -68,7 +68,6 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			holder.lp = (TextView) convertView.findViewById(R.id.lp);
 			holder.sp = (TextView) convertView.findViewById(R.id.sp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
-
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();

@@ -377,7 +377,9 @@ public class MyApplication extends Application implements OnScrollListener {
 	}
 
 	public void setmImgList(AbsListView mImgList) {
-		imgList = new ArrayList<AbsListView>();
+		if (imgList == null)
+			imgList = new ArrayList<AbsListView>();
+		imgList.clear();
 		this.imgList.add(mImgList);
 		mImgList.setOnScrollListener(this);
 	}
