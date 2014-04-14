@@ -57,6 +57,8 @@ public class MyApplication extends Application implements OnScrollListener {
 	 */
 	private SQLiteService			sqliteService;
 
+	public static String			jgoods_img_url;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -85,6 +87,8 @@ public class MyApplication extends Application implements OnScrollListener {
 
 		// 初始化本地DB
 		MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+
+		jgoods_img_url = getString(R.string.jGoods_img_url);
 	}
 
 	public DataService getDataService() {
@@ -213,7 +217,7 @@ public class MyApplication extends Application implements OnScrollListener {
 	 */
 	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
 		if (key != null && key.indexOf("http://") < 0) {
-			key = getApplicationContext().getString(R.string.jGoods_img_url) + key;
+			key = jgoods_img_url + key;
 		}
 		if (getBitmapFromMemoryCache(key) == null) {
 			imgMemoryCache.put(key, bitmap);
@@ -231,7 +235,7 @@ public class MyApplication extends Application implements OnScrollListener {
 		if (key == null || key.equals(""))
 			return null;
 		if (key != null && key.indexOf("http://") < 0) {
-			key = getApplicationContext().getString(R.string.jGoods_img_url) + key;
+			key = jgoods_img_url + key;
 		}
 		return imgMemoryCache.get(key);
 	}
@@ -349,7 +353,7 @@ public class MyApplication extends Application implements OnScrollListener {
 		protected Bitmap doInBackground(String... params) {
 			imageUrl = params[0];
 			if (imageUrl != null && imageUrl.indexOf("http://") < 0) {
-				imageUrl = getApplicationContext().getString(R.string.jGoods_img_url) + imageUrl;
+				imageUrl = jgoods_img_url + imageUrl;
 			}
 			// 在后台开始下载图片
 			Bitmap bitmap = ImgUtil.getInstance().getBitmap(imageUrl);

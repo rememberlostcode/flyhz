@@ -47,8 +47,13 @@ function recommendactivity(query,response) {
         // console.log(res);
         var recommendindex = JSON.parse(res);
         if(recommendindex){
-            var result = '[';
-            for(var i=0;i<recommendindex.length;i++){
+            var result = '[{"id":"1","p":"/activity/1.jpg"},' +
+                '{"id":"2","p":"/activity/2.jpg"},' +
+                '{"id":"3","p":"/activity/3.jpg"},' +
+                '{"id":"4","p":"/activity/4.jpg"},' +
+                '{"id":"5","p":"/activity/5.jpg"},' +
+                '{"id":"6","p":"/activity/6.jpg"}]';
+            /*for(var i=0;i<recommendindex.length;i++){
                 if(i > 0){
                     result += ',';
                 }
@@ -60,7 +65,7 @@ function recommendactivity(query,response) {
                 result += JSON.stringify(recommendindex[i].p);
                 result += '}';
             }
-            result += ']';
+            result += ']';*/
             response.writeHead(200, {
                 "Content-Type": applicationJson,
                 "Access-Control-Allow-Origin":"*",
