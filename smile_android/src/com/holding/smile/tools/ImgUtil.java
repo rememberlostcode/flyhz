@@ -13,8 +13,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
-import com.holding.smile.activity.MyApplication;
-
 public class ImgUtil {
 
 	private static ImgUtil	singleton	= new ImgUtil();
@@ -62,21 +60,21 @@ public class ImgUtil {
 
 	public Bitmap getBitmap(String imageUrl) {
 		Bitmap bitmap = null;
-		HttpURLConnection con = null;
-		try {
-			String name = MD5.getMD5(imageUrl);
-			File file = new File(MyApplication.getInstance().getCache(), name);
-			if (!file.exists()) {
-				downloadBitmapFromNet2Sdcard(imageUrl, file);
-			}
-			bitmap = getBitmapFromSdcard(file.getAbsolutePath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (con != null) {
-				con.disconnect();
-			}
-		}
+		// HttpURLConnection con = null;
+		// try {
+		// String name = MD5.getMD5(imageUrl);
+		// File file = new File(MyApplication.getInstance().getCache(), name);
+		// if (!file.exists()) {
+		// downloadBitmapFromNet2Sdcard(imageUrl, file);
+		// }
+		// bitmap = getBitmapFromSdcard(file.getAbsolutePath());
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// } finally {
+		// if (con != null) {
+		// con.disconnect();
+		// }
+		// }
 		return bitmap;
 	}
 
@@ -90,8 +88,10 @@ public class ImgUtil {
 	}
 
 	public static Bitmap getImageBitmapFromLocal(String path) {
-		Uri uri = getImageURIFromLocal(path, MyApplication.getInstance().getCache());
-		return uri2Bitmap(uri);
+		// Uri uri = getImageURIFromLocal(path,
+		// MyApplication.getInstance().getCache());
+		// return uri2Bitmap(uri);
+		return null;
 	}
 
 	public static Bitmap getImageBitmapFromLocalDir(String dir) {
@@ -100,8 +100,9 @@ public class ImgUtil {
 	}
 
 	public static Bitmap getImageBitmap(String path) {
-		Uri uri = getImageURI(path, MyApplication.getInstance().getCache());
-		return uri2Bitmap(uri);
+		// Uri uri = getImageURI(path, MyApplication.getInstance().getCache());
+		// return uri2Bitmap(uri);
+		return null;
 	}
 
 	private static Bitmap uri2Bitmap(Uri uri) {

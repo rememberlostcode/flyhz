@@ -12,6 +12,8 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.GridView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
@@ -37,7 +39,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private RecommendGoodsAdapter	reGoodsAdapter;
 	private VerticalListAdapter		vlAdapter;
 	private ListView				listView;
-	private List<JGoods>			recGoodsList			= new ArrayList<JGoods>();		// 活动商品
+    private List<JGoods>          recGoodsList            = new ArrayList<JGoods>();     // 活动商品
 	private List<BrandJGoods>		brandJGoodsList			= new ArrayList<BrandJGoods>();
 	private Integer					cid						= null;
 	private TextView				headerDescription;
@@ -55,16 +57,15 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		displayFooterMain(R.id.mainfooter_one);
 
 		reGridView = (MyGridView) findViewById(R.id.recommend_goods);
-		reGoodsAdapter = new RecommendGoodsAdapter(recGoodsList);
+		reGoodsAdapter = new RecommendGoodsAdapter(context, recGoodsList);
 		reGridView.setAdapter(reGoodsAdapter);
+        reGridView.setOnScrollListener(mScrollListener);
 
 		listView = (ListView) findViewById(R.id.brand_list);
-		vlAdapter = new VerticalListAdapter(context, brandJGoodsList, cid);
+		vlAdapter = new VerticalListAdapter(brandJGoodsList, cid);
 		listView.setAdapter(vlAdapter);
 
 		startTask();
-		MyApplication.getInstance().setmImgList(listView);
-		MyApplication.getInstance().addImgList(reGridView);
 
 	}
 
@@ -78,7 +79,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.btn_cate: {
-				// Toast.makeText(context, "您点了类别！", Toast.LENGTH_LONG).show();
+                // Toast.makeText(context, "您点了类别！", Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(this, CategoryActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, CATE_CODE);
@@ -91,8 +92,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == SEARCH_CODE || requestCode == CATE_CODE || requestCode == MORE_CODE
 				|| resultCode == RESULT_CANCELED) {
-			MyApplication.getInstance().setmImgList(listView);
-			MyApplication.getInstance().addImgList(reGridView);
+            // MyApplication.getInstance().setmImgList(listView);
+			// MyApplication.getInstance().addImgList(reGridView);
 		}
 		if (requestCode == CATE_CODE && resultCode == RESULT_OK) {
 			if (data != null) {
@@ -113,9 +114,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		return true;
 	}
 
-	/**
-	 * 加载活动商品
-	 */
+	                        /**
+     * 加载活动商品
+     */
 	public void loadRecommendData() {
 		recGoodsList.clear();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
@@ -125,7 +126,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			msg.obj = rGoods;
 			msg.sendToTarget();
 		} else {
-			Toast.makeText(context, "活动区暂无数据", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "活动区暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -139,7 +140,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			msg.obj = rGoods;
 			msg.sendToTarget();
 		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -152,7 +153,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			msg.obj = rGoods;
 			msg.sendToTarget();
 		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -184,83 +185,119 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		}
 	};
 
-	@SuppressLint("HandlerLeak")
-	private Handler	mUIHandler	= new Handler() {
+    OnScrollListener      mScrollListener = new OnScrollListener() {
 
-									@Override
-									public void handleMessage(Message msg) {
-										progressBar.setVisibility(View.GONE);
-										switch (msg.what) {
-											case WHAT_DID_LOAD_DATA: {
-												if (msg.obj != null) {
-													brandJGoodsList.clear();
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													List<BrandJGoods> strings = obj.getBrandData();
-													if (strings != null && !strings.isEmpty()) {
-														for (int i = 0; i < strings.size(); i++) {
-															BrandJGoods each = strings.get(i);
-															brandJGoodsList.add(each);
+                                              @Override
+                                              public void onScrollStateChanged(AbsListView view,
+                                                      int scrollState) {
+                                                  switch (scrollState) {
+                                                      case OnScrollListener.SCROLL_STATE_FLING:
+                                                          reGoodsAdapter.setFlagBusy(true);
+                                                          break;
+                                                      case OnScrollListener.SCROLL_STATE_IDLE:
+                                                          reGoodsAdapter.setFlagBusy(false);
+                                                          break;
+                                                      case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+                                                          reGoodsAdapter.setFlagBusy(false);
+                                                          break;
+                                                      default:
+                                                          break;
+                                                  }
+                                                  reGoodsAdapter.notifyDataSetChanged();
+                                              }
+
+                                              @Override
+                                              public void onScroll(AbsListView view,
+                                                      int firstVisibleItem, int visibleItemCount,
+                                                      int totalItemCount) {
+
+                                              }
+                                          };
+
+	@SuppressLint("HandlerLeak")
+	private final Handler	mUIHandler	= new Handler() {
+
+											@Override
+											public void handleMessage(Message msg) {
+												progressBar.setVisibility(View.GONE);
+												switch (msg.what) {
+													case WHAT_DID_LOAD_DATA: {
+														if (msg.obj != null) {
+															brandJGoodsList.clear();
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															List<BrandJGoods> strings = obj.getBrandData();
+															if (strings != null
+																	&& !strings.isEmpty()) {
+																for (int i = 0; i < strings.size(); i++) {
+																	BrandJGoods each = strings.get(i);
+																	brandJGoodsList.add(each);
+																}
+																vlAdapter.notifyDataSetChanged();
+															}
 														}
-														vlAdapter.notifyDataSetChanged();
+														break;
+													}
+													case WHAT_DID_RECOMMEND_DATA: {
+														if (msg.obj != null) {
+															recGoodsList.clear();
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															List<JGoods> strings = obj.getData();
+															if (strings != null
+																	&& !strings.isEmpty()) {
+																for (int i = 0; i < strings.size(); i++) {
+																	JGoods each = strings.get(i);
+																	recGoodsList.add(each);
+																}
+																int ii = reGoodsAdapter.getCount();
+																int cWidth = MyApplication.getInstance()
+																							.getScreenWidth();
+																LayoutParams params = new LayoutParams(
+																		ii * cWidth,
+																		LayoutParams.WRAP_CONTENT);
+																reGridView.setLayoutParams(params);
+																reGridView.setColumnWidth(cWidth);
+																reGridView.setStretchMode(GridView.NO_STRETCH);
+																reGridView.setNumColumns(ii);
+																reGoodsAdapter.notifyDataSetChanged();
+															}
+														}
+														break;
+													}
+													case WHAT_DID_REFRESH: {
+														if (msg.obj != null) {
+															brandJGoodsList.clear();
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															if (obj.getValidate() != null) {
+																String option = obj.getValidate()
+																					.getOption();
+																if (option != null
+																		&& "3".equals(option)) {
+																	brandJGoodsList.removeAll(brandJGoodsList);
+																}
+																String message = obj.getValidate()
+																					.getMessage();
+																if (message != null
+																		&& !"".equals(message.trim())) {
+																	Toast.makeText(context,
+																			message,
+																			Toast.LENGTH_SHORT)
+																			.show();
+																}
+															}
+															List<BrandJGoods> strings = obj.getBrandData();
+															if (strings != null
+																	&& !strings.isEmpty()) {
+																for (int i = 0; i < strings.size(); i++) {
+																	BrandJGoods each = strings.get(i);
+																	brandJGoodsList.add(0, each);
+																}
+																vlAdapter.notifyDataSetChanged();
+															}
+														}
+														break;
 													}
 												}
-												break;
 											}
-											case WHAT_DID_RECOMMEND_DATA: {
-												if (msg.obj != null) {
-													recGoodsList.clear();
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													List<JGoods> strings = obj.getData();
-													if (strings != null && !strings.isEmpty()) {
-														for (int i = 0; i < strings.size(); i++) {
-															JGoods each = strings.get(i);
-															recGoodsList.add(each);
-														}
-														int ii = reGoodsAdapter.getCount();
-														int cWidth = MyApplication.getInstance()
-																					.getScreenWidth();
-														LayoutParams params = new LayoutParams(ii
-																* cWidth, LayoutParams.WRAP_CONTENT);
-														reGridView.setLayoutParams(params);
-														reGridView.setColumnWidth(cWidth);
-														reGridView.setStretchMode(GridView.NO_STRETCH);
-														reGridView.setNumColumns(ii);
-														reGoodsAdapter.notifyDataSetChanged();
-													}
-												}
-												break;
-											}
-											case WHAT_DID_REFRESH: {
-												if (msg.obj != null) {
-													brandJGoodsList.clear();
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													if (obj.getValidate() != null) {
-														String option = obj.getValidate()
-																			.getOption();
-														if (option != null && "3".equals(option)) {
-															brandJGoodsList.removeAll(brandJGoodsList);
-														}
-														String message = obj.getValidate()
-																			.getMessage();
-														if (message != null
-																&& !"".equals(message.trim())) {
-															Toast.makeText(context, message,
-																	Toast.LENGTH_SHORT).show();
-														}
-													}
-													List<BrandJGoods> strings = obj.getBrandData();
-													if (strings != null && !strings.isEmpty()) {
-														for (int i = 0; i < strings.size(); i++) {
-															BrandJGoods each = strings.get(i);
-															brandJGoodsList.add(0, each);
-														}
-														vlAdapter.notifyDataSetChanged();
-													}
-												}
-												break;
-											}
-										}
-									}
-								};
+										};
 
 }

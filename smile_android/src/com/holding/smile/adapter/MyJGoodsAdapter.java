@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,33 +19,34 @@ import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.activity.MyApplication;
+import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JGoods;
-import com.holding.smile.tools.ImageLoader;
 
 public class MyJGoodsAdapter extends BaseAdapter {
-	private boolean			mBusy	= false;
-	private Integer			sWidth	= MyApplication.getInstance().getScreenWidth();
+	private Integer			sWidth			= MyApplication.getInstance().getScreenWidth();
+	private Context			context;
 	private List<JGoods>	jGoodsList;
-	private ImageLoader		mImageLoader;
-
-	// 自己定义的构造函数
-	public MyJGoodsAdapter(List<JGoods> contacts) {
-		this.jGoodsList = contacts;
-		mImageLoader = new ImageLoader();
-	}
+	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
+	private boolean			mBusy			= false;
 
 	public void setFlagBusy(boolean busy) {
 		this.mBusy = busy;
 	}
 
+	// 自己定义的构造函数
+	public MyJGoodsAdapter(Context context, List<JGoods> contacts) {
+		this.jGoodsList = contacts;
+		this.context = context;
+	}
+
 	@Override
 	public int getCount() {
-		return jGoodsList == null ? 0 : jGoodsList.size();
+		return jGoodsList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return jGoodsList == null ? null : jGoodsList.get(position);
+		return jGoodsList.get(position);
 	}
 
 	@Override
@@ -66,7 +66,6 @@ public class MyJGoodsAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
-		final Context context = parent.getContext();
 		ViewHolder holder;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.home_list, null);
@@ -77,12 +76,14 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			holder.lp = (TextView) convertView.findViewById(R.id.lp);
 			holder.sp = (TextView) convertView.findViewById(R.id.sp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
+
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		final JGoods jGoods = (JGoods) getItem(position);
+		holder.p.setImageResource(R.drawable.empty_photo);
 
+		final JGoods jGoods = (JGoods) getItem(position);
 		if (jGoods.getN() != null && !"".equals(jGoods.getN().trim())) {
 			holder.n.setText(jGoods.getN().trim());
 		}
@@ -101,31 +102,26 @@ public class MyJGoodsAdapter extends BaseAdapter {
 		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
 			holder.d.setText(jGoods.getD().trim());
 		}
-
-		holder.p.setImageResource(R.drawable.empty_photo);
-
 		if (jGoods.getP() != null && jGoods.getP().length > 0) {
-			String url = context.getString(R.string.jGoods_img_url) + jGoods.getP()[0];
+			String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
 			holder.p.setTag(url);
 			if (!mBusy) {
-				mImageLoader.loadImage(url, this, holder.p);
+				mImageLoader.DisplayImage(url, holder.p, false);
 			} else {
-				Bitmap bitmap = mImageLoader.getBitmapFromCache(url);
-				if (bitmap != null) {
-					holder.p.setImageBitmap(bitmap);
-				}
+				mImageLoader.DisplayImage(url, holder.p, false);
 			}
 		}
 
 		convertView.setOnClickListener(new OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(context, GoodsDetailActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.putExtra("jGoods", jGoods);
-				((Activity) context).startActivityForResult(intent, BaseActivity.SEARCH_CODE);
+				((Activity) parent.getContext()).startActivityForResult(intent,
+						BaseActivity.SEARCH_CODE);
 			}
 		});
-
 		return convertView;
 	}
 }

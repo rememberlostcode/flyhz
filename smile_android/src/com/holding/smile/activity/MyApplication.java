@@ -1,29 +1,14 @@
 
 package com.holding.smile.activity;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ImageView;
 
 import com.holding.smile.R;
+import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.service.DataService;
 import com.holding.smile.service.SQLiteService;
-import com.holding.smile.tools.ImgUtil;
-import com.holding.smile.tools.LruCache;
 
 /**
  * 
@@ -36,6 +21,8 @@ public class MyApplication extends Application {
 
 	public static final String		LOG_TAG	= "smile";
 	private static MyApplication	singleton;
+
+	private static ImageLoader		mImageLoader;
 
 	/**
 	 * 屏幕宽度
@@ -66,30 +53,16 @@ public class MyApplication extends Application {
 
 		Context context = getApplicationContext();
 		dataService = new DataService(context);
-
-		// 创建缓存目录，系统一运行就得创建缓存目录的，
-		cache = new File(Environment.getExternalStorageDirectory(), "cache");
-		if (!cache.exists()) {
-			cache.mkdirs();
-		}
-		taskCollection = new HashSet<BitmapWorkerTask>();
-		// 获取应用程序最大可用内存
-		int maxMemory = (int) Runtime.getRuntime().maxMemory();
-		int cacheSize = maxMemory / 8;
-		// 设置图片缓存大小为程序最大可用内存的1/8
-		imgMemoryCache = new LruCache<String, WeakReference<Bitmap>>(cacheSize) {
-			@Override
-			protected int sizeOf(String key, WeakReference<Bitmap> weakBitmap) {
-				Bitmap bitmap = weakBitmap.get();
-				return bitmap.getRowBytes() * bitmap.getHeight();
-				// return bitmap.getByteCount();
-			}
-		};
+		mImageLoader = new ImageLoader(context);
 
 		// 初始化本地DB
 		MyApplication.getInstance().setSqliteService(new SQLiteService(context));
 
 		jgoods_img_url = getString(R.string.jGoods_img_url);
+	}
+
+	public static ImageLoader getImageLoader() {
+		return mImageLoader;
 	}
 
 	public DataService getDataService() {
@@ -128,14 +101,6 @@ public class MyApplication extends Application {
 		this.density = density;
 	}
 
-	public File getCache() {
-		return cache;
-	}
-
-	public void setCache(File cache) {
-		this.cache = cache;
-	}
-
 	public SQLiteService getSqliteService() {
 		return sqliteService;
 	}
@@ -156,220 +121,6 @@ public class MyApplication extends Application {
 			this.startActivity(intent);
 		} catch (Exception e) {
 		}
-	}
-
-	/*
-	 * ==========================================================================
-	 */
-
-	private File									cache;
-
-	/**
-	 * 记录所有正在下载或等待下载的任务。
-	 */
-	private Set<BitmapWorkerTask>					taskCollection;
-
-	/**
-	 * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
-	 */
-	private LruCache<String, WeakReference<Bitmap>>	imgMemoryCache;
-
-	/**
-	 * 第一张可见图片的下标
-	 */
-	private int										mFirstVisibleItem;
-
-	/**
-	 * 一屏有多少张图片可见
-	 */
-	private int										mVisibleItemCount;
-
-	/**
-	 * ListView的实例
-	 */
-	private List<AbsListView>						imgList;
-
-	/**
-	 * 给ImageView设置图片。首先从LruCache中取出图片的缓存，设置到ImageView上。如果LruCache中没有该图片的缓存，
-	 * 就给ImageView设置一张默认图片。
-	 * 
-	 * @param imageUrl
-	 *            图片的URL地址，用于作为LruCache的键。
-	 * @param imageView
-	 *            用于显示图片的控件。
-	 */
-	public void setImageView(String imageUrl, ImageView imageView) {
-
-		Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
-		if (bitmap != null) {
-			imageView.setImageBitmap(bitmap);
-		} else {
-			imageView.setImageResource(R.drawable.empty_photo);
-		}
-	}
-
-	/**
-	 * 将一张图片存储到LruCache中。
-	 * 
-	 * @param key
-	 *            LruCache的键，这里传入图片的URL地址。
-	 * @param bitmap
-	 *            LruCache的键，这里传入从网络上下载的Bitmap对象。
-	 */
-	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-		if (bitmap == null)
-			return;
-
-		if (key != null && key.indexOf("http://") < 0) {
-			key = jgoods_img_url + key;
-		}
-		if (getBitmapFromMemoryCache(key) == null) {
-			imgMemoryCache.put(key, new WeakReference<Bitmap>(bitmap));
-		}
-	}
-
-	/**
-	 * 从LruCache中获取一张图片，如果不存在就返回null。
-	 * 
-	 * @param key
-	 *            LruCache的键，这里传入图片的URL地址。
-	 * @return 对应传入键的Bitmap对象，或者null。
-	 */
-	public Bitmap getBitmapFromMemoryCache(String key) {// step-4
-		if (key == null || key.equals(""))
-			return null;
-		if (key != null && key.indexOf("http://") < 0) {
-			key = jgoods_img_url + key;
-		}
-		WeakReference<Bitmap> weakReference = imgMemoryCache.get(key);
-		Bitmap bitmap = null;
-		if (weakReference != null) {
-			bitmap = weakReference.get();
-		}
-		return bitmap;
-	}
-
-	/**
-	 * 加载Bitmap对象。此方法会在LruCache中检查所有屏幕中可见的ImageView的Bitmap对象，
-	 * 如果发现任何一个ImageView的Bitmap对象不在缓存中，就会开启异步线程去下载图片。
-	 * 
-	 * @param firstVisibleItem
-	 *            第一个可见的ImageView的下标
-	 * @param visibleItemCount
-	 *            屏幕中总共可见的元素数
-	 */
-	private void loadBitmaps(int firstVisibleItem, int visibleItemCount, AbsListView absListView) {// step-3
-		try {
-			// if (imgList != null && !imgList.isEmpty()) {
-			// for (AbsListView mImgList : imgList) {
-			for (int i = 0; i < 0 + visibleItemCount; i++) {
-				List<View> views = getAllChildViews(absListView.getChildAt(i));
-				for (View view : views) {
-					if (view instanceof ImageView) {
-						ImageView imageView = (ImageView) view;
-						if (imageView.getTag() != null) {
-							String imageUrl = (String) imageView.getTag();
-							if (imageUrl != null && !"".equals(imageUrl.trim())) {
-								Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
-								if (bitmap == null) {
-									BitmapWorkerTask task = new BitmapWorkerTask();
-									taskCollection.add(task);
-									task.execute(imageUrl);
-								} else {
-									if (imageView != null && bitmap != null) {
-										imageView.setImageBitmap(bitmap);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			// }
-			// }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private List<View> getAllChildViews(View view) {
-		List<View> allchildren = new ArrayList<View>();
-		if (view instanceof ViewGroup) {
-			ViewGroup vp = (ViewGroup) view;
-			for (int i = 0; i < vp.getChildCount(); i++) {
-				View viewchild = vp.getChildAt(i);
-				allchildren.add(viewchild);
-				allchildren.addAll(getAllChildViews(viewchild));
-			}
-		}
-		return allchildren;
-	}
-
-	/**
-	 * 取消所有正在下载或等待下载的任务。
-	 */
-	public void cancelAllTasks() {
-		if (taskCollection != null && !taskCollection.isEmpty()) {
-			for (BitmapWorkerTask task : taskCollection) {
-				task.cancel(false);
-			}
-		}
-	}
-
-	/**
-	 * 异步下载图片的任务。
-	 * 
-	 * @author guolin
-	 */
-	class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
-
-		/**
-		 * 图片的URL地址
-		 */
-		private String	imageUrl;
-
-		@Override
-		protected Bitmap doInBackground(String... params) {
-			imageUrl = params[0];
-			if (imageUrl != null && imageUrl.indexOf("http://") < 0) {
-				imageUrl = jgoods_img_url + imageUrl;
-			}
-			// 在后台开始下载图片
-			Bitmap bitmap = ImgUtil.getInstance().getBitmap(imageUrl);
-			if (bitmap != null) {
-				// 图片下载完成后缓存到LrcCache中
-				addBitmapToMemoryCache(imageUrl, bitmap);
-			}
-			return bitmap;
-		}
-
-		@Override
-		protected void onPostExecute(Bitmap bitmap) {
-			super.onPostExecute(bitmap);
-			// 根据Tag找到相应的ImageView控件，将下载好的图片显示出来。
-			if (imgList != null && !imgList.isEmpty()) {
-				for (AbsListView mImgList : imgList) {
-					ImageView imageView = (ImageView) mImgList.findViewWithTag(imageUrl);
-					if (imageView != null && bitmap != null) {
-						imageView.setImageBitmap(bitmap);
-					}
-				}
-			}
-			taskCollection.remove(this);
-		}
-	}
-
-	public void setmImgList(AbsListView mImgList) {
-		// if (imgList == null)
-		// imgList = new ArrayList<AbsListView>();
-		// imgList.clear();
-		// this.imgList.add(mImgList);
-		// mImgList.setOnScrollListener(this);
-	}
-
-	public void addImgList(AbsListView childView) {
-		// childView.setOnScrollListener(this);
-		// imgList.add(childView);
 	}
 
 }

@@ -17,15 +17,25 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
+import com.holding.smile.activity.MyApplication;
+import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JGoods;
 
 public class RecommendGoodsAdapter extends BaseAdapter {
 
 	private List<JGoods>	jGoodsList;
+	private Context			context;
+	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
+	private boolean			mBusy			= false;
 
 	// 自己定义的构造函数
-	public RecommendGoodsAdapter(List<JGoods> contacts) {
+	public RecommendGoodsAdapter(Context context, List<JGoods> contacts) {
+		this.context = context;
 		this.jGoodsList = contacts;
+	}
+
+	public void setFlagBusy(boolean busy) {
+		this.mBusy = busy;
 	}
 
 	@Override
@@ -50,7 +60,6 @@ public class RecommendGoodsAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
-		final Context context = parent.getContext();
 		ViewHolder holder;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.recommend_good_item, null);
@@ -61,20 +70,29 @@ public class RecommendGoodsAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
+		holder.p.setImageResource(R.drawable.empty_photo);
+
 		final JGoods jGoods = (JGoods) getItem(position);
 		if (jGoods != null) {
 			holder.n.setText(jGoods.getN());
 			if (jGoods.getP() != null && jGoods.getP().length > 0) {
-				holder.p.setTag(jGoods.getP()[0]);
+				String url = context.getString(R.string.jGoods_img_url) + jGoods.getP()[0];
+				holder.p.setTag(url);
+				if (!mBusy) {
+					mImageLoader.DisplayImage(url, holder.p, false);
+				} else {
+					mImageLoader.DisplayImage(url, holder.p, false);
+				}
 			}
-			holder.p.setImageResource(R.drawable.empty_photo);
 
 			convertView.setOnClickListener(new OnClickListener() {
+				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(context, GoodsDetailActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					intent.putExtra("jGoods", jGoods);
-					((Activity) context).startActivityForResult(intent, BaseActivity.SEARCH_CODE);
+					((Activity) parent.getContext()).startActivityForResult(intent,
+							BaseActivity.SEARCH_CODE);
 				}
 			});
 		}
