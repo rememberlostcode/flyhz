@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 				if (cate != null) {
 					cid = cate.getId();
 					headerDescription.setText(cate.getName());
-					loadData();
+					onRefresh();
 				}
 			}
 		}
@@ -111,8 +111,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void loadData() {
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
-											.getRecommendBrandsListInit(cid);
+		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getIndexJGoods();
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rGoods.getIndexData();
@@ -127,7 +126,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 											.getRecommendBrandsListInit(cid);
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
-			msg.obj = rGoods.getIndexData();
+			msg.obj = rGoods;
 			msg.sendToTarget();
 		} else {
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
@@ -245,34 +244,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 														}
 														case WHAT_DID_REFRESH: {
 															if (msg.obj != null) {
-																recActList.clear();
 																brandJGoodsList.clear();
-																JIndexJGoods obj = (JIndexJGoods) msg.obj;
-
-																// 活动区商品
-																List<JActivity> strings = obj.getActivity();
-																if (strings != null
-																		&& !strings.isEmpty()) {
-																	int jSize = strings.size();
-																	for (int i = 0; i < jSize; i++) {
-																		JActivity each = strings.get(i);
-																		recActList.add(each);
-																	}
-																	int ii = reGoodsAdapter.getCount();
-																	int cWidth = MyApplication.getInstance()
-																								.getScreenWidth();
-																	LayoutParams params = new LayoutParams(
-																			ii * cWidth,
-																			LayoutParams.WRAP_CONTENT);
-																	reGridView.setLayoutParams(params);
-																	reGridView.setColumnWidth(cWidth);
-																	reGridView.setStretchMode(GridView.NO_STRETCH);
-																	reGridView.setNumColumns(ii);
-																	reGoodsAdapter.notifyDataSetChanged();
-																}
-
+																RtnValueDto obj = (RtnValueDto) msg.obj;
 																// 品牌区
-																List<BrandJGoods> brands = obj.getBrand();
+																List<BrandJGoods> brands = obj.getBrandData();
 																if (brands != null
 																		&& !brands.isEmpty()) {
 																	int bSize = brands.size();
