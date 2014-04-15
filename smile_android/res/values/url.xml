@@ -6,6 +6,7 @@
     <!-- <string name="prefix_url">http://10.22.22.40/smile</string>
     <string name="jGoods_img_url">http://10.22.22.40/smile/static</string> -->
     <string name="jGoods_index_url">/node/index</string>
+    <string name="jGoods_recommend_url">/node/recommend/brand</string>
     <string name="jGoods_cate_url">/node/category</string>
     <string name="jGoods_brand_url">/node/brand</string>
     <string name="jGoods_brand_more_url">/node/brand/more</string>

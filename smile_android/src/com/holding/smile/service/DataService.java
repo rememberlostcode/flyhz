@@ -17,6 +17,7 @@ import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
+import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.protocol.PCategory;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PGoodsDetail;
@@ -48,6 +49,7 @@ public class DataService {
 
 	private String			prefix_url;
 	private String			jGoods_index_url;
+	private String			jGoods_recommend_url;
 	private String			jGoods_cate_url;
 	private String			jGoods_brand_url;
 	private String			jGoods_brand_more_url;
@@ -71,6 +73,7 @@ public class DataService {
 
 		prefix_url = context.getString(R.string.prefix_url);
 		jGoods_index_url = context.getString(R.string.jGoods_index_url);
+		jGoods_recommend_url = context.getString(R.string.jGoods_recommend_url);
 		jGoods_cate_url = context.getString(R.string.jGoods_cate_url);
 		jGoods_brand_url = context.getString(R.string.jGoods_brand_url);
 		jGoods_brand_more_url = context.getString(R.string.jGoods_brand_more_url);
@@ -102,6 +105,21 @@ public class DataService {
 
 	/**
 	 * 首页初始化
+	 * 
+	 * @return
+	 */
+	public RtnValueDto getIndexListInit(Integer cid) {
+		RtnValueDto obj = null;
+		if (getDataFromNet) {
+			obj = getIndexJGoods();
+		} else {
+			obj = JSONUtil.changeJson2RtnValueDto(brandJGoodsInitJson);
+		}
+		return obj;
+	}
+
+	/**
+	 * 首页推荐品牌商品
 	 * 
 	 * @return
 	 */
@@ -258,6 +276,34 @@ public class DataService {
 	}
 
 	/**
+	 * 首页商品
+	 * 
+	 * @return
+	 */
+	public RtnValueDto getIndexJGoods() {
+		RtnValueDto rvd = new RtnValueDto();
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_index_url, null);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PIndexJGoods indexJGoods = JSONUtil.getJson2Entity(rStr, PIndexJGoods.class);
+				if (indexJGoods != null)
+					rvd.setIndexData(indexJGoods.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
 	 * 首页推荐品牌商品
 	 * 
 	 * @return
@@ -267,13 +313,13 @@ public class DataService {
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
 			param.put("cid", String.valueOf(cid));
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_index_url, param);
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_recommend_url, param);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
-				PIndexJGoods indexJGoods = JSONUtil.getJson2Entity(rStr, PIndexJGoods.class);
-				if (indexJGoods != null)
-					rvd.setIndexData(indexJGoods.getData());
+				PBrandJGoods brandJGoods = JSONUtil.getJson2Entity(rStr, PBrandJGoods.class);
+				if (brandJGoods != null)
+					rvd.setBrandData(brandJGoods.getData());
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
