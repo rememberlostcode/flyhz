@@ -22,12 +22,13 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical" >
-
-           <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/mainfooter_one_bg" 
-                android:contentDescription="@string/gu"/>
+           <TextView 
+               android:id="@+id/mainfooter_jptj"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/recommend_goods"/>
         </LinearLayout>
         
         <LinearLayout
@@ -37,15 +38,15 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical" >
-           
-            <ImageView
-	            android:id="@+id/btn_search"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:src="@drawable/btn_search_bg"
-	            android:contentDescription="@string/gu"/>
+           <TextView 
+               android:id="@+id/mainfooter_phb"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/the_charts"/>
         </LinearLayout>
-
+        
         <LinearLayout
             android:id="@+id/mainfooter_three"
             android:layout_width="wrap_content"
@@ -53,12 +54,31 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical" >
+           
+            <TextView 
+               android:id="@+id/mainfooter_search"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/search"/>
+        </LinearLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/mainfooter_two_bg" 
-                android:contentDescription="@string/gu"/>
+        <LinearLayout
+            android:id="@+id/mainfooter_four"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView 
+               android:id="@+id/mainfooter_grsz"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/personal_information"/>
         </LinearLayout>
     </LinearLayout>
 
