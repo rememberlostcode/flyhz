@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -45,11 +44,7 @@ public class BaseActivity extends Activity {
 	private LinearLayout		ly_content;
 	// 内容区域的布局
 	private View				contentView;
-	private ListView			listView;
-	private LinearLayout		layout;
 	protected int				reqCode				= 0;
-	private int					screenWidth			= 0;
-	private int					screenHeight		= 0;
 	protected String			filepath;
 	protected ProgressBar		progressBar;
 
