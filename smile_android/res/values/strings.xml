@@ -17,5 +17,15 @@
     <string name="search_persons">找人</string>
     <string name="search_goods">找物品</string>
     <string name="search_best_hot">目前最火热的</string>
+    
+    <string name="user_info_myaddress">我的收货地址</string>
+    <string name="setting_logout">注销</string>
+    <string name="user_info_right">&gt;</string>
+    <string name="user_info_pwd_reset">修改密码</string>
+    <string name="user_info_email">邮件地址</string>
+    <string name="user_info_phone">手机</string>
+    <string name="user_info_email_content">输入邮件地址</string>
+    <string name="user_info_phone_content">输入手机号码</string>
+    
 
 </resources>

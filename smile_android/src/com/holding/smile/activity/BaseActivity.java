@@ -379,7 +379,11 @@ public class BaseActivity extends Activity {
 					footMap.get(o).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							// 个人设置
+							Intent intent = new Intent();
+							intent.setClass(context, PersonalSettingsActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							startActivity(intent);
+							overridePendingTransition(0, 0);
 						}
 					});
 				}

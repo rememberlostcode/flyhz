@@ -55,6 +55,11 @@
             android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:screenOrientation="portrait"
             />
+        <activity
+            android:name="com.holding.smile.activity.PersonalSettingsActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait" >
+        </activity>
         
     </application>
 
