@@ -82,9 +82,14 @@ public class JGoods implements Serializable {
 	 */
 	private String				ci;
 	/**
-	 * 销售数量
+	 * 已销售数量
 	 */
 	private Integer				sn;
+
+	/**
+	 * 周销售数量
+	 */
+	private Integer				zsn;
 
 	private Integer				seq;
 
@@ -248,6 +253,14 @@ public class JGoods implements Serializable {
 
 	public void setSn(Integer sn) {
 		this.sn = sn;
+	}
+
+	public Integer getZsn() {
+		return zsn;
+	}
+
+	public void setZsn(Integer zsn) {
+		this.zsn = zsn;
 	}
 
 	public Integer getSeq() {
