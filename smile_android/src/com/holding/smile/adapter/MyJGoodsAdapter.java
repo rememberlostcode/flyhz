@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +22,6 @@ import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JGoods;
 
 public class MyJGoodsAdapter extends BaseAdapter {
-	private Integer			sWidth			= MyApplication.getInstance().getScreenWidth();
 	private Context			context;
 	private List<JGoods>	jGoodsList;
 	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
@@ -57,9 +55,6 @@ public class MyJGoodsAdapter extends BaseAdapter {
 	static class ViewHolder {
 		TextView	n;
 		TextView	pp;
-		TextView	lp;
-		TextView	sp;
-		TextView	d;
 		ImageView	p;
 		TextView	sn;
 	}
@@ -71,10 +66,9 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(R.layout.home_list, null);
 			holder = new ViewHolder();
 			holder.n = (TextView) convertView.findViewById(R.id.n);
-			holder.n.setWidth((int) (sWidth - 190 * MyApplication.getInstance().getDensity()));
+			// holder.n.setWidth((int) (sWidth - 190 *
+			// MyApplication.getInstance().getDensity()));
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
-			holder.lp = (TextView) convertView.findViewById(R.id.lp);
-			holder.sp = (TextView) convertView.findViewById(R.id.sp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 
 			convertView.setTag(holder);
@@ -89,18 +83,6 @@ public class MyJGoodsAdapter extends BaseAdapter {
 		}
 		if (jGoods.getPp() != null) {
 			holder.pp.setText("￥" + jGoods.getPp());
-		}
-		if (jGoods.getLp() != null) {
-			holder.lp.setText("￥" + jGoods.getLp());
-			holder.lp.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
-			holder.lp.setVisibility(ViewGroup.VISIBLE);
-		}
-		if (jGoods.getSp() != null) {
-			holder.sp.setText("省￥" + jGoods.getSp());
-			holder.sp.setVisibility(ViewGroup.VISIBLE);
-		}
-		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
-			holder.d.setText(jGoods.getD().trim());
 		}
 		if (jGoods.getP() != null && jGoods.getP().length > 0) {
 			String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
@@ -117,7 +99,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				Intent intent = new Intent(context, GoodsDetailActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra("jGoods", jGoods);
+				intent.putExtra("gid", jGoods.getId());
 				((Activity) parent.getContext()).startActivityForResult(intent,
 						BaseActivity.SEARCH_CODE);
 			}

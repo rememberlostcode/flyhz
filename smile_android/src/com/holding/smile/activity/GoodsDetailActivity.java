@@ -12,11 +12,15 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.ImageAdapter;
+import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
+import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.SetExpandableListViewListViewHeight;
+import com.holding.smile.tools.StrUtils;
 
 /**
  * 
@@ -38,13 +42,23 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 
-		// ImageView searchBtn = displayHeaderSearch();
-		// searchBtn.setOnClickListener(this);
-
 		Intent intent = getIntent();
-		JGoods jGoods = (JGoods) intent.getExtras().getSerializable("jGoods");
+		Integer gid = (Integer) intent.getExtras().getSerializable("gid");
+		if (gid == null) {
+			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+		}
+		JGoods jGoods = null;
+		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(gid);
+		if (rtnValue != null)
+			jGoods = rtnValue.getGoodDetail();
 		if (jGoods == null) {
-			finish();
+			if (rtnValue.getValidate() != null
+					&& StrUtils.isNotEmpty(rtnValue.getValidate().getMessage())) {
+				Toast.makeText(context, rtnValue.getValidate().getMessage(), Toast.LENGTH_SHORT)
+						.show();
+			} else {
+				Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+			}
 		}
 
 		TextView headerDesc = displayHeaderDescription();
@@ -87,7 +101,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 		imageAdapter = new ImageAdapter(context, picList);
 		listView.setAdapter(imageAdapter);
-		// MyApplication.getInstance().setmImgList(listView);
 		SetExpandableListViewListViewHeight.setListViewHeightOnChildren(listView);
 	}
 
@@ -123,7 +136,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			imageAdapter.notifyDataSetInvalidated();
 			imageAdapter = null;
 		}
-		// new RecycleBitmapUtil(true).recycle(listView);
 		setResult(RESULT_CANCELED, null);
 	}
 }

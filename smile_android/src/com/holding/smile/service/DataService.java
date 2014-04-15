@@ -12,15 +12,16 @@ import java.util.List;
 import android.content.Context;
 
 import com.holding.smile.R;
-import com.holding.smile.dto.BrandJGoods;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
-import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.protocol.PCategory;
 import com.holding.smile.protocol.PGoods;
+import com.holding.smile.protocol.PGoodsDetail;
+import com.holding.smile.protocol.PIndexJGoods;
+import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
@@ -46,12 +47,13 @@ public class DataService {
 	private String			brandJGoodsInitJson;
 
 	private String			prefix_url;
-	private String			jGoods_recommend_url;
-	private String			jGoods_brand_recommend_url;
+	private String			jGoods_index_url;
 	private String			jGoods_cate_url;
 	private String			jGoods_brand_url;
 	private String			jGoods_brand_more_url;
 	private String			jGoods_sorttype_url;
+	private String			jGoods_detail_url;
+	private String			jGoods_sort_url;
 	private String			jGoods_search_url;
 	private String			jGoods_search_more_url;
 
@@ -68,12 +70,13 @@ public class DataService {
 		brandJGoodsInitJson = setJson("brandJGoodsInitJson.json");
 
 		prefix_url = context.getString(R.string.prefix_url);
-		jGoods_recommend_url = context.getString(R.string.jGoods_recommend_url);
-		jGoods_brand_recommend_url = context.getString(R.string.jGoods_brand_recommend_url);
+		jGoods_index_url = context.getString(R.string.jGoods_index_url);
 		jGoods_cate_url = context.getString(R.string.jGoods_cate_url);
 		jGoods_brand_url = context.getString(R.string.jGoods_brand_url);
 		jGoods_brand_more_url = context.getString(R.string.jGoods_brand_more_url);
 		jGoods_sorttype_url = context.getString(R.string.jGoods_sorttype_url);
+		jGoods_detail_url = context.getString(R.string.jGoods_detail_url);
+		jGoods_sort_url = context.getString(R.string.jGoods_sort_url);
 		jGoods_search_url = context.getString(R.string.jGoods_search_refresh_url);
 		jGoods_search_more_url = context.getString(R.string.jGoods_search_more_url);
 	}
@@ -108,21 +111,6 @@ public class DataService {
 			obj = getRecommendBrands(cid);
 		} else {
 			obj = JSONUtil.changeJson2RtnValueDto(brandJGoodsInitJson);
-		}
-		return obj;
-	}
-
-	/**
-	 * 首页活动区初始化
-	 * 
-	 * @return
-	 */
-	public RtnValueDto getRecommendJGoodsListInit() {
-		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			obj = getRecommendGoods();
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(jGoodsInitJson);
 		}
 		return obj;
 	}
@@ -276,17 +264,16 @@ public class DataService {
 	 */
 	public RtnValueDto getRecommendBrands(Integer cid) {
 		RtnValueDto rvd = new RtnValueDto();
-		List<BrandJGoods> results = new ArrayList<BrandJGoods>();
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
 			param.put("cid", String.valueOf(cid));
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_brand_recommend_url,
-				param);
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_index_url, param);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
-				PBrandJGoods pg = JSONUtil.getJson2Entity(rStr, PBrandJGoods.class);
-				results = pg.getData();
+				PIndexJGoods indexJGoods = JSONUtil.getJson2Entity(rStr, PIndexJGoods.class);
+				if (indexJGoods != null)
+					rvd.setIndexData(indexJGoods.getData());
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -298,36 +285,6 @@ public class DataService {
 			vd.setMessage(Constants.MESSAGE_NET);
 			rvd.setValidate(vd);
 		}
-		rvd.setBrandData(results);
-		return rvd;
-	}
-
-	/**
-	 * 首页活动区商品
-	 * 
-	 * @return
-	 */
-	public RtnValueDto getRecommendGoods() {
-		RtnValueDto rvd = new RtnValueDto();
-		List<JGoods> results = new ArrayList<JGoods>();
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_recommend_url, null);
-
-		if (rStr != null && !"".equals(rStr)) {
-			try {
-				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
-				results = pst.getData();
-			} catch (Exception e) {
-				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
-			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
-		}
-		rvd.setData(results);
 		return rvd;
 	}
 
@@ -455,6 +412,66 @@ public class DataService {
 			rvd.setValidate(vd);
 		}
 		rvd.setCateData(results);
+		return rvd;
+	}
+
+	/**
+	 * 商品排行列表
+	 * 
+	 * @return
+	 */
+	public RtnValueDto getSortList() {
+		RtnValueDto rvd = new RtnValueDto();
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sort_url, null);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PSort pc = JSONUtil.getJson2Entity(rStr, PSort.class);
+				if (pc != null)
+					rvd.setSortData(pc.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 商品详情
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public RtnValueDto getGoodsDetail(Integer id) {
+		RtnValueDto rvd = new RtnValueDto();
+		String url = this.prefix_url + this.jGoods_detail_url;
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (id != null)
+			param.put("id", String.valueOf(id));
+
+		String rStr = URLUtil.getStringByGet(url, param);
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PGoodsDetail detail = JSONUtil.getJson2Entity(rStr, PGoodsDetail.class);
+				if (detail != null)
+					rvd.setGoodDetail(detail.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
 		return rvd;
 	}
 }

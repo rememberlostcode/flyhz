@@ -26,22 +26,22 @@ import com.holding.smile.adapter.VerticalListAdapter;
 import com.holding.smile.dto.BrandJGoods;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
-import com.holding.smile.entity.JGoods;
+import com.holding.smile.entity.JActivity;
+import com.holding.smile.entity.JIndexJGoods;
 import com.holding.smile.myview.MyGridView;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 
-	private static final int		WHAT_DID_LOAD_DATA		= 0;
-	private static final int		WHAT_DID_REFRESH		= 1;
-	private static final int		WHAT_DID_RECOMMEND_DATA	= 2;
+	private static final int		WHAT_DID_LOAD_DATA	= 0;
+	private static final int		WHAT_DID_REFRESH	= 1;
 
 	private MyGridView				reGridView;
 	private RecommendGoodsAdapter	reGoodsAdapter;
 	private VerticalListAdapter		vlAdapter;
 	private ListView				listView;
-	private List<JGoods>			recGoodsList			= new ArrayList<JGoods>();		// 活动商品
-	private List<BrandJGoods>		brandJGoodsList			= new ArrayList<BrandJGoods>();
-	private Integer					cid						= null;
+	private List<JActivity>			recActList			= new ArrayList<JActivity>();	// 活动商品
+	private List<BrandJGoods>		brandJGoodsList		= new ArrayList<BrandJGoods>();
+	private Integer					cid					= null;
 	private TextView				headerDescription;
 
 	@Override
@@ -57,7 +57,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		displayFooterMain(R.id.mainfooter_one);
 
 		reGridView = (MyGridView) findViewById(R.id.recommend_goods);
-		reGoodsAdapter = new RecommendGoodsAdapter(context, recGoodsList);
+		reGoodsAdapter = new RecommendGoodsAdapter(context, recActList);
 		reGridView.setAdapter(reGoodsAdapter);
 		reGridView.setOnScrollListener(mScrollListener);
 
@@ -90,11 +90,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || requestCode == CATE_CODE || requestCode == MORE_CODE
-				|| resultCode == RESULT_CANCELED) {
-			// MyApplication.getInstance().setmImgList(listView);
-			// MyApplication.getInstance().addImgList(reGridView);
-		}
 		if (requestCode == CATE_CODE && resultCode == RESULT_OK) {
 			if (data != null) {
 				Category cate = (Category) data.getExtras().getSerializable("cate");
@@ -114,30 +109,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		return true;
 	}
 
-	/**
-	 * 加载活动商品
-	 */
-	public void loadRecommendData() {
-		recGoodsList.clear();
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
-											.getRecommendJGoodsListInit();
-		if (rGoods != null) {
-			Message msg = mUIHandler.obtainMessage(WHAT_DID_RECOMMEND_DATA);
-			msg.obj = rGoods;
-			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "活动区暂无数据", Toast.LENGTH_SHORT).show();
-		}
-	}
-
 	@Override
 	public void loadData() {
-		loadRecommendData();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getRecommendBrandsListInit(cid);
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-			msg.obj = rGoods;
+			msg.obj = rGoods.getIndexData();
 			msg.sendToTarget();
 		} else {
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
@@ -145,12 +123,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void onRefresh() {
-		loadRecommendData();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getRecommendBrandsListInit(cid);
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
-			msg.obj = rGoods;
+			msg.obj = rGoods.getIndexData();
 			msg.sendToTarget();
 		} else {
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
@@ -172,8 +149,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			listView = null;
 		}
 
-		recGoodsList.clear();
-		recGoodsList = null;
+		recActList.clear();
+		recActList = null;
 		if (reGoodsAdapter != null) {
 			reGoodsAdapter.notifyDataSetChanged();
 			reGoodsAdapter.notifyDataSetInvalidated();
@@ -223,30 +200,18 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
 															if (msg.obj != null) {
+																recActList.clear();
 																brandJGoodsList.clear();
-																RtnValueDto obj = (RtnValueDto) msg.obj;
-																List<BrandJGoods> strings = obj.getBrandData();
+																JIndexJGoods obj = (JIndexJGoods) msg.obj;
+
+																// 活动区商品
+																List<JActivity> strings = obj.getActivity();
 																if (strings != null
 																		&& !strings.isEmpty()) {
-																	for (int i = 0; i < strings.size(); i++) {
-																		BrandJGoods each = strings.get(i);
-																		brandJGoodsList.add(each);
-																	}
-																	vlAdapter.notifyDataSetChanged();
-																}
-															}
-															break;
-														}
-														case WHAT_DID_RECOMMEND_DATA: {
-															if (msg.obj != null) {
-																recGoodsList.clear();
-																RtnValueDto obj = (RtnValueDto) msg.obj;
-																List<JGoods> strings = obj.getData();
-																if (strings != null
-																		&& !strings.isEmpty()) {
-																	for (int i = 0; i < strings.size(); i++) {
-																		JGoods each = strings.get(i);
-																		recGoodsList.add(each);
+																	int jSize = strings.size();
+																	for (int i = 0; i < jSize; i++) {
+																		JActivity each = strings.get(i);
+																		recActList.add(each);
 																	}
 																	int ii = reGoodsAdapter.getCount();
 																	int cWidth = MyApplication.getInstance()
@@ -260,39 +225,66 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 																	reGridView.setNumColumns(ii);
 																	reGoodsAdapter.notifyDataSetChanged();
 																}
+
+																// 品牌区
+																List<BrandJGoods> brands = obj.getBrand();
+																if (brands != null
+																		&& !brands.isEmpty()) {
+																	int bSize = brands.size();
+																	for (int i = 0; i < bSize; i++) {
+																		BrandJGoods each = brands.get(i);
+																		brandJGoodsList.add(each);
+																	}
+																	vlAdapter.notifyDataSetChanged();
+																}
+															} else {
+																Toast.makeText(context, "暂无数据",
+																		Toast.LENGTH_SHORT).show();
 															}
 															break;
 														}
 														case WHAT_DID_REFRESH: {
 															if (msg.obj != null) {
+																recActList.clear();
 																brandJGoodsList.clear();
-																RtnValueDto obj = (RtnValueDto) msg.obj;
-																if (obj.getValidate() != null) {
-																	String option = obj.getValidate()
-																						.getOption();
-																	if (option != null
-																			&& "3".equals(option)) {
-																		brandJGoodsList.removeAll(brandJGoodsList);
-																	}
-																	String message = obj.getValidate()
-																						.getMessage();
-																	if (message != null
-																			&& !"".equals(message.trim())) {
-																		Toast.makeText(context,
-																				message,
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	}
-																}
-																List<BrandJGoods> strings = obj.getBrandData();
+																JIndexJGoods obj = (JIndexJGoods) msg.obj;
+
+																// 活动区商品
+																List<JActivity> strings = obj.getActivity();
 																if (strings != null
 																		&& !strings.isEmpty()) {
-																	for (int i = 0; i < strings.size(); i++) {
-																		BrandJGoods each = strings.get(i);
-																		brandJGoodsList.add(0, each);
+																	int jSize = strings.size();
+																	for (int i = 0; i < jSize; i++) {
+																		JActivity each = strings.get(i);
+																		recActList.add(each);
+																	}
+																	int ii = reGoodsAdapter.getCount();
+																	int cWidth = MyApplication.getInstance()
+																								.getScreenWidth();
+																	LayoutParams params = new LayoutParams(
+																			ii * cWidth,
+																			LayoutParams.WRAP_CONTENT);
+																	reGridView.setLayoutParams(params);
+																	reGridView.setColumnWidth(cWidth);
+																	reGridView.setStretchMode(GridView.NO_STRETCH);
+																	reGridView.setNumColumns(ii);
+																	reGoodsAdapter.notifyDataSetChanged();
+																}
+
+																// 品牌区
+																List<BrandJGoods> brands = obj.getBrand();
+																if (brands != null
+																		&& !brands.isEmpty()) {
+																	int bSize = brands.size();
+																	for (int i = 0; i < bSize; i++) {
+																		BrandJGoods each = brands.get(i);
+																		brandJGoodsList.add(each);
 																	}
 																	vlAdapter.notifyDataSetChanged();
 																}
+															} else {
+																Toast.makeText(context, "暂无数据",
+																		Toast.LENGTH_SHORT).show();
 															}
 															break;
 														}

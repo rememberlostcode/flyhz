@@ -315,6 +315,14 @@ public class BaseActivity extends Activity {
 			loadData();
 			return null;
 		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			if (!this.isCancelled()) {// 执行完后停止任务
+				this.cancel(true);
+			}
+		}
 	}
 
 	public View displayFooterMain(int idNow) {
