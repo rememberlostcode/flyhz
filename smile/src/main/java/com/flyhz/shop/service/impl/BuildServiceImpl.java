@@ -49,7 +49,7 @@ public class BuildServiceImpl implements BuildService {
 	/**
 	 * 500条数据查询一次并插入数据库
 	 */
-	private final int		mysqlSize	= 500;
+	private final int		mysqlSize	= 100;
 
 	public void buildData() {
 		// TODO Auto-generated method stub
@@ -92,7 +92,6 @@ public class BuildServiceImpl implements BuildService {
 		log.info("buildRedis开始...");
 
 		/******** build商品详情 start *******/
-		int resultSize = 500;// 500条数据查询一次数据库
 		int thisNum = 0;
 		SolrPage solrPage = new SolrPage();
 		solrPage.setNum(mysqlSize);
@@ -121,7 +120,7 @@ public class BuildServiceImpl implements BuildService {
 				}
 			}
 			// 设置新的分页查询参数
-			thisNum += resultSize;
+			thisNum += mysqlSize;
 		}
 		/******** build商品详情 end *******/
 

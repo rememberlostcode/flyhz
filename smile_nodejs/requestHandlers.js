@@ -877,12 +877,31 @@ function goodsdetail(query,response) {
     var key ='smile@products';
     client.hget(key,id, function(err, res) {
         console.log(res);
+        var good = JSON.parse(res);
+        var result = JSON.parse('{"id":null}');
+        result.id = good.id;
+        result.n = good.n;
+        result.d = good.d;
+        result.p = good.cover;
+        result.lp = good.lp;
+        result.pp = good.pp;
+        result.sp = good.sp;
+        result.bid = good.bid;
+        result.be = good.be;
+        result.cid = good.cid;
+        result.ce = good.ce;
+        result.ci = good.ci;
+        result.c = good.c;
+        result.zsn = good.zsn;
+        result.sn = good.sn;
+
         response.writeHead(200, {
             "Content-Type": applicationJson,
             "Access-Control-Allow-Origin":"*",
             'Access-Control-Allow-Methods': 'GET',
             'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
-        response.write(addData(res));
+//        response.write(addData(res));
+        response.write(addData(JSON.stringify(result)));
         response.end();
     });
 }
@@ -901,8 +920,8 @@ exports.searchmore = searchmore;
 exports.goodsdetail = goodsdetail;
 
 function addData(tmp){
-    var res = JSON.parse('{"data":null}');
+    /*var res = JSON.parse('{"data":null}');
     res.data = tmp;
-    //return JSON.stringify(res);
+    return JSON.stringify(res);*/
     return '{"data":'+tmp+'}';
 }
