@@ -52,14 +52,14 @@ public class LoginController {
 		return "";
 	}
 
-	// http://localhost:8088/smile/loginAuto.json?userId=1&token=
+	// http://localhost:8088/smile/loginAuto.json?username=admin&token=
 	@RequestMapping(value = "/loginAuto", method = RequestMethod.GET)
-	public String loginAuto(Integer userId, String token, String verifycode,
+	public String loginAuto(String username, String token, String verifycode,
 			HttpServletRequest request, HttpServletResponse response, Model model)
 			throws IOException {
 		Protocol protocol = new Protocol();
 		try {
-			UserDto user = userService.loginAuto(userId, token, verifycode);
+			UserDto user = userService.loginAuto(username, token, verifycode);
 			if (user != null) {
 				auth.mark(user.getId(), request, response);
 				protocol.setCode(0);
@@ -75,13 +75,13 @@ public class LoginController {
 		return "";
 	}
 
-	// http://localhost:8088/smile/logout.json?userId=1&token=
+	// http://localhost:8088/smile/logout.json?username=admin&token=
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String logout(Integer userId, String token, String verifycode,
+	public String logout(String username, String token, String verifycode,
 			HttpServletRequest request, HttpServletResponse response, Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			UserDto user = userService.logout(userId, token, verifycode);
+			UserDto user = userService.logout(username, token, verifycode);
 			if (user != null) {
 				auth.removeMark(request, response);
 				protocol.setCode(0);
