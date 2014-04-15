@@ -93,6 +93,10 @@ public class ProductBuildDto {
 	 * 前一周销售数量
 	 */
 	private Integer		zsn;
+	/**
+	 * 大图封面
+	 */
+	private String		cover;
 
 	public Integer getId() {
 		return id;
@@ -260,5 +264,13 @@ public class ProductBuildDto {
 
 	public void setZsn(Integer zsn) {
 		this.zsn = zsn;
+	}
+
+	public String getCover() {
+		return cover;
+	}
+
+	public void setCover(String cover) {
+		this.cover = cover;
 	}
 }

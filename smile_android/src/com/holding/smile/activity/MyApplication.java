@@ -57,6 +57,8 @@ public class MyApplication extends Application {
 	 */
 	private SQLiteService			sqliteService;
 
+	public static String			jgoods_img_url;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -86,6 +88,8 @@ public class MyApplication extends Application {
 
 		// 初始化本地DB
 		MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+
+		jgoods_img_url = getString(R.string.jGoods_img_url);
 	}
 
 	public DataService getDataService() {
@@ -217,7 +221,7 @@ public class MyApplication extends Application {
 			return;
 
 		if (key != null && key.indexOf("http://") < 0) {
-			key = getApplicationContext().getString(R.string.jGoods_img_url) + key;
+			key = jgoods_img_url + key;
 		}
 		if (getBitmapFromMemoryCache(key) == null) {
 			imgMemoryCache.put(key, new WeakReference<Bitmap>(bitmap));
@@ -235,7 +239,7 @@ public class MyApplication extends Application {
 		if (key == null || key.equals(""))
 			return null;
 		if (key != null && key.indexOf("http://") < 0) {
-			key = getApplicationContext().getString(R.string.jGoods_img_url) + key;
+			key = jgoods_img_url + key;
 		}
 		WeakReference<Bitmap> weakReference = imgMemoryCache.get(key);
 		Bitmap bitmap = null;
@@ -328,7 +332,7 @@ public class MyApplication extends Application {
 		protected Bitmap doInBackground(String... params) {
 			imageUrl = params[0];
 			if (imageUrl != null && imageUrl.indexOf("http://") < 0) {
-				imageUrl = getApplicationContext().getString(R.string.jGoods_img_url) + imageUrl;
+				imageUrl = jgoods_img_url + imageUrl;
 			}
 			// 在后台开始下载图片
 			Bitmap bitmap = ImgUtil.getInstance().getBitmap(imageUrl);

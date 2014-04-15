@@ -47,8 +47,13 @@ function recommendactivity(query,response) {
         // console.log(res);
         var recommendindex = JSON.parse(res);
         if(recommendindex){
-            var result = '[';
-            for(var i=0;i<recommendindex.length;i++){
+            var result = '[{"id":"1","p":"/activity/1.jpg"},' +
+                '{"id":"2","p":"/activity/2.jpg"},' +
+                '{"id":"3","p":"/activity/3.jpg"},' +
+                '{"id":"4","p":"/activity/4.jpg"},' +
+                '{"id":"5","p":"/activity/5.jpg"},' +
+                '{"id":"6","p":"/activity/6.jpg"}]';
+            /*for(var i=0;i<recommendindex.length;i++){
                 if(i > 0){
                     result += ',';
                 }
@@ -60,7 +65,7 @@ function recommendactivity(query,response) {
                 result += JSON.stringify(recommendindex[i].p);
                 result += '}';
             }
-            result += ']';
+            result += ']';*/
             response.writeHead(200, {
                 "Content-Type": applicationJson,
                 "Access-Control-Allow-Origin":"*",
@@ -872,12 +877,31 @@ function goodsdetail(query,response) {
     var key ='smile@products';
     client.hget(key,id, function(err, res) {
         console.log(res);
+        var good = JSON.parse(res);
+        var result = JSON.parse('{"id":null}');
+        result.id = good.id;
+        result.n = good.n;
+        result.d = good.d;
+        result.p = good.cover;
+        result.lp = good.lp;
+        result.pp = good.pp;
+        result.sp = good.sp;
+        result.bid = good.bid;
+        result.be = good.be;
+        result.cid = good.cid;
+        result.ce = good.ce;
+        result.ci = good.ci;
+        result.c = good.c;
+        result.zsn = good.zsn;
+        result.sn = good.sn;
+
         response.writeHead(200, {
             "Content-Type": applicationJson,
             "Access-Control-Allow-Origin":"*",
             'Access-Control-Allow-Methods': 'GET',
             'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
-        response.write(addData(res));
+//        response.write(addData(res));
+        response.write(addData(JSON.stringify(result)));
         response.end();
     });
 }
@@ -896,8 +920,8 @@ exports.searchmore = searchmore;
 exports.goodsdetail = goodsdetail;
 
 function addData(tmp){
-    var res = JSON.parse('{"data":null}');
+    /*var res = JSON.parse('{"data":null}');
     res.data = tmp;
-    //return JSON.stringify(res);
+    return JSON.stringify(res);*/
     return '{"data":'+tmp+'}';
 }
