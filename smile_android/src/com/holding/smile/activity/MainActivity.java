@@ -55,68 +55,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
     private List<JGoods>          recGoodsList            = new ArrayList<JGoods>();     // 活动商品
 	private List<BrandJGoods>		brandJGoodsList			= new ArrayList<BrandJGoods>();
 	private Integer					cid						= null;
-	private TextView				headerDescription;
-	
-	private Button testButton;
-	public String httpsUrl = "https://211.149.175.138:8443"; 
-	public Runnable access = new Runnable() {
-		public void run() {
-			try {
-				long a = System.currentTimeMillis();
-				String key = "222222";
-				char[] keys = key.toCharArray();
-				KeyStore keyStore = KeyStore.getInstance("BKS");
-				InputStream ins = getBaseContext().getResources().openRawResource(R.raw.client1);
-				long b = System.currentTimeMillis();
-	            keyStore.load(ins, keys);
-	            long c = System.currentTimeMillis();
-				KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");
-				long d = System.currentTimeMillis();
-				kmf.init(keyStore, keys);
-				KeyManager[] keyManagers = kmf.getKeyManagers();
-				SSLContext sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(keyManagers, new X509TrustManager[]{new NullX509TrustManager()}, null);
-				
-				String content = null;
-				HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
-				HttpURLConnection urlConnection = null;			 
-				try {
-				    URL requestedUrl = new URL(httpsUrl);
-				    urlConnection = (HttpURLConnection) requestedUrl.openConnection();
-				    if(urlConnection instanceof HttpsURLConnection) {
-				        ((HttpsURLConnection)urlConnection)
-				             .setSSLSocketFactory(sslContext.getSocketFactory());
-				    }
-				    urlConnection.setRequestMethod("GET");
-				    urlConnection.setConnectTimeout(1500);
-				    urlConnection.setReadTimeout(1500);
-				    InputStream is = urlConnection.getInputStream();
-				    StringBuffer sb = new StringBuffer();
-					byte[] bytes = new byte[1024];
-					for (int len = 0; (len = is.read(bytes)) != -1;) {
-						sb.append(new String(bytes, 0, len, "utf-8"));
-					}
-					content = sb.toString();
-				} catch(Exception ex) {
-				    content = ex.toString();
-				} finally {
-				    if(urlConnection != null) {
-				        urlConnection.disconnect();
-				    }
-					System.out.println(content);
-				}
-				long e = System.currentTimeMillis();
-				long b_a = b - a;//2
-				long c_b = c - b;//196
-				long d_c = d - c;//0
-				long e_d = e - d;//4525
-				long e_a = e - a;//4723
-				System.out.println("");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	};
+	private TextView				headerDescription;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -140,14 +79,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		listView.setAdapter(vlAdapter);
 
 		startTask();
-		
-		testButton = (Button) findViewById(R.id.testButton);
-        testButton.setOnClickListener(new OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                  new Thread(access).start();
-             }
-        });
 
 	}
 

@@ -36,6 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// 版本更新后的数据库变动
 		db.execSQL("DROP TABLE IF EXISTS SEARCH");
+		db.execSQL("DROP TABLE IF EXISTS USER");
 		createTable(db);
 
 	}
@@ -48,5 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	public void createTable(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE SEARCH"
 				+ "(ID INTEGER PRIMARY KEY AUTOINCREMENT, CONTENT VARCHAR,TIME TIMESTAMP,COUNT INTEGER)");
+		db.execSQL("CREATE TABLE USER"
+				+ "(CUID INTEGER PRIMARY KEY AUTOINCREMENT,USERNAME VARCHAR,TOKEN VARCHAR,MOBILEPHONE VARCHAR,IDENTITYCARD VARCHAR,QQ VARCHAR,EMAIL VARCHAR,WEIBO VARCHAR,WEIXIN VARCHAR,FLAG VARCHAR)");
 	}
 }
