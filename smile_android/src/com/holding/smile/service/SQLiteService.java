@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.holding.smile.activity.MyApplication;
 import com.holding.smile.entity.City;
 import com.holding.smile.entity.District;
 import com.holding.smile.entity.Province;
+import com.holding.smile.entity.SUser;
 import com.holding.smile.tools.DBHelper;
 import com.holding.smile.tools.DateUtil;
 
@@ -149,4 +152,222 @@ public class SQLiteService {
 		}
 		return list;
 	}
+
+	/**
+	 * 获取当前登录用户信息(即最后一个登录的人)
+	 * 
+	 * @return
+	 */
+	public SUser getScurrentUser() {
+		SUser user = null;
+		Cursor cursor = db.query("user", new String[] { "cuid", "username", "token", "mobilephone",
+				"identitycard", "qq", "email", "weibo", "weixin" }, "flag = ?",
+				new String[] { "1" }, null, null, null, "1");
+
+		while (cursor.moveToNext()) {
+			user = new SUser();
+			user.setId(cursor.getInt(0));
+			user.setUsername(cursor.getString(1));
+			user.setToken(cursor.getString(2));
+			user.setMobilephone(cursor.getString(3));
+			user.setIdentitycard(cursor.getString(4));
+			user.setQq(cursor.getString(5));
+			user.setEmail(cursor.getString(6));
+			user.setWeibo(cursor.getString(7));
+			user.setWeixin(cursor.getString(8));
+		}
+		cursor.close();
+
+		return user;
+	}
+
+	/**
+	 * 添加当前登录用户到本地数据库，添加后会把此用户标识设置成当前登录：先在MyApplication.getInstance().
+	 * getCurrentUser()中设置要修改的内容， 再调用此方法
+	 * 
+	 * @param user
+	 *            用户信息
+	 * @return 当前登录用户
+	 */
+	public SUser addUser() {
+		SUser user = MyApplication.getInstance().getCurrentUser();
+		if (user != null && user.getId() != null && user.getId() != 0 && user.getUsername() != null) {
+			SUser bdUser = MyApplication.getInstance().getSqliteService().getUserById(user.getId());
+			if (bdUser == null) {// 本地不存在就添加
+				db.beginTransaction(); // 开始事务
+				try {
+					// 先把所有的用户设置成非当前用户
+					ContentValues cv = new ContentValues();
+					cv.put("flag", "0");
+					db.update("user", cv, "1 = 1", new String[] {});
+
+					// 插入新用户
+					db.execSQL(
+							"INSERT INTO user VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)",
+							new Object[] { user.getId(), user.getUsername(), user.getToken(),
+									user.getMobilephone(), user.getIdentitycard(), user.getQq(),
+									user.getEmail(), user.getWeibo(), user.getWeixin() });
+					db.setTransactionSuccessful(); // 设置事务成功完成
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					db.endTransaction(); // 结束事务
+				}
+			} else {// 已存在修改
+				updateUser();
+			}
+		}
+		return MyApplication.getInstance().getCurrentUser();
+	}
+
+	/**
+	 * 保存当前登录用户的信息：先在MyApplication.getInstance().getCurrentUser()中设置要修改的内容，
+	 * 再调用此方法
+	 * 
+	 */
+	public void updateUser() {
+		SUser user = MyApplication.getInstance().getCurrentUser();
+		if (user != null && user.getId() != null & user.getId() > 0) {
+			db.beginTransaction(); // 开始事务
+			try {
+				ContentValues cv = new ContentValues();
+
+				// 先把所有的用户设置成非当前用户
+				cv.put("flag", "0");
+				db.update("user", cv, "1 = 1", new String[] {});
+
+				cv.clear();
+				cv.put("username", user.getUsername());
+				cv.put("token", user.getToken());
+				cv.put("mobilephone", user.getMobilephone());
+				cv.put("identitycard", user.getIdentitycard());
+				cv.put("qq", user.getQq());
+				cv.put("email", user.getEmail());
+				cv.put("weibo", user.getWeibo());
+				cv.put("weixin", user.getWeixin());
+				cv.put("flag", "1");
+				db.update("user", cv, "cuid = ?", new String[] { String.valueOf(user.getId()) });
+
+				MyApplication.getInstance().getCurrentUser().setFlag("1");
+				db.setTransactionSuccessful(); // 设置事务成功完成
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				db.endTransaction(); // 结束事务
+			}
+		}
+	}
+
+	/**
+	 * 根据id设置当前登录用户
+	 * 
+	 * @param cuid
+	 * @return 当前登录用户
+	 */
+	public SUser setCurrentUser(String cuid) {
+		db.beginTransaction();
+		try {
+			ContentValues cv = new ContentValues();
+
+			// 先把所有的用户设置成非当前用户
+			cv.put("flag", "0");
+			db.update("user", cv, "1 = 1", new String[] {});
+
+			// 把指定用户设置成当前登录用户
+			cv.clear();
+			cv.put("flag", "1");
+			db.update("user", cv, "cuid = ?", new String[] { cuid });
+
+			db.setTransactionSuccessful();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			db.endTransaction();
+		}
+		return getScurrentUser();
+	}
+
+	/**
+	 * 本地数据库的当前用户标识去掉,去掉后下次进入应用需要重新登录
+	 * 
+	 * @param cuid
+	 *            当前登录用户ID
+	 * @return
+	 */
+	public void setCurrentUserEmpty(int cuid) {
+		if (cuid != 0) {
+			db.beginTransaction();
+			try {
+				ContentValues cv = new ContentValues();
+				cv.put("flag", "0");
+				db.update("user", cv, "cuid = ?", new String[] { String.valueOf(cuid) });
+				db.setTransactionSuccessful();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				db.endTransaction();
+			}
+		}
+	}
+
+	/**
+	 * 根据ID获取登录用户信息
+	 * 
+	 * @return
+	 */
+	private SUser getUserById(int cuid) {
+		SUser user = new SUser();
+		Cursor cursor = db.query("user", new String[] { "cuid", "username", "token", "mobilephone",
+				"identitycard", "qq", "email", "weibo", "weixin", "flag" }, "cuid = ?",
+				new String[] { String.valueOf(cuid) }, null, null, null, "1");
+
+		while (cursor.moveToNext()) {
+			user.setId(cursor.getInt(0));
+			user.setUsername(cursor.getString(1));
+			user.setToken(cursor.getString(2));
+			user.setMobilephone(cursor.getString(3));
+			user.setIdentitycard(cursor.getString(4));
+			user.setQq(cursor.getString(5));
+			user.setEmail(cursor.getString(6));
+			user.setWeibo(cursor.getString(7));
+			user.setWeixin(cursor.getString(8));
+		}
+		cursor.close();
+
+		if (user.getId() != null && user.getId() != 0) {
+			return user;
+		}
+		return null;
+	}
+
+	/**
+	 * 根据openid获取登录用户信息，有就说明是登录过的用户
+	 * 
+	 * @return 未找到返回null
+	 */
+	public SUser getUserByUsername(String username) {
+		SUser user = new SUser();
+		Cursor cursor = db.query("user", new String[] { "cuid", "username", "token", "mobilephone",
+				"identitycard", "qq", "email", "weibo", "weixin", "flag" }, "username = ?",
+				new String[] { username }, null, null, null, "1");
+
+		while (cursor.moveToNext()) {
+			user.setId(cursor.getInt(0));
+			user.setUsername(cursor.getString(1));
+			user.setToken(cursor.getString(2));
+			user.setMobilephone(cursor.getString(3));
+			user.setIdentitycard(cursor.getString(4));
+			user.setQq(cursor.getString(5));
+			user.setEmail(cursor.getString(6));
+			user.setWeibo(cursor.getString(7));
+			user.setWeixin(cursor.getString(8));
+		}
+		cursor.close();
+
+		if (user.getId() != null && user.getId() != 0) {
+			return user;
+		}
+		return null;
+	}
+
 }

@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String	DATABASE_NAME		= "smile.db";
-	private static final int	DATABASE_VERSION	= 2;
+	private static final int	DATABASE_VERSION	= 3;
 
 	public DBHelper(Context context) {
 		// CursorFactory设置为null,使用默认值
@@ -38,6 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// 版本更新后的数据库变动
 		db.execSQL("DROP TABLE IF EXISTS SEARCH");
+		db.execSQL("DROP TABLE IF EXISTS USER");
 		createTable(db);
 
 	}
@@ -50,8 +51,10 @@ public class DBHelper extends SQLiteOpenHelper {
 	public void createTable(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE SEARCH"
 				+ "(ID INTEGER PRIMARY KEY AUTOINCREMENT, CONTENT VARCHAR,TIME TIMESTAMP,COUNT INTEGER)");
+		db.execSQL("CREATE TABLE USER"
+				+ "(CUID INTEGER PRIMARY KEY AUTOINCREMENT,USERNAME VARCHAR,TOKEN VARCHAR,MOBILEPHONE VARCHAR,IDENTITYCARD VARCHAR,QQ VARCHAR,EMAIL VARCHAR,WEIBO VARCHAR,WEIXIN VARCHAR,FLAG VARCHAR)");
 
-		/********** 省市区 **********/
+		/********** 省市区 start **********/
 		db.execSQL("create table province"
 				+ "(proid integer primary key autoincrement,disno varchar,proname varchar,prosort integer,remark varchar)");
 		db.execSQL("create table city"
@@ -70,13 +73,12 @@ public class DBHelper extends SQLiteOpenHelper {
 		for (String sql : cList) {
 			db.execSQL(sql);
 		}
-		System.out.println(System.currentTimeMillis());
 		List<String> dList = ProvinceCityUtil.getDistrictList();
 		for (String sql : dList) {
 			db.execSQL(sql);
 		}
-		System.out.println(System.currentTimeMillis());
 
 		ProvinceCityUtil.cleanData();
+		/********** 省市区 end **********/
 	}
 }

@@ -19,6 +19,10 @@
     <string name="search_best_hot">目前最火热的</string>
     
     <!-- 个人设置 -->
+    <string name="btn_login">登录</string>
+    <string name="get_pwd">找回密码</string>
+    <string name="set_login">登录设置 </string>
+
     <string name="user_info_myaddress">我的收货地址</string>
     <string name="setting_logout">注销</string>
     <string name="user_info_right">&gt;</string>
@@ -27,6 +31,5 @@
     <string name="user_info_phone">手机</string>
     <string name="user_info_email_content">输入邮件地址</string>
     <string name="user_info_phone_content">输入手机号码</string>
-    
 
 </resources>
