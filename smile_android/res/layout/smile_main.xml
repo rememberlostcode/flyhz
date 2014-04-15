@@ -5,6 +5,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
     
+    <!-- 
     <HorizontalScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -25,6 +26,17 @@
 	    
 	    </LinearLayout>
     </HorizontalScrollView>
+     -->
+     
+     <RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="150dip" >
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+	    <android.support.v4.view.ViewPager
+	        android:id="@+id/viewpager"
+	        android:layout_width="fill_parent"
+	        android:layout_height="150dip" />
+	</RelativeLayout>
 
     <ListView
         android:id="@+id/brand_list"
