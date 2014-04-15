@@ -17,6 +17,7 @@ import org.codehaus.jackson.type.JavaType;
 import android.util.Log;
 
 import com.holding.smile.activity.MyApplication;
+import com.holding.smile.dto.RtnLoginDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 
@@ -112,6 +113,14 @@ public class JSONUtil {
 		RtnValueDto obj = null;
 		if (json != null && !"".equals(json.trim())) {
 			obj = JSONUtil.getJson2Entity(json, RtnValueDto.class);
+		}
+		return obj;
+	}
+
+	public static RtnLoginDto changeJson2RtnLoginDto(String json) {
+		RtnLoginDto obj = null;
+		if (json != null && !"".equals(json.trim())) {
+			obj = JSONUtil.getJson2Entity(json, RtnLoginDto.class);
 		}
 		return obj;
 	}

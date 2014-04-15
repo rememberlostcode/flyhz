@@ -10,13 +10,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +43,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private List<View>			viewList;
 	// private MyGridView reGridView;
 	private MyPagerAdapter		pagerAdapter;
+	// 装点点的ImageView数组
+	private ImageView[]			tips;
+
 	// private RecommendGoodsAdapter reGoodsAdapter;
 	private VerticalListAdapter	vlAdapter;
 	private ListView			listView;
@@ -204,14 +211,77 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		if (recActList != null && !recActList.isEmpty()) {
 			int size = recActList.size();
 			for (int i = 0; i < size; i++) {
-				JActivity jAct = recActList.get(i);
+				final JActivity jAct = recActList.get(i);
 				View view = inflater.inflate(R.layout.good_pic_item, null);
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
-				imageView.setId(jAct.getId());
-				imageView.setTag(jAct.getP());
+				imageView.setContentDescription(jAct.getId() + "");
+				imageView.setTag(MyApplication.jgoods_img_url + jAct.getP());
+				imageView.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						Toast.makeText(context, "您点击了活动区域" + jAct.getId() + "!", Toast.LENGTH_SHORT)
+								.show();
+					}
+				});
 				viewList.add(view);
 			}
+
+			ViewGroup group = (ViewGroup) findViewById(R.id.viewGroup);
+			// 将点点加入到ViewGroup中
+			tips = new ImageView[size];
+			for (int i = 0; i < tips.length; i++) {
+				ImageView imageView = new ImageView(this);
+				imageView.setLayoutParams(new LayoutParams(10, 10));
+				tips[i] = imageView;
+				if (i == 0) {
+					tips[i].setBackgroundResource(R.drawable.page_indicator_focused);
+				} else {
+					tips[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+				}
+
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+						new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+				layoutParams.leftMargin = 5;
+				layoutParams.rightMargin = 5;
+				group.addView(imageView, layoutParams);
+			}
 		}
+
+		// 设置监听，主要是设置点点的背景
+		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+
+			@Override
+			public void onPageSelected(int arg0) {
+				setImageBackground(arg0 % recActList.size());
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+
+			}
+
+			/**
+			 * 设置选中的tip的背景
+			 * 
+			 * @param selectItems
+			 */
+			private void setImageBackground(int selectItems) {
+				for (int i = 0; i < tips.length; i++) {
+					if (i == selectItems) {
+						tips[i].setBackgroundResource(R.drawable.page_indicator_focused);
+					} else {
+						tips[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+					}
+				}
+			}
+		});
 	}
 
 	@SuppressLint("HandlerLeak")

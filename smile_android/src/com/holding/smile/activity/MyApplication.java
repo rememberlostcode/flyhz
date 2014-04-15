@@ -7,7 +7,9 @@ import android.content.Intent;
 
 import com.holding.smile.R;
 import com.holding.smile.cache.ImageLoader;
+import com.holding.smile.entity.SUser;
 import com.holding.smile.service.DataService;
+import com.holding.smile.service.LoginService;
 import com.holding.smile.service.SQLiteService;
 
 /**
@@ -44,7 +46,14 @@ public class MyApplication extends Application {
 	 */
 	private SQLiteService			sqliteService;
 
+	private LoginService				loginService;
+
 	public static String			jgoods_img_url;
+	
+	/**
+	 * 当前登录用户
+	 */
+	private SUser					currentUser;
 
 	@Override
 	public void onCreate() {
@@ -53,10 +62,9 @@ public class MyApplication extends Application {
 
 		Context context = getApplicationContext();
 		dataService = new DataService(context);
+		loginService = new LoginService(context);
 		mImageLoader = new ImageLoader(context);
-
-		// 初始化本地DB
-		MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+		sqliteService = new SQLiteService(context);// 初始化本地DB	
 
 		jgoods_img_url = getString(R.string.jGoods_img_url);
 	}
@@ -71,6 +79,14 @@ public class MyApplication extends Application {
 
 	public void setDataService(DataService dataService) {
 		this.dataService = dataService;
+	}
+
+	public LoginService getLoginService() {
+		return loginService;
+	}
+
+	public void setLoginService(LoginService loginService) {
+		this.loginService = loginService;
 	}
 
 	public static MyApplication getInstance() {
@@ -99,6 +115,14 @@ public class MyApplication extends Application {
 
 	public void setDensity(Float density) {
 		this.density = density;
+	}
+
+	public SUser getCurrentUser() {
+		return currentUser;
+	}
+
+	public void setCurrentUser(SUser currentUser) {
+		this.currentUser = currentUser;
 	}
 
 	public SQLiteService getSqliteService() {

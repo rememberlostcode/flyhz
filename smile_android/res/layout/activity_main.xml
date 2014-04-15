@@ -3,7 +3,7 @@
     android:id="@+id/main_pull_refresh_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" >   
     
     <com.holding.smile.myview.MyLinearLayout
         android:id="@+id/sort_type"
