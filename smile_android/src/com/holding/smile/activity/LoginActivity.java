@@ -20,6 +20,7 @@ import com.holding.smile.dto.RtnLoginDto;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.service.DataService;
 import com.holding.smile.service.LoginService;
+import com.holding.smile.tools.MD5;
 
 /**
  * 思路： 1、初始化组件 2、添加按钮点击监听事件 3、获取用户输入的数据并转换成JSON对象 4、设置请求数据url和实体数据，并执行请求
@@ -32,7 +33,7 @@ import com.holding.smile.service.LoginService;
  */
 public class LoginActivity extends BaseActivity {
 
-	private AutoCompleteTextView userAccount; // 用户的账号
+	private EditText userAccount; // 用户的账号
 	private EditText userPwd; // 用户密码
 	private Button btnLogining; // 登陆按钮
 	private Button btnGetBackPwd; // 取回密码按钮
@@ -61,7 +62,7 @@ public class LoginActivity extends BaseActivity {
 		if (user != null) {
 			MyApplication.getInstance().setCurrentUser(user);
 		}
-		if (user != null && user.getUsername() != null) {
+		if (user != null && user.getUsername() != null && user.getToken() != null) {
 			Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
 			msg.obj = user;
 			msg.sendToTarget();
@@ -84,7 +85,7 @@ public class LoginActivity extends BaseActivity {
 	 * 初始化所有控件
 	 */
 	private void initView() {
-		userAccount = (AutoCompleteTextView) findViewById(R.id.login_account);
+		userAccount = (EditText) findViewById(R.id.login_account);
 		userPwd = (EditText) findViewById(R.id.login_pwd);
 		btnLogining = (Button) findViewById(R.id.self_login);
 		btnGetBackPwd = (Button) findViewById(R.id.login_btn_getbackpwd);
@@ -105,6 +106,7 @@ public class LoginActivity extends BaseActivity {
 					public void onClick(View v) {
 						String username = userAccount.getText().toString();// 获取用户输入的账号
 						String password = userPwd.getText().toString();// 获取用户输入的密码
+						password = MD5.getMD5(password);
 						/* 关闭软键盘 */
 						InputMethodManager inputMgr = (InputMethodManager) context
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -142,8 +144,8 @@ public class LoginActivity extends BaseActivity {
 				if (msg.obj != null) {
 					SUser user = (SUser) msg.obj;	
 					LoginService loginService = MyApplication.getInstance().getLoginService();
-					RtnLoginDto rtnLoginDto = loginService.login(user);
-					if(rtnLoginDto == null){
+					RtnLoginDto rtnLoginDto = loginService.autoLogin(user);
+					if(rtnLoginDto == null || rtnLoginDto.getCode() == null || rtnLoginDto.getData() == null){
 						loginViewInit();
 					}else{
 						Intent intent = new Intent(context, MainActivity.class);
@@ -158,7 +160,7 @@ public class LoginActivity extends BaseActivity {
 					SUser user = (SUser) msg.obj;	
 					LoginService loginService = MyApplication.getInstance().getLoginService();
 					RtnLoginDto rtnLoginDto = loginService.login(user);
-					if(rtnLoginDto == null){
+					if(rtnLoginDto == null || rtnLoginDto.getCode() == null || rtnLoginDto.getData() == null){
 						loginViewInit();
 						Toast.makeText(context, "登录失败，请稍后重试！", Toast.LENGTH_SHORT).show();
 					}else{

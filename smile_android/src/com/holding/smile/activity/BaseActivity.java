@@ -22,8 +22,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.entity.SUser;
 
 /**
  * 
@@ -100,6 +102,10 @@ public class BaseActivity extends Activity {
 		int id = R.id.header_description;
 		TextView textView = (TextView) findViewById(id);
 		setVisible(id);
+		SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+		if (user != null) {
+			Toast.makeText(context, "欢迎您," + user.getUsername(), Toast.LENGTH_SHORT).show();
+		}
 		return textView;
 	}
 

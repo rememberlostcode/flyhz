@@ -53,28 +53,20 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+   <LinearLayout
         android:id="@+id/login_by_self"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical" >
 
-        <!-- 头像 -->
 
-        <ImageButton
-            android:id="@+id/login_head"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:visibility="gone" />
         <!-- 账号 -->
 
-        <AutoCompleteTextView
+        <EditText
             android:id="@+id/login_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/login_head"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
@@ -100,7 +92,7 @@
             android:inputType="textPassword"
             android:padding="5dp"
             android:textColor="#7d7d7d"
-            android:text="e10adc3949ba59abbe56e057f20f883e" />
+            android:text="123456" />
         <!-- 登陆按钮 -->
 
         <Button
@@ -135,8 +127,7 @@
                 android:background="#00000000"
                 android:text="@string/get_pwd"
                 android:textColor="#ffffff"
-                android:textSize="15sp"
-                android:visibility="gone" />
+                android:textSize="15sp"/>
 
             <!-- 登录设置 -->
 
@@ -149,8 +140,7 @@
                 android:background="#00000000"
                 android:text="@string/set_login"
                 android:textColor="#ffffff"
-                android:textSize="15sp"
-                android:visibility="gone" />
+                android:textSize="15sp"/>
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

@@ -52,11 +52,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private RecommendGoodsAdapter	reGoodsAdapter;
 	private VerticalListAdapter		vlAdapter;
 	private ListView				listView;
-
-    private List<JGoods>          recGoodsList            = new ArrayList<JGoods>();     // 活动商品
-	private List<BrandJGoods>		brandJGoodsList			= new ArrayList<BrandJGoods>();
-	private Integer					cid						= null;
-	private TextView				headerDescription;	
 	
 	private List<JActivity>			recActList			= new ArrayList<JActivity>();	// 活动商品
 	private List<BrandJGoods>		brandJGoodsList		= new ArrayList<BrandJGoods>();

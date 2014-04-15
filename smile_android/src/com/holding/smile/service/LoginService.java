@@ -39,59 +39,66 @@ public class LoginService {
 	}
 
 	/**
-	 * 包括两种登录：1.用户名密码登录 2.自动登录（用户名+token）
+	 * 用户名密码登录
+	 * 
 	 * @param iuser
 	 * @return
 	 */
 	public RtnLoginDto login(SUser iuser) {
-		String rvdString = "";
-		SUser suser = MyApplication.getInstance().getSqliteService().getUserByUsername(iuser.getUsername());
-		System.out.println(suser != null ? ("本机已存在此用户：" + suser.getUsername()): "本机不存在此用户");
-
 		RtnLoginDto rvd = null;
-		// 查询该用户是否已经登录过本机
-		if (suser == null || suser.getToken() == null ||
-				"".equals(suser.getToken().trim())) {// 未登录过需要调用返回数据的登录接口并初始化 。
-			HashMap<String, String> param = new HashMap<String, String>();
-			param.put("username", iuser.getUsername());
-			param.put("password", iuser.getPassword());
-			rvdString = https_get(login_url, param);
-			if (rvdString != null) {
-				rvd = JSONUtil.changeJson2RtnLoginDto(rvdString);
-				if (rvd.getCode() == 0 && rvd.getData() != null) {
-					SUser ruser = JSONUtil.getJson2Entity(rvd.getData(),SUser.class);
-					setLoginUser(ruser);
-					try {
-						// 添加本地数据库用户信息
-						MyApplication.getInstance().getSqliteService().addUser();
-					} catch (Exception e) {
-						System.out.println("SQLite出错了！");
-						e.printStackTrace();
-						System.out.println("SQLite关闭并初始化！");
-						MyApplication.getInstance().getSqliteService().closeDB();
-						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
-					}
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("username", iuser.getUsername());
+		param.put("password", iuser.getPassword());
+		String rvdString = https_get(login_url, param);
+		if (rvdString != null) {
+			rvd = JSONUtil.changeJson2RtnLoginDto(rvdString);
+			if (rvd != null && rvd.getCode() != null && rvd.getData() != null
+					&& rvd.getCode() == 0) {
+				SUser ruser = JSONUtil.getJson2Entity(rvd.getData(),
+						SUser.class);
+				setLoginUser(ruser);
+				try {
+					// 添加本地数据库用户信息
+					MyApplication.getInstance().getSqliteService().addUser();
+				} catch (Exception e) {
+					System.out.println("SQLite出错了！");
+					e.printStackTrace();
+					System.out.println("SQLite关闭并初始化！");
+					MyApplication.getInstance().getSqliteService().closeDB();
+					MyApplication.getInstance().setSqliteService(
+							new SQLiteService(context));
 				}
 			}
-		} else {// 登录过就调用不需要返回数据的登录接口
+		}
+		return rvd;
+	}
+
+	public RtnLoginDto autoLogin(SUser iuser) {
+		RtnLoginDto rvd = null;
+		if (iuser != null && iuser.getUsername() != null && iuser.getToken() != null) {
 			HashMap<String, String> param = new HashMap<String, String>();
 			param.put("username", iuser.getUsername());
-			param.put("token", suser.getToken());
-			rvdString = https_get(auto_login_url, param);
+			param.put("token", iuser.getToken());
+			String rvdString = https_get(auto_login_url, param);
 			if (rvdString != null) {
 				rvd = JSONUtil.changeJson2RtnLoginDto(rvdString);
-				if (rvd.getCode() == 0 && rvd.getData() != null) {
-					SUser ruser = JSONUtil.getJson2Entity(rvd.getData(),SUser.class);
+				if (rvd != null && rvd.getCode() != null
+						&& rvd.getData() != null && rvd.getCode() == 0) {
+					SUser ruser = JSONUtil.getJson2Entity(rvd.getData(),
+							SUser.class);
 					setLoginUser(ruser);
 					try {
-						// 添加本地数据库用户信息
-						MyApplication.getInstance().getSqliteService().updateUser();
+						// 更新本地数据库用户信息
+						MyApplication.getInstance().getSqliteService()
+								.updateUser();
 					} catch (Exception e) {
 						System.out.println("SQLite出错了！");
 						e.printStackTrace();
 						System.out.println("SQLite关闭并初始化！");
-						MyApplication.getInstance().getSqliteService().closeDB();
-						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+						MyApplication.getInstance().getSqliteService()
+								.closeDB();
+						MyApplication.getInstance().setSqliteService(
+								new SQLiteService(context));
 					}
 				}
 			}
@@ -109,10 +116,10 @@ public class LoginService {
 		// 把返回的用户设置成当前用户
 		MyApplication.getInstance().setCurrentUser(user);
 	}
-	
-	private String https_get(String path,HashMap<String, String> param){
+
+	private String https_get(String path, HashMap<String, String> param) {
 		String content = null;
-		try {		
+		try {
 			StringBuffer paramsBuffer = new StringBuffer();
 			if (param != null && param.size() > 0) {
 				Set<String> set = param.keySet();
@@ -124,7 +131,8 @@ public class LoginService {
 					if (count > 0) {
 						paramsBuffer.append("&");
 					}
-					paramsBuffer.append(key + "=" + URLEncoder.encode(value, "UTF-8"));
+					paramsBuffer.append(key + "="
+							+ URLEncoder.encode(value, "UTF-8"));
 					count++;
 				}
 			}
@@ -138,7 +146,7 @@ public class LoginService {
 					path = path + "&" + params;
 				}
 			}
-			
+
 			long a = System.currentTimeMillis();
 			String key = "222222";
 			char[] keys = key.toCharArray();
@@ -153,9 +161,10 @@ public class LoginService {
 			kmf.init(keyStore, keys);
 			KeyManager[] keyManagers = kmf.getKeyManagers();
 			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(keyManagers,
-					new X509TrustManager[] { new NullX509TrustManager() },
-					null);
+			sslContext
+					.init(keyManagers,
+							new X509TrustManager[] { new NullX509TrustManager() },
+							null);
 			HttpsURLConnection
 					.setDefaultHostnameVerifier(new NullHostNameVerifier());
 			HttpURLConnection urlConnection = null;
@@ -165,8 +174,7 @@ public class LoginService {
 						.openConnection();
 				if (urlConnection instanceof HttpsURLConnection) {
 					((HttpsURLConnection) urlConnection)
-							.setSSLSocketFactory(sslContext
-									.getSocketFactory());
+							.setSSLSocketFactory(sslContext.getSocketFactory());
 				}
 				urlConnection.setRequestMethod("GET");
 				urlConnection.setConnectTimeout(1500);
