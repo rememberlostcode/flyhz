@@ -12,6 +12,8 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -67,10 +69,12 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
 		mListView = (ListView) findViewById(R.id.goods_list_view);
 		mListView.setAdapter(adapter);
+		mListView.setOnScrollListener(mScrollListener);
+
 		mPullToRefreshView.setOnHeaderRefreshListener(this);
 		mPullToRefreshView.setOnFooterRefreshListener(this);
 
-		MyApplication.getInstance().setmImgList(mListView);
+		// MyApplication.getInstance().setmImgList(mListView);
 		startTask();
 
 	}
@@ -108,10 +112,39 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
-			MyApplication.getInstance().setmImgList(mListView);
+			// MyApplication.getInstance().setmImgList(mListView);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+
+	OnScrollListener	mScrollListener	= new OnScrollListener() {
+
+											@Override
+											public void onScrollStateChanged(AbsListView view,
+													int scrollState) {
+												switch (scrollState) {
+													case OnScrollListener.SCROLL_STATE_FLING:
+														adapter.setFlagBusy(true);
+														break;
+													case OnScrollListener.SCROLL_STATE_IDLE:
+														adapter.setFlagBusy(false);
+														break;
+													case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+														adapter.setFlagBusy(false);
+														break;
+													default:
+														break;
+												}
+												adapter.notifyDataSetChanged();
+											}
+
+											@Override
+											public void onScroll(AbsListView view,
+													int firstVisibleItem, int visibleItemCount,
+													int totalItemCount) {
+
+											}
+										};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

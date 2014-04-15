@@ -2,6 +2,7 @@
 package com.holding.smile.activity;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +17,6 @@ import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 
 import com.holding.smile.R;
@@ -32,7 +32,7 @@ import com.holding.smile.tools.LruCache;
  * @author robin 2014-2-25下午12:21:41
  * 
  */
-public class MyApplication extends Application implements OnScrollListener {
+public class MyApplication extends Application {
 
 	public static final String		LOG_TAG	= "smile";
 	private static MyApplication	singleton;
@@ -75,9 +75,10 @@ public class MyApplication extends Application implements OnScrollListener {
 		int maxMemory = (int) Runtime.getRuntime().maxMemory();
 		int cacheSize = maxMemory / 8;
 		// 设置图片缓存大小为程序最大可用内存的1/8
-		imgMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+		imgMemoryCache = new LruCache<String, WeakReference<Bitmap>>(cacheSize) {
 			@Override
-			protected int sizeOf(String key, Bitmap bitmap) {
+			protected int sizeOf(String key, WeakReference<Bitmap> weakBitmap) {
+				Bitmap bitmap = weakBitmap.get();
 				return bitmap.getRowBytes() * bitmap.getHeight();
 				// return bitmap.getByteCount();
 			}
@@ -157,32 +158,32 @@ public class MyApplication extends Application implements OnScrollListener {
 	 * ==========================================================================
 	 */
 
-	private File						cache;
+	private File									cache;
 
 	/**
 	 * 记录所有正在下载或等待下载的任务。
 	 */
-	private Set<BitmapWorkerTask>		taskCollection;
+	private Set<BitmapWorkerTask>					taskCollection;
 
 	/**
 	 * 图片缓存技术的核心类，用于缓存所有下载好的图片，在程序内存达到设定值时会将最少最近使用的图片移除掉。
 	 */
-	private LruCache<String, Bitmap>	imgMemoryCache;
+	private LruCache<String, WeakReference<Bitmap>>	imgMemoryCache;
 
 	/**
 	 * 第一张可见图片的下标
 	 */
-	private int							mFirstVisibleItem;
+	private int										mFirstVisibleItem;
 
 	/**
 	 * 一屏有多少张图片可见
 	 */
-	private int							mVisibleItemCount;
+	private int										mVisibleItemCount;
 
 	/**
 	 * ListView的实例
 	 */
-	private List<AbsListView>			imgList;
+	private List<AbsListView>						imgList;
 
 	/**
 	 * 给ImageView设置图片。首先从LruCache中取出图片的缓存，设置到ImageView上。如果LruCache中没有该图片的缓存，
@@ -212,11 +213,14 @@ public class MyApplication extends Application implements OnScrollListener {
 	 *            LruCache的键，这里传入从网络上下载的Bitmap对象。
 	 */
 	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+		if (bitmap == null)
+			return;
+
 		if (key != null && key.indexOf("http://") < 0) {
 			key = getApplicationContext().getString(R.string.jGoods_img_url) + key;
 		}
 		if (getBitmapFromMemoryCache(key) == null) {
-			imgMemoryCache.put(key, bitmap);
+			imgMemoryCache.put(key, new WeakReference<Bitmap>(bitmap));
 		}
 	}
 
@@ -233,37 +237,12 @@ public class MyApplication extends Application implements OnScrollListener {
 		if (key != null && key.indexOf("http://") < 0) {
 			key = getApplicationContext().getString(R.string.jGoods_img_url) + key;
 		}
-		return imgMemoryCache.get(key);
-	}
-
-	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// 仅当ListView静止时才去下载图片，ListView滑动时取消所有正在下载的任务
-
-		if (scrollState == SCROLL_STATE_FLING) {
-			// Log.d("==============", "开始滚动");
-		} else if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-			// Log.d("==============", "正在滚动");
-		} else if (scrollState == SCROLL_STATE_IDLE) {
-			// Log.d("==============", "停止滚动");
+		WeakReference<Bitmap> weakReference = imgMemoryCache.get(key);
+		Bitmap bitmap = null;
+		if (weakReference != null) {
+			bitmap = weakReference.get();
 		}
-		if (scrollState == SCROLL_STATE_IDLE) {
-			loadBitmaps(mFirstVisibleItem, mVisibleItemCount);
-		} else {
-			cancelAllTasks();
-		}
-	}
-
-	@Override
-	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-			int totalItemCount) {// step-1 2 5 6
-		mFirstVisibleItem = firstVisibleItem;
-		mVisibleItemCount = visibleItemCount;
-		// 下载的任务应该由onScrollStateChanged里调用，但首次进入程序时onScrollStateChanged并不会调用，
-		// 因此在这里为首次进入程序开启下载任务。
-		if (visibleItemCount > 0) {
-			loadBitmaps(firstVisibleItem, visibleItemCount);
-		}
+		return bitmap;
 	}
 
 	/**
@@ -275,28 +254,26 @@ public class MyApplication extends Application implements OnScrollListener {
 	 * @param visibleItemCount
 	 *            屏幕中总共可见的元素数
 	 */
-	private void loadBitmaps(int firstVisibleItem, int visibleItemCount) {// step-3
+	private void loadBitmaps(int firstVisibleItem, int visibleItemCount, AbsListView absListView) {// step-3
 		try {
-			if (imgList != null && !imgList.isEmpty()) {
-				for (AbsListView mImgList : imgList) {
-					for (int i = 0; i < 0 + visibleItemCount; i++) {
-						List<View> views = getAllChildViews(mImgList.getChildAt(i));
-						for (View view : views) {
-							if (view instanceof ImageView) {
-								ImageView imageView = (ImageView) view;
-								if (imageView.getTag() != null) {
-									String imageUrl = (String) imageView.getTag();
-									if (imageUrl != null && !"".equals(imageUrl.trim())) {
-										Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
-										if (bitmap == null) {
-											BitmapWorkerTask task = new BitmapWorkerTask();
-											taskCollection.add(task);
-											task.execute(imageUrl);
-										} else {
-											if (imageView != null && bitmap != null) {
-												imageView.setImageBitmap(bitmap);
-											}
-										}
+			// if (imgList != null && !imgList.isEmpty()) {
+			// for (AbsListView mImgList : imgList) {
+			for (int i = 0; i < 0 + visibleItemCount; i++) {
+				List<View> views = getAllChildViews(absListView.getChildAt(i));
+				for (View view : views) {
+					if (view instanceof ImageView) {
+						ImageView imageView = (ImageView) view;
+						if (imageView.getTag() != null) {
+							String imageUrl = (String) imageView.getTag();
+							if (imageUrl != null && !"".equals(imageUrl.trim())) {
+								Bitmap bitmap = getBitmapFromMemoryCache(imageUrl);
+								if (bitmap == null) {
+									BitmapWorkerTask task = new BitmapWorkerTask();
+									taskCollection.add(task);
+									task.execute(imageUrl);
+								} else {
+									if (imageView != null && bitmap != null) {
+										imageView.setImageBitmap(bitmap);
 									}
 								}
 							}
@@ -304,6 +281,8 @@ public class MyApplication extends Application implements OnScrollListener {
 					}
 				}
 			}
+			// }
+			// }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -377,16 +356,16 @@ public class MyApplication extends Application implements OnScrollListener {
 	}
 
 	public void setmImgList(AbsListView mImgList) {
-		if (imgList == null)
-			imgList = new ArrayList<AbsListView>();
-		imgList.clear();
-		this.imgList.add(mImgList);
-		mImgList.setOnScrollListener(this);
+		// if (imgList == null)
+		// imgList = new ArrayList<AbsListView>();
+		// imgList.clear();
+		// this.imgList.add(mImgList);
+		// mImgList.setOnScrollListener(this);
 	}
 
 	public void addImgList(AbsListView childView) {
-		childView.setOnScrollListener(this);
-		imgList.add(childView);
+		// childView.setOnScrollListener(this);
+		// imgList.add(childView);
 	}
 
 }
