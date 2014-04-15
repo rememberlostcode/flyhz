@@ -101,14 +101,13 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 		imageAdapter = new ImageAdapter(context, picList);
 		listView.setAdapter(imageAdapter);
-		// MyApplication.getInstance().setmImgList(listView);
 		SetExpandableListViewListViewHeight.setListViewHeightOnChildren(listView);
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.btn_search: {
+			case R.id.mainfooter_search: {
 				Intent intent = new Intent(this, SearchGoodsActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
@@ -137,7 +136,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			imageAdapter.notifyDataSetInvalidated();
 			imageAdapter = null;
 		}
-		// new RecycleBitmapUtil(true).recycle(listView);
 		setResult(RESULT_CANCELED, null);
 	}
 }

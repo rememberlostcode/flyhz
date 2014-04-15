@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="8dip"
-    android:layout_marginRight="8dip"
-    android:layout_marginTop="8dip"
-    android:layout_gravity="center_vertical"
-    android:gravity="center"
+    android:layout_height="200dip"
     android:background="#ffffff"
     android:orientation="horizontal" >
     
@@ -19,8 +14,9 @@
     
     <RelativeLayout
         android:layout_width="wrap_content"
-	    android:layout_height="200dip"
+	    android:layout_height="wrap_content"
 	    android:layout_toRightOf="@+id/p"
+	    android:layout_centerVertical="true"
 	    android:layout_marginRight="10dip"
 	    android:background="#ffffff"
         >
@@ -30,7 +26,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:textColor="#010101"
-	        android:textSize="12sp"
+	        android:textSize="14sp"
 	        android:textStyle="bold" />
         
 	
@@ -41,7 +37,7 @@
             android:layout_below="@+id/n"
             android:layout_marginTop="10dip"
             android:textColor="#f50606"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 	
     </RelativeLayout>
 

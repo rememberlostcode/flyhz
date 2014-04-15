@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
-			case R.id.btn_search: {
+			case R.id.mainfooter_search: {
 				Intent intent = new Intent(this, SearchGoodsActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, SEARCH_CODE);
