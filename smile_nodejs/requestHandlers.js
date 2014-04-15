@@ -35,7 +35,6 @@ function category(query,response) {
         response.end();
     });
 }
-
 /**
  * 首页活动推荐
  * @param query
@@ -54,18 +53,18 @@ function recommendactivity(query,response) {
                 '{"id":"5","p":"/activity/5.jpg"},' +
                 '{"id":"6","p":"/activity/6.jpg"}]';
             /*for(var i=0;i<recommendindex.length;i++){
-                if(i > 0){
-                    result += ',';
-                }
-                result += '{\"id\":';
-                result += JSON.stringify(recommendindex[i].id);
-                result += ',\"n\":';
-                result += JSON.stringify(recommendindex[i].n);
-                result += ',\"p\":';
-                result += JSON.stringify(recommendindex[i].p);
-                result += '}';
-            }
-            result += ']';*/
+             if(i > 0){
+             result += ',';
+             }
+             result += '{\"id\":';
+             result += JSON.stringify(recommendindex[i].id);
+             result += ',\"n\":';
+             result += JSON.stringify(recommendindex[i].n);
+             result += ',\"p\":';
+             result += JSON.stringify(recommendindex[i].p);
+             result += '}';
+             }
+             result += ']';*/
             response.writeHead(200, {
                 "Content-Type": applicationJson,
                 "Access-Control-Allow-Origin":"*",
@@ -74,6 +73,68 @@ function recommendactivity(query,response) {
             response.write(addData(result));
             response.end();
         }
+    });
+}
+
+/**
+ * 首页活动及品牌推荐
+ * @param query
+ * @param response
+ */
+function index(query,response) {
+    var key ='smile@recommend@index';
+    client.get(key, function(err, res) {
+        var result2 = '[{"id":"1","p":"/activity/1.jpg"},' +
+            '{"id":"2","p":"/activity/2.jpg"},' +
+            '{"id":"3","p":"/activity/3.jpg"},' +
+            '{"id":"4","p":"/activity/4.jpg"},' +
+            '{"id":"5","p":"/activity/5.jpg"},' +
+            '{"id":"6","p":"/activity/6.jpg"}]';
+
+
+        var result = '{"activity":'+result2+'';
+        result += ',"brand":';
+        key ='smile@brands@recommend';
+        var param = '';
+        var cid = query.cid;
+        if(cid!=null && cid!=''){
+            key = 'smile@brands@recommend&cates@' + cid;
+        }
+        console.log('key='+key);
+        client.get(key, function(err, res) {
+            //console.log(res);
+            if(res){
+                var memberfilter = new Array();
+                memberfilter[0] = "id";
+                memberfilter[1] = "n";
+                memberfilter[2] = "p";
+                memberfilter[3] = "pp";
+
+                var recommendindex = JSON.parse(res);
+                result += '[';
+                for(var i=0;i<recommendindex.length;i++){
+                    if(i>0){
+                        result += ',';
+                    }
+                    result += '{\"id\":';
+                    result += JSON.stringify(recommendindex[i].id);
+                    result += ',\"n\":';
+                    result += JSON.stringify(recommendindex[i].n);
+                    result += ',\"gs\":';
+                    result += JSON.stringify(recommendindex[i].gs,memberfilter);
+                    result += '}';
+                }
+                result += ']';
+            }
+            result += '}';
+            response.writeHead(200, {
+                "Content-Type": applicationJson,
+                "Access-Control-Allow-Origin":"*",
+                'Access-Control-Allow-Methods': 'GET',
+                'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+            response.write(addData(result));
+            response.end();
+        });
     });
 }
 
@@ -123,6 +184,44 @@ function recommendbrand(query,response) {
             'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
         response.write(addData(result));
         response.end();
+    });
+}
+
+function getRecommendBrand(query) {
+    var key ='smile@brands@recommend';
+    var param = '';
+    var cid = query.cid;
+    if(cid!=null && cid!=''){
+        key = 'smile@brands@recommend&cates@' + cid;
+    }
+    console.log('key='+key);
+    client.get(key, function(err, res) {
+        //console.log(res);
+        var result = '';
+        if(res){
+            var memberfilter = new Array();
+            memberfilter[0] = "id";
+            memberfilter[1] = "n";
+            memberfilter[2] = "p";
+            memberfilter[3] = "pp";
+
+            var recommendindex = JSON.parse(res);
+            result = '[';
+            for(var i=0;i<recommendindex.length;i++){
+                if(i>0){
+                    result += ',';
+                }
+                result += '{\"id\":';
+                result += JSON.stringify(recommendindex[i].id);
+                result += ',\"n\":';
+                result += JSON.stringify(recommendindex[i].n);
+                result += ',\"gs\":';
+                result += JSON.stringify(recommendindex[i].gs,memberfilter);
+                result += '}';
+            }
+            result += ']';
+        }
+        return result;
     });
 }
 
@@ -906,6 +1005,7 @@ function goodsdetail(query,response) {
     });
 }
 
+exports.index = index;
 exports.recommendbrand = recommendbrand;
 exports.category = category;
 exports.recommendactivity = recommendactivity;

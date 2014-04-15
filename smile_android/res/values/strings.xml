@@ -7,6 +7,8 @@
     <string name="gu">图片</string>
     <string name="category">类别</string>
     <string name="recommend_goods">精品推荐</string>
+    <string name="the_charts">排行榜</string>
+    <string name="personal_information">个人设置</string>
     <string name="good_detail">商品详情</string>
     
     <!-- 搜索 -->
@@ -19,5 +21,14 @@
     <string name="btn_login">登录</string>
     <string name="get_pwd">找回密码</string>
     <string name="set_login">登录设置 </string>
+
+    <string name="user_info_myaddress">我的收货地址</string>
+    <string name="setting_logout">注销</string>
+    <string name="user_info_right">&gt;</string>
+    <string name="user_info_pwd_reset">修改密码</string>
+    <string name="user_info_email">邮件地址</string>
+    <string name="user_info_phone">手机</string>
+    <string name="user_info_email_content">输入邮件地址</string>
+    <string name="user_info_phone_content">输入手机号码</string>
 
 </resources>

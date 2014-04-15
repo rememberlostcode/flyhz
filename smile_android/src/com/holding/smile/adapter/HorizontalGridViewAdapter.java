@@ -99,7 +99,7 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 				public void onClick(View v) {
 					Intent intent = new Intent(context, GoodsDetailActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					intent.putExtra("jGoods", jGoods);
+					intent.putExtra("gid", jGoods.getId());
 					((Activity) context).startActivityForResult(intent, BaseActivity.SEARCH_CODE);
 				}
 			});
