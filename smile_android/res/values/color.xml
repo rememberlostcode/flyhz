@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="number_color">#01a5fa</string>
-    <string name="tag_bg_color">#e9b0d5</string>
-    <string name="person_bg_color">#d375b3</string>
-    <string name="btn_text_color">#ffffff</string>
-    <string name="btn_clickd_text_color">#8d897f</string>
-	<drawable name="coral">#ff7f50</drawable >
-	<drawable name="red">#ff0000</drawable >
-	<drawable name="black">#000000</drawable >
+    <color name="number_color">#01a5fa</color>
+    <color name="tag_bg_color">#e9b0d5</color>
+    <color name="person_bg_color">#d375b3</color>
+    <color name="btn_text_color">#ffffff</color>
+	<color name="coral">#ff7f50</color >
+	<color name="red">#ff0000</color >
+	<color name="black">#000000</color >
 	<color name="white">#FFFFFF</color>
     <color name="darkgray">#938192</color>
     <color name="lightgreen">#e07cd12e</color>
-    <string name="purple_bg">#9f70c0</string>
+    <color name="purple_bg">#9f70c0</color>
+    <color name="orange">#F05234</color>
 </resources>

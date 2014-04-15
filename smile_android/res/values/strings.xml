@@ -18,6 +18,7 @@
     <string name="search_goods">找物品</string>
     <string name="search_best_hot">目前最火热的</string>
     
+    <!-- 个人设置 -->
     <string name="user_info_myaddress">我的收货地址</string>
     <string name="setting_logout">注销</string>
     <string name="user_info_right">&gt;</string>

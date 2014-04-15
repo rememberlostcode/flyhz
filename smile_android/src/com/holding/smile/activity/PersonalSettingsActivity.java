@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.holding.smile.R;
@@ -19,12 +21,30 @@ import com.holding.smile.dto.RtnValueDto;
  */
 public class PersonalSettingsActivity extends BaseActivity implements OnClickListener {
 
+	private LinearLayout	addressLayout;
+	private LinearLayout	emailLayout;
+	private LinearLayout	mobileLayout;
+	private LinearLayout	userPwdLayout;
+	private Button			logoutButton;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.personal_settings);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
+
+		addressLayout = (LinearLayout) findViewById(R.id.user_info_address_layout);
+		emailLayout = (LinearLayout) findViewById(R.id.user_info_email_layout);
+		mobileLayout = (LinearLayout) findViewById(R.id.user_info_phone_layout);
+		userPwdLayout = (LinearLayout) findViewById(R.id.user_info_pwd_layout);
+		logoutButton = (Button) findViewById(R.id.setting_logout_button);
+
+		addressLayout.setOnClickListener(this);
+		emailLayout.setOnClickListener(this);
+		mobileLayout.setOnClickListener(this);
+		userPwdLayout.setOnClickListener(this);
+		logoutButton.setOnClickListener(this);
 
 	}
 
@@ -40,16 +60,32 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.mainfooter_search: {
-				Intent intent = new Intent(this, SearchGoodsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
-				finish();
-				break;
-			}
 			case R.id.btn_back: {
 				setResult(RESULT_CANCELED, null);
 				finish();
+				break;
+			}
+			case R.id.user_info_address_layout: {
+				Intent intent = new Intent();
+				intent.setClass(context, DeliveryAddressActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				startActivity(intent);
+				break;
+			}
+			case R.id.user_info_email_layout: {
+				Toast.makeText(context, "修改邮箱", Toast.LENGTH_SHORT).show();
+				break;
+			}
+			case R.id.user_info_phone_layout: {
+				Toast.makeText(context, "修改手机", Toast.LENGTH_SHORT).show();
+				break;
+			}
+			case R.id.user_info_pwd_layout: {
+				Toast.makeText(context, "修改密码", Toast.LENGTH_SHORT).show();
+				break;
+			}
+			case R.id.setting_logout_button: {
+				Toast.makeText(context, "注销", Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}

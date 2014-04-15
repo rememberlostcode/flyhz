@@ -9,6 +9,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.holding.smile.entity.City;
+import com.holding.smile.entity.District;
+import com.holding.smile.entity.Province;
 import com.holding.smile.tools.DBHelper;
 import com.holding.smile.tools.DateUtil;
 
@@ -97,6 +100,52 @@ public class SQLiteService {
 		}
 		while (cursor != null && cursor.moveToNext()) {
 			list.add(cursor.getString(0));
+		}
+		return list;
+	}
+
+	public List<Province> getProvinces() {
+		List<Province> list = new ArrayList<Province>();
+		Cursor cursor = db.rawQuery("select proid,proname from province order by prosort asc", null);
+		while (cursor != null && cursor.moveToNext()) {
+			Province province = new Province();
+			province.setID(cursor.getInt(0));
+			province.setProname(cursor.getString(1));
+			list.add(province);
+		}
+		return list;
+	}
+
+	public List<City> getCitys(Integer proid) {
+		if (proid == null || proid == 0) {
+			return null;
+		}
+		List<City> list = new ArrayList<City>();
+		Cursor cursor = db.rawQuery(
+				"select cityid,cityname from city where proid=? order by citysort asc",
+				new String[] { proid + "" });
+		while (cursor != null && cursor.moveToNext()) {
+			City city = new City();
+			city.setID(cursor.getInt(0));
+			city.setCityname(cursor.getString(1));
+			list.add(city);
+		}
+		return list;
+	}
+
+	public List<District> getDistricts(Integer cityid) {
+		if (cityid == null || cityid == 0) {
+			return null;
+		}
+		List<District> list = new ArrayList<District>();
+		Cursor cursor = db.rawQuery(
+				"select districtid,disname from district where cityid=? order by dissort asc",
+				new String[] { cityid + "" });
+		while (cursor != null && cursor.moveToNext()) {
+			District district = new District();
+			district.setID(cursor.getInt(0));
+			district.setDisname(cursor.getString(1));
+			list.add(district);
 		}
 		return list;
 	}

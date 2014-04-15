@@ -1023,5 +1023,8 @@ function addData(tmp){
     /*var res = JSON.parse('{"data":null}');
     res.data = tmp;
     return JSON.stringify(res);*/
+    if(tmp==''){
+        tmp = null;
+    }
     return '{"data":'+tmp+'}';
 }
