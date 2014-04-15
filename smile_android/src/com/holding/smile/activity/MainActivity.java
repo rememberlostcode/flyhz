@@ -1,8 +1,18 @@
 
 package com.holding.smile.activity;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,6 +22,7 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
@@ -26,6 +37,8 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.myview.MyGridView;
+import com.holding.smile.tools.NullHostNameVerifier;
+import com.holding.smile.tools.NullX509TrustManager;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 
@@ -41,7 +54,68 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private List<BrandJGoods>		brandJGoodsList			= new ArrayList<BrandJGoods>();
 	private Integer					cid						= null;
 	private TextView				headerDescription;
-
+	
+	private Button testButton;
+	public String httpsUrl = "https://211.149.175.138:8443"; 
+	public Runnable access = new Runnable() {
+		public void run() {
+			try {
+				long a = System.currentTimeMillis();
+				String key = "222222";
+				char[] keys = key.toCharArray();
+				KeyStore keyStore = KeyStore.getInstance("BKS");
+				InputStream ins = getBaseContext().getResources().openRawResource(R.raw.client1);
+				long b = System.currentTimeMillis();
+	            keyStore.load(ins, keys);
+	            long c = System.currentTimeMillis();
+				KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");
+				long d = System.currentTimeMillis();
+				kmf.init(keyStore, keys);
+				KeyManager[] keyManagers = kmf.getKeyManagers();
+				SSLContext sslContext = SSLContext.getInstance("TLS");
+				sslContext.init(keyManagers, new X509TrustManager[]{new NullX509TrustManager()}, null);
+				
+				String content = null;
+				HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
+				HttpURLConnection urlConnection = null;			 
+				try {
+				    URL requestedUrl = new URL(httpsUrl);
+				    urlConnection = (HttpURLConnection) requestedUrl.openConnection();
+				    if(urlConnection instanceof HttpsURLConnection) {
+				        ((HttpsURLConnection)urlConnection)
+				             .setSSLSocketFactory(sslContext.getSocketFactory());
+				    }
+				    urlConnection.setRequestMethod("GET");
+				    urlConnection.setConnectTimeout(1500);
+				    urlConnection.setReadTimeout(1500);
+				    InputStream is = urlConnection.getInputStream();
+				    StringBuffer sb = new StringBuffer();
+					byte[] bytes = new byte[1024];
+					for (int len = 0; (len = is.read(bytes)) != -1;) {
+						sb.append(new String(bytes, 0, len, "utf-8"));
+					}
+					content = sb.toString();
+				} catch(Exception ex) {
+				    content = ex.toString();
+				} finally {
+				    if(urlConnection != null) {
+				        urlConnection.disconnect();
+				    }
+					System.out.println(content);
+				}
+				long e = System.currentTimeMillis();
+				long b_a = b - a;//2
+				long c_b = c - b;//196
+				long d_c = d - c;//0
+				long e_d = e - d;//4525
+				long e_a = e - a;//4723
+				System.out.println("");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,6 +139,14 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		startTask();
 		MyApplication.getInstance().setmImgList(listView);
 		MyApplication.getInstance().addImgList(reGridView);
+		
+		testButton = (Button) findViewById(R.id.testButton);
+        testButton.setOnClickListener(new OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                  new Thread(access).start();
+             }
+        });
 
 	}
 
