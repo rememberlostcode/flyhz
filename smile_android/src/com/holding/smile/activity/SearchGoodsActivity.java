@@ -18,6 +18,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -217,13 +219,42 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 		mStrings.clear();
 		mListView.setVisibility(ViewGroup.VISIBLE);
 		if (adapter == null) {
-			adapter = new MyJGoodsAdapter(mStrings);
+			adapter = new MyJGoodsAdapter(context, mStrings);
 			mListView.setAdapter(adapter);
-			MyApplication.getInstance().setmImgList(mListView);
+			mListView.setOnScrollListener(mScrollListener);
 		}
 		loadData(keywords);
 
 	}
+
+	OnScrollListener	mScrollListener	= new OnScrollListener() {
+
+											@Override
+											public void onScrollStateChanged(AbsListView view,
+													int scrollState) {
+												switch (scrollState) {
+													case OnScrollListener.SCROLL_STATE_FLING:
+														adapter.setFlagBusy(true);
+														break;
+													case OnScrollListener.SCROLL_STATE_IDLE:
+														adapter.setFlagBusy(false);
+														break;
+													case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+														adapter.setFlagBusy(false);
+														break;
+													default:
+														break;
+												}
+												adapter.notifyDataSetChanged();
+											}
+
+											@Override
+											public void onScroll(AbsListView view,
+													int firstVisibleItem, int visibleItemCount,
+													int totalItemCount) {
+
+											}
+										};
 
 	@Override
 	public void onClick(View v) {
@@ -256,7 +287,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
-			MyApplication.getInstance().setmImgList(mListView);
+
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -278,7 +309,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 			mListView.destroyDrawingCache();
 			mListView = null;
 		}
-		System.gc();
 	}
 
 	@Override
@@ -358,102 +388,110 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	}
 
 	@SuppressLint("HandlerLeak")
-	private Handler	mUIHandler	= new Handler() {
+	private final Handler	mUIHandler	= new Handler() {
 
-									@Override
-									public void handleMessage(Message msg) {
-										progressBar.setVisibility(View.GONE);
-										switch (msg.what) {
-											case WHAT_DID_LOAD_DATA: {
-												if (msg.obj != null) {
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													// 物品
-													if (obj.getData() != null) {
-														List<JGoods> strings = obj.getData();
-														if (strings != null) {
-															mStrings.clear();
-															mStrings.addAll(strings);
-															adapter.notifyDataSetChanged();
-														}
-													}
-												}
-												mPullToRefreshView.onHeaderRefreshComplete();
-												break;
-											}
-											case WHAT_DID_REFRESH: {
-												if (msg.obj != null) {
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													// 物品
-													if (obj.getValidate() != null) {
-														String option = obj.getValidate()
-																			.getOption();
-														if (option != null && "3".equals(option)) {
-															mStrings.removeAll(mStrings);
-														}
-														String message = obj.getValidate()
-																			.getMessage();
-														if (message != null
-																&& !"".equals(message.trim())) {
-															Toast.makeText(context, message,
-																	Toast.LENGTH_SHORT).show();
-														}
-													}
-													if (obj.getData() != null) {
-														List<JGoods> strings = obj.getData();
-														if (strings != null && !strings.isEmpty()) {
-															for (JGoods each : strings) {
-																mStrings.add(0, each);
-															}
-															if (mStrings.size() > LIMIT) {
-																for (int i = LIMIT; i < mStrings.size(); i++) {
-																	mStrings.remove(i);
+											@Override
+											public void handleMessage(Message msg) {
+												progressBar.setVisibility(View.GONE);
+												switch (msg.what) {
+													case WHAT_DID_LOAD_DATA: {
+														if (msg.obj != null) {
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															// 物品
+															if (obj.getData() != null) {
+																List<JGoods> strings = obj.getData();
+																if (strings != null) {
+																	mStrings.clear();
+																	mStrings.addAll(strings);
+																	adapter.notifyDataSetChanged();
 																}
 															}
-															adapter.notifyDataSetChanged();
 														}
-													} else {
-														Toast.makeText(context, "暂无数据",
-																Toast.LENGTH_SHORT).show();
+														mPullToRefreshView.onHeaderRefreshComplete();
+														break;
 													}
-												}
-												mPullToRefreshView.onHeaderRefreshComplete();
-												break;
-											}
+													case WHAT_DID_REFRESH: {
+														if (msg.obj != null) {
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															// 物品
+															if (obj.getValidate() != null) {
+																String option = obj.getValidate()
+																					.getOption();
+																if (option != null
+																		&& "3".equals(option)) {
+																	mStrings.removeAll(mStrings);
+																}
+																String message = obj.getValidate()
+																					.getMessage();
+																if (message != null
+																		&& !"".equals(message.trim())) {
+																	Toast.makeText(context,
+																			message,
+																			Toast.LENGTH_SHORT)
+																			.show();
+																}
+															}
+															if (obj.getData() != null) {
+																List<JGoods> strings = obj.getData();
+																if (strings != null
+																		&& !strings.isEmpty()) {
+																	for (JGoods each : strings) {
+																		mStrings.add(0, each);
+																	}
+																	if (mStrings.size() > LIMIT) {
+																		for (int i = LIMIT; i < mStrings.size(); i++) {
+																			mStrings.remove(i);
+																		}
+																	}
+																	adapter.notifyDataSetChanged();
+																}
+															} else {
+																Toast.makeText(context, "暂无数据",
+																		Toast.LENGTH_SHORT).show();
+															}
+														}
+														mPullToRefreshView.onHeaderRefreshComplete();
+														break;
+													}
 
-											case WHAT_DID_MORE: {
-												if (msg.obj != null) {
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													// 物品
-													if (obj.getValidate() != null) {
-														String option = obj.getValidate()
-																			.getOption();
-														if (option != null && "3".equals(option)) {
-															mStrings.removeAll(mStrings);
+													case WHAT_DID_MORE: {
+														if (msg.obj != null) {
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															// 物品
+															if (obj.getValidate() != null) {
+																String option = obj.getValidate()
+																					.getOption();
+																if (option != null
+																		&& "3".equals(option)) {
+																	mStrings.removeAll(mStrings);
+																}
+																String message = obj.getValidate()
+																					.getMessage();
+																if (message != null
+																		&& !"".equals(message.trim())) {
+																	Toast.makeText(context,
+																			message,
+																			Toast.LENGTH_SHORT)
+																			.show();
+																}
+															}
+															if (obj.getData() != null) {
+																List<JGoods> strings = obj.getData();
+																if (strings != null
+																		&& !strings.isEmpty()) {
+																	mStrings.addAll(strings);
+																	adapter.notifyDataSetChanged();
+																}
+															} else {
+																Toast.makeText(context, "最后一个了",
+																		Toast.LENGTH_SHORT).show();
+															}
 														}
-														String message = obj.getValidate()
-																			.getMessage();
-														if (message != null
-																&& !"".equals(message.trim())) {
-															Toast.makeText(context, message,
-																	Toast.LENGTH_SHORT).show();
-														}
-													}
-													if (obj.getData() != null) {
-														List<JGoods> strings = obj.getData();
-														if (strings != null && !strings.isEmpty()) {
-															mStrings.addAll(strings);
-															adapter.notifyDataSetChanged();
-														}
-													} else {
-														Toast.makeText(context, "最后一个了",
-																Toast.LENGTH_SHORT).show();
+														mPullToRefreshView.onFooterRefreshComplete();
+														break;
 													}
 												}
-												mPullToRefreshView.onFooterRefreshComplete();
-												break;
 											}
-										}
-									}
-								};
+										};
 
 }

@@ -3,39 +3,45 @@ package com.holding.smile.adapter;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.holding.smile.R;
-import com.holding.smile.activity.BaseActivity;
-import com.holding.smile.activity.GoodsDetailActivity;
-import com.holding.smile.entity.JGoods;
+import com.holding.smile.activity.MyApplication;
+import com.holding.smile.cache.ImageLoader;
+import com.holding.smile.entity.JActivity;
+import com.holding.smile.tools.StrUtils;
 
 public class RecommendGoodsAdapter extends BaseAdapter {
 
-	private List<JGoods>	jGoodsList;
+	private List<JActivity>	jActivityList;
+	private Context			context;
+	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
+	private boolean			mBusy			= false;
 
 	// 自己定义的构造函数
-	public RecommendGoodsAdapter(List<JGoods> contacts) {
-		this.jGoodsList = contacts;
+	public RecommendGoodsAdapter(Context context, List<JActivity> contacts) {
+		this.context = context;
+		this.jActivityList = contacts;
+	}
+
+	public void setFlagBusy(boolean busy) {
+		this.mBusy = busy;
 	}
 
 	@Override
 	public int getCount() {
-		return jGoodsList.size();
+		return jActivityList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return jGoodsList.get(position);
+		return jActivityList.get(position);
 	}
 
 	@Override
@@ -44,37 +50,44 @@ public class RecommendGoodsAdapter extends BaseAdapter {
 	}
 
 	static class ViewHolder {
-		TextView	n;
 		ImageView	p;
 	}
 
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
-		final Context context = parent.getContext();
 		ViewHolder holder;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.recommend_good_item, null);
 			holder = new ViewHolder();
-			holder.n = (TextView) convertView.findViewById(R.id.good_n);
 			holder.p = (ImageView) convertView.findViewById(R.id.good_pic);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		final JGoods jGoods = (JGoods) getItem(position);
-		if (jGoods != null) {
-			holder.n.setText(jGoods.getN());
-			if (jGoods.getP() != null && jGoods.getP().length > 0) {
-				holder.p.setTag(jGoods.getP()[0]);
+		holder.p.setImageResource(R.drawable.empty_photo);
+
+		final JActivity jActivity = (JActivity) getItem(position);
+		if (jActivity != null) {
+			if (StrUtils.isNotEmpty(jActivity.getP())) {
+				String url = MyApplication.jgoods_img_url + jActivity.getP();
+				holder.p.setTag(url);
+				if (!mBusy) {
+					mImageLoader.DisplayImage(url, holder.p, false);
+				} else {
+					mImageLoader.DisplayImage(url, holder.p, false);
+				}
 			}
-			holder.p.setImageResource(R.drawable.empty_photo);
 
 			convertView.setOnClickListener(new OnClickListener() {
+				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(context, GoodsDetailActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					intent.putExtra("jGoods", jGoods);
-					((Activity) context).startActivityForResult(intent, BaseActivity.SEARCH_CODE);
+					// Intent intent = new Intent(context,
+					// GoodsDetailActivity.class);
+					// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					// intent.putExtra("jActivity", jActivity);
+					// ((Activity)
+					// parent.getContext()).startActivityForResult(intent,
+					// BaseActivity.SEARCH_CODE);
 				}
 			});
 		}

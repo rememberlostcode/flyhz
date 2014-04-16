@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
+import com.holding.smile.activity.MyApplication;
+import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JGoods;
 
 /**
@@ -31,11 +33,17 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 	private LayoutInflater	mInflater;
 	private List<JGoods>	jGoodsList;
 	private Context			context;
+	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
+	private boolean			mBusy			= false;
 
 	public HorizontalGridViewAdapter(Context context, List<JGoods> jGoodsList) {
 		this.context = context;
 		this.mInflater = LayoutInflater.from(context);
 		this.jGoodsList = jGoodsList;
+	}
+
+	public void setFlagBusy(boolean busy) {
+		this.mBusy = busy;
 	}
 
 	@Override
@@ -77,14 +85,21 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 			if (jGoods != null) {
 				holder.pn.setText("￥" + jGoods.getPp());
 				if (jGoods.getP() != null && jGoods.getP().length > 0) {
-					holder.im.setTag(jGoods.getP()[0]);
+					String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
+					holder.im.setTag(url);
+					if (!mBusy) {
+						mImageLoader.DisplayImage(url, holder.im, false);
+					} else {
+						mImageLoader.DisplayImage(url, holder.im, false);
+					}
 				}
 			}
 			convertView.setOnClickListener(new OnClickListener() {
+				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(context, GoodsDetailActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					intent.putExtra("jGoods", jGoods);
+					intent.putExtra("gid", jGoods.getId());
 					((Activity) context).startActivityForResult(intent, BaseActivity.SEARCH_CODE);
 				}
 			});

@@ -9,38 +9,50 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.GridView;
-import android.widget.LinearLayout.LayoutParams;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
-import com.holding.smile.adapter.RecommendGoodsAdapter;
+import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.adapter.VerticalListAdapter;
 import com.holding.smile.dto.BrandJGoods;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
-import com.holding.smile.entity.JGoods;
-import com.holding.smile.myview.MyGridView;
+import com.holding.smile.entity.JActivity;
+import com.holding.smile.entity.JIndexJGoods;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 
-	private static final int		WHAT_DID_LOAD_DATA		= 0;
-	private static final int		WHAT_DID_REFRESH		= 1;
-	private static final int		WHAT_DID_RECOMMEND_DATA	= 2;
+	private static final int	WHAT_DID_LOAD_DATA	= 0;
+	private static final int	WHAT_DID_REFRESH	= 1;
 
-	private MyGridView				reGridView;
-	private RecommendGoodsAdapter	reGoodsAdapter;
-	private VerticalListAdapter		vlAdapter;
-	private ListView				listView;
-	private List<JGoods>			recGoodsList			= new ArrayList<JGoods>();		// 活动商品
-	private List<BrandJGoods>		brandJGoodsList			= new ArrayList<BrandJGoods>();
-	private Integer					cid						= null;
-	private TextView				headerDescription;
+	private ViewPager			mViewPager;
+	private List<View>			viewList;
+	// private MyGridView reGridView;
+	private MyPagerAdapter		pagerAdapter;
+	// 装点点的ImageView数组
+	private ImageView[]			tips;
+
+	// private RecommendGoodsAdapter reGoodsAdapter;
+	private VerticalListAdapter	vlAdapter;
+	private ListView			listView;
+	private List<JActivity>		recActList			= new ArrayList<JActivity>();	// 活动商品
+	private List<BrandJGoods>	brandJGoodsList		= new ArrayList<BrandJGoods>();
+	private Integer				cid					= null;
+	private TextView			headerDescription;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,24 +66,24 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		headerDescription.setText(R.string.recommend_goods);
 		displayFooterMain(R.id.mainfooter_one);
 
-		reGridView = (MyGridView) findViewById(R.id.recommend_goods);
-		reGoodsAdapter = new RecommendGoodsAdapter(recGoodsList);
-		reGridView.setAdapter(reGoodsAdapter);
+		// reGridView = (MyGridView) findViewById(R.id.recommend_goods);
+		// reGoodsAdapter = new RecommendGoodsAdapter(context, recActList);
+		// reGridView.setAdapter(reGoodsAdapter);
+		// reGridView.setOnScrollListener(mScrollListener);
+		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
 		listView = (ListView) findViewById(R.id.brand_list);
-		vlAdapter = new VerticalListAdapter(context, brandJGoodsList, cid);
+		vlAdapter = new VerticalListAdapter(brandJGoodsList, cid);
 		listView.setAdapter(vlAdapter);
 
 		startTask();
-		MyApplication.getInstance().setmImgList(listView);
-		MyApplication.getInstance().addImgList(reGridView);
 
 	}
 
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
-			case R.id.btn_search: {
+			case R.id.mainfooter_search: {
 				Intent intent = new Intent(this, SearchGoodsActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, SEARCH_CODE);
@@ -89,18 +101,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || requestCode == CATE_CODE || requestCode == MORE_CODE
-				|| resultCode == RESULT_CANCELED) {
-			MyApplication.getInstance().setmImgList(listView);
-			MyApplication.getInstance().addImgList(reGridView);
-		}
 		if (requestCode == CATE_CODE && resultCode == RESULT_OK) {
 			if (data != null) {
 				Category cate = (Category) data.getExtras().getSerializable("cate");
 				if (cate != null) {
 					cid = cate.getId();
 					headerDescription.setText(cate.getName());
-					loadData();
+					onRefresh();
 				}
 			}
 		}
@@ -113,30 +120,12 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		return true;
 	}
 
-	/**
-	 * 加载活动商品
-	 */
-	public void loadRecommendData() {
-		recGoodsList.clear();
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
-											.getRecommendJGoodsListInit();
-		if (rGoods != null) {
-			Message msg = mUIHandler.obtainMessage(WHAT_DID_RECOMMEND_DATA);
-			msg.obj = rGoods;
-			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "活动区暂无数据", Toast.LENGTH_SHORT).show();
-		}
-	}
-
 	@Override
 	public void loadData() {
-		loadRecommendData();
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
-											.getRecommendBrandsListInit(cid);
+		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getIndexJGoods();
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-			msg.obj = rGoods;
+			msg.obj = rGoods.getIndexData();
 			msg.sendToTarget();
 		} else {
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
@@ -144,7 +133,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void onRefresh() {
-		loadRecommendData();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getRecommendBrandsListInit(cid);
 		if (rGoods != null) {
@@ -171,96 +159,219 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			listView = null;
 		}
 
-		recGoodsList.clear();
-		recGoodsList = null;
-		if (reGoodsAdapter != null) {
-			reGoodsAdapter.notifyDataSetChanged();
-			reGoodsAdapter.notifyDataSetInvalidated();
-			reGoodsAdapter = null;
-		}
-		if (reGridView != null) {
-			reGridView.invalidate();
-			reGridView = null;
-		}
+		recActList.clear();
+		recActList = null;
+		// if (reGoodsAdapter != null) {
+		// reGoodsAdapter.notifyDataSetChanged();
+		// reGoodsAdapter.notifyDataSetInvalidated();
+		// reGoodsAdapter = null;
+		// }
+		// if (reGridView != null) {
+		// reGridView.invalidate();
+		// reGridView = null;
+		// }
 	};
 
-	@SuppressLint("HandlerLeak")
-	private Handler	mUIHandler	= new Handler() {
+	OnScrollListener	mScrollListener	= new OnScrollListener() {
 
-									@Override
-									public void handleMessage(Message msg) {
-										progressBar.setVisibility(View.GONE);
-										switch (msg.what) {
-											case WHAT_DID_LOAD_DATA: {
-												if (msg.obj != null) {
-													brandJGoodsList.clear();
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													List<BrandJGoods> strings = obj.getBrandData();
-													if (strings != null && !strings.isEmpty()) {
-														for (int i = 0; i < strings.size(); i++) {
-															BrandJGoods each = strings.get(i);
-															brandJGoodsList.add(each);
-														}
-														vlAdapter.notifyDataSetChanged();
-													}
+											@Override
+											public void onScrollStateChanged(AbsListView view,
+													int scrollState) {
+												switch (scrollState) {
+													case OnScrollListener.SCROLL_STATE_FLING:
+														// reGoodsAdapter.setFlagBusy(true);
+														break;
+													case OnScrollListener.SCROLL_STATE_IDLE:
+														// reGoodsAdapter.setFlagBusy(false);
+														break;
+													case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+														// reGoodsAdapter.setFlagBusy(false);
+														break;
+													default:
+														break;
 												}
-												break;
+												// reGoodsAdapter.notifyDataSetChanged();
 											}
-											case WHAT_DID_RECOMMEND_DATA: {
-												if (msg.obj != null) {
-													recGoodsList.clear();
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													List<JGoods> strings = obj.getData();
-													if (strings != null && !strings.isEmpty()) {
-														for (int i = 0; i < strings.size(); i++) {
-															JGoods each = strings.get(i);
-															recGoodsList.add(each);
-														}
-														int ii = reGoodsAdapter.getCount();
-														int cWidth = MyApplication.getInstance()
-																					.getScreenWidth();
-														LayoutParams params = new LayoutParams(ii
-																* cWidth, LayoutParams.WRAP_CONTENT);
-														reGridView.setLayoutParams(params);
-														reGridView.setColumnWidth(cWidth);
-														reGridView.setStretchMode(GridView.NO_STRETCH);
-														reGridView.setNumColumns(ii);
-														reGoodsAdapter.notifyDataSetChanged();
-													}
-												}
-												break;
+
+											@Override
+											public void onScroll(AbsListView view,
+													int firstVisibleItem, int visibleItemCount,
+													int totalItemCount) {
+
 											}
-											case WHAT_DID_REFRESH: {
-												if (msg.obj != null) {
-													brandJGoodsList.clear();
-													RtnValueDto obj = (RtnValueDto) msg.obj;
-													if (obj.getValidate() != null) {
-														String option = obj.getValidate()
-																			.getOption();
-														if (option != null && "3".equals(option)) {
-															brandJGoodsList.removeAll(brandJGoodsList);
-														}
-														String message = obj.getValidate()
-																			.getMessage();
-														if (message != null
-																&& !"".equals(message.trim())) {
-															Toast.makeText(context, message,
+										};
+
+	/**
+	 * 添加页卡
+	 */
+	private void addViewPager() {
+		viewList = new ArrayList<View>();
+		LayoutInflater inflater = getLayoutInflater();
+		// 添加页卡数据
+		if (recActList != null && !recActList.isEmpty()) {
+			int size = recActList.size();
+			for (int i = 0; i < size; i++) {
+				final JActivity jAct = recActList.get(i);
+				View view = inflater.inflate(R.layout.good_pic_item, null);
+				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
+				imageView.setContentDescription(jAct.getId() + "");
+				imageView.setTag(MyApplication.jgoods_img_url + jAct.getP());
+				imageView.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						Toast.makeText(context, "您点击了活动区域" + jAct.getId() + "!", Toast.LENGTH_SHORT)
+								.show();
+					}
+				});
+				viewList.add(view);
+			}
+
+			ViewGroup group = (ViewGroup) findViewById(R.id.viewGroup);
+			// 将点点加入到ViewGroup中
+			tips = new ImageView[size];
+			for (int i = 0; i < tips.length; i++) {
+				ImageView imageView = new ImageView(this);
+				imageView.setLayoutParams(new LayoutParams(10, 10));
+				tips[i] = imageView;
+				if (i == 0) {
+					tips[i].setBackgroundResource(R.drawable.page_indicator_focused);
+				} else {
+					tips[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+				}
+
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+						new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+				layoutParams.leftMargin = 5;
+				layoutParams.rightMargin = 5;
+				group.addView(imageView, layoutParams);
+			}
+		}
+
+		// 设置监听，主要是设置点点的背景
+		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+
+			@Override
+			public void onPageSelected(int arg0) {
+				setImageBackground(arg0 % recActList.size());
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+
+			}
+
+			/**
+			 * 设置选中的tip的背景
+			 * 
+			 * @param selectItems
+			 */
+			private void setImageBackground(int selectItems) {
+				for (int i = 0; i < tips.length; i++) {
+					if (i == selectItems) {
+						tips[i].setBackgroundResource(R.drawable.page_indicator_focused);
+					} else {
+						tips[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+					}
+				}
+			}
+		});
+	}
+
+	@SuppressLint("HandlerLeak")
+	private final Handler	mUIHandler	= new Handler() {
+
+											@Override
+											public void handleMessage(Message msg) {
+												progressBar.setVisibility(View.GONE);
+												switch (msg.what) {
+													case WHAT_DID_LOAD_DATA: {
+														if (msg.obj != null) {
+															recActList.clear();
+															brandJGoodsList.clear();
+															JIndexJGoods obj = (JIndexJGoods) msg.obj;
+
+															// 活动区商品
+															List<JActivity> strings = obj.getActivity();
+															if (strings != null
+																	&& !strings.isEmpty()) {
+																int jSize = strings.size();
+																for (int i = 0; i < jSize; i++) {
+																	JActivity each = strings.get(i);
+																	recActList.add(each);
+																}
+
+																addViewPager();// 添加页卡
+																// 实例化适配器
+																pagerAdapter = new MyPagerAdapter(
+																		viewList);
+																mViewPager.setAdapter(pagerAdapter);
+																mViewPager.setCurrentItem(0); // 设置默认当前页
+
+																// int ii =
+																// reGoodsAdapter.getCount();
+																// int
+																// cWidth =
+																// MyApplication.getInstance()
+																// .getScreenWidth();
+																// LayoutParams
+																// params =
+																// new
+																// LayoutParams(
+																// ii *
+																// cWidth,
+																// LayoutParams.WRAP_CONTENT);
+																// reGridView.setLayoutParams(params);
+																// reGridView.setColumnWidth(cWidth);
+																// reGridView.setStretchMode(GridView.NO_STRETCH);
+																// reGridView.setNumColumns(ii);
+																// reGoodsAdapter.notifyDataSetChanged();
+															}
+
+															// 品牌区
+															List<BrandJGoods> brands = obj.getBrand();
+															if (brands != null && !brands.isEmpty()) {
+																int bSize = brands.size();
+																for (int i = 0; i < bSize; i++) {
+																	BrandJGoods each = brands.get(i);
+																	brandJGoodsList.add(each);
+																}
+																vlAdapter.notifyDataSetChanged();
+															}
+														} else {
+															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
 														}
+														break;
 													}
-													List<BrandJGoods> strings = obj.getBrandData();
-													if (strings != null && !strings.isEmpty()) {
-														for (int i = 0; i < strings.size(); i++) {
-															BrandJGoods each = strings.get(i);
-															brandJGoodsList.add(0, each);
+													case WHAT_DID_REFRESH: {
+														brandJGoodsList.clear();
+														if (msg.obj != null) {
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															// 品牌区
+															List<BrandJGoods> brands = obj.getBrandData();
+															if (brands != null && !brands.isEmpty()) {
+																int bSize = brands.size();
+																for (int i = 0; i < bSize; i++) {
+																	BrandJGoods each = brands.get(i);
+																	brandJGoodsList.add(each);
+																}
+															}
+														} else {
+															Toast.makeText(context, "暂无数据",
+																	Toast.LENGTH_SHORT).show();
 														}
 														vlAdapter.notifyDataSetChanged();
+														break;
 													}
 												}
-												break;
 											}
-										}
-									}
-								};
+										};
 
 }

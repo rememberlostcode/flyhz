@@ -1,6 +1,9 @@
 
 package com.holding.smile.activity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,11 +20,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.entity.SUser;
 
 /**
  * 
@@ -42,11 +46,7 @@ public class BaseActivity extends Activity {
 	private LinearLayout		ly_content;
 	// 内容区域的布局
 	private View				contentView;
-	private ListView			listView;
-	private LinearLayout		layout;
 	protected int				reqCode				= 0;
-	private int					screenWidth			= 0;
-	private int					screenHeight		= 0;
 	protected String			filepath;
 	protected ProgressBar		progressBar;
 
@@ -102,6 +102,10 @@ public class BaseActivity extends Activity {
 		int id = R.id.header_description;
 		TextView textView = (TextView) findViewById(id);
 		setVisible(id);
+		SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+		if (user != null) {
+			Toast.makeText(context, "欢迎您," + user.getUsername(), Toast.LENGTH_SHORT).show();
+		}
 		return textView;
 	}
 
@@ -150,7 +154,7 @@ public class BaseActivity extends Activity {
 
 	public ImageView displayHeaderSearch() {
 		setHeadVisible();
-		int id = R.id.btn_search;
+		int id = R.id.mainfooter_search;
 		ImageView button = (ImageView) findViewById(id);
 		setVisible(id);
 		return button;
@@ -312,6 +316,14 @@ public class BaseActivity extends Activity {
 			loadData();
 			return null;
 		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			if (!this.isCancelled()) {// 执行完后停止任务
+				this.cancel(true);
+			}
+		}
 	}
 
 	public View displayFooterMain(int idNow) {
@@ -320,105 +332,75 @@ public class BaseActivity extends Activity {
 		View view = (View) findViewById(id);
 		setVisible(id);
 
+		Map<Integer, View> footMap = new HashMap<Integer, View>();
+
 		int mainfooterOneId = R.id.mainfooter_one;
 		View mainfooterOne = view.findViewById(mainfooterOneId);
+		footMap.put(mainfooterOneId, mainfooterOne);
 
 		int mainfooterTwoId = R.id.mainfooter_two;
 		View mainfooterTwo = view.findViewById(mainfooterTwoId);
+		footMap.put(mainfooterTwoId, mainfooterTwo);
 
 		int mainfooterThreeId = R.id.mainfooter_three;
 		View mainfooterThree = view.findViewById(mainfooterThreeId);
+		footMap.put(mainfooterThreeId, mainfooterThree);
 
-		if (idNow == 0) {
-			mainfooterOne.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent();
-					intent.setClass(context, MainActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-					startActivity(intent);
-					finish();
-					overridePendingTransition(0, 0);
+		int mainfooterFourId = R.id.mainfooter_four;
+		View mainfooterFour = view.findViewById(mainfooterFourId);
+		footMap.put(mainfooterFourId, mainfooterFour);
+
+		for (Integer o : footMap.keySet()) {
+			if (o == idNow) {
+				footMap.get(o).setSelected(true);
+			} else {
+				if (o == mainfooterOneId) {
+					footMap.get(o).setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent();
+							intent.setClass(context, MainActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							startActivity(intent);
+							finish();
+							overridePendingTransition(0, 0);
+						}
+					});
+				} else if (o == mainfooterTwoId) {
+					footMap.get(o).setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							// 排行榜
+							Intent intent = new Intent();
+							intent.setClass(context, SortActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							startActivity(intent);
+							overridePendingTransition(0, 0);
+						}
+					});
+				} else if (o == mainfooterThreeId) {
+					footMap.get(o).setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent();
+							intent.setClass(context, SearchGoodsActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							startActivity(intent);
+							overridePendingTransition(0, 0);
+						}
+					});
+				} else if (o == mainfooterFourId) {
+					footMap.get(o).setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent();
+							intent.setClass(context, PersonalSettingsActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							startActivity(intent);
+							overridePendingTransition(0, 0);
+						}
+					});
 				}
-			});
-			mainfooterTwo.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent();
-					intent.setClass(context, SearchGoodsActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-					startActivity(intent);
-					overridePendingTransition(0, 0);
-				}
-			});
-			mainfooterThree.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-
-				}
-			});
-		} else {
-
-			if (idNow == mainfooterOneId) {
-				mainfooterOne.setSelected(true);
-				mainfooterTwo.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent();
-						intent.setClass(context, SearchGoodsActivity.class);
-						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-						startActivity(intent);
-						overridePendingTransition(0, 0);
-					}
-				});
-				mainfooterThree.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-
-					}
-				});
-			} else if (idNow == mainfooterTwoId) {
-				mainfooterTwo.setSelected(true);
-				mainfooterOne.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent();
-						intent.setClass(context, MainActivity.class);
-						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-						startActivity(intent);
-						finish();
-						overridePendingTransition(0, 0);
-					}
-				});
-				mainfooterThree.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-
-					}
-				});
-			} else if (idNow == mainfooterThreeId) {
-				mainfooterThree.setSelected(true);
-				mainfooterOne.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent();
-						intent.setClass(context, MainActivity.class);
-						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-						startActivity(intent);
-						finish();
-						overridePendingTransition(0, 0);
-					}
-				});
-				mainfooterTwo.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent();
-						intent.setClass(context, SearchGoodsActivity.class);
-						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-						startActivity(intent);
-						overridePendingTransition(0, 0);
-					}
-				});
 			}
 		}
 		return view;

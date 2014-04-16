@@ -1,13 +1,14 @@
 //var exec = require("child_process").exec;
-//var solr_server_host = "211.149.175.138";
-var solr_server_host = "10.22.22.40";
-var solr_server_port = 80;
+var solr_server_host = "211.149.175.138";
+//var solr_server_host = "10.22.22.40";
+var solr_server_port = 8983;
+//var solr_server_port = 80;
 var applicationJson = "application/json; charset=utf-8";
 var UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36";
 var http = require("http");
 var redis = require("redis");
-//var client = redis.createClient(6379,'211.149.175.138');
-var client = redis.createClient(6379,'10.22.23.63');
+var client = redis.createClient(6379,'211.149.175.138');
+//var client = redis.createClient(6379,'10.22.23.63');
 client.on('error', function (err) {
     console.log('Error ' + err);
 });
@@ -35,7 +36,6 @@ function category(query,response) {
         response.end();
     });
 }
-
 /**
  * 首页活动推荐
  * @param query
@@ -54,18 +54,18 @@ function recommendactivity(query,response) {
                 '{"id":"5","p":"/activity/5.jpg"},' +
                 '{"id":"6","p":"/activity/6.jpg"}]';
             /*for(var i=0;i<recommendindex.length;i++){
-                if(i > 0){
-                    result += ',';
-                }
-                result += '{\"id\":';
-                result += JSON.stringify(recommendindex[i].id);
-                result += ',\"n\":';
-                result += JSON.stringify(recommendindex[i].n);
-                result += ',\"p\":';
-                result += JSON.stringify(recommendindex[i].p);
-                result += '}';
-            }
-            result += ']';*/
+             if(i > 0){
+             result += ',';
+             }
+             result += '{\"id\":';
+             result += JSON.stringify(recommendindex[i].id);
+             result += ',\"n\":';
+             result += JSON.stringify(recommendindex[i].n);
+             result += ',\"p\":';
+             result += JSON.stringify(recommendindex[i].p);
+             result += '}';
+             }
+             result += ']';*/
             response.writeHead(200, {
                 "Content-Type": applicationJson,
                 "Access-Control-Allow-Origin":"*",
@@ -74,6 +74,68 @@ function recommendactivity(query,response) {
             response.write(addData(result));
             response.end();
         }
+    });
+}
+
+/**
+ * 首页活动及品牌推荐
+ * @param query
+ * @param response
+ */
+function index(query,response) {
+    var key ='smile@recommend@index';
+    client.get(key, function(err, res) {
+        var result2 = '[{"id":"1","p":"/activity/1.jpg"},' +
+            '{"id":"2","p":"/activity/2.jpg"},' +
+            '{"id":"3","p":"/activity/3.jpg"},' +
+            '{"id":"4","p":"/activity/4.jpg"},' +
+            '{"id":"5","p":"/activity/5.jpg"},' +
+            '{"id":"6","p":"/activity/6.jpg"}]';
+
+
+        var result = '{"activity":'+result2+'';
+        result += ',"brand":';
+        key ='smile@brands@recommend';
+        var param = '';
+        var cid = query.cid;
+        if(cid!=null && cid!=''){
+            key = 'smile@brands@recommend&cates@' + cid;
+        }
+        console.log('key='+key);
+        client.get(key, function(err, res) {
+            //console.log(res);
+            if(res){
+                var memberfilter = new Array();
+                memberfilter[0] = "id";
+                memberfilter[1] = "n";
+                memberfilter[2] = "p";
+                memberfilter[3] = "pp";
+
+                var recommendindex = JSON.parse(res);
+                result += '[';
+                for(var i=0;i<recommendindex.length;i++){
+                    if(i>0){
+                        result += ',';
+                    }
+                    result += '{\"id\":';
+                    result += JSON.stringify(recommendindex[i].id);
+                    result += ',\"n\":';
+                    result += JSON.stringify(recommendindex[i].n);
+                    result += ',\"gs\":';
+                    result += JSON.stringify(recommendindex[i].gs,memberfilter);
+                    result += '}';
+                }
+                result += ']';
+            }
+            result += '}';
+            response.writeHead(200, {
+                "Content-Type": applicationJson,
+                "Access-Control-Allow-Origin":"*",
+                'Access-Control-Allow-Methods': 'GET',
+                'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+            response.write(addData(result));
+            response.end();
+        });
     });
 }
 
@@ -123,6 +185,44 @@ function recommendbrand(query,response) {
             'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
         response.write(addData(result));
         response.end();
+    });
+}
+
+function getRecommendBrand(query) {
+    var key ='smile@brands@recommend';
+    var param = '';
+    var cid = query.cid;
+    if(cid!=null && cid!=''){
+        key = 'smile@brands@recommend&cates@' + cid;
+    }
+    console.log('key='+key);
+    client.get(key, function(err, res) {
+        //console.log(res);
+        var result = '';
+        if(res){
+            var memberfilter = new Array();
+            memberfilter[0] = "id";
+            memberfilter[1] = "n";
+            memberfilter[2] = "p";
+            memberfilter[3] = "pp";
+
+            var recommendindex = JSON.parse(res);
+            result = '[';
+            for(var i=0;i<recommendindex.length;i++){
+                if(i>0){
+                    result += ',';
+                }
+                result += '{\"id\":';
+                result += JSON.stringify(recommendindex[i].id);
+                result += ',\"n\":';
+                result += JSON.stringify(recommendindex[i].n);
+                result += ',\"gs\":';
+                result += JSON.stringify(recommendindex[i].gs,memberfilter);
+                result += '}';
+            }
+            result += ']';
+        }
+        return result;
     });
 }
 
@@ -463,7 +563,7 @@ function sort(query,response) {
  * @param response
  */
 function rankingdiscount(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sd+desc";
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sd+desc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -545,7 +645,7 @@ function rankingdiscount(query,response) {
  * @param response
  */
 function rankingsales(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=ss+desc";
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=ss+desc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -578,7 +678,7 @@ function rankingsales(query,response) {
                         result += ',\"p\":';
                         result += docs[i].p;
                         result += ',\"sn\":';
-                        result += JSON.stringify(docs[i].sn);
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
 //                        result += ',\"t\":';
 //                        result += JSON.stringify(docs[i].t).substring(0,17).replace('T',' ')+'\"';
 //                        result += ',\"d\":';
@@ -906,6 +1006,7 @@ function goodsdetail(query,response) {
     });
 }
 
+exports.index = index;
 exports.recommendbrand = recommendbrand;
 exports.category = category;
 exports.recommendactivity = recommendactivity;
@@ -923,5 +1024,8 @@ function addData(tmp){
     /*var res = JSON.parse('{"data":null}');
     res.data = tmp;
     return JSON.stringify(res);*/
+    if(tmp==''){
+        tmp = null;
+    }
     return '{"data":'+tmp+'}';
 }

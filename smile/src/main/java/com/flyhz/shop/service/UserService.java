@@ -38,8 +38,8 @@ public interface UserService {
 	/**
 	 * 自动登录
 	 * 
-	 * @param userId
-	 *            用户id
+	 * @param username
+	 *            用户名
 	 * @param token
 	 *            用户token
 	 * @param verifycode
@@ -47,13 +47,13 @@ public interface UserService {
 	 * @return
 	 * @throws ValidateException
 	 */
-	public UserDto loginAuto(Integer userId, String token, String verifycode)
+	public UserDto loginAuto(String username, String token, String verifycode)
 			throws ValidateException;
 
 	/**
 	 * 
-	 * @param userId
-	 *            用户id
+	 * @param username
+	 *            用户名
 	 * @param token
 	 *            用户token
 	 * @param verifycode
@@ -61,7 +61,8 @@ public interface UserService {
 	 * @return
 	 * @throws ValidateException
 	 */
-	public UserDto logout(Integer userId, String token, String verifycode) throws ValidateException;
+	public UserDto logout(String username, String token, String verifycode)
+			throws ValidateException;
 
 	/**
 	 * 查询收件人地址

@@ -107,16 +107,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto loginAuto(Integer userId, String token, String verifycode)
+	public UserDto loginAuto(String username, String token, String verifycode)
 			throws ValidateException {
-		if (userId == null) {
-			throw new ValidateException("");// 用户ID不能为空
+		if (username == null) {
+			throw new ValidateException("");// 用户名不能为空
 		}
 		if (StringUtils.isBlank(token)) {
 			throw new ValidateException("");// 用户TOKEN不能为空
 		}
 		UserModel userTemp = new UserModel();
-		userTemp.setId(userId);
+		userTemp.setUsername(username);
 		userTemp.setToken(token);
 		UserModel userModel = userDao.getModel(userTemp);
 		if (userModel == null) {
@@ -131,12 +131,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto logout(Integer userId, String token, String verifycode) throws ValidateException {
-		if (userId == null) {
+	public UserDto logout(String username, String token, String verifycode)
+			throws ValidateException {
+		if (username == null) {
 			throw new ValidateException("");// 用户ID不能为空
 		}
 		UserModel userTemp = new UserModel();
-		userTemp.setId(userId);
+		userTemp.setUsername(username);
 		userTemp.setToken(token);
 		UserModel userModel = userDao.getModel(userTemp);
 		if (userModel == null) {

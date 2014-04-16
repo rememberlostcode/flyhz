@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout.LayoutParams;
@@ -38,8 +40,7 @@ public class VerticalListAdapter extends BaseAdapter {
 	private List<BrandJGoods>	brandJGoodsList;
 	private Integer				cid;
 
-	public VerticalListAdapter(Context context, List<BrandJGoods> brandJGoodsList, Integer cid) {
-		mInflater = LayoutInflater.from(context);
+	public VerticalListAdapter(List<BrandJGoods> brandJGoodsList, Integer cid) {
 		this.brandJGoodsList = brandJGoodsList;
 		this.cid = cid;
 	}
@@ -72,6 +73,7 @@ public class VerticalListAdapter extends BaseAdapter {
 		ViewHolder holder = null;
 		if (convertView == null) {
 			holder = new ViewHolder();
+			mInflater = LayoutInflater.from(context);
 			convertView = mInflater.inflate(R.layout.horizontallistview, null);
 			holder.brand = (TextView) convertView.findViewById(R.id.list_brand);
 			holder.moreText = (TextView) convertView.findViewById(R.id.list_more);
@@ -86,7 +88,7 @@ public class VerticalListAdapter extends BaseAdapter {
 			final BrandJGoods brandJGoods = brandJGoodsList.get(position);
 			if (brandJGoods != null) {
 
-				HorizontalGridViewAdapter hlAdapter = new HorizontalGridViewAdapter(context,
+				final HorizontalGridViewAdapter hlAdapter = new HorizontalGridViewAdapter(context,
 						brandJGoods.getGs());
 				int ii = hlAdapter.getCount();
 				LayoutParams params = new LayoutParams(ii * cWidth, LayoutParams.WRAP_CONTENT);
@@ -96,6 +98,32 @@ public class VerticalListAdapter extends BaseAdapter {
 				holder.gridView.setStretchMode(GridView.NO_STRETCH);
 				holder.gridView.setNumColumns(ii);
 				holder.gridView.setAdapter(hlAdapter);
+				holder.gridView.setOnScrollListener(new OnScrollListener() {
+
+					@Override
+					public void onScrollStateChanged(AbsListView view, int scrollState) {
+						switch (scrollState) {
+							case OnScrollListener.SCROLL_STATE_FLING:
+								hlAdapter.setFlagBusy(true);
+								break;
+							case OnScrollListener.SCROLL_STATE_IDLE:
+								hlAdapter.setFlagBusy(false);
+								break;
+							case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+								hlAdapter.setFlagBusy(false);
+								break;
+							default:
+								break;
+						}
+						hlAdapter.notifyDataSetChanged();
+					}
+
+					@Override
+					public void onScroll(AbsListView view, int firstVisibleItem,
+							int visibleItemCount, int totalItemCount) {
+
+					}
+				});
 				hlAdapter.notifyDataSetChanged();
 
 				holder.brand.setText(brandJGoods.getN());
@@ -117,4 +145,5 @@ public class VerticalListAdapter extends BaseAdapter {
 		}
 		return convertView;
 	}
+
 }
