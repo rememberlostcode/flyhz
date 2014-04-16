@@ -11,6 +11,7 @@ import com.holding.smile.entity.SUser;
 import com.holding.smile.service.DataService;
 import com.holding.smile.service.LoginService;
 import com.holding.smile.service.SQLiteService;
+import com.holding.smile.service.SubmitService;
 
 /**
  * 
@@ -40,16 +41,17 @@ public class MyApplication extends Application {
 	private Float					density;
 
 	private DataService				dataService;
+	private SubmitService			submitService;
 
 	/**
 	 * 本地数据库操作service
 	 */
 	private SQLiteService			sqliteService;
 
-	private LoginService				loginService;
+	private LoginService			loginService;
 
 	public static String			jgoods_img_url;
-	
+
 	/**
 	 * 当前登录用户
 	 */
@@ -62,9 +64,10 @@ public class MyApplication extends Application {
 
 		Context context = getApplicationContext();
 		dataService = new DataService(context);
+		submitService = new SubmitService(context);
 		loginService = new LoginService(context);
 		mImageLoader = new ImageLoader(context);
-		sqliteService = new SQLiteService(context);// 初始化本地DB	
+		sqliteService = new SQLiteService(context);// 初始化本地DB
 
 		jgoods_img_url = getString(R.string.jGoods_img_url);
 	}
@@ -77,16 +80,12 @@ public class MyApplication extends Application {
 		return dataService;
 	}
 
-	public void setDataService(DataService dataService) {
-		this.dataService = dataService;
+	public SubmitService getSubmitService() {
+		return submitService;
 	}
 
 	public LoginService getLoginService() {
 		return loginService;
-	}
-
-	public void setLoginService(LoginService loginService) {
-		this.loginService = loginService;
 	}
 
 	public static MyApplication getInstance() {

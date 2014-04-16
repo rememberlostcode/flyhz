@@ -15,9 +15,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.entity.City;
+import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.District;
 import com.holding.smile.entity.Province;
 import com.holding.smile.tools.Constants;
@@ -29,12 +31,13 @@ import com.holding.smile.tools.Constants;
  * 
  */
 public class AddressEditActivity extends BaseActivity implements OnClickListener {
+	private Integer					conturyId	= Constants.CONTURY_ID, provinceId, cityId,
+			districtId;
+	private Consignee				consignee;
+
 	private Spinner					province_spinner;
 	private Spinner					city_spinner;
 	private Spinner					district_spinner;
-	private Integer					conturyId	= Constants.CONTURY_ID, provinceId, cityId,
-			districtId;
-
 	private ArrayAdapter<Province>	province_adapter;
 	private ArrayAdapter<City>		city_adapter;
 	private ArrayAdapter<District>	district_adapter;
@@ -55,6 +58,8 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 
 		TextView textView = displayHeaderDescription();
 		textView.setText("地址编辑");
+
+		consignee = new Consignee();
 
 		addressAddress = (EditText) findViewById(R.id.address_address);
 		addressName = (EditText) findViewById(R.id.address_name);
@@ -80,6 +85,50 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 			case R.id.btn_back: {
 				setResult(RESULT_CANCELED, null);
 				finish();
+				break;
+			}
+			case R.id.address_add_save: {
+				if (conturyId == null) {
+					Toast.makeText(context, "请选择所属国家", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				consignee.setConturyId(conturyId);
+				if (provinceId == null) {
+					Toast.makeText(context, "请选择所属省份", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				consignee.setProvinceId(provinceId);
+				if (cityId == null) {
+					Toast.makeText(context, "请选择所属城市", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				consignee.setCityId(cityId);
+				if (districtId == null) {
+					Toast.makeText(context, "请选择所属县城", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				consignee.setDistrictId(districtId);
+				if ("".equals(addressAddress.getText().toString())) {
+					Toast.makeText(context, "街道地址不能为空", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				consignee.setAddress(addressAddress.getText().toString());
+				if ("".equals(addressName.getText().toString())) {
+					Toast.makeText(context, "联系人不能为空", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				consignee.setName(addressName.getText().toString());
+				if ("".equals(addressMobile.getText().toString())) {
+					Toast.makeText(context, "联系电话不能为空", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				consignee.setMobilephone(addressMobile.getText().toString());
+				if ("".equals(addressZipcode.getText().toString())) {
+					Toast.makeText(context, "邮编不能为空", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				consignee.setZipcode(addressZipcode.getText().toString());
+				MyApplication.getInstance().getSubmitService().consigneeEdit(consignee);
 				break;
 			}
 		}

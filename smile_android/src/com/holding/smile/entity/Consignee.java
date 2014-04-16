@@ -1,7 +1,6 @@
 
 package com.holding.smile.entity;
 
-
 /**
  * 联系人
  * 
@@ -11,10 +10,10 @@ package com.holding.smile.entity;
 public class Consignee {
 	private Integer	id;
 	private String	name;
-	private Short	conturyId;
-	private Short	provinceId;
-	private Short	cityId;
-	private Short	districtId;
+	private Integer	conturyId;
+	private Integer	provinceId;
+	private Integer	cityId;
+	private Integer	districtId;
 	private String	address;
 	private String	zipcode;
 	private String	mobilephone;
@@ -80,35 +79,36 @@ public class Consignee {
 		this.zipcode = zipcode;
 	}
 
-	public Short getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(Short cityId) {
-		this.cityId = cityId;
-	}
-
-	public Short getConturyId() {
+	public Integer getConturyId() {
 		return conturyId;
 	}
 
-	public void setConturyId(Short conturyId) {
+	public void setConturyId(Integer conturyId) {
 		this.conturyId = conturyId;
 	}
 
-	public Short getProvinceId() {
+	public Integer getProvinceId() {
 		return provinceId;
 	}
 
-	public void setProvinceId(Short provinceId) {
+	public void setProvinceId(Integer provinceId) {
 		this.provinceId = provinceId;
 	}
 
-	public Short getDistrictId() {
+	public Integer getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
+	}
+
+	public Integer getDistrictId() {
 		return districtId;
 	}
 
-	public void setDistrictId(Short districtId) {
+	public void setDistrictId(Integer districtId) {
 		this.districtId = districtId;
 	}
+
 }

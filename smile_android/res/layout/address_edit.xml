@@ -92,14 +92,6 @@
                 android:hint="请输入街道地址"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="fill_parent"
-                android:layout_gravity="right"
-                android:layout_marginRight="5dip"
-                android:gravity="center_vertical"
-                android:text="@string/user_info_right"
-                android:textSize="18sp" />
         </LinearLayout>
         
         <LinearLayout
@@ -119,14 +111,6 @@
                 android:hint="请输入收货人姓名"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="fill_parent"
-                android:layout_gravity="right"
-                android:layout_marginRight="5dip"
-                android:gravity="center_vertical"
-                android:text="@string/user_info_right"
-                android:textSize="18sp" />
         </LinearLayout>
         
         <LinearLayout
@@ -146,14 +130,6 @@
                 android:hint="请输入收货人联系电话"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="fill_parent"
-                android:layout_gravity="right"
-                android:layout_marginRight="5dip"
-                android:gravity="center_vertical"
-                android:text="@string/user_info_right"
-                android:textSize="18sp" />
         </LinearLayout>
         
         <LinearLayout
@@ -173,14 +149,6 @@
                 android:hint="请输入邮编"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="fill_parent"
-                android:layout_gravity="right"
-                android:layout_marginRight="5dip"
-                android:gravity="center_vertical"
-                android:text="@string/user_info_right"
-                android:textSize="18sp" />
         </LinearLayout>
         
         <LinearLayout
@@ -201,14 +169,6 @@
                 android:hint="请输入身份证号"
                 android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="fill_parent"
-                android:layout_gravity="right"
-                android:layout_marginRight="5dip"
-                android:gravity="center_vertical"
-                android:text="@string/user_info_right"
-                android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 
