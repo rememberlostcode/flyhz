@@ -57,6 +57,9 @@ public class MyApplication extends Application {
 	 */
 	private SUser					currentUser;
 
+	//JSESSIONID=6CCC2F179859F7D98D2F8E35CEBD5CF4
+	private String					sessionId;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -122,6 +125,14 @@ public class MyApplication extends Application {
 
 	public void setCurrentUser(SUser currentUser) {
 		this.currentUser = currentUser;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
 
 	public SQLiteService getSqliteService() {

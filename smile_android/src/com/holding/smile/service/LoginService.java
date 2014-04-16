@@ -186,6 +186,14 @@ public class LoginService {
 					sb.append(new String(bytes, 0, len, "utf-8"));
 				}
 				content = sb.toString();
+				/* 获取 sessionid begin */
+				String cookieval = urlConnection.getHeaderField("set-cookie");
+				String sessionid;
+				if (cookieval != null) {
+					sessionid = cookieval.substring(0, cookieval.indexOf(";"));
+					MyApplication.getInstance().setSessionId(sessionid);
+				}
+				/* 获取 sessionid end */
 			} catch (Exception ex) {
 				//
 			} finally {

@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.holding.smile.activity.MyApplication;
+
 public class URLUtil {
 
 	public static String getStringByGet(String path, HashMap<String, String> param) {
@@ -55,8 +57,7 @@ public class URLUtil {
 			conn.setRequestMethod("GET");
 			conn.setDoInput(true);
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
-			// conn.setRequestProperty("Cookie",
-			// MyApplication.getInstance().getSessionId());
+			conn.setRequestProperty("Cookie",MyApplication.getInstance().getSessionId());
 			conn.connect();
 			if (conn.getResponseCode() == 200) {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -103,8 +104,7 @@ public class URLUtil {
 			conn.setDoInput(true);
 			conn.setUseCaches(false);
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
-			// conn.setRequestProperty("Cookie",
-			// MyApplication.getInstance().getSessionId());
+			conn.setRequestProperty("Cookie",MyApplication.getInstance().getSessionId());
 			conn.connect();
 			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
 			out.writeBytes(paramsBuffer.toString());
@@ -158,8 +158,7 @@ public class URLUtil {
 			conn.setDoInput(true);
 			conn.setUseCaches(false);
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
-			// conn.setRequestProperty("Cookie",
-			// MyApplication.getInstance().getSessionId());
+			conn.setRequestProperty("Cookie",MyApplication.getInstance().getSessionId());
 			conn.connect();
 			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
 			out.writeBytes(paramsBuffer.toString());
