@@ -22,7 +22,7 @@ public interface OrderService {
 	 * @return
 	 * @throws ValidateException
 	 */
-	public String generateOrder(Integer userId, Integer consigneeId, String[] productId,
+	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productId,
 			boolean flag) throws ValidateException;
 
 	/**

@@ -24,6 +24,7 @@ import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
+import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
@@ -199,7 +200,7 @@ public class UserController {
 		Integer code = 200000;
 		if (userId == null)
 			code = 100000;
-		String details = "";
+		OrderDto orderDto = null;
 		if ((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
 			code = 5;
 
@@ -211,13 +212,13 @@ public class UserController {
 		}
 
 		try {
-			details = orderService.generateOrder(userId, cid, pids, false);
+			orderDto = orderService.generateOrder(userId, cid, pids, false);
 		} catch (ValidateException e) {
 			code = 4;
 			log.error("=======在生成订单时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
-		protocol.setData(details);
+		protocol.setData(orderDto);
 		model.addAttribute("protocol", protocol);
 		return "";
 	}
@@ -236,7 +237,7 @@ public class UserController {
 		Integer code = 200000;
 		if (userId == null)
 			code = 100000;
-		String details = "";
+		OrderDto details = null;
 		if (((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
 				|| cid == null)
 			code = 5;

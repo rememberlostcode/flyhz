@@ -17,8 +17,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -33,20 +31,21 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JActivity;
 import com.holding.smile.entity.JIndexJGoods;
+import com.holding.smile.myview.PullToRefreshView;
+import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 
-public class MainActivity extends BaseActivity implements OnClickListener {
+public class MainActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener {
 
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
 	private static final int	WHAT_DID_REFRESH	= 1;
 
+	private PullToRefreshView	mPullToRefreshView;
 	private ViewPager			mViewPager;
 	private List<View>			viewList;
-	// private MyGridView reGridView;
 	private MyPagerAdapter		pagerAdapter;
 	// 装点点的ImageView数组
 	private ImageView[]			tips;
 
-	// private RecommendGoodsAdapter reGoodsAdapter;
 	private VerticalListAdapter	vlAdapter;
 	private ListView			listView;
 	private List<JActivity>		recActList			= new ArrayList<JActivity>();	// 活动商品
@@ -66,15 +65,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		headerDescription.setText(R.string.recommend_goods);
 		displayFooterMain(R.id.mainfooter_one);
 
-		// reGridView = (MyGridView) findViewById(R.id.recommend_goods);
-		// reGoodsAdapter = new RecommendGoodsAdapter(context, recActList);
-		// reGridView.setAdapter(reGoodsAdapter);
-		// reGridView.setOnScrollListener(mScrollListener);
+		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
 		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
 		listView = (ListView) findViewById(R.id.brand_list);
 		vlAdapter = new VerticalListAdapter(brandJGoodsList, cid);
 		listView.setAdapter(vlAdapter);
+		mPullToRefreshView.setOnHeaderRefreshListener(this);
 
 		startTask();
 
@@ -121,6 +118,16 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
+	public void onHeaderRefresh(PullToRefreshView view) {
+		mPullToRefreshView.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				onRefresh();
+			}
+		}, 1000);
+	}
+
+	@Override
 	public void loadData() {
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getIndexJGoods();
 		if (rGoods != null) {
@@ -161,45 +168,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 		recActList.clear();
 		recActList = null;
-		// if (reGoodsAdapter != null) {
-		// reGoodsAdapter.notifyDataSetChanged();
-		// reGoodsAdapter.notifyDataSetInvalidated();
-		// reGoodsAdapter = null;
-		// }
-		// if (reGridView != null) {
-		// reGridView.invalidate();
-		// reGridView = null;
-		// }
 	};
-
-	OnScrollListener	mScrollListener	= new OnScrollListener() {
-
-											@Override
-											public void onScrollStateChanged(AbsListView view,
-													int scrollState) {
-												switch (scrollState) {
-													case OnScrollListener.SCROLL_STATE_FLING:
-														// reGoodsAdapter.setFlagBusy(true);
-														break;
-													case OnScrollListener.SCROLL_STATE_IDLE:
-														// reGoodsAdapter.setFlagBusy(false);
-														break;
-													case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-														// reGoodsAdapter.setFlagBusy(false);
-														break;
-													default:
-														break;
-												}
-												// reGoodsAdapter.notifyDataSetChanged();
-											}
-
-											@Override
-											public void onScroll(AbsListView view,
-													int firstVisibleItem, int visibleItemCount,
-													int totalItemCount) {
-
-											}
-										};
 
 	/**
 	 * 添加页卡
@@ -314,24 +283,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 																mViewPager.setAdapter(pagerAdapter);
 																mViewPager.setCurrentItem(0); // 设置默认当前页
 
-																// int ii =
-																// reGoodsAdapter.getCount();
-																// int
-																// cWidth =
-																// MyApplication.getInstance()
-																// .getScreenWidth();
-																// LayoutParams
-																// params =
-																// new
-																// LayoutParams(
-																// ii *
-																// cWidth,
-																// LayoutParams.WRAP_CONTENT);
-																// reGridView.setLayoutParams(params);
-																// reGridView.setColumnWidth(cWidth);
-																// reGridView.setStretchMode(GridView.NO_STRETCH);
-																// reGridView.setNumColumns(ii);
-																// reGoodsAdapter.notifyDataSetChanged();
 															}
 
 															// 品牌区

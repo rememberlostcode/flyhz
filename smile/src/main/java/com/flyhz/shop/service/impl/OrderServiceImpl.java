@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 	private RedisRepository	redisRepository;
 
 	@Override
-	public String generateOrder(Integer userId, Integer consigneeId, String[] productIds,
+	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds,
 			boolean flag) throws ValidateException {
 		if (userId == null)
 			throw new ValidateException("您没有登录！");
@@ -119,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
 			number = RandomString.generateRandomString8();
 			orderDto.setNumber(number);
 		}
-		detail = JSONUtil.getEntity2Json(orderDto);
+		// detail = JSONUtil.getEntity2Json(orderDto);
 
 		if (flag) {
 			OrderModel order = new OrderModel();
@@ -135,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
 			log.debug("====={}", order.getId());
 			redisRepository.buildOrderToRedis(userId, order.getId(), detail);
 		}
-		return detail;
+		return orderDto;
 	}
 
 	@Override
