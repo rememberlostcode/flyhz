@@ -25,6 +25,7 @@ import com.holding.smile.protocol.PGoodsDetail;
 import com.holding.smile.protocol.PIndexJGoods;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
+import com.holding.smile.protocol.PUser;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.StrUtils;
@@ -58,6 +59,7 @@ public class DataService {
 	private String			jGoods_search_url;
 	private String			jGoods_search_more_url;
 	private String			address_list;
+	private String			user_info;
 
 	public DataService(Context context) {
 		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
@@ -81,6 +83,7 @@ public class DataService {
 		jGoods_search_url = context.getString(R.string.jGoods_search_refresh_url);
 		jGoods_search_more_url = context.getString(R.string.jGoods_search_more_url);
 		address_list = context.getString(R.string.address_list);
+		user_info = context.getString(R.string.user_info);
 	}
 
 	private String setJson(String fileName) {
@@ -550,12 +553,8 @@ public class DataService {
 	}
 
 	/**
-	 * 单一品牌查看更多
+	 * 获得收货人列表
 	 * 
-	 * @param bid品牌ID
-	 * @param cid分类ID
-	 * @param seqorderType排序类型
-	 * @param seqorderValue序号
 	 * @return
 	 */
 	public RtnValueDto getConsigneeList() {
@@ -563,12 +562,36 @@ public class DataService {
 		String url = prefix_url + address_list;
 
 		String rStr = URLUtil.getStringByGet(url, null);
-		System.out.println(rStr);
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PConsignees consignees = JSONUtil.getJson2Entity(rStr, PConsignees.class);
-				if (consignees != null)
+				if (consignees != null) {
 					rvd.setConsigneeData(consignees.getData());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	public RtnValueDto getUserInfo() {
+		RtnValueDto rvd = new RtnValueDto();
+		String url = prefix_url + user_info;
+
+		String rStr = URLUtil.getStringByGet(url, null);
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PUser user = JSONUtil.getJson2Entity(rStr, PUser.class);
+				if (user != null)
+					rvd.setUserData(user.getData());
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();

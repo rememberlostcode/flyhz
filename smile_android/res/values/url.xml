@@ -24,4 +24,9 @@
     <string name="address_modify">/consignee/modify.json</string>
     <string name="address_remove">/consignee/remove.json</string>
     <string name="address_set">/consignee/setIdCard.json</string>
+    <string name="user_info">/user/getPInfo.json</string>
+    <string name="reset_password">/user/resetPwd.json</string>
+    <string name="releive_email">/user/releiveEmail.json</string>
+    <string name="set_suer_info">/user/setInfo.json</string>
+    
 </resources>

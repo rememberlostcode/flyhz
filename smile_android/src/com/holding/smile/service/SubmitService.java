@@ -9,7 +9,6 @@ import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Consignee;
-import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.URLUtil;
@@ -21,6 +20,7 @@ public class SubmitService {
 	private String	address_modify;
 	private String	address_remove;
 	private String	address_set;
+	private String	password_reset;
 
 	public SubmitService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
@@ -28,8 +28,16 @@ public class SubmitService {
 		address_modify = context.getString(R.string.address_modify);
 		address_remove = context.getString(R.string.address_remove);
 		address_set = context.getString(R.string.address_set);
+		password_reset = context.getString(R.string.reset_password);
 	}
 
+	/**
+	 * 编辑收货人地址
+	 * 
+	 * @param consignee
+	 *            收货人地址信息
+	 * @return
+	 */
 	public RtnValueDto consigneeEdit(Consignee consignee) {
 		if (consignee == null) {
 			return null;
@@ -74,9 +82,82 @@ public class SubmitService {
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
-				PBrandJGoods brandJGoods = JSONUtil.getJson2Entity(rStr, PBrandJGoods.class);
-				if (brandJGoods != null)
-					rvd.setBrandData(brandJGoods.getData());
+				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 删除收货人地址
+	 * 
+	 * @param conid
+	 *            主键ID
+	 * @return
+	 */
+	public RtnValueDto addressRemove(Integer conid) {
+		if (conid == null) {
+			return null;
+		}
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+
+		param.put("conid", String.valueOf(conid));
+
+		String url = prefix_url + address_remove;
+		String rStr = URLUtil.getStringByGet(url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 修改密码
+	 * 
+	 * @param oldPwd
+	 *            原密码
+	 * @param newPwd
+	 *            新密码
+	 * @return
+	 */
+	public RtnValueDto passwordReset(String oldPwd, String newPwd) {
+		if (oldPwd == null || newPwd == null || "".equals(oldPwd) || "".equals(newPwd)) {
+			return null;
+		}
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+
+		param.put("opwd", oldPwd);
+		param.put("npwd", newPwd);
+
+		String url = prefix_url + password_reset;
+		String rStr = URLUtil.getStringByGet(url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();

@@ -8,6 +8,7 @@ import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JIndexJGoods;
 import com.holding.smile.entity.JSort;
+import com.holding.smile.entity.SUser;
 
 /**
  * 返回值对象
@@ -26,6 +27,7 @@ public class RtnValueDto {
 	private ValidateDto			validate;		// 校验结果
 	private String				atData;
 	private List<Consignee>		consigneeData;	// 返回收货人地址
+	private SUser				userData;		// 返回用户数据
 
 	public Integer getCode() {
 		return code;
@@ -105,5 +107,13 @@ public class RtnValueDto {
 
 	public void setConsigneeData(List<Consignee> consigneeData) {
 		this.consigneeData = consigneeData;
+	}
+
+	public SUser getUserData() {
+		return userData;
+	}
+
+	public void setUserData(SUser userData) {
+		this.userData = userData;
 	}
 }
