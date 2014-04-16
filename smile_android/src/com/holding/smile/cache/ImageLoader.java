@@ -187,10 +187,16 @@ public class ImageLoader {
 	}
 
 	/**
-	 * 清理缓存
+	 * 清理内存缓存
 	 */
-	public void clearCache() {
+	public void clearMemoryCache() {
 		memoryCache.clear();
+	}
+
+	/**
+	 * 清理文件缓存
+	 */
+	public void clearFileCache() {
 		fileCache.clear();
 	}
 

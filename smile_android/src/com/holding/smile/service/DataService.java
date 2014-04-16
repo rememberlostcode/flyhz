@@ -489,6 +489,35 @@ public class DataService {
 	}
 
 	/**
+	 * 商品排行榜列表
+	 * 
+	 * @return
+	 */
+	public RtnValueDto getJGoodsSortList(String sortUrl) {
+		RtnValueDto rvd = new RtnValueDto();
+		String rStr = "";
+		if (StrUtils.isNotEmpty(sortUrl)) {
+			rStr = URLUtil.getStringByGet(sortUrl, null);
+		}
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
+				rvd.setData(pst.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
 	 * 商品详情
 	 * 
 	 * @param id

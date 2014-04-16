@@ -309,7 +309,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 			mListView.destroyDrawingCache();
 			mListView = null;
 		}
-		System.gc();
 	}
 
 	@Override
