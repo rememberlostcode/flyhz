@@ -4,6 +4,7 @@ package com.holding.smile.dto;
 import java.util.List;
 
 import com.holding.smile.entity.Category;
+import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JIndexJGoods;
 import com.holding.smile.entity.JSort;
@@ -15,15 +16,16 @@ import com.holding.smile.entity.JSort;
  * 
  */
 public class RtnValueDto {
-	private Integer				code;		// 系统代码
-	private JGoods				goodDetail; // 返回商品详情数据
-	private List<JGoods>		data;		// 返回数据
-	private List<BrandJGoods>	brandData;	// 返回按品牌分类的数据
-	private List<Category>		cateData;	// 返回分类数据
-	private JIndexJGoods		indexData;	// 返回首页数据
-	private List<JSort>			sortData;	// 返回排行数据
-	private ValidateDto			validate;	// 校验结果
+	private Integer				code;			// 系统代码
+	private JGoods				goodDetail;	// 返回商品详情数据
+	private List<JGoods>		data;			// 返回数据
+	private List<BrandJGoods>	brandData;		// 返回按品牌分类的数据
+	private List<Category>		cateData;		// 返回分类数据
+	private JIndexJGoods		indexData;		// 返回首页数据
+	private List<JSort>			sortData;		// 返回排行数据
+	private ValidateDto			validate;		// 校验结果
 	private String				atData;
+	private List<Consignee>		consigneeData;	// 返回收货人地址
 
 	public Integer getCode() {
 		return code;
@@ -95,5 +97,13 @@ public class RtnValueDto {
 
 	public void setAtData(String atData) {
 		this.atData = atData;
+	}
+
+	public List<Consignee> getConsigneeData() {
+		return consigneeData;
+	}
+
+	public void setConsigneeData(List<Consignee> consigneeData) {
+		this.consigneeData = consigneeData;
 	}
 }

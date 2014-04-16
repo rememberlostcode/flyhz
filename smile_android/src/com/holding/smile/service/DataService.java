@@ -19,6 +19,7 @@ import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
 import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.protocol.PCategory;
+import com.holding.smile.protocol.PConsignees;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PGoodsDetail;
 import com.holding.smile.protocol.PIndexJGoods;
@@ -35,8 +36,6 @@ public class DataService {
 	 * 是否从网络获取数据
 	 */
 	public static boolean	getDataFromNet	= true;
-
-	private String			jGoodsInitJson;
 
 	private String			jGoodsTwoInitJson;
 	private String			jGoodsTwoMoreJson;
@@ -58,10 +57,9 @@ public class DataService {
 	private String			jGoods_sort_url;
 	private String			jGoods_search_url;
 	private String			jGoods_search_more_url;
+	private String			address_list;
 
 	public DataService(Context context) {
-		jGoodsInitJson = setJson("jGoodsInitJson.json");
-
 		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
 		jGoodsTwoMoreJson = setJson("jGoodsTwoMoreJson.json");
 
@@ -82,6 +80,7 @@ public class DataService {
 		jGoods_sort_url = context.getString(R.string.jGoods_sort_url);
 		jGoods_search_url = context.getString(R.string.jGoods_search_refresh_url);
 		jGoods_search_more_url = context.getString(R.string.jGoods_search_more_url);
+		address_list = context.getString(R.string.address_list);
 	}
 
 	private String setJson(String fileName) {
@@ -536,6 +535,40 @@ public class DataService {
 				PGoodsDetail detail = JSONUtil.getJson2Entity(rStr, PGoodsDetail.class);
 				if (detail != null)
 					rvd.setGoodDetail(detail.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 单一品牌查看更多
+	 * 
+	 * @param bid品牌ID
+	 * @param cid分类ID
+	 * @param seqorderType排序类型
+	 * @param seqorderValue序号
+	 * @return
+	 */
+	public RtnValueDto getConsigneeList() {
+		RtnValueDto rvd = new RtnValueDto();
+		String url = prefix_url + address_list;
+
+		String rStr = URLUtil.getStringByGet(url, null);
+		System.out.println(rStr);
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PConsignees consignees = JSONUtil.getJson2Entity(rStr, PConsignees.class);
+				if (consignees != null)
+					rvd.setConsigneeData(consignees.getData());
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
