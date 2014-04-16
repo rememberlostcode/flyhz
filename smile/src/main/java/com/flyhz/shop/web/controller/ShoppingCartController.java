@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
-import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.shop.service.ShoppingCartService;
 
 /**
@@ -62,7 +61,7 @@ public class ShoppingCartController {
 		Protocol protocol = new Protocol();
 		try {
 			userId = 2;
-			protocol.setData(JSONUtil.getEntity2Json(shoppingCartService.setQty(userId, itemId, qty)));
+			protocol.setData(shoppingCartService.setQty(userId, itemId, qty));
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());

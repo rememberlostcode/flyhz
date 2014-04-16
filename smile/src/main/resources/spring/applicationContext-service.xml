@@ -15,4 +15,5 @@ http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 	<bean id="redisRepository" class="com.flyhz.shop.persistence.RedisRepositoryImpl"></bean>
 	<bean id="cacheRepository" class="com.flyhz.shop.persistence.RCacheRepository"></bean>
 	<bean id="solrData" class="com.flyhz.shop.build.solr.SolrDataImpl"></bean>
+	<bean id="mailRepository" class="com.flyhz.framework.lang.mail.MailRepositoryImpl"></bean>
 </beans>

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.flyhz.framework.auth.Authenticate;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
-import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.service.UserService;
 
@@ -40,7 +39,7 @@ public class LoginController {
 			if (user != null) {
 				auth.mark(user.getId(), request, response);
 				protocol.setCode(0);
-				protocol.setData(JSONUtil.getEntity2Json(user));
+				protocol.setData(user);
 			} else {
 				protocol.setCode(1);
 				protocol.setData("loginAuth fail");
@@ -63,7 +62,7 @@ public class LoginController {
 			if (user != null) {
 				auth.mark(user.getId(), request, response);
 				protocol.setCode(0);
-				protocol.setData(JSONUtil.getEntity2Json(user));
+				protocol.setData(user);
 			} else {
 				protocol.setCode(1);
 				protocol.setData("loginAuto fail");
@@ -85,7 +84,7 @@ public class LoginController {
 			if (user != null) {
 				auth.removeMark(request, response);
 				protocol.setCode(0);
-				protocol.setData(JSONUtil.getEntity2Json(user));
+				protocol.setData(user);
 			} else {
 				protocol.setCode(1);
 				protocol.setData("logout fail");

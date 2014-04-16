@@ -4,7 +4,7 @@ package com.flyhz.framework.lang;
 public class Protocol {
 
 	private Integer	code;
-	private String	data;
+	private Object	data;
 
 	public Integer getCode() {
 		return code;
@@ -14,11 +14,11 @@ public class Protocol {
 		this.code = code;
 	}
 
-	public String getData() {
+	public Object getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Object data) {
 		this.data = data;
 	}
 }

@@ -5,7 +5,7 @@
 		delete from user where id=#{id}
     </delete>
     <update id="updateEmail" parameterType="UserModel">
-    	update user set email=#{email} where id=#{id}
+    	update user set email=#{email},gmt_modify=#{gmtModify} where id=#{id}
     </update>
     <update id="updatePwd" parameterType="UserModel">
     	update user set password=#{password} where id=#{id}

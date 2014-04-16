@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.file.FileRepository;
+import com.flyhz.framework.lang.mail.MailRepository;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.MD5;
 import com.flyhz.framework.util.RandomString;
@@ -39,6 +40,8 @@ public class UserServiceImpl implements UserService {
 	private ConsigneeDao	consigneeDao;
 	@Resource
 	private FileRepository	fileRepository;
+	@Resource
+	private MailRepository	mailRepository;
 
 	@Override
 	public UserDto register(UserDetailDto userDetail) throws ValidateException {
@@ -356,6 +359,7 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 			userModel.setEmail(valueStr);
+			userModel.setGmtModify(new Date());
 			userDao.updateEmail(userModel);
 			// 新旧邮箱不同，发送校验邮件
 			if (StringUtil.isNotBlank(valueStr) && valueStr.equalsIgnoreCase(emailOld)) {
@@ -368,6 +372,7 @@ public class UserServiceImpl implements UserService {
 				throw new ValidateException(101014);
 			}
 			userModel.setMobilephone(valueStr);
+			userModel.setGmtModify(new Date());
 			userDao.updateMobilePhone(userModel);
 		} else if (field.equals("pwd")) {
 			// 密码不能设置为空
@@ -379,6 +384,7 @@ public class UserServiceImpl implements UserService {
 				throw new ValidateException(101019);
 			}
 			userModel.setPassword(valueStr);
+			userModel.setGmtModify(new Date());
 			userDao.updatePwd(userModel);
 		}
 	}

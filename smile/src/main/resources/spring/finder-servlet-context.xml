@@ -100,39 +100,36 @@
 	  </beans:property>
 	</beans:bean>
 	
-	<!-- Email Sender Bean -->
 	<beans:bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<beans:property name="host">
-			<beans:value>stmp.163.com</beans:value>
+			<beans:value>${smile.mail.host}</beans:value>
+		</beans:property>
+		<beans:property name="username">
+			<beans:value>${smile.mail.username}</beans:value>
+		</beans:property>
+		<beans:property name="password">
+			<beans:value>${smile.mail.password}</beans:value>
+		</beans:property>
+		<beans:property name="port">
+			<beans:value>${smile.mail.port}</beans:value>
 		</beans:property>
 		<beans:property name="javaMailProperties">
 			<beans:props>
-				<beans:prop key="mail.smtp.auth">true</beans:prop>
-				<beans:prop key="mail.smtp.timeout">25000</beans:prop>
+				<beans:prop key="mail.smtp.auth">${mail.smtp.auth}</beans:prop>
+				<beans:prop key="mail.smtp.timeout">${mail.smtp.timeout}</beans:prop>
 			</beans:props>
-		</beans:property>
-		<beans:property name="username">
-			<beans:value>syqf1027@163.com</beans:value>
-		</beans:property>
-		<beans:property name="password">
-			<beans:value>574515</beans:value>
 		</beans:property>
 	</beans:bean>
 	
 	<!-- Imports user-defined @Controller beans that process client requests -->
 	<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 	
-	<!-- <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> 
-		<beans:property name="defaultEncoding" value="utf-8"/>
-		<beans:property name="resolveLazily" value="true"/> 
-		<beans:property name="maxUploadSize" value="1073741824"/>
-	</beans:bean>   -->
-	
 	<beans:bean id="multipartResolver" class="com.flyhz.framework.lang.multipart.LostMultipartResolver"> 
 		<beans:property name="defaultEncoding" value="utf-8"/>
 		<beans:property name="resolveLazily" value="true"/> 
 		<beans:property name="maxUploadSize" value="1073741824"/>
 	</beans:bean>
+	
 	<beans:bean id="auth" class="com.flyhz.framework.auth.IAuth"/>
 	<beans:import resource="finder-timer.xml"/>
 	<beans:import resource="finder-lang.xml"/>

@@ -20,7 +20,6 @@ import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
-import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.dto.CartItemParamDto;
@@ -82,7 +81,7 @@ public class UserController {
 		}
 		protocol.setCode(code);
 		if (user != null) {
-			protocol.setData(JSONUtil.getEntity2Json(user));
+			protocol.setData(user);
 		} else {
 			protocol.setData(msg);
 		}
@@ -111,7 +110,7 @@ public class UserController {
 			log.error("=======查询地址时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
-		protocol.setData(JSONUtil.getEntity2Json(consigneeDtoList));
+		protocol.setData(consigneeDtoList);
 		model.addAttribute("protocol", protocol);
 		return "";
 	}
@@ -149,7 +148,7 @@ public class UserController {
 			log.error("=======在修改购买数量时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
-		protocol.setData(JSONUtil.getEntity2Json(product));
+		protocol.setData(product);
 		model.addAttribute("protocol", protocol);
 		return "";
 	}
@@ -181,7 +180,7 @@ public class UserController {
 			log.error("=======在修改购买数量时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
-		protocol.setData(JSONUtil.getEntity2Json(cartItemDto));
+		protocol.setData(cartItemDto);
 		model.addAttribute("protocol", protocol);
 		return "";
 	}
@@ -344,7 +343,7 @@ public class UserController {
 	@RequestMapping(value = "user/getPInfo", method = RequestMethod.GET)
 	public void getPersonalInfo(@Identify Integer userId, Model model) {
 		Protocol protocol = new Protocol();
-		protocol.setData(JSONUtil.getEntity2Json(userService.getPersonalInformation(userId)));
+		protocol.setData(userService.getPersonalInformation(userId));
 		protocol.setCode(200000);
 		model.addAttribute("protocol", protocol);
 	}
