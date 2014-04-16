@@ -1,74 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:id="@+id/setting_address_edit_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
-    <TableRow
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#E8E8E8"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="所属省份："
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/province_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="42dp"
+                android:layout_weight="1.0" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="#E8E8E8"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="所属城市："
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/city_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="42dp"
+                android:layout_weight="1.0" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="#E8E8E8"
+            android:gravity="center" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="所属县城："
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/county_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="42dp"
+                android:layout_weight="1.0" />
+        </TableRow>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/address_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:inputType="text"
+                android:hint="请输入街道地址"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dip"
+                android:gravity="center_vertical"
+                android:text="@string/user_info_right"
+                android:textSize="18sp" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/address_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:inputType="text"
+                android:hint="请输入收货人姓名"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dip"
+                android:gravity="center_vertical"
+                android:text="@string/user_info_right"
+                android:textSize="18sp" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/address_mobile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:inputType="phone"
+                android:hint="请输入收货人联系电话"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dip"
+                android:gravity="center_vertical"
+                android:text="@string/user_info_right"
+                android:textSize="18sp" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/address_zipcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:inputType="number"
+                android:hint="请输入邮编"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dip"
+                android:gravity="center_vertical"
+                android:text="@string/user_info_right"
+                android:textSize="18sp" />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/address_idcard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:inputType="number"
+				android:digits="0123456789xyzXYZ"
+                android:hint="请输入身份证号"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dip"
+                android:gravity="center_vertical"
+                android:text="@string/user_info_right"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#E8E8E8"
-        android:gravity="center" >
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:orientation="vertical" >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="所属省份："
-            android:textColor="#000000"
+        <Button
+            android:id="@+id/address_add_save"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_margin="10.0dip"
+            android:background="@color/orange"
+            android:text="保存"
             android:textSize="18sp" />
+    </LinearLayout>
 
-        <Spinner
-            android:id="@+id/province_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="42dp"
-            android:layout_weight="1.0" />
-    </TableRow>
-
-
-    <TableRow
-        android:layout_marginTop="4dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#E8E8E8"
-        android:gravity="center" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="所属城市："
-            android:textColor="#000000"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/city_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="42dp"
-            android:layout_weight="1.0" />
-    </TableRow>
-
-    <TableRow
-        android:layout_marginTop="4dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#E8E8E8"
-        android:gravity="center" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="所属县城："
-            android:textColor="#000000"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/county_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="42dp"
-            android:layout_weight="1.0" />
-    </TableRow>
-
-</LinearLayout>
+</RelativeLayout>

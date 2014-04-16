@@ -1,13 +1,14 @@
 //var exec = require("child_process").exec;
-//var solr_server_host = "211.149.175.138";
-var solr_server_host = "10.22.22.40";
-var solr_server_port = 80;
+var solr_server_host = "211.149.175.138";
+//var solr_server_host = "10.22.22.40";
+var solr_server_port = 8983;
+//var solr_server_port = 80;
 var applicationJson = "application/json; charset=utf-8";
 var UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36";
 var http = require("http");
 var redis = require("redis");
-//var client = redis.createClient(6379,'211.149.175.138');
-var client = redis.createClient(6379,'10.22.23.63');
+var client = redis.createClient(6379,'211.149.175.138');
+//var client = redis.createClient(6379,'10.22.23.63');
 client.on('error', function (err) {
     console.log('Error ' + err);
 });
@@ -562,7 +563,7 @@ function sort(query,response) {
  * @param response
  */
 function rankingdiscount(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sd+desc";
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sd+desc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -644,7 +645,7 @@ function rankingdiscount(query,response) {
  * @param response
  */
 function rankingsales(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=ss+desc";
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=ss+desc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -677,7 +678,7 @@ function rankingsales(query,response) {
                         result += ',\"p\":';
                         result += docs[i].p;
                         result += ',\"sn\":';
-                        result += JSON.stringify(docs[i].sn);
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
 //                        result += ',\"t\":';
 //                        result += JSON.stringify(docs[i].t).substring(0,17).replace('T',' ')+'\"';
 //                        result += ',\"d\":';

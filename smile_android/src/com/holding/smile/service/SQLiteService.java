@@ -107,13 +107,18 @@ public class SQLiteService {
 		return list;
 	}
 
-	public List<Province> getProvinces() {
+	public List<Province> getProvinces(Integer conturyId) {
+		if (conturyId == null || conturyId == 0) {
+			return null;
+		}
 		List<Province> list = new ArrayList<Province>();
-		Cursor cursor = db.rawQuery("select proid,proname from province order by prosort asc", null);
+		Cursor cursor = db.rawQuery(
+				"select id,name from province where conturyid=? order by sort asc",
+				new String[] { conturyId + "" });
 		while (cursor != null && cursor.moveToNext()) {
 			Province province = new Province();
-			province.setID(cursor.getInt(0));
-			province.setProname(cursor.getString(1));
+			province.setId(cursor.getInt(0));
+			province.setName(cursor.getString(1));
 			list.add(province);
 		}
 		return list;
@@ -124,13 +129,12 @@ public class SQLiteService {
 			return null;
 		}
 		List<City> list = new ArrayList<City>();
-		Cursor cursor = db.rawQuery(
-				"select cityid,cityname from city where proid=? order by citysort asc",
+		Cursor cursor = db.rawQuery("select id,name from city where proid=? order by sort asc",
 				new String[] { proid + "" });
 		while (cursor != null && cursor.moveToNext()) {
 			City city = new City();
-			city.setID(cursor.getInt(0));
-			city.setCityname(cursor.getString(1));
+			city.setId(cursor.getInt(0));
+			city.setName(cursor.getString(1));
 			list.add(city);
 		}
 		return list;
@@ -142,12 +146,12 @@ public class SQLiteService {
 		}
 		List<District> list = new ArrayList<District>();
 		Cursor cursor = db.rawQuery(
-				"select districtid,disname from district where cityid=? order by dissort asc",
+				"select id,name from district where cityid=? order by sort asc",
 				new String[] { cityid + "" });
 		while (cursor != null && cursor.moveToNext()) {
 			District district = new District();
-			district.setID(cursor.getInt(0));
-			district.setDisname(cursor.getString(1));
+			district.setId(cursor.getInt(0));
+			district.setName(cursor.getString(1));
 			list.add(district);
 		}
 		return list;

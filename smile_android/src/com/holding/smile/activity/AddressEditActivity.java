@@ -10,13 +10,17 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.entity.City;
 import com.holding.smile.entity.District;
 import com.holding.smile.entity.Province;
+import com.holding.smile.tools.Constants;
 
 /**
  * 收货地址编辑
@@ -27,12 +31,20 @@ import com.holding.smile.entity.Province;
 public class AddressEditActivity extends BaseActivity implements OnClickListener {
 	private Spinner					province_spinner;
 	private Spinner					city_spinner;
-	private Spinner					county_spinner;
-	private Integer					provinceId, cityId;
+	private Spinner					district_spinner;
+	private Integer					conturyId	= Constants.CONTURY_ID, provinceId, cityId,
+			districtId;
 
 	private ArrayAdapter<Province>	province_adapter;
 	private ArrayAdapter<City>		city_adapter;
-	private ArrayAdapter<District>	county_adapter;
+	private ArrayAdapter<District>	district_adapter;
+
+	private EditText				addressAddress;
+	private EditText				addressName;
+	private EditText				addressMobile;
+	private EditText				addressZipcode;
+	private EditText				addressIdcard;
+	private Button					addressSave;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +52,23 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 		setContentLayout(R.layout.address_edit);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
+
+		TextView textView = displayHeaderDescription();
+		textView.setText("地址编辑");
+
+		addressAddress = (EditText) findViewById(R.id.address_address);
+		addressName = (EditText) findViewById(R.id.address_name);
+		addressMobile = (EditText) findViewById(R.id.address_mobile);
+		addressZipcode = (EditText) findViewById(R.id.address_zipcode);
+		addressIdcard = (EditText) findViewById(R.id.address_idcard);
+		addressSave = (Button) findViewById(R.id.address_add_save);
+
+		addressAddress.setOnClickListener(this);
+		addressName.setOnClickListener(this);
+		addressMobile.setOnClickListener(this);
+		addressZipcode.setOnClickListener(this);
+		addressIdcard.setOnClickListener(this);
+		addressSave.setOnClickListener(this);
 
 		loadSpinner();
 
@@ -58,7 +87,8 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 	}
 
 	private void loadSpinner() {
-		List<Province> pList = MyApplication.getInstance().getSqliteService().getProvinces();
+		List<Province> pList = MyApplication.getInstance().getSqliteService()
+											.getProvinces(conturyId);
 		province_spinner = (Spinner) findViewById(R.id.province_spinner);
 		province_spinner.setPrompt("省");
 		province_adapter = new ArrayAdapter<Province>(context,
@@ -69,7 +99,7 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 		province_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				provinceId = ((Province) province_spinner.getSelectedItem()).getID();
+				provinceId = ((Province) province_spinner.getSelectedItem()).getId();
 				province_spinner.getSelectedItem().toString();
 				city_spinner = (Spinner) findViewById(R.id.city_spinner);
 				if (true) {
@@ -87,28 +117,28 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 						@Override
 						public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 								long arg3) {
-							cityId = ((City) city_spinner.getSelectedItem()).getID();
+							cityId = ((City) city_spinner.getSelectedItem()).getId();
 							city_spinner.getSelectedItem().toString();
 							Log.v("test", "city: " + city_spinner.getSelectedItem().toString()
 									+ cityId.toString());
 							if (true) {
-								county_spinner = (Spinner) findViewById(R.id.county_spinner);
-								county_spinner.setPrompt("区县");
+								district_spinner = (Spinner) findViewById(R.id.county_spinner);
+								district_spinner.setPrompt("区县");
 
 								List<District> dList = MyApplication.getInstance()
 																	.getSqliteService()
 																	.getDistricts(cityId);
-								county_adapter = new ArrayAdapter<District>(context,
+								district_adapter = new ArrayAdapter<District>(context,
 										android.R.layout.simple_spinner_item, dList);
-								county_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-								county_spinner.setAdapter(county_adapter);
+								district_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+								district_spinner.setAdapter(district_adapter);
 
-								county_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+								district_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 									@Override
 									public void onItemSelected(AdapterView<?> arg0, View arg1,
 											int arg2, long arg3) {
-										county_spinner.getSelectedItem().toString();
+										districtId = ((District) district_spinner.getSelectedItem()).getId();
 									}
 
 									@Override
