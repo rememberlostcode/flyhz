@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.holding.smile.R;
+import com.holding.smile.entity.JSort;
 import com.holding.smile.entity.SortType;
 
 /**
@@ -41,6 +42,20 @@ public class MyLinearLayout extends LinearLayout {
 				TextView tv = (TextView) v.findViewById(R.id.my_text);
 				tv.setText(sorttype.getN());
 				v.setTag(sorttype.getV());
+				this.addView(v);
+			}
+		}
+	}
+
+	public void setJSortList(Context context, List<JSort> jSortList) {
+		this.context = context;
+		if (jSortList != null && !jSortList.isEmpty()) {
+			LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			for (JSort sort : jSortList) {
+				View v = mInflater.inflate(R.layout.myself_layout, null);
+				TextView tv = (TextView) v.findViewById(R.id.my_text);
+				tv.setText(sort.getN());
+				v.setTag(sort.getU());
 				this.addView(v);
 			}
 		}

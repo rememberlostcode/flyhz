@@ -11,10 +11,10 @@
         android:id="@+id/iv_pic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dip"
-        android:paddingTop="10dip"
+        android:paddingBottom="2dip"
+        android:paddingTop="2dip"
         android:scaleType="fitXY"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
         android:contentDescription="@null"
         />
 
@@ -23,12 +23,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_pic"
-        android:ellipsize="end"
-        android:maxLength="10"
-        android:paddingLeft="12dip"
-        android:paddingRight="5dip"
+        android:layout_centerHorizontal="true"
         android:singleLine="true"
+        android:paddingBottom="5dip"
         android:textColor="#f50606"
-        android:textSize="12sp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>

@@ -371,6 +371,11 @@ public class BaseActivity extends Activity {
 						@Override
 						public void onClick(View v) {
 							// 排行榜
+							Intent intent = new Intent();
+							intent.setClass(context, SortActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							startActivity(intent);
+							overridePendingTransition(0, 0);
 						}
 					});
 				} else if (o == mainfooterThreeId) {
