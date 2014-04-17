@@ -21,6 +21,7 @@ import com.holding.smile.R;
 
 public class PullToRefreshView extends LinearLayout {
 	private static final String		TAG					= "PullToRefreshView";
+
 	// refresh states
 	private static final int		PULL_TO_REFRESH		= 2;
 	private static final int		RELEASE_TO_REFRESH	= 3;
