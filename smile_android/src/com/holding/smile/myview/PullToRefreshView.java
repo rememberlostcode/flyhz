@@ -22,6 +22,8 @@ import com.holding.smile.R;
 public class PullToRefreshView extends LinearLayout {
 	private static final String		TAG					= "PullToRefreshView";
 
+	private boolean					refreshFlag			= true;				// 默认可以下拉刷新
+	private boolean					moreFlag			= true;				// 默认可以上拉查看更多
 	// refresh states
 	private static final int		PULL_TO_REFRESH		= 2;
 	private static final int		RELEASE_TO_REFRESH	= 3;
@@ -126,6 +128,22 @@ public class PullToRefreshView extends LinearLayout {
 	 */
 	private OnHeaderRefreshListener	mOnHeaderRefreshListener;
 
+	public boolean isRefreshFlag() {
+		return refreshFlag;
+	}
+
+	public void setRefreshFlag(boolean refreshFlag) {
+		this.refreshFlag = refreshFlag;
+	}
+
+	public boolean isMoreFlag() {
+		return moreFlag;
+	}
+
+	public void setMoreFlag(boolean moreFlag) {
+		this.moreFlag = moreFlag;
+	}
+
 	/**
 	 * last update time
 	 */
@@ -186,6 +204,9 @@ public class PullToRefreshView extends LinearLayout {
 	}
 
 	private void addFooterView() {
+		if (!moreFlag)
+			return;
+
 		// footer view
 		mFooterView = mInflater.inflate(R.layout.pulltorefresh_footer, this, false);
 		mFooterImageView = (ImageView) mFooterView.findViewById(R.id.pull_to_load_image);
@@ -213,7 +234,9 @@ public class PullToRefreshView extends LinearLayout {
 	protected void onFinishInflate() {
 		super.onFinishInflate();
 		// footer view 在此添加保证添加到linearlayout中的最后
-		addFooterView();
+		if (moreFlag) {
+			addFooterView();
+		}
 		initContentAdapterView();
 	}
 
@@ -326,12 +349,14 @@ public class PullToRefreshView extends LinearLayout {
 						setHeaderTopMargin(-mHeaderViewHeight);
 					}
 				} else if (mPullState == PULL_UP_STATE) {
-					if (Math.abs(topMargin) >= mHeaderViewHeight + mFooterViewHeight) {
-						// 开始执行footer 刷新
-						footerRefreshing();
-					} else {
-						// 还没有执行刷新，重新隐藏
-						setHeaderTopMargin(-mHeaderViewHeight);
+					if (moreFlag) {
+						if (Math.abs(topMargin) >= mHeaderViewHeight + mFooterViewHeight) {
+							// 开始执行footer 刷新
+							footerRefreshing();
+						} else {
+							// 还没有执行刷新，重新隐藏
+							setHeaderTopMargin(-mHeaderViewHeight);
+						}
 					}
 				}
 				break;
@@ -434,6 +459,8 @@ public class PullToRefreshView extends LinearLayout {
 	 *            ,手指滑动的距离
 	 */
 	private void footerPrepareToRefresh(int deltaY) {
+		if (!moreFlag)
+			return;
 		int newTopMargin = changingHeaderViewTopMargin(deltaY);
 		// 如果header view topMargin 的绝对值大于或等于header + footer 的高度
 		// 说明footer view 完全显示出来了，修改footer view 的提示状态
@@ -502,6 +529,8 @@ public class PullToRefreshView extends LinearLayout {
 	 * @description hylin 2012-7-31上午9:09:59
 	 */
 	private void footerRefreshing() {
+		if (!moreFlag)
+			return;
 		mFooterState = REFRESHING;
 		int top = mHeaderViewHeight + mFooterViewHeight;
 		setHeaderTopMargin(-top);

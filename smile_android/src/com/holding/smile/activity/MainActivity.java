@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +30,7 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JActivity;
 import com.holding.smile.entity.JIndexJGoods;
+import com.holding.smile.myview.MyListView;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 
@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 	private ImageView[]			tips;
 
 	private VerticalListAdapter	vlAdapter;
-	private ListView			listView;
+	private MyListView			listView;
 	private List<JActivity>		recActList			= new ArrayList<JActivity>();	// 活动商品
 	private List<BrandJGoods>	brandJGoodsList		= new ArrayList<BrandJGoods>();
 	private Integer				cid					= null;
@@ -65,16 +65,24 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		headerDescription.setText(R.string.recommend_goods);
 		displayFooterMain(R.id.mainfooter_one);
 
-		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
-		mViewPager = (ViewPager) findViewById(R.id.viewpager);
-
-		listView = (ListView) findViewById(R.id.brand_list);
-		vlAdapter = new VerticalListAdapter(brandJGoodsList, cid);
-		listView.setAdapter(vlAdapter);
-		mPullToRefreshView.setOnHeaderRefreshListener(this);
-
+		initView();
 		startTask();
 
+	}
+
+	private void initView() {
+		LinearLayout indexViewLayout = (LinearLayout) LayoutInflater.from(context).inflate(
+				R.layout.index_recommend, null);
+		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
+		listView = (MyListView) findViewById(R.id.list_view);
+		listView.addHeaderView(indexViewLayout);// 添加子View
+
+		mViewPager = (ViewPager) indexViewLayout.findViewById(R.id.viewpager);
+		vlAdapter = new VerticalListAdapter(brandJGoodsList, cid);
+		listView.setAdapter(vlAdapter);
+
+		mPullToRefreshView.setOnHeaderRefreshListener(this);
+		mPullToRefreshView.setMoreFlag(false);
 	}
 
 	@Override
@@ -293,12 +301,13 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																	BrandJGoods each = brands.get(i);
 																	brandJGoodsList.add(each);
 																}
-																vlAdapter.notifyDataSetChanged();
 															}
 														} else {
 															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
 														}
+														vlAdapter.notifyDataSetChanged();
+														mPullToRefreshView.onHeaderRefreshComplete();
 														break;
 													}
 													case WHAT_DID_REFRESH: {
@@ -319,6 +328,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																	Toast.LENGTH_SHORT).show();
 														}
 														vlAdapter.notifyDataSetChanged();
+														mPullToRefreshView.onHeaderRefreshComplete();
 														break;
 													}
 												}

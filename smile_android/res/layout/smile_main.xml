@@ -1,58 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <com.holding.smile.myview.PullToRefreshView xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/main_pull_refresh_view"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:orientation="vertical" >
-	    
-	<ScrollView
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    >
-	    
-	    <LinearLayout
-	       android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:orientation="vertical" >
-	    
-		     <FrameLayout
-			    android:layout_width="fill_parent"
-			    android:layout_height="150dip"
-			    android:orientation="vertical" >
-			    
-			   <android.support.v4.view.ViewPager  
-			        android:id="@+id/viewpager"  
-			        android:layout_width="fill_parent"  
-			        android:layout_height="150dip" /> 
-			        
-			    <RelativeLayout 
-			        android:layout_width="fill_parent"  
-			        android:layout_height="wrap_content" 
-			        android:orientation="vertical" >  
-			  
-			        <LinearLayout  
-			            android:id="@+id/viewGroup"  
-			            android:layout_width="fill_parent"  
-			            android:layout_height="wrap_content"  
-			            android:layout_alignParentBottom="true" 
-			            android:layout_marginBottom="10dip" 
-			            android:gravity="center_horizontal"  
-			            android:orientation="horizontal" >  
-			        </LinearLayout>  
-			    </RelativeLayout>  
-			
-			</FrameLayout>
-		     
-		    <ListView
-		        android:id="@+id/brand_list"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:background="@android:color/transparent"
-		        android:divider="@android:color/transparent"
-		        android:dividerHeight="1sp"
-		        />
-	    
-		</LinearLayout>
-	</ScrollView>
+    android:id="@+id/main_pull_refresh_view"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    
+    <ScrollView
+        android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:scrollbars="none">
+        
+	    <com.holding.smile.myview.MyListView
+	        android:id="@+id/list_view"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@android:color/transparent"
+	        android:divider="@android:color/transparent"
+	        android:dividerHeight="1sp" />
+    </ScrollView>
+    
 </com.holding.smile.myview.PullToRefreshView>

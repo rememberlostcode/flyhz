@@ -1,3 +1,4 @@
+
 package com.holding.smile.activity;
 
 import android.annotation.SuppressLint;
@@ -9,11 +10,9 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnLoginDto;
@@ -33,20 +32,20 @@ import com.holding.smile.tools.MD5;
  */
 public class LoginActivity extends BaseActivity {
 
-	private EditText userAccount; // 用户的账号
-	private EditText userPwd; // 用户密码
-	private Button btnLogining; // 登陆按钮
-	private Button btnGetBackPwd; // 取回密码按钮
-	private Button btnSetLogin; // 登录设置按钮
-	private Button btnToRegister; // 注册登录按钮
+	private EditText		userAccount;	// 用户的账号
+	private EditText		userPwd;		// 用户密码
+	private Button			btnLogining;	// 登陆按钮
+	private Button			btnGetBackPwd;	// 取回密码按钮
+	private Button			btnSetLogin;	// 登录设置按钮
+	private Button			btnToRegister;	// 注册登录按钮
 
-	private LinearLayout loginBySelf;
+	private LinearLayout	loginBySelf;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.login);
-		if (DataService.getDataFromNet) {
+		if (!DataService.getDataFromNet) {
 			loadData();
 		} else {
 			Intent intent = new Intent(this, MainActivity.class);
@@ -92,8 +91,7 @@ public class LoginActivity extends BaseActivity {
 		btnSetLogin = (Button) findViewById(R.id.login_btn_setlogin);
 		btnToRegister = (Button) findViewById(R.id.login_btn_to_register);
 
-		userAccount.setSelection(userAccount.getText().toString().trim()
-				.length());
+		userAccount.setSelection(userAccount.getText().toString().trim().length());
 
 		loginBySelf = (LinearLayout) findViewById(R.id.login_by_self);
 
@@ -102,25 +100,23 @@ public class LoginActivity extends BaseActivity {
 
 	private void addListener() {
 		btnLogining.setOnClickListener(new OnClickListener() {// 添加登陆按钮监听事件
-					@Override
-					public void onClick(View v) {
-						String username = userAccount.getText().toString();// 获取用户输入的账号
-						String password = userPwd.getText().toString();// 获取用户输入的密码
-						password = MD5.getMD5(password);
-						/* 关闭软键盘 */
-						InputMethodManager inputMgr = (InputMethodManager) context
-								.getSystemService(Context.INPUT_METHOD_SERVICE);
-						inputMgr.hideSoftInputFromWindow(getCurrentFocus()
-								.getWindowToken(),
-								InputMethodManager.HIDE_NOT_ALWAYS);
-						SUser user = new SUser();
-						user.setUsername(username);
-						user.setPassword(password);
-						Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
-						msg.obj = user;
-						msg.sendToTarget();
-					}
-				});
+			@Override
+			public void onClick(View v) {
+				String username = userAccount.getText().toString();// 获取用户输入的账号
+				String password = userPwd.getText().toString();// 获取用户输入的密码
+				password = MD5.getMD5(password);
+				/* 关闭软键盘 */
+				InputMethodManager inputMgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+				inputMgr.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
+				SUser user = new SUser();
+				user.setUsername(username);
+				user.setPassword(password);
+				Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
+				msg.obj = user;
+				msg.sendToTarget();
+			}
+		});
 	}
 
 	@Override
@@ -133,46 +129,63 @@ public class LoginActivity extends BaseActivity {
 		super.onPause();
 	}
 
-	private static final int	AUTO_LOGIN	= 0;
+	private static final int	AUTO_LOGIN		= 0;
 	private static final int	LOGIN_BY_SELF	= 1;
 	@SuppressLint("HandlerLeak")
-	private Handler mUIHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case AUTO_LOGIN: {
-				if (msg.obj != null) {
-					SUser user = (SUser) msg.obj;	
-					LoginService loginService = MyApplication.getInstance().getLoginService();
-					RtnLoginDto rtnLoginDto = loginService.autoLogin(user);
-					if(rtnLoginDto == null || rtnLoginDto.getCode() == null || rtnLoginDto.getData() == null){
-						loginViewInit();
-					}else{
-						Intent intent = new Intent(context, MainActivity.class);
-						startActivity(intent);
-						finish();
-					}
-				}
-				break;
-			}
-			case LOGIN_BY_SELF: {			
-				if (msg.obj != null) {
-					SUser user = (SUser) msg.obj;	
-					LoginService loginService = MyApplication.getInstance().getLoginService();
-					RtnLoginDto rtnLoginDto = loginService.login(user);
-					if(rtnLoginDto == null || rtnLoginDto.getCode() == null || rtnLoginDto.getData() == null){
-						loginViewInit();
-						Toast.makeText(context, "登录失败，请稍后重试！", Toast.LENGTH_SHORT).show();
-					}else{
-						Intent intent = new Intent(context, MainActivity.class);
-						startActivity(intent);
-						finish();
-					}
-				}
-				break;
-			}
-			}
-		}
-	};
+	private Handler				mUIHandler		= new Handler() {
+													@Override
+													public void handleMessage(Message msg) {
+														switch (msg.what) {
+															case AUTO_LOGIN: {
+																if (msg.obj != null) {
+																	SUser user = (SUser) msg.obj;
+																	LoginService loginService = MyApplication.getInstance()
+																												.getLoginService();
+																	RtnLoginDto rtnLoginDto = loginService.autoLogin(user);
+																	if (rtnLoginDto == null
+																			|| rtnLoginDto.getCode() == null
+																			|| rtnLoginDto.getData() == null) {
+																		loginViewInit();
+																	} else {
+																		Intent intent = new Intent(
+																				context,
+																				MainActivity.class);
+																		startActivity(intent);
+																		finish();
+																	}
+																}
+																break;
+															}
+															case LOGIN_BY_SELF: {
+																if (msg.obj != null) {
+																	SUser user = (SUser) msg.obj;
+																	LoginService loginService = MyApplication.getInstance()
+																												.getLoginService();
+																	RtnLoginDto rtnLoginDto = loginService.login(user);
+																	if (rtnLoginDto == null
+																			|| rtnLoginDto.getCode() == null
+																			|| rtnLoginDto.getData() == null) {
+																		Intent intent = new Intent(
+																				context,
+																				MainActivity.class);
+																		startActivity(intent);
+																		finish();
+																		// loginViewInit();
+																		// Toast.makeText(context,
+																		// "登录失败，请稍后重试！",
+																		// Toast.LENGTH_SHORT).show();
+																	} else {
+																		Intent intent = new Intent(
+																				context,
+																				MainActivity.class);
+																		startActivity(intent);
+																		finish();
+																	}
+																}
+																break;
+															}
+														}
+													}
+												};
 
 }
