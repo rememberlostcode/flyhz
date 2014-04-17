@@ -562,7 +562,6 @@ public class DataService {
 		String url = prefix_url + address_list;
 
 		String rStr = URLUtil.getStringByGet(url, null);
-		System.out.println(rStr);
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PConsignees consignees = JSONUtil.getJson2Entity(rStr, PConsignees.class);

@@ -40,6 +40,9 @@ public class BaseActivity extends Activity {
 	public static final int		MORE_CODE			= 9;
 	public static final int		SEARCH_CODE			= 10;
 	protected static final int	UPLOAD_IMAGE_CODE	= 11;
+	public static final int		ADDRESS_EDIT_CODE	= 12;
+	public static final int		EMAIL_CODE	= 13;
+	public static final int		PHONE_CODE	= 14;
 
 	public Context				context;
 

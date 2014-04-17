@@ -91,11 +91,15 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 				break;
 			}
 			case R.id.user_info_email_layout: {
-				Toast.makeText(context, "修改邮箱", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(this, EmailActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivityForResult(intent, EMAIL_CODE);
 				break;
 			}
 			case R.id.user_info_phone_layout: {
-				Toast.makeText(context, "修改手机", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(this, PhoneActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivityForResult(intent, PHONE_CODE);
 				break;
 			}
 			case R.id.user_info_pwd_layout: {

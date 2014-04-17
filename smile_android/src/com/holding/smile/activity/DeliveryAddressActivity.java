@@ -1,6 +1,7 @@
 
 package com.holding.smile.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -20,7 +21,9 @@ import android.widget.Toast;
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyAddressAdapter;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.entity.Category;
 import com.holding.smile.entity.Consignee;
+import com.holding.smile.tools.JSONUtil;
 
 /**
  * 收货地址管理
@@ -32,6 +35,7 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 
 	private TableLayout			settingAddressListLayout;
 	private Button				addressAdd;
+	private List<Consignee> list;
 	private MyAddressAdapter	adapter;
 	private ListView			listView;
 
@@ -74,10 +78,9 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 				break;
 			}
 			case R.id.setting_address_add: {
-				Intent intent = new Intent();
-				intent.setClass(context, AddressEditActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-				startActivity(intent);
+				Intent intent = new Intent(this, AddressEditActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivityForResult(intent, ADDRESS_EDIT_CODE);
 				break;
 			}
 		}
@@ -85,8 +88,33 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == ADDRESS_EDIT_CODE && resultCode == RESULT_OK) {
+			if (data.getExtras() != null) {
+				String consigneeJson = data.getExtras().getString("consignee");
+				Consignee consignee = JSONUtil.getJson2Entity(consigneeJson, Consignee.class);
+				if(list==null){
+					list = new ArrayList<Consignee>();
+				}
+				boolean isAdd = true;
+				for(int i=0;i<list.size();i++){
+					if(list.get(i).getId()==consignee.getId()){
+						list.set(i, consignee);
+						isAdd = false;
+						break;
+					}
+				}
+				if(isAdd){
+					list.add(consignee);
+				}
+				RtnValueDto consignees = new RtnValueDto();
+				consignees.setConsigneeData(list);
+				Message msg = mUIHandler.obtainMessage(1);
+				msg.obj = consignees;
+				msg.sendToTarget();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -98,16 +126,7 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 												switch (msg.what) {
 													case 1: {
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
-														List<Consignee> list = rvd.getConsigneeData();
-														Consignee c = new Consignee();
-														c.setId(1);
-														c.setName("罗斌");
-														c.setConturyId(1);
-														c.setProvinceId(11);
-														c.setCityId(78);
-														c.setDistrictId(1593);
-														c.setAddress("浙大西溪校区");
-														c.setZipcode("310000");
+														list = rvd.getConsigneeData();
 														if (list == null) {
 															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();

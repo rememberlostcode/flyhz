@@ -33,9 +33,8 @@ public class URLUtil {
 					if (count > 0) {
 						paramsBuffer.append("&");
 					}
-					// paramsBuffer.append(key + "=" + URLEncoder.encode(value,
-					// "UTF-8"));
-					paramsBuffer.append(key + "=" + value);
+					 paramsBuffer.append(key + "=" + URLEncoder.encode(value,
+					 "UTF-8"));
 					count++;
 				}
 			}
@@ -57,6 +56,7 @@ public class URLUtil {
 			conn.setRequestMethod("GET");
 			conn.setDoInput(true);
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
+			if(MyApplication.getInstance().getSessionId()!=null)
 			conn.setRequestProperty("Cookie",MyApplication.getInstance().getSessionId());
 			conn.connect();
 			if (conn.getResponseCode() == 200) {

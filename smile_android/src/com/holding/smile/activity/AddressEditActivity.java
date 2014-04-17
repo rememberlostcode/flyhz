@@ -15,10 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.City;
 import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.District;
@@ -75,20 +77,33 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 		addressIdcard.setOnClickListener(this);
 		addressSave.setOnClickListener(this);
 
-		loadSpinner();
+		try {
+			Intent intent = getIntent();
+			if (intent.getExtras() != null) {
+				String consigneeJson = intent.getExtras().getString("consignee");
+				consignee = JSONUtil.getJson2Entity(consigneeJson, Consignee.class);
+				if (consignee != null) {
+					provinceId = consignee.getProvinceId();
+					cityId = consignee.getCityId();
+					districtId = consignee.getDistrictId();
+					addressAddress.setText(consignee.getAddress());
+					addressName.setText(consignee.getName());
+					addressMobile.setText(consignee.getMobilephone());
+					addressZipcode.setText(consignee.getZipcode());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-		Intent intent = getIntent();
-		String consigneeJson = intent.getExtras().getString("consignee");
-		consignee = JSONUtil.getJson2Entity(consigneeJson, Consignee.class);
 		if (consignee == null) {
 			consignee = new Consignee();
-		} else {
-
-			addressAddress.setText(consignee.getAddress());
-			addressName.setText(consignee.getName());
-			addressMobile.setText(consignee.getMobilephone());
-			addressZipcode.setText(consignee.getZipcode());
 		}
+
+		province_spinner = (Spinner) findViewById(R.id.province_spinner);
+		city_spinner = (Spinner) findViewById(R.id.city_spinner);
+		district_spinner = (Spinner) findViewById(R.id.county_spinner);
+		loadSpinner();
 	}
 
 	@Override
@@ -148,7 +163,17 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 				}
 				consignee.setZipcode(addressZipcode.getText().toString());
 
-				MyApplication.getInstance().getSubmitService().consigneeEdit(consignee);
+				/******************如果是新增需要把ID传回来*****************/
+				RtnValueDto rvd = MyApplication.getInstance().getSubmitService().consigneeEdit(consignee);
+				if(200000 == rvd.getCode()){
+					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent();
+					intent.putExtra("consignee", JSONUtil.getEntity2Json(consignee));
+					setResult(RESULT_OK, intent);
+					finish();
+				} else {
+					Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+				}
 				break;
 			}
 		}
@@ -158,7 +183,6 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 	private void loadSpinner() {
 		List<Province> pList = MyApplication.getInstance().getSqliteService()
 											.getProvinces(conturyId);
-		province_spinner = (Spinner) findViewById(R.id.province_spinner);
 		province_spinner.setPrompt("省");
 		province_adapter = new ArrayAdapter<Province>(context,
 				android.R.layout.simple_spinner_item, pList);
@@ -170,62 +194,56 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				provinceId = ((Province) province_spinner.getSelectedItem()).getId();
 				province_spinner.getSelectedItem().toString();
-				city_spinner = (Spinner) findViewById(R.id.city_spinner);
-				if (true) {
-					city_spinner = (Spinner) findViewById(R.id.city_spinner);
-					city_spinner.setPrompt("城市");
-					List<City> cList = MyApplication.getInstance().getSqliteService()
-													.getCitys(provinceId);
-					city_adapter = new ArrayAdapter<City>(context,
-							android.R.layout.simple_spinner_item, cList);
-					city_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-					city_spinner.setAdapter(city_adapter);
+				city_spinner.setPrompt("城市");
+				List<City> cList = MyApplication.getInstance().getSqliteService()
+												.getCitys(provinceId);
+				city_adapter = new ArrayAdapter<City>(context,
+						android.R.layout.simple_spinner_item, cList);
+				city_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				city_spinner.setAdapter(city_adapter);
 
-					city_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+				city_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-						@Override
-						public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
-								long arg3) {
-							cityId = ((City) city_spinner.getSelectedItem()).getId();
-							city_spinner.getSelectedItem().toString();
-							Log.v("test", "city: " + city_spinner.getSelectedItem().toString()
-									+ cityId.toString());
-							if (true) {
-								district_spinner = (Spinner) findViewById(R.id.county_spinner);
-								district_spinner.setPrompt("区县");
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+						cityId = ((City) city_spinner.getSelectedItem()).getId();
+						city_spinner.getSelectedItem().toString();
+						district_spinner.setPrompt("区县");
 
-								List<District> dList = MyApplication.getInstance()
-																	.getSqliteService()
-																	.getDistricts(cityId);
-								district_adapter = new ArrayAdapter<District>(context,
-										android.R.layout.simple_spinner_item, dList);
-								district_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-								district_spinner.setAdapter(district_adapter);
+						List<District> dList = MyApplication.getInstance().getSqliteService()
+															.getDistricts(cityId);
+						district_adapter = new ArrayAdapter<District>(context,
+								android.R.layout.simple_spinner_item, dList);
+						district_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+						district_spinner.setAdapter(district_adapter);
 
-								district_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+						district_spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-									@Override
-									public void onItemSelected(AdapterView<?> arg0, View arg1,
-											int arg2, long arg3) {
-										districtId = ((District) district_spinner.getSelectedItem()).getId();
-									}
-
-									@Override
-									public void onNothingSelected(AdapterView<?> arg0) {
-
-									}
-
-								});
+							@Override
+							public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
+									long arg3) {
+								districtId = ((District) district_spinner.getSelectedItem()).getId();
 							}
+
+							@Override
+							public void onNothingSelected(AdapterView<?> arg0) {
+
+							}
+
+						});
+						if (districtId != null) {
+							setSpinnerItemSelectedByValue(district_spinner, districtId);
 						}
+					}
 
-						@Override
-						public void onNothingSelected(AdapterView<?> arg0) {
-							// TODO Auto-generated method stub
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
 
-						}
+					}
 
-					});
+				});
+				if (cityId != null) {
+					setSpinnerItemSelectedByValue(city_spinner, cityId);
 				}
 			}
 
@@ -234,5 +252,33 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 
 			}
 		});
+		if (provinceId != null) {
+			setSpinnerItemSelectedByValue(province_spinner, provinceId);
+		}
+	}
+
+	public static void setSpinnerItemSelectedByValue(Spinner spinner, Integer value) {
+		SpinnerAdapter apsAdapter = spinner.getAdapter(); // 得到SpinnerAdapter对象
+		if (apsAdapter != null) {
+			int k = apsAdapter.getCount();
+			for (int i = 0; i < k; i++) {
+				if (apsAdapter.getItem(i) instanceof Province) {
+					if (value == ((Province) (apsAdapter.getItem(i))).getId()) {
+						spinner.setSelection(i, true);// 默认选中项
+						break;
+					}
+				} else if (apsAdapter.getItem(i) instanceof City) {
+					if (value.equals(((City) (apsAdapter.getItem(i))).getId())) {
+						spinner.setSelection(i, true);// 默认选中项
+						break;
+					}
+				} else if (apsAdapter.getItem(i) instanceof District) {
+					if (value.equals(((District) (apsAdapter.getItem(i))).getId())) {
+						spinner.setSelection(i, true);// 默认选中项
+						break;
+					}
+				}
+			}
+		}
 	}
 }

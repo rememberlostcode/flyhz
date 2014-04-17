@@ -1,6 +1,7 @@
 
 package com.holding.smile.entity;
 
+
 /**
  * 联系人
  * 
@@ -16,12 +17,11 @@ public class Consignee {
 	private Integer	districtId;
 	private String	address;
 	private String	zipcode;
+	private Integer	areacode;
+	private Integer	telephone;
 	private String	mobilephone;
-	private String	idcard;
-	private Integer	userId;
-
-	public Consignee() {
-	}
+	private UserDto	user;
+	private IdentitycardDto identitycard;
 
 	public Integer getId() {
 		return id;
@@ -31,52 +31,12 @@ public class Consignee {
 		this.id = id;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getIdcard() {
-		return idcard;
-	}
-
-	public void setIdcard(String idcard) {
-		this.idcard = idcard;
-	}
-
-	public String getMobilephone() {
-		return mobilephone;
-	}
-
-	public void setMobilephone(String mobilephone) {
-		this.mobilephone = mobilephone;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
-	public String getZipcode() {
-		return zipcode;
-	}
-
-	public void setZipcode(String zipcode) {
-		this.zipcode = zipcode;
 	}
 
 	public Integer getConturyId() {
@@ -111,4 +71,60 @@ public class Consignee {
 		this.districtId = districtId;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
+
+	public Integer getAreacode() {
+		return areacode;
+	}
+
+	public void setAreacode(Integer areacode) {
+		this.areacode = areacode;
+	}
+
+	public Integer getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(Integer telephone) {
+		this.telephone = telephone;
+	}
+
+	public String getMobilephone() {
+		return mobilephone;
+	}
+
+	public void setMobilephone(String mobilephone) {
+		this.mobilephone = mobilephone;
+	}
+
+	public UserDto getUser() {
+		return user;
+	}
+
+	public void setUser(UserDto user) {
+		this.user = user;
+	}
+
+	public IdentitycardDto getIdentitycard() {
+		return identitycard;
+	}
+
+	public void setIdentitycard(IdentitycardDto identitycard) {
+		this.identitycard = identitycard;
+	}
+	
 }

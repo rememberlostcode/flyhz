@@ -196,8 +196,10 @@ public class SQLiteService {
 		}
 		String pcd = "";
 		Cursor cursor = db.rawQuery(
+//				"select name from province where id=?",
 				"select (p.name||c.name||d.name) name from province p,city c,district d where p.id=? and c.id=? and d.id=?",
-				new String[] { proid + "", cityid + "", districtid + "" });
+//				new String[] { proid + ""});
+		new String[] { proid + "", cityid + "", districtid + "" });
 		while (cursor != null && cursor.moveToNext()) {
 			pcd = cursor.getString(0);
 		}

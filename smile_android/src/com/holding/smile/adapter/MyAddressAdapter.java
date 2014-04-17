@@ -80,9 +80,10 @@ public class MyAddressAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(context, AddressEditActivity.class);
-				intent.putExtra("consignee", JSONUtil.getEntity2Json(getItem(position)));// JSONUtil.getEntity2Json(getItem(position))
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("consignee", JSONUtil.getEntity2Json(getItem(position)));
 				((Activity) parent.getContext()).startActivityForResult(intent,
-						BaseActivity.SEARCH_CODE);
+						BaseActivity.ADDRESS_EDIT_CODE);
 			}
 		});
 		return convertView;

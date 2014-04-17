@@ -81,6 +81,16 @@
             android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.holding.smile.activity.EmailActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.holding.smile.activity.PhoneActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait" >
+        </activity>
         
     </application>
 
