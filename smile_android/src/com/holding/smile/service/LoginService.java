@@ -196,6 +196,8 @@ public class LoginService {
 				/* 获取 sessionid end */
 			} catch (Exception ex) {
 				//
+				ex.printStackTrace();
+				System.out.println("");
 			} finally {
 				if (urlConnection != null) {
 					urlConnection.disconnect();
