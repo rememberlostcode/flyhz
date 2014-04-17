@@ -3,6 +3,7 @@ package com.holding.smile.activity;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.District;
 import com.holding.smile.entity.Province;
 import com.holding.smile.tools.Constants;
+import com.holding.smile.tools.JSONUtil;
 
 /**
  * 收货地址编辑
@@ -59,8 +61,6 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 		TextView textView = displayHeaderDescription();
 		textView.setText("地址编辑");
 
-		consignee = new Consignee();
-
 		addressAddress = (EditText) findViewById(R.id.address_address);
 		addressName = (EditText) findViewById(R.id.address_name);
 		addressMobile = (EditText) findViewById(R.id.address_mobile);
@@ -77,6 +77,18 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 
 		loadSpinner();
 
+		Intent intent = getIntent();
+		String consigneeJson = intent.getExtras().getString("consignee");
+		consignee = JSONUtil.getJson2Entity(consigneeJson, Consignee.class);
+		if (consignee == null) {
+			consignee = new Consignee();
+		} else {
+
+			addressAddress.setText(consignee.getAddress());
+			addressName.setText(consignee.getName());
+			addressMobile.setText(consignee.getMobilephone());
+			addressZipcode.setText(consignee.getZipcode());
+		}
 	}
 
 	@Override
@@ -93,41 +105,49 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 					break;
 				}
 				consignee.setConturyId(conturyId);
+
 				if (provinceId == null) {
 					Toast.makeText(context, "请选择所属省份", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				consignee.setProvinceId(provinceId);
+
 				if (cityId == null) {
 					Toast.makeText(context, "请选择所属城市", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				consignee.setCityId(cityId);
+
 				if (districtId == null) {
 					Toast.makeText(context, "请选择所属县城", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				consignee.setDistrictId(districtId);
+
 				if ("".equals(addressAddress.getText().toString())) {
 					Toast.makeText(context, "街道地址不能为空", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				consignee.setAddress(addressAddress.getText().toString());
+
 				if ("".equals(addressName.getText().toString())) {
 					Toast.makeText(context, "联系人不能为空", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				consignee.setName(addressName.getText().toString());
+
 				if ("".equals(addressMobile.getText().toString())) {
 					Toast.makeText(context, "联系电话不能为空", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				consignee.setMobilephone(addressMobile.getText().toString());
+
 				if ("".equals(addressZipcode.getText().toString())) {
 					Toast.makeText(context, "邮编不能为空", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				consignee.setZipcode(addressZipcode.getText().toString());
+
 				MyApplication.getInstance().getSubmitService().consigneeEdit(consignee);
 				break;
 			}

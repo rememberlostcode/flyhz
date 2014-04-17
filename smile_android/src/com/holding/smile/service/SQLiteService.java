@@ -107,6 +107,13 @@ public class SQLiteService {
 		return list;
 	}
 
+	/**
+	 * 获取指定国家的所有省份
+	 * 
+	 * @param conturyId
+	 *            国家ID
+	 * @return
+	 */
 	public List<Province> getProvinces(Integer conturyId) {
 		if (conturyId == null || conturyId == 0) {
 			return null;
@@ -124,6 +131,13 @@ public class SQLiteService {
 		return list;
 	}
 
+	/**
+	 * 获取指定省份的所有城市
+	 * 
+	 * @param proid
+	 *            省份ID
+	 * @return
+	 */
 	public List<City> getCitys(Integer proid) {
 		if (proid == null || proid == 0) {
 			return null;
@@ -140,6 +154,13 @@ public class SQLiteService {
 		return list;
 	}
 
+	/**
+	 * 获取指定城市的所有区县
+	 * 
+	 * @param cityid
+	 *            城市ID
+	 * @return
+	 */
 	public List<District> getDistricts(Integer cityid) {
 		if (cityid == null || cityid == 0) {
 			return null;
@@ -155,6 +176,32 @@ public class SQLiteService {
 			list.add(district);
 		}
 		return list;
+	}
+
+	/**
+	 * 获取指定的省市区信息，如：浙江省杭州市西湖区
+	 * 
+	 * @param proid
+	 *            省份ID
+	 * @param cityid
+	 *            城市ID
+	 * @param districtid
+	 *            区县ID
+	 * @return
+	 */
+	public String getProvinceCityDistrict(Integer proid, Integer cityid, Integer districtid) {
+		if (proid == null || proid == 0 || cityid == null || cityid == 0 || districtid == null
+				|| districtid == 0) {
+			return "";
+		}
+		String pcd = "";
+		Cursor cursor = db.rawQuery(
+				"select (p.name||c.name||d.name) name from province p,city c,district d where p.id=? and c.id=? and d.id=?",
+				new String[] { proid + "", cityid + "", districtid + "" });
+		while (cursor != null && cursor.moveToNext()) {
+			pcd = cursor.getString(0);
+		}
+		return pcd;
 	}
 
 	/**

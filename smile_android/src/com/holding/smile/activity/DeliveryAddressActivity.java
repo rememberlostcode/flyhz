@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.adapter.MyAddressAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Consignee;
 
@@ -28,8 +30,10 @@ import com.holding.smile.entity.Consignee;
  */
 public class DeliveryAddressActivity extends BaseActivity implements OnClickListener {
 
-	private LinearLayout	settingAddressListLayout;
-	private Button			addressAdd;
+	private TableLayout			settingAddressListLayout;
+	private Button				addressAdd;
+	private MyAddressAdapter	adapter;
+	private ListView			listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,8 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 		TextView textView = displayHeaderDescription();
 		textView.setText("收货地址管理");
 
-		settingAddressListLayout = (LinearLayout) findViewById(R.id.setting_address_list);
+		settingAddressListLayout = (TableLayout) findViewById(R.id.setting_address_list);
+		listView = (ListView) findViewById(R.id.list_address_list);
 		addressAdd = (Button) findViewById(R.id.setting_address_add);
 		addressAdd.setOnClickListener(this);
 
@@ -52,11 +57,9 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 	public void loadData() {
 		RtnValueDto consignees = MyApplication.getInstance().getDataService().getConsigneeList();
 		if (consignees != null) {
-
 			Message msg = mUIHandler.obtainMessage(1);
 			msg.obj = consignees;
 			msg.sendToTarget();
-
 		} else {
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
@@ -94,22 +97,26 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case 1: {
-														if (msg.obj != null) {
-															RtnValueDto rvd = (RtnValueDto) (msg.obj);
-															List<Consignee> list = rvd.getConsigneeData();
-															if (list != null) {
-																for (int i = 0; i < list.size(); i++) {
-																	TextView text = new TextView(
-																			context);
-																	text.setText(list.get(i)
-																						.getAddress());
-																	settingAddressListLayout.addView(text);
-																}
-															}
-														} else {
+														RtnValueDto rvd = (RtnValueDto) (msg.obj);
+														List<Consignee> list = rvd.getConsigneeData();
+														Consignee c = new Consignee();
+														c.setId(1);
+														c.setName("罗斌");
+														c.setConturyId(1);
+														c.setProvinceId(11);
+														c.setCityId(78);
+														c.setDistrictId(1593);
+														c.setAddress("浙大西溪校区");
+														c.setZipcode("310000");
+														if (list == null) {
 															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
+															break;
 														}
+
+														adapter = new MyAddressAdapter(context,
+																list);
+														listView.setAdapter(adapter);
 														break;
 													}
 												}
