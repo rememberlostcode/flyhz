@@ -21,12 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
-import com.holding.smile.adapter.ImageAdapter;
 import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.tools.Constants;
-import com.holding.smile.tools.SetExpandableListViewListViewHeight;
 import com.holding.smile.tools.StrUtils;
 
 /**
@@ -38,7 +36,6 @@ import com.holding.smile.tools.StrUtils;
  */
 public class GoodsDetailActivity extends BaseActivity implements OnClickListener {
 
-	private ImageAdapter	imageAdapter;
 	private ListView		listView;
 	private ViewPager		mViewPager;
 	private List<View>		viewList;
@@ -84,8 +81,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		TextView d = (TextView) findViewById(R.id.d);
 		TextView desc = (TextView) findViewById(R.id.desc);
 
-		mViewPager = (ViewPager) findViewById(R.id.viewpager);
-
 		if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
 			b.setText(jGoods.getBe().trim());
 		}
@@ -112,15 +107,13 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			picList.add(jGoods.getP()[i]);
 		}
 
+		mViewPager = (ViewPager) findViewById(R.id.viewpager);
 		addViewPager();// 添加页卡
 		// 实例化适配器
 		pagerAdapter = new MyPagerAdapter(viewList);
 		mViewPager.setAdapter(pagerAdapter);
 		mViewPager.setCurrentItem(0); // 设置默认当前页
 
-		imageAdapter = new ImageAdapter(context, picList);
-		listView.setAdapter(imageAdapter);
-		SetExpandableListViewListViewHeight.setListViewHeightOnChildren(listView);
 	}
 
 	@Override
@@ -223,10 +216,9 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			listView.invalidate();
 			listView = null;
 		}
-		if (imageAdapter != null) {
-			imageAdapter.notifyDataSetChanged();
-			imageAdapter.notifyDataSetInvalidated();
-			imageAdapter = null;
+		if (pagerAdapter != null) {
+			pagerAdapter.notifyDataSetChanged();
+			pagerAdapter = null;
 		}
 		setResult(RESULT_CANCELED, null);
 	}
