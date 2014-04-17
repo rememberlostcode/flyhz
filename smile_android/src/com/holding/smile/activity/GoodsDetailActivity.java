@@ -7,19 +7,24 @@ import java.util.List;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
-import com.holding.smile.adapter.ImageAdapter;
+import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.tools.Constants;
-import com.holding.smile.tools.SetExpandableListViewListViewHeight;
 import com.holding.smile.tools.StrUtils;
 
 /**
@@ -31,8 +36,12 @@ import com.holding.smile.tools.StrUtils;
  */
 public class GoodsDetailActivity extends BaseActivity implements OnClickListener {
 
-	private ImageAdapter	imageAdapter;
 	private ListView		listView;
+	private ViewPager		mViewPager;
+	private List<View>		viewList;
+	private MyPagerAdapter	pagerAdapter;
+	// 装点点的ImageView数组
+	private ImageView[]		tips;
 	private List<String>	picList	= new ArrayList<String>();
 
 	@Override
@@ -71,7 +80,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		TextView save = (TextView) findViewById(R.id.save);
 		TextView d = (TextView) findViewById(R.id.d);
 		TextView desc = (TextView) findViewById(R.id.desc);
-		listView = (ListView) findViewById(R.id.goods_pic_list);
 
 		if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
 			b.setText(jGoods.getBe().trim());
@@ -99,9 +107,13 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			picList.add(jGoods.getP()[i]);
 		}
 
-		imageAdapter = new ImageAdapter(context, picList);
-		listView.setAdapter(imageAdapter);
-		SetExpandableListViewListViewHeight.setListViewHeightOnChildren(listView);
+		mViewPager = (ViewPager) findViewById(R.id.viewpager);
+		addViewPager();// 添加页卡
+		// 实例化适配器
+		pagerAdapter = new MyPagerAdapter(viewList);
+		mViewPager.setAdapter(pagerAdapter);
+		mViewPager.setCurrentItem(0); // 设置默认当前页
+
 	}
 
 	@Override
@@ -122,6 +134,79 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		super.onClick(v);
 	}
 
+	/**
+	 * 添加页卡
+	 */
+	private void addViewPager() {
+		viewList = new ArrayList<View>();
+		LayoutInflater inflater = getLayoutInflater();
+		// 添加页卡数据
+		if (picList != null && !picList.isEmpty()) {
+			int size = picList.size();
+			for (int i = 0; i < size; i++) {
+				View view = inflater.inflate(R.layout.good_pic_item, null);
+				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
+				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
+				viewList.add(view);
+			}
+
+			ViewGroup group = (ViewGroup) findViewById(R.id.viewGroup);
+			// 将点点加入到ViewGroup中
+			tips = new ImageView[size];
+			for (int i = 0; i < tips.length; i++) {
+				ImageView imageView = new ImageView(this);
+				imageView.setLayoutParams(new LayoutParams(10, 10));
+				tips[i] = imageView;
+				if (i == 0) {
+					tips[i].setBackgroundResource(R.drawable.page_indicator_focused);
+				} else {
+					tips[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+				}
+
+				LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+						new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+				layoutParams.leftMargin = 5;
+				layoutParams.rightMargin = 5;
+				group.addView(imageView, layoutParams);
+			}
+		}
+
+		// 设置监听，主要是设置点点的背景
+		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+
+			@Override
+			public void onPageSelected(int arg0) {
+				setImageBackground(arg0 % picList.size());
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+
+			}
+
+			/**
+			 * 设置选中的tip的背景
+			 * 
+			 * @param selectItems
+			 */
+			private void setImageBackground(int selectItems) {
+				for (int i = 0; i < tips.length; i++) {
+					if (i == selectItems) {
+						tips[i].setBackgroundResource(R.drawable.page_indicator_focused);
+					} else {
+						tips[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+					}
+				}
+			}
+		});
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -131,10 +216,9 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			listView.invalidate();
 			listView = null;
 		}
-		if (imageAdapter != null) {
-			imageAdapter.notifyDataSetChanged();
-			imageAdapter.notifyDataSetInvalidated();
-			imageAdapter = null;
+		if (pagerAdapter != null) {
+			pagerAdapter.notifyDataSetChanged();
+			pagerAdapter = null;
 		}
 		setResult(RESULT_CANCELED, null);
 	}

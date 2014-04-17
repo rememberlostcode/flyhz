@@ -589,6 +589,8 @@ public class PullToRefreshView extends LinearLayout {
 	 * footer view 完成更新后恢复初始状态
 	 */
 	public void onFooterRefreshComplete() {
+		if (!moreFlag)
+			return;
 		setHeaderTopMargin(-mHeaderViewHeight);
 		mFooterImageView.setVisibility(View.VISIBLE);
 		mFooterImageView.setImageResource(R.drawable.ic_pulltorefresh_arrow_up);

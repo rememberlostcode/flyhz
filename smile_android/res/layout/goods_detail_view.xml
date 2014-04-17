@@ -86,14 +86,7 @@
             android:layout_height="1dp"
             android:background="#e5e5e5" />
 
-        <ListView
-            android:id="@+id/goods_pic_list"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:divider="@android:color/transparent"
-            android:scrollbars="none"
-            android:dividerHeight="1sp" />
+        <include layout="@layout/index_recommend" android:id="@+id/pic_pager"/>
 
         <View
             android:layout_width="fill_parent"

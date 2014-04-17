@@ -72,6 +72,22 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		initView();
 		startTask();
 
+		/* 自动登录另起一个线程 */
+		mUIHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+				if (user != null) {
+					MyApplication.getInstance().setCurrentUser(user);
+				}
+				if (user != null && user.getUsername() != null && user.getToken() != null) {
+					Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
+					msg.obj = user;
+					msg.sendToTarget();
+				}
+			}
+		}, 200);
+
 	}
 
 	private void initView() {
@@ -148,16 +164,6 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 			msg.sendToTarget();
 		} else {
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
-		}
-		/* 自动登录 */
-		SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
-		if (user != null) {
-			MyApplication.getInstance().setCurrentUser(user);
-		}
-		if (user != null && user.getUsername() != null && user.getToken() != null) {
-			Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
-			msg.obj = user;
-			msg.sendToTarget();
 		}
 	}
 
