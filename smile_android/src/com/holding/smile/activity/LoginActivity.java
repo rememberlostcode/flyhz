@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnLoginDto;
@@ -45,7 +46,7 @@ public class LoginActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.login);
-		if (!DataService.getDataFromNet) {
+		if (DataService.getDataFromNet) {
 			loadData();
 		} else {
 			Intent intent = new Intent(this, MainActivity.class);
@@ -165,15 +166,11 @@ public class LoginActivity extends BaseActivity {
 																	if (rtnLoginDto == null
 																			|| rtnLoginDto.getCode() == null
 																			|| rtnLoginDto.getData() == null) {
-																		Intent intent = new Intent(
-																				context,
-																				MainActivity.class);
-																		startActivity(intent);
-																		finish();
-																		// loginViewInit();
-																		// Toast.makeText(context,
-																		// "登录失败，请稍后重试！",
-																		// Toast.LENGTH_SHORT).show();
+																		loginViewInit();
+																		Toast.makeText(context,
+																				"登录失败，请稍后重试！",
+																				Toast.LENGTH_SHORT)
+																				.show();
 																	} else {
 																		Intent intent = new Intent(
 																				context,

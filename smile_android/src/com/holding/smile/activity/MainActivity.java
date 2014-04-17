@@ -26,18 +26,22 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.adapter.VerticalListAdapter;
 import com.holding.smile.dto.BrandJGoods;
+import com.holding.smile.dto.RtnLoginDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JActivity;
 import com.holding.smile.entity.JIndexJGoods;
+import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
+import com.holding.smile.service.LoginService;
 
 public class MainActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener {
 
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
 	private static final int	WHAT_DID_REFRESH	= 1;
+	private static final int	AUTO_LOGIN			= 2;
 
 	private PullToRefreshView	mPullToRefreshView;
 	private ViewPager			mViewPager;
@@ -144,6 +148,16 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 			msg.sendToTarget();
 		} else {
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+		}
+		/* 自动登录 */
+		SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+		if (user != null) {
+			MyApplication.getInstance().setCurrentUser(user);
+		}
+		if (user != null && user.getUsername() != null && user.getToken() != null) {
+			Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
+			msg.obj = user;
+			msg.sendToTarget();
 		}
 	}
 
@@ -329,6 +343,26 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 														}
 														vlAdapter.notifyDataSetChanged();
 														mPullToRefreshView.onHeaderRefreshComplete();
+														break;
+													}
+													case AUTO_LOGIN: {
+														if (msg.obj != null) {
+															SUser user = (SUser) msg.obj;
+															LoginService loginService = MyApplication.getInstance()
+																										.getLoginService();
+															RtnLoginDto rtnLoginDto = loginService.autoLogin(user);
+															if (rtnLoginDto == null
+																	|| rtnLoginDto.getCode() == null
+																	|| rtnLoginDto.getData() == null) {
+																//
+															} else {
+																Toast.makeText(
+																		context,
+																		"自动登录成功！欢迎您,"
+																				+ user.getUsername(),
+																		Toast.LENGTH_SHORT).show();
+															}
+														}
 														break;
 													}
 												}

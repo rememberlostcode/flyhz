@@ -142,7 +142,7 @@ public interface UserService {
 	 * @param userId
 	 * @return
 	 */
-	public UserDetailDto getPersonalInformation(Integer userId);
+	public UserDetailDto getPersonalInformation(Integer userId) throws ValidateException;
 
 	/**
 	 * 重置用户密码

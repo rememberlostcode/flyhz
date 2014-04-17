@@ -1,3 +1,4 @@
+
 package com.holding.smile.service;
 
 import java.io.InputStream;
@@ -27,9 +28,9 @@ import com.holding.smile.tools.NullX509TrustManager;
 
 public class LoginService {
 
-	private Context context;
-	private static String login_url;
-	private static String auto_login_url;
+	private Context			context;
+	private static String	login_url;
+	private static String	auto_login_url;
 
 	public LoginService(Context context) {
 		super();
@@ -52,10 +53,8 @@ public class LoginService {
 		String rvdString = https_get(login_url, param);
 		if (rvdString != null) {
 			rvd = JSONUtil.changeJson2RtnLoginDto(rvdString);
-			if (rvd != null && rvd.getCode() != null && rvd.getData() != null
-					&& rvd.getCode() == 0) {
-				SUser ruser = JSONUtil.getJson2Entity(rvd.getData(),
-						SUser.class);
+			if (rvd != null && rvd.getCode() != null && rvd.getData() != null && rvd.getCode() == 0) {
+				SUser ruser = JSONUtil.getJson2Entity(rvd.getData(), SUser.class);
 				setLoginUser(ruser);
 				try {
 					// 添加本地数据库用户信息
@@ -65,8 +64,7 @@ public class LoginService {
 					e.printStackTrace();
 					System.out.println("SQLite关闭并初始化！");
 					MyApplication.getInstance().getSqliteService().closeDB();
-					MyApplication.getInstance().setSqliteService(
-							new SQLiteService(context));
+					MyApplication.getInstance().setSqliteService(new SQLiteService(context));
 				}
 			}
 		}
@@ -82,23 +80,19 @@ public class LoginService {
 			String rvdString = https_get(auto_login_url, param);
 			if (rvdString != null) {
 				rvd = JSONUtil.changeJson2RtnLoginDto(rvdString);
-				if (rvd != null && rvd.getCode() != null
-						&& rvd.getData() != null && rvd.getCode() == 0) {
-					SUser ruser = JSONUtil.getJson2Entity(rvd.getData(),
-							SUser.class);
+				if (rvd != null && rvd.getCode() != null && rvd.getData() != null
+						&& rvd.getCode() == 0) {
+					SUser ruser = JSONUtil.getJson2Entity(rvd.getData(), SUser.class);
 					setLoginUser(ruser);
 					try {
 						// 更新本地数据库用户信息
-						MyApplication.getInstance().getSqliteService()
-								.updateUser();
+						MyApplication.getInstance().getSqliteService().updateUser();
 					} catch (Exception e) {
 						System.out.println("SQLite出错了！");
 						e.printStackTrace();
 						System.out.println("SQLite关闭并初始化！");
-						MyApplication.getInstance().getSqliteService()
-								.closeDB();
-						MyApplication.getInstance().setSqliteService(
-								new SQLiteService(context));
+						MyApplication.getInstance().getSqliteService().closeDB();
+						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
 					}
 				}
 			}
@@ -131,8 +125,7 @@ public class LoginService {
 					if (count > 0) {
 						paramsBuffer.append("&");
 					}
-					paramsBuffer.append(key + "="
-							+ URLEncoder.encode(value, "UTF-8"));
+					paramsBuffer.append(key + "=" + URLEncoder.encode(value, "UTF-8"));
 					count++;
 				}
 			}
@@ -151,8 +144,7 @@ public class LoginService {
 			String key = "222222";
 			char[] keys = key.toCharArray();
 			KeyStore keyStore = KeyStore.getInstance("BKS");
-			InputStream ins = context.getResources().openRawResource(
-					R.raw.client1);
+			InputStream ins = context.getResources().openRawResource(R.raw.client1);
 			long b = System.currentTimeMillis();
 			keyStore.load(ins, keys);
 			long c = System.currentTimeMillis();
@@ -161,20 +153,15 @@ public class LoginService {
 			kmf.init(keyStore, keys);
 			KeyManager[] keyManagers = kmf.getKeyManagers();
 			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext
-					.init(keyManagers,
-							new X509TrustManager[] { new NullX509TrustManager() },
-							null);
-			HttpsURLConnection
-					.setDefaultHostnameVerifier(new NullHostNameVerifier());
+			sslContext.init(keyManagers, new X509TrustManager[] { new NullX509TrustManager() },
+					null);
+			HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
 			HttpURLConnection urlConnection = null;
 			try {
 				URL requestedUrl = new URL(path);
-				urlConnection = (HttpURLConnection) requestedUrl
-						.openConnection();
+				urlConnection = (HttpURLConnection) requestedUrl.openConnection();
 				if (urlConnection instanceof HttpsURLConnection) {
-					((HttpsURLConnection) urlConnection)
-							.setSSLSocketFactory(sslContext.getSocketFactory());
+					((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslContext.getSocketFactory());
 				}
 				urlConnection.setRequestMethod("GET");
 				urlConnection.setConnectTimeout(1500);
@@ -195,7 +182,10 @@ public class LoginService {
 				}
 				/* 获取 sessionid end */
 			} catch (Exception ex) {
+				ex.printStackTrace();
 				//
+				ex.printStackTrace();
+				System.out.println("");
 			} finally {
 				if (urlConnection != null) {
 					urlConnection.disconnect();
