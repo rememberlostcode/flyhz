@@ -81,7 +81,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	 * 设置排序标签布局
 	 */
 	private void setSortTypeLayout() {
-		MyLinearLayout sortTypeLayout = (MyLinearLayout) findViewById(R.id.sort_type);
+		final MyLinearLayout sortTypeLayout = (MyLinearLayout) findViewById(R.id.sort_type);
 		sorttypeList = MyApplication.getInstance().getDataService().getSortTypeList();
 		sortTypeLayout.setSortTypeList(context, sorttypeList);
 		int childCount = sortTypeLayout.getChildCount();
@@ -90,6 +90,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			v.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					sortTypeLayout.setBackgroundBtn(v.getId());
 					seqorderType = v.getTag().toString();
 					loadData();
 				}

@@ -70,7 +70,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 	 * 设置排序标签布局
 	 */
 	private void setSortLayout() {
-		MyLinearLayout jSortLayout = (MyLinearLayout) findViewById(R.id.sort_type);
+		final MyLinearLayout jSortLayout = (MyLinearLayout) findViewById(R.id.sort_type);
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getSortList();
 		if (rtnValue != null && rtnValue.getSortData() != null) {
 			jSortList = rtnValue.getSortData();
@@ -86,6 +86,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 			v.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					jSortLayout.setBackgroundBtn(v.getId());
 					sortUrl = v.getTag().toString();
 					loadData();
 				}
