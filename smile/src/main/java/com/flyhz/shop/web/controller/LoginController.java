@@ -29,7 +29,7 @@ public class LoginController {
 	private UserService		userService;
 
 	// http://localhost:8088/smile/loginAuth.json?username=admin&password=123456
-	@RequestMapping(value = "/loginAuth", method = RequestMethod.GET)
+	@RequestMapping(value = "loginAuth", method = RequestMethod.GET)
 	public String login(String username, String password, String verifycode,
 			HttpServletRequest request, HttpServletResponse response, Model model)
 			throws IOException {
@@ -52,7 +52,7 @@ public class LoginController {
 	}
 
 	// http://localhost:8088/smile/loginAuto.json?username=admin&token=
-	@RequestMapping(value = "/loginAuto", method = RequestMethod.GET)
+	@RequestMapping(value = "loginAuto", method = RequestMethod.GET)
 	public String loginAuto(String username, String token, String verifycode,
 			HttpServletRequest request, HttpServletResponse response, Model model)
 			throws IOException {
@@ -75,7 +75,7 @@ public class LoginController {
 	}
 
 	// http://localhost:8088/smile/logout.json?username=admin&token=
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	@RequestMapping(value = "logout", method = RequestMethod.GET)
 	public String logout(String username, String token, String verifycode,
 			HttpServletRequest request, HttpServletResponse response, Model model) {
 		Protocol protocol = new Protocol();

@@ -442,16 +442,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDetailDto getPersonalInformation(Integer userId) {
-		if (userId != null) {
-			UserModel userModel = userDao.getModelById(userId);
-			if (userModel != null) {
-				UserDetailDto userDetailDto = new UserDetailDto();
-				BeanUtils.copyProperties(userModel, userDetailDto);
-				return userDetailDto;
-			}
+	public UserDetailDto getPersonalInformation(Integer userId) throws ValidateException {
+		if (userId == null) {
+			throw new ValidateException(101002);
 		}
-		return null;
+		UserModel userModel = userDao.getModelById(userId);
+		if (userModel == null) {
+			throw new ValidateException(101002);
+		}
+		UserDetailDto userDetailDto = new UserDetailDto();
+		BeanUtils.copyProperties(userModel, userDetailDto);
+		return userDetailDto;
 	}
 
 	@Override

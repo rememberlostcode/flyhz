@@ -344,8 +344,12 @@ public class UserController {
 	@RequestMapping(value = "user/getPInfo", method = RequestMethod.GET)
 	public void getPersonalInfo(@Identify Integer userId, Model model) {
 		Protocol protocol = new Protocol();
-		protocol.setData(userService.getPersonalInformation(userId));
-		protocol.setCode(200000);
+		try {
+			protocol.setData(userService.getPersonalInformation(userId));
+			protocol.setCode(200000);
+		} catch (ValidateException e) {
+			protocol.setCode(e.getCode());
+		}
 		model.addAttribute("protocol", protocol);
 	}
 
