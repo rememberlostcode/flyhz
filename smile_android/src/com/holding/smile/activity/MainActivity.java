@@ -150,14 +150,14 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		mPullToRefreshView.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				onRefresh();
+				loadData();
 			}
 		}, 1000);
 	}
 
 	@Override
 	public void loadData() {
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getIndexJGoods();
+		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getIndexJGoods(cid);
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rGoods.getIndexData();
@@ -225,6 +225,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 			}
 
 			ViewGroup group = (ViewGroup) findViewById(R.id.viewGroup);
+			group.removeAllViews();
 			// 将点点加入到ViewGroup中
 			tips = new ImageView[size];
 			for (int i = 0; i < tips.length; i++) {
@@ -310,7 +311,6 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																		viewList);
 																mViewPager.setAdapter(pagerAdapter);
 																mViewPager.setCurrentItem(0); // 设置默认当前页
-
 															}
 
 															// 品牌区

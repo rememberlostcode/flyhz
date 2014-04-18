@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/brand_head"
         android:layout_width="fill_parent"
-	    android:layout_height="40dip"
+	    android:layout_height="30dip"
 	    android:gravity="center_vertical"
 	    android:orientation="horizontal"
 	    android:background="@android:color/darker_gray">
@@ -15,7 +15,7 @@
             android:id="@+id/list_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="列表描述"
+            android:text=""
             android:textSize="16sp"
             android:textColor="@android:color/black"
             />

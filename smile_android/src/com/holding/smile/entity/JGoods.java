@@ -95,6 +95,16 @@ public class JGoods implements Serializable {
 
 	private String				_version_;
 
+	private Integer[]			ag;
+
+	public Integer[] getAg() {
+		return ag;
+	}
+
+	public void setAg(Integer[] ag) {
+		this.ag = ag;
+	}
+
 	public Integer getId() {
 		return id;
 	}

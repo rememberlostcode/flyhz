@@ -84,38 +84,38 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		TextView pp = (TextView) findViewById(R.id.pp);
 		TextView d = (TextView) findViewById(R.id.d);
 
-		if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
-			b.setText(jGoods.getBe().trim());
-		}
-		if (jGoods.getN() != null && !"".equals(jGoods.getN().trim())) {
-			n.setText(jGoods.getN().trim());
-		}
-		if (jGoods.getPp() != null) {
-			pp.setText("￥" + jGoods.getPp());
-		}
-		// if (jGoods.getLp() != null) {
-		// po.setText("￥" + jGoods.getLp());
-		// po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
-		// }
-		// if (jGoods.getSp() != null) {
-		// save.setText("省￥" + jGoods.getSp());
-		// }
-		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
-			d.setText(jGoods.getD().trim());
-		}
-		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
-			d.setText(jGoods.getD().trim());
-		}
-		for (int i = 0; i < jGoods.getP().length; i++) {
-			picList.add(jGoods.getP()[i]);
-		}
+		if (jGoods != null) {
 
-		mViewPager = (ViewPager) findViewById(R.id.viewpager);
-		addViewPager();// 添加页卡
-		// 实例化适配器
-		pagerAdapter = new MyPagerAdapter(viewList);
-		mViewPager.setAdapter(pagerAdapter);
-		mViewPager.setCurrentItem(0); // 设置默认当前页
+			if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
+				b.setText(jGoods.getBe().trim());
+			}
+			if (jGoods.getN() != null && !"".equals(jGoods.getN().trim())) {
+				n.setText(jGoods.getN().trim());
+			}
+			if (jGoods.getPp() != null) {
+				pp.setText("￥" + jGoods.getPp());
+			}
+			// if (jGoods.getLp() != null) {
+			// po.setText("￥" + jGoods.getLp());
+			// po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
+			// }
+			// if (jGoods.getSp() != null) {
+			// save.setText("省￥" + jGoods.getSp());
+			// }
+			if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
+				d.setText(jGoods.getD().trim());
+			}
+			for (int i = 0; i < jGoods.getP().length; i++) {
+				picList.add(jGoods.getP()[i]);
+			}
+
+			mViewPager = (ViewPager) findViewById(R.id.viewpager);
+			addViewPager();// 添加页卡
+			// 实例化适配器
+			pagerAdapter = new MyPagerAdapter(viewList);
+			mViewPager.setAdapter(pagerAdapter);
+			mViewPager.setCurrentItem(0); // 设置默认当前页
+		}
 
 	}
 
@@ -157,12 +157,13 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			for (int i = 0; i < size; i++) {
 				View view = inflater.inflate(R.layout.good_pic_item, null);
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
-				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+				imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
-				viewList.add(view);
+				viewList.add(imageView);
 			}
 
 			ViewGroup group = (ViewGroup) findViewById(R.id.viewGroup);
+			group.removeAllViews();
 			// 将点点加入到ViewGroup中
 			tips = new ImageView[size];
 			for (int i = 0; i < tips.length; i++) {

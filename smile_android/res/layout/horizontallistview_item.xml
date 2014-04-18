@@ -9,11 +9,10 @@
 
     <ImageView
         android:id="@+id/iv_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="200dip"
-        android:paddingBottom="2dip"
-        android:paddingTop="2dip"
-        android:scaleType="centerCrop"
+        android:layout_width="80dip"
+        android:layout_height="80dip"
+        android:paddingTop="5dip"
+        android:scaleType="fitXY"
         android:layout_centerHorizontal="true"
         android:contentDescription="@null"
         />
@@ -21,11 +20,11 @@
     <TextView
         android:id="@+id/tv_pn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dip"
         android:layout_below="@+id/iv_pic"
         android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:singleLine="true"
-        android:paddingBottom="5dip"
         android:textColor="#f50606"
         android:textSize="14sp" />
 

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.MainTwoActivity;
+import com.holding.smile.activity.MyApplication;
 import com.holding.smile.dto.BrandJGoods;
 import com.holding.smile.myview.MyGridView;
 
@@ -32,10 +33,11 @@ import com.holding.smile.myview.MyGridView;
  */
 public class VerticalListAdapter extends BaseAdapter {
 
+	private float				density		= MyApplication.getInstance().getDensity();
 	// 列宽
-	private int					cWidth		= 160;
+	private int					cWidth		= (int) (80*density);
 	// 水平间距
-	private int					hSpacing	= 2;
+	private int					hSpacing	= (int) (10*density);
 	private LayoutInflater		mInflater;
 	private List<BrandJGoods>	brandJGoodsList;
 	private Integer				cid;

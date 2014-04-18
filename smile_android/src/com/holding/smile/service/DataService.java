@@ -113,7 +113,7 @@ public class DataService {
 	public RtnValueDto getIndexListInit(Integer cid) {
 		RtnValueDto obj = null;
 		if (getDataFromNet) {
-			obj = getIndexJGoods();
+			obj = getIndexJGoods(cid);
 		} else {
 			obj = JSONUtil.changeJson2RtnValueDto(brandJGoodsInitJson);
 		}
@@ -282,10 +282,12 @@ public class DataService {
 	 * 
 	 * @return
 	 */
-	public RtnValueDto getIndexJGoods() {
+	public RtnValueDto getIndexJGoods(Integer cid) {
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_index_url, null);
-
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (cid != null)
+			param.put("cid", String.valueOf(cid));
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PIndexJGoods indexJGoods = JSONUtil.getJson2Entity(rStr, PIndexJGoods.class);
