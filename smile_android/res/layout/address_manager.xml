@@ -12,13 +12,6 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="1sp" />
 
-    <TableLayout
-        android:id="@+id/setting_address_list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-    </TableLayout>
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

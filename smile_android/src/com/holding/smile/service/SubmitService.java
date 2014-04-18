@@ -9,6 +9,7 @@ import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Consignee;
+import com.holding.smile.protocol.PConsignee;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.URLUtil;
@@ -84,7 +85,11 @@ public class SubmitService {
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
-				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
+				PConsignee pcons = JSONUtil.getJson2Entity(rStr, PConsignee.class);
+				if (pcons != null) {
+					rvd.setConsignee(pcons.getData());
+					rvd.setCode(pcons.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -184,7 +189,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto setUserInfo(String field, String value) {
-		if (field == null || value == null || "".equals(field) || "".equals(value)) {
+		if (field == null || value == null || "".equals(field)) {
 			return null;
 		}
 		RtnValueDto rvd = new RtnValueDto();

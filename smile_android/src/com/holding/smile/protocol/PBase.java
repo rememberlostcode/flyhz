@@ -3,13 +3,13 @@ package com.holding.smile.protocol;
 
 public class PBase {
 
-	protected String	code;
+	protected Integer	code;
 
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 }

@@ -4,13 +4,18 @@ package com.holding.smile.activity;
 import java.util.List;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -25,7 +30,6 @@ import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.District;
 import com.holding.smile.entity.Province;
 import com.holding.smile.tools.Constants;
-import com.holding.smile.tools.JSONUtil;
 
 /**
  * 收货地址编辑
@@ -49,8 +53,11 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 	private EditText				addressName;
 	private EditText				addressMobile;
 	private EditText				addressZipcode;
-	private EditText				addressIdcard;
+	private Button					addressIdcardButton;
+	private CheckBox				addressDefault;
 	private Button					addressSave;
+	private Button					addressDelete;
+	private ImageView				imageView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,21 +73,25 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 		addressName = (EditText) findViewById(R.id.address_name);
 		addressMobile = (EditText) findViewById(R.id.address_mobile);
 		addressZipcode = (EditText) findViewById(R.id.address_zipcode);
-		addressIdcard = (EditText) findViewById(R.id.address_idcard);
+		addressIdcardButton = (Button) findViewById(R.id.address_idcard_button);
+		addressDefault = (CheckBox) findViewById(R.id.address_default);
 		addressSave = (Button) findViewById(R.id.address_add_save);
+		addressDelete = (Button) findViewById(R.id.address_delete);
+		imageView = (ImageView) findViewById(R.id.address_idcard_img);
 
 		addressAddress.setOnClickListener(this);
 		addressName.setOnClickListener(this);
 		addressMobile.setOnClickListener(this);
 		addressZipcode.setOnClickListener(this);
-		addressIdcard.setOnClickListener(this);
+		addressIdcardButton.setOnClickListener(this);
 		addressSave.setOnClickListener(this);
+		addressDelete.setOnClickListener(this);
 
 		try {
 			Intent intent = getIntent();
-			if (intent.getExtras() != null) {
-				String consigneeJson = intent.getExtras().getString("consignee");
-				consignee = JSONUtil.getJson2Entity(consigneeJson, Consignee.class);
+			if (intent.getExtras() != null
+					&& intent.getExtras().getSerializable("consignee") != null) {
+				consignee = (Consignee) (intent.getExtras().getSerializable("consignee"));
 				if (consignee != null) {
 					provinceId = consignee.getProvinceId();
 					cityId = consignee.getCityId();
@@ -97,6 +108,7 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 
 		if (consignee == null) {
 			consignee = new Consignee();
+			addressDelete.setVisibility(View.GONE);
 		}
 
 		province_spinner = (Spinner) findViewById(R.id.province_spinner);
@@ -168,7 +180,7 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 				if (200000 == rvd.getCode()) {
 					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
-					intent.putExtra("consignee", JSONUtil.getEntity2Json(consignee));
+					intent.putExtra("consignee", consignee);
 					setResult(RESULT_OK, intent);
 					finish();
 				} else {
@@ -176,8 +188,55 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 				}
 				break;
 			}
+
+			case R.id.address_delete: {
+				RtnValueDto rvd = null;
+				if (consignee != null && consignee.getId() != null) {
+					rvd = MyApplication.getInstance().getSubmitService()
+										.addressRemove(consignee.getId());
+				}
+				if (rvd != null && 200000 == rvd.getCode()) {
+					Toast.makeText(context, "删除成功！", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent();
+					consignee.setIsDel(true);
+					intent.putExtra("consignee", consignee);
+					setResult(RESULT_OK, intent);
+					finish();
+				} else {
+					if (consignee != null && consignee.getId() != null) {
+						Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+					}
+				}
+				break;
+			}
+			case R.id.address_idcard_button: {
+				Intent i = new Intent(Intent.ACTION_PICK,
+						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+				startActivityForResult(i, SELECT_PHOTO_IMAGE);
+				break;
+			}
 		}
 		super.onClick(v);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == SELECT_PHOTO_IMAGE && resultCode == RESULT_OK) {
+			Uri selectedImage = data.getData();
+			String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+			Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null,
+					null);
+			cursor.moveToFirst();
+
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			String picturePath = cursor.getString(columnIndex);
+			cursor.close();
+			// BitmapFactory.decodeStream(BitmapUtils.getCompressBitmap(picturePath,
+			// 800, 1280, 100));
+			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	private void loadSpinner() {
@@ -264,17 +323,17 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 			for (int i = 0; i < k; i++) {
 				if (apsAdapter.getItem(i) instanceof Province) {
 					if (value == ((Province) (apsAdapter.getItem(i))).getId()) {
-						spinner.setSelection(i, true);// 默认选中项
+						spinner.setSelection(i, true);
 						break;
 					}
 				} else if (apsAdapter.getItem(i) instanceof City) {
 					if (value.equals(((City) (apsAdapter.getItem(i))).getId())) {
-						spinner.setSelection(i, true);// 默认选中项
+						spinner.setSelection(i, true);
 						break;
 					}
 				} else if (apsAdapter.getItem(i) instanceof District) {
 					if (value.equals(((District) (apsAdapter.getItem(i))).getId())) {
-						spinner.setSelection(i, true);// 默认选中项
+						spinner.setSelection(i, true);
 						break;
 					}
 				}

@@ -26,7 +26,8 @@ public class RtnValueDto {
 	private List<JSort>			sortData;		// 返回排行数据
 	private ValidateDto			validate;		// 校验结果
 	private String				atData;
-	private List<Consignee>		consigneeData;	// 返回收货人地址
+	private List<Consignee>		consigneeData;	// 返回收货人地址集合
+	private Consignee			consignee;		// 返回收货人地址
 	private SUser				userData;		// 返回用户数据
 
 	public Integer getCode() {
@@ -115,5 +116,13 @@ public class RtnValueDto {
 
 	public void setUserData(SUser userData) {
 		this.userData = userData;
+	}
+
+	public Consignee getConsignee() {
+		return consignee;
+	}
+
+	public void setConsignee(Consignee consignee) {
+		this.consignee = consignee;
 	}
 }

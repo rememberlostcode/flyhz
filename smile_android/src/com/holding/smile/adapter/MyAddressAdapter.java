@@ -18,7 +18,6 @@ import com.holding.smile.activity.AddressEditActivity;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.entity.Consignee;
-import com.holding.smile.tools.JSONUtil;
 
 public class MyAddressAdapter extends BaseAdapter {
 	private Context			context;
@@ -66,7 +65,7 @@ public class MyAddressAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		Consignee cons = (Consignee) getItem(position);
+		final Consignee cons = (Consignee) getItem(position);
 		holder.name.setText(cons.getName().trim());
 
 		String pcd = MyApplication.getInstance()
@@ -81,7 +80,7 @@ public class MyAddressAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				Intent intent = new Intent(context, AddressEditActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra("consignee", JSONUtil.getEntity2Json(getItem(position)));
+				intent.putExtra("consignee", cons);
 				((Activity) parent.getContext()).startActivityForResult(intent,
 						BaseActivity.ADDRESS_EDIT_CODE);
 			}

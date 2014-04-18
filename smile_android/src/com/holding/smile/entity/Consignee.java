@@ -1,6 +1,7 @@
 
 package com.holding.smile.entity;
 
+import java.io.Serializable;
 
 /**
  * 联系人
@@ -8,20 +9,22 @@ package com.holding.smile.entity;
  * @author zhangb 2014年4月16日 上午10:21:31
  * 
  */
-public class Consignee {
-	private Integer	id;
-	private String	name;
-	private Integer	conturyId;
-	private Integer	provinceId;
-	private Integer	cityId;
-	private Integer	districtId;
-	private String	address;
-	private String	zipcode;
-	private Integer	areacode;
-	private Integer	telephone;
-	private String	mobilephone;
-	private UserDto	user;
-	private IdentitycardDto identitycard;
+public class Consignee implements Serializable {
+	private static final long	serialVersionUID	= 3730923451209957486L;
+	private Integer				id;
+	private String				name;
+	private Integer				conturyId;
+	private Integer				provinceId;
+	private Integer				cityId;
+	private Integer				districtId;
+	private String				address;
+	private String				zipcode;
+	private Integer				areacode;
+	private Integer				telephone;
+	private String				mobilephone;
+	private UserDto				user;
+	private IdentitycardDto		identitycard;
+	private boolean				isDel;
 
 	public Integer getId() {
 		return id;
@@ -126,5 +129,13 @@ public class Consignee {
 	public void setIdentitycard(IdentitycardDto identitycard) {
 		this.identitycard = identitycard;
 	}
-	
+
+	public boolean getIsDel() {
+		return isDel;
+	}
+
+	public void setIsDel(boolean isDel) {
+		this.isDel = isDel;
+	}
+
 }

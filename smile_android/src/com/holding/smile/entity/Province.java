@@ -1,11 +1,14 @@
 
 package com.holding.smile.entity;
 
-public class Province {
-	private int		id;
-	private String	name;
-	private Integer	sort;
-	private Integer	conturyid;
+import java.io.Serializable;
+
+public class Province implements Serializable {
+	private static final long	serialVersionUID	= -5357789512354690761L;
+	private int					id;
+	private String				name;
+	private Integer				sort;
+	private Integer				conturyid;
 
 	public int getId() {
 		return id;

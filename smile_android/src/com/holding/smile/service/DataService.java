@@ -567,6 +567,7 @@ public class DataService {
 				PConsignees consignees = JSONUtil.getJson2Entity(rStr, PConsignees.class);
 				if (consignees != null) {
 					rvd.setConsigneeData(consignees.getData());
+					rvd.setCode(consignees.getCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -591,8 +592,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PUser user = JSONUtil.getJson2Entity(rStr, PUser.class);
-				if (user != null)
+				if (user != null) {
 					rvd.setUserData(user.getData());
+					rvd.setCode(user.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();

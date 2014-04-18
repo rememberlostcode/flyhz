@@ -2,12 +2,15 @@
 package com.holding.smile.entity;
 
 import java.io.File;
+import java.io.Serializable;
 
-public class IdentitycardDto {
+public class IdentitycardDto implements Serializable {
 
-	private Integer	id;
+	private static final long	serialVersionUID	= -6318242080957337047L;
 
-	private File	file;
+	private Integer				id;
+
+	private File				file;
 
 	public Integer getId() {
 		return id;

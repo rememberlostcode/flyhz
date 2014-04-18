@@ -52,6 +52,10 @@ public class BaseActivity extends Activity {
 	 * 编辑手机号码操作代码
 	 */
 	public static final int	PHONE_CODE			= 14;
+	/**
+	 * 选择身份证照片操作代码
+	 */
+	public static final int	SELECT_PHOTO_IMAGE	= 15;
 
 	public Context			context;
 
