@@ -22,7 +22,6 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.CategoryAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
-import com.holding.smile.tools.SetExpandableListViewListViewHeight;
 
 /**
  * 
@@ -50,15 +49,20 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 		listView = (ListView) findViewById(R.id.cate_list_view);
 		cateAdapter = new CategoryAdapter(context, cateList);
 		listView.setAdapter(cateAdapter);
-		loadData();
-		SetExpandableListViewListViewHeight.setListViewHeightOnChildren(listView);
+		startTask();
 
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Category cate = cateList.get(position);
 				Intent intent = new Intent();
+				Category cate = null;
+				if (id == -1) {// id为－1，是指全部
+					cate = new Category();
+					cate.setName(context.getString(R.string.all_cate));
+				} else {
+					cate = cateList.get(position);
+				}
 				intent.putExtra("cate", cate);
 				setResult(RESULT_OK, intent);
 				finish();
@@ -68,6 +72,10 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void loadData() {
+		// 默认全部
+		Category cate = new Category();
+		cate.setName(context.getString(R.string.all_cate));
+		cateList.add(cate);
 		RtnValueDto cates = MyApplication.getInstance().getDataService().getCategorys();
 		if (cates != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
