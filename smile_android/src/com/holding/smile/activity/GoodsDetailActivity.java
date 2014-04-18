@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -51,6 +50,13 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 
+		// 底部布局
+		View view = displayFooterMainBuyBtn();
+		View nowBuy = view.findViewById(R.id.nowbuy);
+		View addCart = view.findViewById(R.id.addcart);
+		nowBuy.setOnClickListener(this);
+		addCart.setOnClickListener(this);
+
 		Intent intent = getIntent();
 		Integer gid = (Integer) intent.getExtras().getSerializable("gid");
 		if (gid == null) {
@@ -75,11 +81,8 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 		TextView b = (TextView) findViewById(R.id.b);
 		TextView n = (TextView) findViewById(R.id.n);
-		TextView pn = (TextView) findViewById(R.id.pn);
-		TextView po = (TextView) findViewById(R.id.po);
-		TextView save = (TextView) findViewById(R.id.save);
+		TextView pp = (TextView) findViewById(R.id.pp);
 		TextView d = (TextView) findViewById(R.id.d);
-		TextView desc = (TextView) findViewById(R.id.desc);
 
 		if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
 			b.setText(jGoods.getBe().trim());
@@ -88,20 +91,20 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			n.setText(jGoods.getN().trim());
 		}
 		if (jGoods.getPp() != null) {
-			pn.setText("￥" + jGoods.getPp());
+			pp.setText("￥" + jGoods.getPp());
 		}
-		if (jGoods.getLp() != null) {
-			po.setText("￥" + jGoods.getLp());
-			po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
-		}
-		if (jGoods.getSp() != null) {
-			save.setText("省￥" + jGoods.getSp());
-		}
+		// if (jGoods.getLp() != null) {
+		// po.setText("￥" + jGoods.getLp());
+		// po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
+		// }
+		// if (jGoods.getSp() != null) {
+		// save.setText("省￥" + jGoods.getSp());
+		// }
 		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
 			d.setText(jGoods.getD().trim());
 		}
 		if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
-			desc.setText("物品描述：" + jGoods.getD().trim());
+			d.setText(jGoods.getD().trim());
 		}
 		for (int i = 0; i < jGoods.getP().length; i++) {
 			picList.add(jGoods.getP()[i]);
@@ -119,15 +122,23 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.mainfooter_search: {
-				Intent intent = new Intent(this, SearchGoodsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+			case R.id.btn_back: {
 				finish();
 				break;
 			}
-			case R.id.btn_back: {
-				finish();
+			case R.id.nowbuy: {
+				Toast.makeText(context, "您点了立即购买", Toast.LENGTH_SHORT).show();
+				// Intent intent = new Intent(this, SearchGoodsActivity.class);
+				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				// startActivity(intent);
+				// finish();
+				break;
+			}
+			case R.id.addcart: {
+				Toast.makeText(context, "您点了加入购物车", Toast.LENGTH_SHORT).show();
+				// Intent intent = new Intent(this, SearchGoodsActivity.class);
+				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				// startActivity(intent);
 				break;
 			}
 		}
@@ -146,6 +157,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			for (int i = 0; i < size; i++) {
 				View view = inflater.inflate(R.layout.good_pic_item, null);
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
+				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
 				viewList.add(view);
 			}

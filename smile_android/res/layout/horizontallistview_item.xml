@@ -13,7 +13,7 @@
         android:layout_height="200dip"
         android:paddingBottom="2dip"
         android:paddingTop="2dip"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:layout_centerHorizontal="true"
         android:contentDescription="@null"
         />

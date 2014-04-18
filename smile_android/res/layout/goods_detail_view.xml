@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_horizontal_margin"
@@ -13,6 +13,15 @@
         android:background="@android:color/white"
         android:gravity="center"
         android:orientation="vertical" >
+        
+        <include layout="@layout/pic_pager" android:id="@+id/pic_pager"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:background="#e5e5e5" />
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -22,6 +31,7 @@
             android:layout_marginTop="10dp" >
 
             <LinearLayout
+                android:id="@+id/name_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -43,64 +53,83 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/save"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#f50606"
-                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_below="@+id/name_layout"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/pn"
+                    android:id="@+id/pp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dip"
+            		android:layout_marginBottom="10dip"
                     android:textColor="#f50606"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/po"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#d2d2d2"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/d"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:textColor="#d2d2d2"
-                    android:textSize="14sp" />
             </LinearLayout>
         </RelativeLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#e5e5e5" />
-
-        <include layout="@layout/index_recommend" android:id="@+id/pic_pager"/>
-
+        
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="#e5e5e5" />
 
         <TextView
-            android:id="@+id/desc"
+            android:id="@+id/choose_color"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
             android:layout_gravity="left|top"
             android:gravity="left"
-            android:textColor="#d2d2d2"
-            android:textSize="14sp" />
+            android:text="@string/choose_color"
+            android:textColor="#000"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#e5e5e5" />
+        
+        <TextView
+           android:id="@+id/desc"
+           android:layout_width="wrap_content"
+           android:layout_height="fill_parent"
+           android:layout_marginTop="10dip"
+           android:layout_marginBottom="10dip"
+           android:layout_gravity="left|top"
+           android:gravity="left"
+           android:textColor="#000"
+           android:text="@string/good_desc"
+           android:textSize="20sp" />
+            
+         <View
+	          android:layout_width="fill_parent"
+	          android:layout_height="1dp"
+	          android:background="#e5e5e5" />
+        
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dip"
+            >
+            
+	        <TextView
+	            android:id="@+id/d"
+	            android:layout_width="wrap_content"
+	            android:layout_height="fill_parent"
+	            android:layout_gravity="left|top"
+	            android:layout_marginTop="5dip"
+	            android:gravity="left"
+	            android:textColor="#e5e5e5"
+	            android:textSize="14sp" />
+        </RelativeLayout>
     </LinearLayout>
 
 </ScrollView>

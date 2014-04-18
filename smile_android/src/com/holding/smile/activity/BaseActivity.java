@@ -418,4 +418,12 @@ public class BaseActivity extends Activity {
 		return view;
 	}
 
+	public View displayFooterMainBuyBtn() {
+		setFootVisible();
+		int id = R.id.mainfooter_buy;
+		View view = (View) findViewById(id);
+		setVisible(id);
+		return view;
+	}
+
 }
