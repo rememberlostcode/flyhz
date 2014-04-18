@@ -384,7 +384,7 @@ public class UserServiceImpl implements UserService {
 			} else if (StringUtil.length(valueStr) > 64) {
 				throw new ValidateException(101019);
 			}
-			userModel.setPassword(valueStr);
+			userModel.setPassword(MD5.getMD5(valueStr));
 			userModel.setGmtModify(new Date());
 			userDao.updatePwd(userModel);
 		}
@@ -481,10 +481,10 @@ public class UserServiceImpl implements UserService {
 			throw new ValidateException(101002);
 		}
 		// 输入旧密码不对
-		if (!oldpwd.equals(userModel.getPassword())) {
+		if (!MD5.getMD5(oldpwd).equals(userModel.getPassword())) {
 			throw new ValidateException(101026);
 		}
-		userModel.setPassword(newpwd);
+		userModel.setPassword(MD5.getMD5(newpwd));
 		userDao.updatePwd(userModel);
 	}
 }

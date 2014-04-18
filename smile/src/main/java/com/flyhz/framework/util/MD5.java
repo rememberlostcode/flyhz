@@ -28,7 +28,7 @@ public class MD5 {
 	}
 
 	public static void main(String[] args) {
-		String a = getMD5("123456");
+		String a = getMD5("12345678");
 		System.out.println(a);
 	}
 }
