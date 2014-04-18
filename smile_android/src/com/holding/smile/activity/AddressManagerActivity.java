@@ -21,7 +21,6 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.MyAddressAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Consignee;
-import com.holding.smile.tools.JSONUtil;
 
 /**
  * 收货地址管理
@@ -39,7 +38,7 @@ public class AddressManagerActivity extends BaseActivity implements OnClickListe
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentLayout(R.layout.delivery_address);
+		setContentLayout(R.layout.address_manager);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 
@@ -86,21 +85,24 @@ public class AddressManagerActivity extends BaseActivity implements OnClickListe
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ADDRESS_EDIT_CODE && resultCode == RESULT_OK) {
-			if (data.getExtras() != null) {
-				String consigneeJson = data.getExtras().getString("consignee");
-				Consignee consignee = JSONUtil.getJson2Entity(consigneeJson, Consignee.class);
+			if (data.getExtras() != null && data.getExtras().getSerializable("consignee") != null) {
+				Consignee consignee = (Consignee) (data.getExtras().getSerializable("consignee"));
 				if (list == null) {
 					list = new ArrayList<Consignee>();
 				}
 				boolean isAdd = true;
 				for (int i = 0; i < list.size(); i++) {
 					if (list.get(i).getId() == consignee.getId()) {
-						list.set(i, consignee);
+						if (consignee.getIsDel()) {// 是否是删除
+							list.remove(i);
+						} else {
+							list.set(i, consignee);// 修改只需要重新设置
+						}
 						isAdd = false;
 						break;
 					}
 				}
-				if (isAdd) {
+				if (isAdd && !consignee.getIsDel()) {// 不会删除也不是修改需添加
 					list.add(consignee);
 				}
 				RtnValueDto consignees = new RtnValueDto();

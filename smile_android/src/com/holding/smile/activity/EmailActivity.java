@@ -56,6 +56,13 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		if (email == null || "".equals(email)) {
+			saveButton.setVisibility(View.VISIBLE);
+			canleButton.setVisibility(View.GONE);
+		} else {
+			canleButton.setVisibility(View.VISIBLE);
+			saveButton.setVisibility(View.GONE);
+		}
 	}
 
 	@Override
@@ -86,7 +93,7 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				// 解除绑定邮箱
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("email", "");
-				if (200000 == rvd.getCode()) {
+				if (rvd != null && 200000 == rvd.getCode()) {
 					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
 					intent.putExtra("email", "");

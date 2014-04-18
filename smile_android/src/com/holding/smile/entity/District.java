@@ -1,11 +1,14 @@
 
 package com.holding.smile.entity;
 
-public class District {
-	private Integer	id;
-	private String	name;
-	private Integer	sort;
-	private Integer	cityid;
+import java.io.Serializable;
+
+public class District implements Serializable {
+	private static final long	serialVersionUID	= -5357789558858690761L;
+	private Integer				id;
+	private String				name;
+	private Integer				sort;
+	private Integer				cityid;
 
 	public Integer getId() {
 		return id;

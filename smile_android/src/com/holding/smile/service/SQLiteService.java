@@ -196,10 +196,8 @@ public class SQLiteService {
 		}
 		String pcd = "";
 		Cursor cursor = db.rawQuery(
-//				"select name from province where id=?",
 				"select (p.name||c.name||d.name) name from province p,city c,district d where p.id=? and c.id=? and d.id=?",
-//				new String[] { proid + ""});
-		new String[] { proid + "", cityid + "", districtid + "" });
+				new String[] { proid + "", cityid + "", districtid + "" });
 		while (cursor != null && cursor.moveToNext()) {
 			pcd = cursor.getString(0);
 		}
@@ -421,6 +419,24 @@ public class SQLiteService {
 			return user;
 		}
 		return null;
+	}
+
+	public boolean isDefaultConsignee(Integer consigneeId) {
+		if (consigneeId == null) {
+			return false;
+		}
+		boolean is = false;
+		Cursor cursor = db.query("consignee", new String[] { "is_default" }, "id = ?",
+				new String[] { String.valueOf(consigneeId) }, null, null, null, "1");
+
+		while (cursor.moveToNext()) {
+			if (cursor.getString(0) != null && "1".equals(cursor.getString(0))) {
+				is = true;
+			}
+		}
+		cursor.close();
+
+		return is;
 	}
 
 }

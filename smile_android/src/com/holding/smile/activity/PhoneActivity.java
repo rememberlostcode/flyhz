@@ -67,7 +67,7 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 				phone = phoneEditText.getText().toString();
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("mphone", phone);
-				if (200000 == rvd.getCode()) {
+				if (rvd != null && 200000 == rvd.getCode()) {
 					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
 					intent.putExtra("phone", phone);

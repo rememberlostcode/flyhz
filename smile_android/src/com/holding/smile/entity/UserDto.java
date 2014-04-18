@@ -1,13 +1,17 @@
 
 package com.holding.smile.entity;
 
-public class UserDto {
+import java.io.Serializable;
 
-	private Integer	id;
+public class UserDto implements Serializable {
 
-	private String	username;
+	private static final long	serialVersionUID	= 113389749919257070L;
 
-	private String	token;
+	private Integer				id;
+
+	private String				username;
+
+	private String				token;
 
 	public String getUsername() {
 		return username;

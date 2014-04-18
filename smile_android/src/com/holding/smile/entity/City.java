@@ -1,11 +1,14 @@
 
 package com.holding.smile.entity;
 
-public class City {
-	private Integer	id;
-	private String	name;
-	private Integer	sort;
-	private Integer	proid;
+import java.io.Serializable;
+
+public class City implements Serializable {
+	private static final long	serialVersionUID	= -7444815263050426809L;
+	private Integer				id;
+	private String				name;
+	private Integer				sort;
+	private Integer				proid;
 
 	public Integer getId() {
 		return id;
