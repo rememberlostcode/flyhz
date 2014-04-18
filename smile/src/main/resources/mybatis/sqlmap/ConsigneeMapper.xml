@@ -4,6 +4,9 @@
 	<insert id="insertConsignee" parameterType="ConsigneeModel">
 		insert into consignee(name,contury_id,city_id,province_id,district_id,address,zipcode,mobilephone,user_id) 
 		values(#{name},#{conturyId},#{cityId},#{provinceId},#{districtId},#{address},#{zipcode},#{mobilephone},#{userId})
+		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">  
+            select last_insert_id()  
+    	</selectKey>
 	</insert>
 	<update id="updateConsignee" parameterType="ConsigneeModel">
 		update consignee set name=#{name},contury_id=#{conturyId},city_id=#{cityId},province_id=#{provinceId},

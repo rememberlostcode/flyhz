@@ -45,8 +45,9 @@ public class ConsigneeController {
 	public void addConsignee(@Identify Integer userId, ConsigneeModel consignee, Model model) {
 		Protocol protocol = new Protocol();
 		try {
+			userId = 1;
 			consignee.setUserId(userId);
-			userService.addConsignee(consignee);
+			protocol.setData(userService.addConsignee(consignee));
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());
