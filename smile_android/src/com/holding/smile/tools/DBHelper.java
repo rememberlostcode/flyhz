@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String	DATABASE_NAME		= "smile.db";
-	private static final int	DATABASE_VERSION	= 5;
+	private static final int	DATABASE_VERSION	= 6;
 
 	public DBHelper(Context context) {
 		// CursorFactory设置为null,使用默认值
@@ -38,28 +38,6 @@ public class DBHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// 版本更新后的数据库变动
 		createTable(db);
-
-		/********** 省市区 start **********/
-		List<String> conList = ProvinceCityUtil.getConturyList();
-		List<String> pList = ProvinceCityUtil.getProvinceList();
-		List<String> cList = ProvinceCityUtil.getCityList();
-		List<String> dList = ProvinceCityUtil.getDistrictList();
-		for (String sql : conList) {
-			db.execSQL(sql);
-		}
-		for (String sql : pList) {
-			db.execSQL(sql);
-		}
-		for (String sql : cList) {
-			db.execSQL(sql);
-		}
-		for (String sql : dList) {
-			db.execSQL(sql);
-		}
-
-		ProvinceCityUtil.cleanData();
-		/********** 省市区 end **********/
-
 	}
 
 	/**
@@ -87,5 +65,26 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ "(id integer primary key autoincrement,name varchar,sort integer,proid integer)");
 		db.execSQL("create table district"
 				+ "(id integer primary key autoincrement,name varchar,sort integer,cityid integer)");
+
+		/********** 省市区 start **********/
+		List<String> conList = ProvinceCityUtil.getConturyList();
+		List<String> pList = ProvinceCityUtil.getProvinceList();
+		List<String> cList = ProvinceCityUtil.getCityList();
+		List<String> dList = ProvinceCityUtil.getDistrictList();
+		for (String sql : conList) {
+			db.execSQL(sql);
+		}
+		for (String sql : pList) {
+			db.execSQL(sql);
+		}
+		for (String sql : cList) {
+			db.execSQL(sql);
+		}
+		for (String sql : dList) {
+			db.execSQL(sql);
+		}
+
+		ProvinceCityUtil.cleanData();
+		/********** 省市区 end **********/
 	}
 }
