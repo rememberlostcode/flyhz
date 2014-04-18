@@ -994,15 +994,41 @@ function goodsdetail(query,response) {
         result.c = good.c;
         result.zsn = good.zsn;
         result.sn = good.sn;
-
-        response.writeHead(200, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
-//        response.write(addData(res));
-        response.write(addData(JSON.stringify(result)));
-        response.end();
+        result.bs = good.bs;
+		
+		key = 'smile@product&cn@'+good.bs;
+        console.log('key='+key);
+        client.llen(key,function(err, res1) {
+            console.log('res1='+res1);
+            try{
+                if(res1==0){
+                    res1 = 1;
+                }
+                client.lrange(key,0,res1, function(err, res2) {
+                    console.log('res2='+res2);
+                    if(res2!=null && res2!=''){
+                        result.ag = JSON.parse(res2);
+                    } else {
+                        result.ag = '['+result.id+']';
+                    }
+                    response.writeHead(200, {
+                        "Content-Type": applicationJson,
+                        "Access-Control-Allow-Origin":"*",
+                        'Access-Control-Allow-Methods': 'GET',
+                        'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                    response.write(addData(JSON.stringify(result)));
+                    response.end();
+                });
+            } catch (e){
+                response.writeHead(200, {
+                    "Content-Type": applicationJson,
+                    "Access-Control-Allow-Origin":"*",
+                    'Access-Control-Allow-Methods': 'GET',
+                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.write(addData(JSON.stringify(result)));
+                response.end();
+            }
+        });
     });
 }
 
