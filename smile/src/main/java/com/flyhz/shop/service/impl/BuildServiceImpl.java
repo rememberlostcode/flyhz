@@ -107,7 +107,7 @@ public class BuildServiceImpl implements BuildService {
 																					.toString(),
 							JSONUtil.getEntity2Json(productList.get(i)).replace("\"[", "[")
 									.replace("]\"", "]").replace("\\", ""));
-					cacheRepository.lpush(Constants.REDIS_KEY_PRODUCT_CN + "@"
+					cacheRepository.rpush(Constants.REDIS_KEY_PRODUCT_CN + "@"
 							+ productList.get(i).getBs(), productList.get(i).getId().toString());
 				} else {
 					if (productList.get(i) == null) {

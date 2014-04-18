@@ -1006,11 +1006,11 @@ function goodsdetail(query,response) {
                 }
                 client.lrange(key,0,res1, function(err, res2) {
                     console.log('res2='+res2);
-                    if(res2!=null && res2!=''){
-                        result.ag = JSON.parse(res2);
-                    } else {
+                   // if(res2!=null && res2!=''){
+                        result.ag = res2;
+                    /*} else {
                         result.ag = '['+result.id+']';
-                    }
+                    }*/
                     response.writeHead(200, {
                         "Content-Type": applicationJson,
                         "Access-Control-Allow-Origin":"*",
