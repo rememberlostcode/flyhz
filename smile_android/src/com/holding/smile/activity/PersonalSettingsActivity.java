@@ -85,19 +85,21 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 			}
 			case R.id.user_info_address_layout: {
 				Intent intent = new Intent();
-				intent.setClass(context, DeliveryAddressActivity.class);
+				intent.setClass(context, AddressManagerActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				startActivity(intent);
 				break;
 			}
 			case R.id.user_info_email_layout: {
 				Intent intent = new Intent(this, EmailActivity.class);
+				intent.putExtra("email", emailTextView.getText().toString());
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, EMAIL_CODE);
 				break;
 			}
 			case R.id.user_info_phone_layout: {
 				Intent intent = new Intent(this, PhoneActivity.class);
+				intent.putExtra("phone", phoneTextView.getText().toString());
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, PHONE_CODE);
 				break;
@@ -115,6 +117,28 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 			}
 		}
 		super.onClick(v);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == PHONE_CODE && resultCode == RESULT_OK) {
+			if (data.getExtras() != null) {
+				String phone = data.getExtras().getString("phone");
+				if (phone == null) {
+					phone = "";
+				}
+				phoneTextView.setText(phone);
+			}
+		} else if (requestCode == EMAIL_CODE && resultCode == RESULT_OK) {
+			if (data.getExtras() != null) {
+				String email = data.getExtras().getString("email");
+				if (email == null) {
+					email = "";
+				}
+				emailTextView.setText(email);
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@SuppressLint("HandlerLeak")

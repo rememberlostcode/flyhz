@@ -1,8 +1,6 @@
 
 package com.holding.smile.activity;
 
-import com.holding.smile.R;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,14 +9,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.holding.smile.R;
+import com.holding.smile.dto.RtnValueDto;
 
 /**
  * 手机设置
+ * 
+ * @author zhangb 2014年4月18日 上午8:32:57
+ * 
  */
 public class PhoneActivity extends BaseActivity implements OnClickListener {
-	private EditText				phoneEditText;
-	private Button					saveButton;
-	private String phone = "";
+	private EditText	phoneEditText;
+	private Button		saveButton;
+	private String		phone	= "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +63,19 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.phone_save: {
-
-				//设置手机
+				// 设置手机
+				phone = phoneEditText.getText().toString();
+				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
+												.setUserInfo("mphone", phone);
+				if (200000 == rvd.getCode()) {
+					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent();
+					intent.putExtra("phone", phone);
+					setResult(RESULT_OK, intent);
+					finish();
+				} else {
+					Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+				}
 				break;
 			}
 		}

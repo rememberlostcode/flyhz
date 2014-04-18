@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -163,9 +162,10 @@ public class AddressEditActivity extends BaseActivity implements OnClickListener
 				}
 				consignee.setZipcode(addressZipcode.getText().toString());
 
-				/******************如果是新增需要把ID传回来*****************/
-				RtnValueDto rvd = MyApplication.getInstance().getSubmitService().consigneeEdit(consignee);
-				if(200000 == rvd.getCode()){
+				/****************** 如果是新增需要把ID传回来 *****************/
+				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
+												.consigneeEdit(consignee);
+				if (200000 == rvd.getCode()) {
 					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
 					intent.putExtra("consignee", JSONUtil.getEntity2Json(consignee));

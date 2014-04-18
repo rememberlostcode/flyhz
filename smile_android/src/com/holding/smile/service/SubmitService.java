@@ -21,6 +21,7 @@ public class SubmitService {
 	private String	address_remove;
 	private String	address_set;
 	private String	password_reset;
+	private String	set_suer_info;
 
 	public SubmitService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
@@ -29,6 +30,7 @@ public class SubmitService {
 		address_remove = context.getString(R.string.address_remove);
 		address_set = context.getString(R.string.address_set);
 		password_reset = context.getString(R.string.reset_password);
+		set_suer_info = context.getString(R.string.set_suer_info);
 	}
 
 	/**
@@ -153,6 +155,45 @@ public class SubmitService {
 		param.put("npwd", newPwd);
 
 		String url = prefix_url + password_reset;
+		String rStr = URLUtil.getStringByGet(url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 设置用户信息
+	 * 
+	 * @param field
+	 *            参数名
+	 * @param value
+	 *            参数值
+	 * @return
+	 */
+	public RtnValueDto setUserInfo(String field, String value) {
+		if (field == null || value == null || "".equals(field) || "".equals(value)) {
+			return null;
+		}
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+
+		param.put("field", field);
+		param.put("fval", value);
+
+		String url = prefix_url + set_suer_info;
 		String rStr = URLUtil.getStringByGet(url, param);
 
 		if (rStr != null && !"".equals(rStr)) {

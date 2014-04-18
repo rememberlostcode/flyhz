@@ -67,7 +67,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.holding.smile.activity.DeliveryAddressActivity"
+            android:name="com.holding.smile.activity.AddressManagerActivity"
             android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:screenOrientation="portrait" >
         </activity>

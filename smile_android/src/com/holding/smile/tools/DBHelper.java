@@ -37,25 +37,9 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// 版本更新后的数据库变动
-		db.execSQL("DROP TABLE IF EXISTS SEARCH");
-		db.execSQL("DROP TABLE IF EXISTS USER");
-
 		createTable(db);
 
 		/********** 省市区 start **********/
-		db.execSQL("DROP TABLE IF EXISTS contury");
-		db.execSQL("DROP TABLE IF EXISTS province");
-		db.execSQL("DROP TABLE IF EXISTS city");
-		db.execSQL("DROP TABLE IF EXISTS district");
-		db.execSQL("create table contury"
-				+ "(id integer primary key autoincrement,name varchar,sort integer)");
-		db.execSQL("create table province"
-				+ "(id integer primary key autoincrement,name varchar,sort integer,type varchar,conturyid integer)");
-		db.execSQL("create table city"
-				+ "(id integer primary key autoincrement,name varchar,sort integer,proid integer)");
-		db.execSQL("create table district"
-				+ "(id integer primary key autoincrement,name varchar,sort integer,cityid integer)");
-
 		List<String> conList = ProvinceCityUtil.getConturyList();
 		List<String> pList = ProvinceCityUtil.getProvinceList();
 		List<String> cList = ProvinceCityUtil.getCityList();
@@ -84,9 +68,24 @@ public class DBHelper extends SQLiteOpenHelper {
 	 * @param db
 	 */
 	public void createTable(SQLiteDatabase db) {
+		db.execSQL("DROP TABLE IF EXISTS SEARCH");
+		db.execSQL("DROP TABLE IF EXISTS USER");
+		db.execSQL("DROP TABLE IF EXISTS contury");
+		db.execSQL("DROP TABLE IF EXISTS province");
+		db.execSQL("DROP TABLE IF EXISTS city");
+		db.execSQL("DROP TABLE IF EXISTS district");
+
 		db.execSQL("CREATE TABLE SEARCH"
 				+ "(ID INTEGER PRIMARY KEY AUTOINCREMENT, CONTENT VARCHAR,TIME TIMESTAMP,COUNT INTEGER)");
 		db.execSQL("CREATE TABLE USER"
 				+ "(CUID INTEGER PRIMARY KEY AUTOINCREMENT,USERNAME VARCHAR,TOKEN VARCHAR,MOBILEPHONE VARCHAR,IDENTITYCARD VARCHAR,QQ VARCHAR,EMAIL VARCHAR,WEIBO VARCHAR,WEIXIN VARCHAR,FLAG VARCHAR)");
+		db.execSQL("create table contury"
+				+ "(id integer primary key autoincrement,name varchar,sort integer)");
+		db.execSQL("create table province"
+				+ "(id integer primary key autoincrement,name varchar,sort integer,type varchar,conturyid integer)");
+		db.execSQL("create table city"
+				+ "(id integer primary key autoincrement,name varchar,sort integer,proid integer)");
+		db.execSQL("create table district"
+				+ "(id integer primary key autoincrement,name varchar,sort integer,cityid integer)");
 	}
 }

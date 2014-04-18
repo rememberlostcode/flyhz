@@ -36,22 +36,31 @@ import com.holding.smile.entity.SUser;
  */
 public class BaseActivity extends Activity {
 
-	public static final int		CATE_CODE			= 8;
-	public static final int		MORE_CODE			= 9;
-	public static final int		SEARCH_CODE			= 10;
-	protected static final int	UPLOAD_IMAGE_CODE	= 11;
-	public static final int		ADDRESS_EDIT_CODE	= 12;
-	public static final int		EMAIL_CODE	= 13;
-	public static final int		PHONE_CODE	= 14;
+	public static final int	CATE_CODE			= 8;
+	public static final int	MORE_CODE			= 9;
+	public static final int	SEARCH_CODE			= 10;
+	public static final int	UPLOAD_IMAGE_CODE	= 11;
+	/**
+	 * 编辑收货人地址操作代码
+	 */
+	public static final int	ADDRESS_EDIT_CODE	= 12;
+	/**
+	 * 编辑邮箱操作代码
+	 */
+	public static final int	EMAIL_CODE			= 13;
+	/**
+	 * 编辑手机号码操作代码
+	 */
+	public static final int	PHONE_CODE			= 14;
 
-	public Context				context;
+	public Context			context;
 
-	private LinearLayout		ly_content;
+	private LinearLayout	ly_content;
 	// 内容区域的布局
-	private View				contentView;
-	protected int				reqCode				= 0;
-	protected String			filepath;
-	protected ProgressBar		progressBar;
+	private View			contentView;
+	protected int			reqCode				= 0;
+	protected String		filepath;
+	protected ProgressBar	progressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

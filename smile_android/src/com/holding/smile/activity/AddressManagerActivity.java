@@ -14,14 +14,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyAddressAdapter;
 import com.holding.smile.dto.RtnValueDto;
-import com.holding.smile.entity.Category;
 import com.holding.smile.entity.Consignee;
 import com.holding.smile.tools.JSONUtil;
 
@@ -31,11 +29,10 @@ import com.holding.smile.tools.JSONUtil;
  * @author zhangb 2014年4月15日 下午3:22:11
  * 
  */
-public class DeliveryAddressActivity extends BaseActivity implements OnClickListener {
+public class AddressManagerActivity extends BaseActivity implements OnClickListener {
 
-	private TableLayout			settingAddressListLayout;
 	private Button				addressAdd;
-	private List<Consignee> list;
+	private List<Consignee>		list;
 	private MyAddressAdapter	adapter;
 	private ListView			listView;
 
@@ -49,7 +46,6 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 		TextView textView = displayHeaderDescription();
 		textView.setText("收货地址管理");
 
-		settingAddressListLayout = (TableLayout) findViewById(R.id.setting_address_list);
 		listView = (ListView) findViewById(R.id.list_address_list);
 		addressAdd = (Button) findViewById(R.id.setting_address_add);
 		addressAdd.setOnClickListener(this);
@@ -93,18 +89,18 @@ public class DeliveryAddressActivity extends BaseActivity implements OnClickList
 			if (data.getExtras() != null) {
 				String consigneeJson = data.getExtras().getString("consignee");
 				Consignee consignee = JSONUtil.getJson2Entity(consigneeJson, Consignee.class);
-				if(list==null){
+				if (list == null) {
 					list = new ArrayList<Consignee>();
 				}
 				boolean isAdd = true;
-				for(int i=0;i<list.size();i++){
-					if(list.get(i).getId()==consignee.getId()){
+				for (int i = 0; i < list.size(); i++) {
+					if (list.get(i).getId() == consignee.getId()) {
 						list.set(i, consignee);
 						isAdd = false;
 						break;
 					}
 				}
-				if(isAdd){
+				if (isAdd) {
 					list.add(consignee);
 				}
 				RtnValueDto consignees = new RtnValueDto();

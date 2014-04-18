@@ -1,8 +1,6 @@
 
 package com.holding.smile.activity;
 
-import com.holding.smile.R;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,18 +9,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.holding.smile.R;
+import com.holding.smile.dto.RtnValueDto;
 
 /**
  * 邮箱设置
- * @author silvermoon
- *
+ * 
+ * @author zhangb 2014年4月18日 上午8:32:02
+ * 
  */
 public class EmailActivity extends BaseActivity implements OnClickListener {
 
-	private EditText				emailEditText;
-	private Button					saveButton;
-	private Button					canleButton;
-	private String email = "";
+	private EditText	emailEditText;
+	private Button		saveButton;
+	private Button		canleButton;
+	private String		email	= "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +67,34 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.email_save: {
-
-				//设置邮箱
+				// 设置邮箱
+				email = emailEditText.getText().toString();
+				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
+												.setUserInfo("email", email);
+				if (200000 == rvd.getCode()) {
+					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent();
+					intent.putExtra("email", email);
+					setResult(RESULT_OK, intent);
+					finish();
+				} else {
+					Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+				}
 				break;
 			}
 			case R.id.email_canle: {
-
-				//解除绑定邮箱
+				// 解除绑定邮箱
+				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
+												.setUserInfo("email", "");
+				if (200000 == rvd.getCode()) {
+					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent();
+					intent.putExtra("email", "");
+					setResult(RESULT_OK, intent);
+					finish();
+				} else {
+					Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+				}
 				break;
 			}
 		}
