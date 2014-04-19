@@ -9,6 +9,7 @@ import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Consignee;
+import com.holding.smile.entity.Idcard;
 import com.holding.smile.protocol.PConsignee;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
@@ -199,6 +200,80 @@ public class SubmitService {
 		param.put("fval", value);
 
 		String url = prefix_url + set_suer_info;
+		String rStr = URLUtil.getStringByGet(url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+	
+	public RtnValueDto idcardSave(Idcard idcard) {
+		if (idcard == null) {
+			return null;
+		}
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (idcard.getId() != null) {
+			param.put("id", String.valueOf(idcard.getId()));
+		}
+		if (idcard.getName() != null) {
+			param.put("name", String.valueOf(idcard.getName()));
+		}
+		if (idcard.getIdcard()!= null) {
+			param.put("idcard", String.valueOf(idcard.getIdcard()));
+		}
+
+		String url = "";
+		if (idcard.getId() != null) {
+			url = prefix_url + address_modify;
+		} else {
+			url = prefix_url + address_add;
+		}
+		String rStr = URLUtil.getStringByGet(url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PConsignee pcons = JSONUtil.getJson2Entity(rStr, PConsignee.class);
+				if (pcons != null) {
+					rvd.setConsignee(pcons.getData());
+					rvd.setCode(pcons.getCode());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	public RtnValueDto idcardRemove(Integer dicadrId) {
+		if (dicadrId == null) {
+			return null;
+		}
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+
+		param.put("id", String.valueOf(dicadrId));
+
+		String url = prefix_url + address_remove;
 		String rStr = URLUtil.getStringByGet(url, param);
 
 		if (rStr != null && !"".equals(rStr)) {

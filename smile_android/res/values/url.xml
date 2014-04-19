@@ -26,5 +26,6 @@
     <string name="reset_password">/user/resetPwd.json</string>
     <string name="releive_email">/user/releiveEmail.json</string>
     <string name="set_suer_info">/user/setInfo.json</string>
+    <string name="idcard_list">/user/idcards.json</string>
     
 </resources>

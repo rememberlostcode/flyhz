@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.Consignee;
+import com.holding.smile.entity.Idcard;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JIndexJGoods;
 import com.holding.smile.entity.JSort;
@@ -29,6 +30,7 @@ public class RtnValueDto {
 	private List<Consignee>		consigneeData;	// 返回收货人地址集合
 	private Consignee			consignee;		// 返回收货人地址
 	private SUser				userData;		// 返回用户数据
+	private List<Idcard>		idcardsData;	// 返身份证集合
 
 	public Integer getCode() {
 		return code;
@@ -124,5 +126,13 @@ public class RtnValueDto {
 
 	public void setConsignee(Consignee consignee) {
 		this.consignee = consignee;
+	}
+
+	public List<Idcard> getIdcardsData() {
+		return idcardsData;
+	}
+
+	public void setIdcardsData(List<Idcard> idcardsData) {
+		this.idcardsData = idcardsData;
 	}
 }

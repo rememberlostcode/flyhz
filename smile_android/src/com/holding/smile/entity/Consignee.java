@@ -23,7 +23,7 @@ public class Consignee implements Serializable {
 	private Integer				telephone;
 	private String				mobilephone;
 	private UserDto				user;
-	private IdentitycardDto		identitycard;
+	private Idcard		identitycard;
 	private boolean				isDel;
 
 	public Integer getId() {
@@ -122,11 +122,11 @@ public class Consignee implements Serializable {
 		this.user = user;
 	}
 
-	public IdentitycardDto getIdentitycard() {
+	public Idcard getIdentitycard() {
 		return identitycard;
 	}
 
-	public void setIdentitycard(IdentitycardDto identitycard) {
+	public void setIdentitycard(Idcard identitycard) {
 		this.identitycard = identitycard;
 	}
 

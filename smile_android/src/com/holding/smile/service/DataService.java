@@ -22,6 +22,7 @@ import com.holding.smile.protocol.PCategory;
 import com.holding.smile.protocol.PConsignees;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PGoodsDetail;
+import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexJGoods;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
@@ -60,6 +61,7 @@ public class DataService {
 	private String			jGoods_search_more_url;
 	private String			address_list;
 	private String			user_info;
+	private String			idcard_list;
 
 	public DataService(Context context) {
 		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
@@ -84,6 +86,7 @@ public class DataService {
 		jGoods_search_more_url = context.getString(R.string.jGoods_search_more_url);
 		address_list = context.getString(R.string.address_list);
 		user_info = context.getString(R.string.user_info);
+		idcard_list = context.getString(R.string.idcard_list);
 	}
 
 	private String setJson(String fileName) {
@@ -598,6 +601,37 @@ public class DataService {
 				if (user != null) {
 					rvd.setUserData(user.getData());
 					rvd.setCode(user.getCode());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+	
+	/**
+	 * 获取当前用户的收件人身份证信息
+	 * @return
+	 */
+	public RtnValueDto getIdcardsList() {
+		RtnValueDto rvd = new RtnValueDto();
+		String url = prefix_url + idcard_list;
+		System.out.println(url);
+//		String rStr = URLUtil.getStringByGet(url, null);
+		String rStr = "{\"data\":[{\"id\":\"1\",\"name\":\"张斌\",\"idcard\":\"330424198711111111\",\"photo\":\"/cocah_intern/200526_s.jpeg\"},{\"id\":\"2\",\"name\":\"张斌2\",\"idcard\":\"330424198712222222\",\"photo\":\"/cocah_intern/200574_s.jpeg\"}]}";
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PIdcards idcards = JSONUtil.getJson2Entity(rStr, PIdcards.class);
+				if (idcards != null) {
+					rvd.setIdcardsData(idcards.getData());
+					rvd.setCode(idcards.getCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

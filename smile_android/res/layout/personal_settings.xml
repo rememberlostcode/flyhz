@@ -17,10 +17,10 @@
             android:layout_margin="10.0dip"
             android:background="@color/coral" >
 
-            <!-- 我的收货地址 -->
+            <!-- 我的身份证 -->
 
             <LinearLayout
-                android:id="@+id/user_info_address_layout"
+                android:id="@+id/user_info_idcard_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -35,11 +35,10 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:hint="@string/user_info_myaddress"
+                    android:hint="我的身份证"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/user_info_address"
                     android:layout_width="20dp"
                     android:layout_height="fill_parent"
                     android:layout_gravity="right"
@@ -53,7 +52,7 @@
                 android:id="@+id/user_info_horizontal_line2"
                 android:layout_width="fill_parent"
                 android:layout_height="1.0dip"
-                android:layout_below="@id/user_info_address_layout"
+                android:layout_below="@id/user_info_idcard_layout"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5.0dip"
                 android:layout_marginRight="5.0dip"

@@ -77,6 +77,16 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.holding.smile.activity.IdcardManagerActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.holding.smile.activity.IdcardEditActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.holding.smile.activity.ResetPwdActivity"
             android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:screenOrientation="portrait" >
