@@ -6,7 +6,6 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +22,7 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
+import com.holding.smile.myview.MyViewPager;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
 
@@ -36,10 +36,10 @@ import com.holding.smile.tools.StrUtils;
 public class GoodsDetailActivity extends BaseActivity implements OnClickListener {
 
 	private ListView		listView;
-	private ViewPager		mViewPager;
+    private MyViewPager    mViewPager;
 	private List<View>		viewList;
 	private MyPagerAdapter	pagerAdapter;
-	// 装点点的ImageView数组
+    // 装点点的ImageView数组
 	private ImageView[]		tips;
 	private List<String>	picList	= new ArrayList<String>();
 
@@ -50,7 +50,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 
-		// 底部布局
+        // 底部布局
 		View view = displayFooterMainBuyBtn();
 		View nowBuy = view.findViewById(R.id.nowbuy);
 		View addCart = view.findViewById(R.id.addcart);
@@ -93,14 +93,14 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				n.setText(jGoods.getN().trim());
 			}
 			if (jGoods.getPp() != null) {
-				pp.setText("￥" + jGoods.getPp());
+                pp.setText("￥" + jGoods.getPp());
 			}
 			// if (jGoods.getLp() != null) {
-			// po.setText("￥" + jGoods.getLp());
-			// po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
+            // po.setText("￥" + jGoods.getLp());
+            // po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
 			// }
 			// if (jGoods.getSp() != null) {
-			// save.setText("省￥" + jGoods.getSp());
+            // save.setText("省￥" + jGoods.getSp());
 			// }
 			if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
 				d.setText(jGoods.getD().trim());
@@ -109,12 +109,12 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				picList.add(jGoods.getP()[i]);
 			}
 
-			mViewPager = (ViewPager) findViewById(R.id.viewpager);
-			addViewPager();// 添加页卡
-			// 实例化适配器
+            mViewPager = (MyViewPager) findViewById(R.id.mypicpager);
+            addViewPager();// 添加页卡
+            // 实例化适配器
 			pagerAdapter = new MyPagerAdapter(viewList);
 			mViewPager.setAdapter(pagerAdapter);
-			mViewPager.setCurrentItem(0); // 设置默认当前页
+            mViewPager.setCurrentItem(0); // 设置默认当前页
 		}
 
 	}
@@ -127,7 +127,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				break;
 			}
 			case R.id.nowbuy: {
-				Toast.makeText(context, "您点了立即购买", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "您点了立即购买", Toast.LENGTH_SHORT).show();
 				// Intent intent = new Intent(this, SearchGoodsActivity.class);
 				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				// startActivity(intent);
@@ -135,7 +135,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				break;
 			}
 			case R.id.addcart: {
-				Toast.makeText(context, "您点了加入购物车", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "您点了加入购物车", Toast.LENGTH_SHORT).show();
 				// Intent intent = new Intent(this, SearchGoodsActivity.class);
 				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				// startActivity(intent);
@@ -145,26 +145,30 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		super.onClick(v);
 	}
 
-	/**
-	 * 添加页卡
-	 */
+    /**
+     * 添加页卡
+     */
 	private void addViewPager() {
 		viewList = new ArrayList<View>();
 		LayoutInflater inflater = getLayoutInflater();
-		// 添加页卡数据
+        // 添加页卡数据
 		if (picList != null && !picList.isEmpty()) {
+            float density = MyApplication.getInstance().getDensity();
+            int cWidth = (int) (MyApplication.getInstance().getScreenWidth() * density);
 			int size = picList.size();
 			for (int i = 0; i < size; i++) {
 				View view = inflater.inflate(R.layout.good_pic_item, null);
+                view.setLayoutParams(new LayoutParams(cWidth, cWidth));
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setMaxHeight(cWidth);
+                imageView.setMinimumHeight(cWidth);
 				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
-				viewList.add(imageView);
+                viewList.add(view);
 			}
 
-			ViewGroup group = (ViewGroup) findViewById(R.id.viewGroup);
-			group.removeAllViews();
-			// 将点点加入到ViewGroup中
+            ViewGroup group = (ViewGroup) findViewById(R.id.view_group);
+            // 将点点加入到ViewGroup中
 			tips = new ImageView[size];
 			for (int i = 0; i < tips.length; i++) {
 				ImageView imageView = new ImageView(this);
@@ -185,7 +189,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			}
 		}
 
-		// 设置监听，主要是设置点点的背景
+        // 设置监听，主要是设置点点的背景
 		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
 			@Override
@@ -203,11 +207,11 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 			}
 
-			/**
-			 * 设置选中的tip的背景
-			 * 
-			 * @param selectItems
-			 */
+			                                                                                                                                                                                                            /**
+             * 设置选中的tip的背景
+             * 
+             * @param selectItems
+             */
 			private void setImageBackground(int selectItems) {
 				for (int i = 0; i < tips.length; i++) {
 					if (i == selectItems) {

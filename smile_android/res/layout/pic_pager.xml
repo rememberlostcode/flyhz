@@ -4,26 +4,26 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
+    
+    <com.holding.smile.myview.MyViewPager
+        android:id="@+id/mypicpager"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
-     <com.holding.smile.myview.MyViewPager
-         android:id="@+id/viewpager"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
 
-     <RelativeLayout
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:orientation="vertical" >
-
-         <LinearLayout
-             android:id="@+id/viewGroup"
-             android:layout_width="fill_parent"
-             android:layout_height="wrap_content"
-             android:layout_alignParentBottom="true"
-             android:layout_marginBottom="0dip"
-             android:gravity="center_horizontal"
-             android:orientation="horizontal" >
-         </LinearLayout>
-     </RelativeLayout>
-
+        <LinearLayout
+            android:id="@+id/view_group"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dip"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </RelativeLayout>
+	     
 </LinearLayout>
