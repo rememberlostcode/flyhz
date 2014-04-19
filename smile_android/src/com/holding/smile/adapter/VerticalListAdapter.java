@@ -34,9 +34,9 @@ import com.holding.smile.myview.MyGridView;
 public class VerticalListAdapter extends BaseAdapter {
 
 	private float				density		= MyApplication.getInstance().getDensity();
-	// 列宽
+    // 列宽
 	private int					cWidth		= (int) (80*density);
-	// 水平间距
+    // 水平间距
 	private int					hSpacing	= (int) (10*density);
 	private LayoutInflater		mInflater;
 	private List<BrandJGoods>	brandJGoodsList;
@@ -47,7 +47,12 @@ public class VerticalListAdapter extends BaseAdapter {
 		this.cid = cid;
 	}
 
-	@Override
+    // 设置分类ID
+    public void setCid(Integer cid) {
+        this.cid = cid;
+    }
+
+    @Override
 	public int getCount() {
 		return brandJGoodsList.size();
 	}

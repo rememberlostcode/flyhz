@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +34,6 @@ import com.holding.smile.tools.StrUtils;
  */
 public class GoodsDetailActivity extends BaseActivity implements OnClickListener {
 
-	private ListView		listView;
     private MyViewPager    mViewPager;
 	private List<View>		viewList;
 	private MyPagerAdapter	pagerAdapter;
@@ -207,7 +205,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 			}
 
-			                                                                                                                                                                                                            /**
+			                                                                                                                                                                                                                                                            /**
              * 设置选中的tip的背景
              * 
              * @param selectItems
@@ -227,16 +225,17 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		picList.clear();
-		picList = null;
-		if (listView != null) {
-			listView.invalidate();
-			listView = null;
+        if (mViewPager != null) {
+            mViewPager.invalidate();
+            mViewPager = null;
 		}
 		if (pagerAdapter != null) {
 			pagerAdapter.notifyDataSetChanged();
 			pagerAdapter = null;
 		}
+        picList.clear();
+        picList = null;
+        tips = null;
 		setResult(RESULT_CANCELED, null);
 	}
 }
