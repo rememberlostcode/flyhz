@@ -20,7 +20,9 @@ import android.widget.Toast;
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.entity.JColor;
 import com.holding.smile.entity.JGoods;
+import com.holding.smile.myview.MyLinearLayout;
 import com.holding.smile.myview.MyViewPager;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
@@ -34,55 +36,72 @@ import com.holding.smile.tools.StrUtils;
  */
 public class GoodsDetailActivity extends BaseActivity implements OnClickListener {
 
-    private MyViewPager    mViewPager;
-	private List<View>		viewList;
+	private MyViewPager		mViewPager;
+	private List<View>		viewList	= new ArrayList<View>();
 	private MyPagerAdapter	pagerAdapter;
-    // 装点点的ImageView数组
+	// 装点点的ImageView数组
 	private ImageView[]		tips;
-	private List<String>	picList	= new ArrayList<String>();
+	private JGoods			jGoods		= null;
+	private List<String>	picList		= new ArrayList<String>();
+	private List<JColor>	colorList	= new ArrayList<JColor>();	// 相同款号的商品颜色列表
+	private Integer			gid			= null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentLayout(R.layout.goods_detail_view);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
-
-        // 底部布局
-		View view = displayFooterMainBuyBtn();
-		View nowBuy = view.findViewById(R.id.nowbuy);
-		View addCart = view.findViewById(R.id.addcart);
-		nowBuy.setOnClickListener(this);
-		addCart.setOnClickListener(this);
-
-		Intent intent = getIntent();
-		Integer gid = (Integer) intent.getExtras().getSerializable("gid");
-		if (gid == null) {
-			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
-		}
-		JGoods jGoods = null;
-		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(gid);
-		if (rtnValue != null)
-			jGoods = rtnValue.getGoodDetail();
-		if (jGoods == null) {
-			if (rtnValue.getValidate() != null
-					&& StrUtils.isNotEmpty(rtnValue.getValidate().getMessage())) {
-				Toast.makeText(context, rtnValue.getValidate().getMessage(), Toast.LENGTH_SHORT)
-						.show();
-			} else {
-				Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
-			}
-		}
 
 		TextView headerDesc = displayHeaderDescription();
 		headerDesc.setText(R.string.good_detail);
 
-		TextView b = (TextView) findViewById(R.id.b);
-		TextView n = (TextView) findViewById(R.id.n);
-		TextView pp = (TextView) findViewById(R.id.pp);
-		TextView d = (TextView) findViewById(R.id.d);
+		Intent intent = getIntent();
+		gid = (Integer) intent.getExtras().getSerializable("gid");
+		if (gid != null) {
+			initGoods();
+			// 加载颜色
+			loadColors(jGoods);
+		} else {
+			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
+	/**
+	 * 初始化产品
+	 * 
+	 * @param gid
+	 */
+	private void initGoods() {
+		picList.clear();
+		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(gid);
+		if (rtnValue != null) {
+			jGoods = rtnValue.getGoodDetail();
+			if (jGoods == null) {
+				if (rtnValue.getValidate() != null
+						&& StrUtils.isNotEmpty(rtnValue.getValidate().getMessage())) {
+					Toast.makeText(context, rtnValue.getValidate().getMessage(), Toast.LENGTH_SHORT)
+							.show();
+				} else {
+					Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
 
 		if (jGoods != null) {
+			setContentLayout(R.layout.goods_detail_view);
+			// 底部布局
+			View view = displayFooterMainBuyBtn();
+			View nowBuy = view.findViewById(R.id.nowbuy);
+			View addCart = view.findViewById(R.id.addcart);
+			nowBuy.setOnClickListener(this);
+			addCart.setOnClickListener(this);
+			TextView b = (TextView) findViewById(R.id.b);
+			TextView n = (TextView) findViewById(R.id.n);
+			TextView pp = (TextView) findViewById(R.id.pp);
+			TextView d = (TextView) findViewById(R.id.d);
+
+			// colorView = (MyGridView) findViewById(R.id.grid_color);
 
 			if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
 				b.setText(jGoods.getBe().trim());
@@ -91,30 +110,103 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				n.setText(jGoods.getN().trim());
 			}
 			if (jGoods.getPp() != null) {
-                pp.setText("￥" + jGoods.getPp());
+				pp.setText("￥" + jGoods.getPp());
 			}
 			// if (jGoods.getLp() != null) {
-            // po.setText("￥" + jGoods.getLp());
-            // po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
+			// po.setText("￥" + jGoods.getLp());
+			// po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
 			// }
 			// if (jGoods.getSp() != null) {
-            // save.setText("省￥" + jGoods.getSp());
+			// save.setText("省￥" + jGoods.getSp());
 			// }
 			if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
 				d.setText(jGoods.getD().trim());
 			}
-			for (int i = 0; i < jGoods.getP().length; i++) {
-				picList.add(jGoods.getP()[i]);
+			if (jGoods.getP() != null) {
+				for (int i = 0; i < jGoods.getP().length; i++) {
+					picList.add(jGoods.getP()[i]);
+				}
 			}
 
-            mViewPager = (MyViewPager) findViewById(R.id.mypicpager);
-            addViewPager();// 添加页卡
-            // 实例化适配器
-			pagerAdapter = new MyPagerAdapter(viewList);
-			mViewPager.setAdapter(pagerAdapter);
-            mViewPager.setCurrentItem(0); // 设置默认当前页
+			if (mViewPager == null)
+				mViewPager = (MyViewPager) findViewById(R.id.mypicpager);
+
+			addViewPager();// 添加页卡
+			if (pagerAdapter == null) {
+				// 实例化适配器
+				pagerAdapter = new MyPagerAdapter(viewList);
+				mViewPager.setAdapter(pagerAdapter);
+			} else {
+				pagerAdapter.setListViews(viewList);
+			}
+			mViewPager.setCurrentItem(0); // 设置默认当前页
+		}
+	}
+
+	/**
+	 * 设置颜色标签布局
+	 */
+	private void loadColors(JGoods jGoods) {
+		if (jGoods == null)
+			return;
+
+		colorList.clear();
+		// 处理同款颜色
+		if (jGoods.getAg() != null) {
+			Integer[] ag = jGoods.getAg();
+			int size = ag.length;
+			for (int i = 0; i < size; i++) {
+				JColor jcolor = new JColor();
+				jcolor.setId(ag[i]);
+				jcolor.setColor("颜色" + i);
+				colorList.add(jcolor);
+			}
 		}
 
+		final MyLinearLayout colorLayout = (MyLinearLayout) findViewById(R.id.color_list);
+		colorLayout.setColorList(context, colorList);
+		int childCount = colorLayout.getChildCount();
+		for (int i = 0; i < childCount; i++) {
+			View v = colorLayout.getChildAt(i);
+			v.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					JColor color = colorList.get(v.getId());
+					if (color != null) {
+						gid = color.getId();
+						initGoods();
+						Toast.makeText(context, "您选择了" + color.getColor() + "色", Toast.LENGTH_SHORT)
+								.show();
+					}
+				}
+			});
+		}
+
+		// if (colorAdapter == null)
+		// colorAdapter = new ColorAdapter(context, colorList);
+		// colorAdapter.notifyDataSetChanged();
+
+		// if (colorView != null) {
+		// int ii = colorAdapter.getCount();
+		// colorView.setNumColumns(ii);
+		// colorView.setAdapter(colorAdapter);
+		// colorView.setOnItemClickListener(new OnItemClickListener() {
+		//
+		// @Override
+		// public void onItemClick(AdapterView<?> parent, View view, int
+		// position, long id) {
+		// // TODO Auto-generated method stub
+		// JColor color = colorList.get(position);
+		// if (color != null) {
+		// gid = color.getId();
+		// initGoods();
+		// Toast.makeText(context, "您选择了" + color.getColor() + "色",
+		// Toast.LENGTH_SHORT)
+		// .show();
+		// }
+		// }
+		// });
+		// }
 	}
 
 	@Override
@@ -125,7 +217,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				break;
 			}
 			case R.id.nowbuy: {
-                Toast.makeText(context, "您点了立即购买", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "您点了立即购买", Toast.LENGTH_SHORT).show();
 				// Intent intent = new Intent(this, SearchGoodsActivity.class);
 				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				// startActivity(intent);
@@ -133,7 +225,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				break;
 			}
 			case R.id.addcart: {
-                Toast.makeText(context, "您点了加入购物车", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "您点了加入购物车", Toast.LENGTH_SHORT).show();
 				// Intent intent = new Intent(this, SearchGoodsActivity.class);
 				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				// startActivity(intent);
@@ -143,30 +235,31 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		super.onClick(v);
 	}
 
-    /**
-     * 添加页卡
-     */
+	/**
+	 * 添加页卡
+	 */
 	private void addViewPager() {
-		viewList = new ArrayList<View>();
+		viewList.clear();
 		LayoutInflater inflater = getLayoutInflater();
-        // 添加页卡数据
+		// 添加页卡数据
 		if (picList != null && !picList.isEmpty()) {
-            float density = MyApplication.getInstance().getDensity();
-            int cWidth = (int) (MyApplication.getInstance().getScreenWidth() * density);
+			float density = MyApplication.getInstance().getDensity();
+			int cWidth = (int) (MyApplication.getInstance().getScreenWidth() * density);
 			int size = picList.size();
 			for (int i = 0; i < size; i++) {
 				View view = inflater.inflate(R.layout.good_pic_item, null);
-                view.setLayoutParams(new LayoutParams(cWidth, cWidth));
+				view.setLayoutParams(new LayoutParams(cWidth, cWidth));
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imageView.setMaxHeight(cWidth);
-                imageView.setMinimumHeight(cWidth);
+				imageView.setMaxHeight(cWidth);
+				imageView.setMinimumHeight(cWidth);
 				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
-                viewList.add(view);
+				viewList.add(view);
 			}
 
-            ViewGroup group = (ViewGroup) findViewById(R.id.view_group);
-            // 将点点加入到ViewGroup中
+			ViewGroup group = (ViewGroup) findViewById(R.id.view_group);
+			group.removeAllViews();
+			// 将点点加入到ViewGroup中
 			tips = new ImageView[size];
 			for (int i = 0; i < tips.length; i++) {
 				ImageView imageView = new ImageView(this);
@@ -187,7 +280,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			}
 		}
 
-        // 设置监听，主要是设置点点的背景
+		// 设置监听，主要是设置点点的背景
 		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
 			@Override
@@ -205,11 +298,11 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 			}
 
-			                                                                                                                                                                                                                                                            /**
-             * 设置选中的tip的背景
-             * 
-             * @param selectItems
-             */
+			/**
+			 * 设置选中的tip的背景
+			 * 
+			 * @param selectItems
+			 */
 			private void setImageBackground(int selectItems) {
 				for (int i = 0; i < tips.length; i++) {
 					if (i == selectItems) {
@@ -225,17 +318,17 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-        if (mViewPager != null) {
-            mViewPager.invalidate();
-            mViewPager = null;
+		if (mViewPager != null) {
+			mViewPager.invalidate();
+			mViewPager = null;
 		}
 		if (pagerAdapter != null) {
 			pagerAdapter.notifyDataSetChanged();
 			pagerAdapter = null;
 		}
-        picList.clear();
-        picList = null;
-        tips = null;
+		picList.clear();
+		picList = null;
+		tips = null;
 		setResult(RESULT_CANCELED, null);
 	}
 }

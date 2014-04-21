@@ -22,6 +22,8 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.holding.smile.tools.StrUtils;
+
 public class ImageLoader {
 
 	private MemoryCache				memoryCache	= new MemoryCache();
@@ -37,6 +39,9 @@ public class ImageLoader {
 
 	// 最主要的方法
 	public void DisplayImage(String url, ImageView imageView, boolean isLoadOnlyFromCache) {
+		if (!StrUtils.isNotEmpty(url))
+			return;
+
 		imageViews.put(imageView, url);
 
 		// 先从内存缓存中查找

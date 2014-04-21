@@ -9,34 +9,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.cache.ImageLoader;
+import com.holding.smile.entity.JColor;
 
 /**
  * 
- * 类说明:
+ * 类说明:颜色图片选择适配器
  * 
  * @author robin
  * @version 创建时间：2013-12-3 下午6:23:23
  * 
  */
-public class ImageAdapter extends BaseAdapter {
+public class ColorAdapter extends BaseAdapter {
 
-	private int				maxWidth		= MyApplication.getInstance().getScreenWidth();
-	private int				maxHeight		= MyApplication.getInstance().getScreenHeight();
 	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
-	private List<String>	picList;
+	private List<JColor>	colorList;
 	private Context			context;
 
-	public ImageAdapter(Context context, List<String> picList) {
+	public ColorAdapter(Context context, List<JColor> colorList) {
 		this.context = context;
-		this.picList = picList;
+		this.colorList = colorList;
 	}
 
 	public int getCount() {
-		return picList.size();
+		return colorList.size();
 	}
 
 	public Object getItem(int position) {
@@ -48,6 +48,8 @@ public class ImageAdapter extends BaseAdapter {
 	}
 
 	static class ViewHolder {
+		TextView	id;
+		TextView	color;
 		ImageView	p;
 	}
 
@@ -64,8 +66,8 @@ public class ImageAdapter extends BaseAdapter {
 		}
 		holder.p.setImageResource(R.drawable.empty_photo);
 
-		if (picList != null && !picList.isEmpty()) {
-			String url = context.getString(R.string.jGoods_img_url) + picList.get(position);
+		if (colorList != null && !colorList.isEmpty()) {
+			String url = context.getString(R.string.jGoods_img_url) + colorList.get(position);
 			holder.p.setTag(url);
 			mImageLoader.DisplayImage(url, holder.p, false);
 		}

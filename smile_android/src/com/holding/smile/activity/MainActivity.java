@@ -47,12 +47,12 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 	private ViewPager			mViewPager;
 	private List<View>			viewList;
 	private MyPagerAdapter		pagerAdapter;
-    // 装点点的ImageView数组
+	// 装点点的ImageView数组
 	private ImageView[]			tips;
 
 	private VerticalListAdapter	vlAdapter;
 	private MyListView			listView;
-    private List<JActivity>     recActList         = new ArrayList<JActivity>();  // 活动商品
+	private List<JActivity>		recActList			= new ArrayList<JActivity>();	// 活动商品
 	private List<BrandJGoods>	brandJGoodsList		= new ArrayList<BrandJGoods>();
 	private Integer				cid					= null;
 	private TextView			headerDescription;
@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		initView();
 		startTask();
 
-        /* 自动登录另起一个线程 */
+		/* 自动登录另起一个线程 */
 		mUIHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 				R.layout.index_recommend, null);
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
 		listView = (MyListView) findViewById(R.id.list_view);
-        listView.addHeaderView(indexViewLayout);// 添加子View
+		listView.addHeaderView(indexViewLayout);// 添加子View
 
 		mViewPager = (ViewPager) indexViewLayout.findViewById(R.id.viewpager);
 		vlAdapter = new VerticalListAdapter(brandJGoodsList, cid);
@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 				break;
 			}
 			case R.id.btn_cate: {
-                // Toast.makeText(context, "您点了类别！", Toast.LENGTH_LONG).show();
+				// Toast.makeText(context, "您点了类别！", Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(this, CategoryActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, CATE_CODE);
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 				Category cate = (Category) data.getExtras().getSerializable("cate");
 				if (cate != null) {
 					cid = cate.getId();
-                    vlAdapter.setCid(cid);
+					vlAdapter.setCid(cid);
 					headerDescription.setText(cate.getName());
 					onRefresh();
 				}
@@ -164,7 +164,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 			msg.obj = rGoods.getIndexData();
 			msg.sendToTarget();
 		} else {
-            Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -176,7 +176,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 			msg.obj = rGoods;
 			msg.sendToTarget();
 		} else {
-            Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -199,13 +199,13 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		recActList = null;
 	};
 
-	        /**
-     * 添加页卡
-     */
+	/**
+	 * 添加页卡
+	 */
 	private void addViewPager() {
 		viewList = new ArrayList<View>();
 		LayoutInflater inflater = getLayoutInflater();
-        // 添加页卡数据
+		// 添加页卡数据
 		if (recActList != null && !recActList.isEmpty()) {
 			int size = recActList.size();
 			for (int i = 0; i < size; i++) {
@@ -218,7 +218,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 					@Override
 					public void onClick(View arg0) {
-                        Toast.makeText(context, "您点击了活动区域" + jAct.getId() + "!", Toast.LENGTH_SHORT)
+						Toast.makeText(context, "您点击了活动区域" + jAct.getId() + "!", Toast.LENGTH_SHORT)
 								.show();
 					}
 				});
@@ -227,7 +227,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 			ViewGroup group = (ViewGroup) findViewById(R.id.viewGroup);
 			group.removeAllViews();
-            // 将点点加入到ViewGroup中
+			// 将点点加入到ViewGroup中
 			tips = new ImageView[size];
 			for (int i = 0; i < tips.length; i++) {
 				ImageView imageView = new ImageView(this);
@@ -248,7 +248,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 			}
 		}
 
-        // 设置监听，主要是设置点点的背景
+		// 设置监听，主要是设置点点的背景
 		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
 			@Override
@@ -266,11 +266,11 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 			}
 
-			                        /**
-             * 设置选中的tip的背景
-             * 
-             * @param selectItems
-             */
+			/**
+			 * 设置选中的tip的背景
+			 * 
+			 * @param selectItems
+			 */
 			private void setImageBackground(int selectItems) {
 				for (int i = 0; i < tips.length; i++) {
 					if (i == selectItems) {
@@ -296,7 +296,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 															brandJGoodsList.clear();
 															JIndexJGoods obj = (JIndexJGoods) msg.obj;
 
-                                                         // 活动区商品
+															// 活动区商品
 															List<JActivity> strings = obj.getActivity();
 															if (strings != null
 																	&& !strings.isEmpty()) {
@@ -306,15 +306,15 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																	recActList.add(each);
 																}
 
-                                                             addViewPager();// 添加页卡
-                                                             // 实例化适配器
+																addViewPager();// 添加页卡
+																// 实例化适配器
 																pagerAdapter = new MyPagerAdapter(
 																		viewList);
 																mViewPager.setAdapter(pagerAdapter);
-                                                             mViewPager.setCurrentItem(0); // 设置默认当前页
+																mViewPager.setCurrentItem(0); // 设置默认当前页
 															}
 
-                                                         // 品牌区
+															// 品牌区
 															List<BrandJGoods> brands = obj.getBrand();
 															if (brands != null && !brands.isEmpty()) {
 																int bSize = brands.size();
@@ -324,7 +324,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																}
 															}
 														} else {
-                                                         Toast.makeText(context, "暂无数据",
+															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
 														}
 														vlAdapter.notifyDataSetChanged();
@@ -335,7 +335,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 														brandJGoodsList.clear();
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-                                                         // 品牌区
+															// 品牌区
 															List<BrandJGoods> brands = obj.getBrandData();
 															if (brands != null && !brands.isEmpty()) {
 																int bSize = brands.size();
@@ -345,7 +345,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																}
 															}
 														} else {
-                                                         Toast.makeText(context, "暂无数据",
+															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
 														}
 														vlAdapter.notifyDataSetChanged();
@@ -365,7 +365,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 															} else {
 																Toast.makeText(
 																		context,
-                                                                     "自动登录成功！欢迎您,"
+																		"自动登录成功！欢迎您,"
 																				+ user.getUsername(),
 																		Toast.LENGTH_SHORT).show();
 															}
