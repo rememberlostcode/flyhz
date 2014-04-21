@@ -34,9 +34,9 @@ import com.holding.smile.tools.URLUtil;
 
 public class DataService {
 
-	        /**
-     * 是否从网络获取数据
-     */
+	/**
+	 * 是否从网络获取数据
+	 */
 	public static boolean	getDataFromNet	= true;
 
 	private String			jGoodsTwoInitJson;
@@ -108,11 +108,11 @@ public class DataService {
 		return result;
 	}
 
-	        /**
-     * 首页初始化
-     * 
-     * @return
-     */
+	/**
+	 * 首页初始化
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getIndexListInit(Integer cid) {
 		RtnValueDto obj = null;
 		if (getDataFromNet) {
@@ -123,11 +123,11 @@ public class DataService {
 		return obj;
 	}
 
-	        /**
-     * 首页推荐品牌商品
-     * 
-     * @return
-     */
+	/**
+	 * 首页推荐品牌商品
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getRecommendBrandsListInit(Integer cid) {
 		RtnValueDto obj = null;
 		if (getDataFromNet) {
@@ -138,11 +138,11 @@ public class DataService {
 		return obj;
 	}
 
-	        /**
-     * 单一品牌查看全部
-     * 
-     * @return
-     */
+	/**
+	 * 单一品牌查看全部
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getBrandJGoodsListInit(Integer bid, Integer cid, String seqorderType) {
 		RtnValueDto obj = null;
 		if (getDataFromNet) {
@@ -153,15 +153,15 @@ public class DataService {
 		return obj;
 	}
 
-	        /**
-     * 获取排序类型列表
-     * 
-     * @param bid品牌ID
-     * @param cid分类ID
-     * @param seqorderType排序类型
-     * @param seqorderValue序号
-     * @return
-     */
+	/**
+	 * 获取排序类型列表
+	 * 
+	 * @param bid品牌ID
+	 * @param cid分类ID
+	 * @param seqorderType排序类型
+	 * @param seqorderValue序号
+	 * @return
+	 */
 	public List<SortType> getSortTypeList() {
 		List<SortType> results = new ArrayList<SortType>();
 		if (getDataFromNet) {
@@ -170,27 +170,27 @@ public class DataService {
 			results = pst.getData();
 		} else {
 			SortType sort = new SortType();
-            sort.setN("销售量");
+			sort.setN("销售量");
 			sort.setV("sales");
 			results.add(sort);
 
 			sort = new SortType();
-            sort.setN("折扣");
+			sort.setN("折扣");
 			sort.setV("discount");
 			results.add(sort);
 		}
 		return results;
 	}
 
-	        /**
-     * 单一品牌查看更多
-     * 
-     * @param bid品牌ID
-     * @param cid分类ID
-     * @param seqorderType排序类型
-     * @param seqorderValue序号
-     * @return
-     */
+	/**
+	 * 单一品牌查看更多
+	 * 
+	 * @param bid品牌ID
+	 * @param cid分类ID
+	 * @param seqorderType排序类型
+	 * @param seqorderValue序号
+	 * @return
+	 */
 	public RtnValueDto getBrandJGoodsListMore(Integer bid, Integer cid, String seqorderType,
 			Integer seqorderValue) {
 		RtnValueDto obj = null;
@@ -202,15 +202,15 @@ public class DataService {
 		return obj;
 	}
 
-	        /**
-     * 搜索物品初始化
-     * 
-     * @param keywords
-     *            关键词
-     * @param mLocation
-     *            经纬度
-     * @return
-     */
+	/**
+	 * 搜索物品初始化
+	 * 
+	 * @param keywords
+	 *            关键词
+	 * @param mLocation
+	 *            经纬度
+	 * @return
+	 */
 	public RtnValueDto getJGoodsSearchListInit(String keywords, String seqorderType,
 			Integer seqorderValue) {
 		RtnValueDto obj = null;
@@ -224,17 +224,17 @@ public class DataService {
 		return obj;
 	}
 
-	        /**
-     * 搜索物品刷新
-     * 
-     * @param keywords
-     *            关键词
-     * @param jGoodsFirst
-     *            第一个物品
-     * @param mLocation
-     *            经纬度
-     * @return
-     */
+	/**
+	 * 搜索物品刷新
+	 * 
+	 * @param keywords
+	 *            关键词
+	 * @param jGoodsFirst
+	 *            第一个物品
+	 * @param mLocation
+	 *            经纬度
+	 * @return
+	 */
 	public RtnValueDto getJGoodsSearchListRefresh(String keywords, JGoods jGoodsFirst,
 			String seqorderType, Integer seqorderValue) {
 		RtnValueDto obj = null;
@@ -252,17 +252,17 @@ public class DataService {
 		return obj;
 	}
 
-	        /**
-     * 搜索物品更多
-     * 
-     * @param keywords
-     *            关键词
-     * @param jGoodsLast
-     *            最后一个物品
-     * @param mLocation
-     *            经纬度
-     * @return
-     */
+	/**
+	 * 搜索物品更多
+	 * 
+	 * @param keywords
+	 *            关键词
+	 * @param jGoodsLast
+	 *            最后一个物品
+	 * @param mLocation
+	 *            经纬度
+	 * @return
+	 */
 	public RtnValueDto getJGoodsSearchListMore(String keywords, JGoods jGoodsLast,
 			String seqorderType, Integer seqorderValue) {
 		RtnValueDto obj = null;
@@ -280,18 +280,18 @@ public class DataService {
 		return obj;
 	}
 
-	        /**
-     * 首页商品
-     * 
-     * @return
-     */
+	/**
+	 * 首页商品
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getIndexJGoods(Integer cid) {
 		RtnValueDto rvd = new RtnValueDto();
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
 			param.put("cid", String.valueOf(cid));
 
-        String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_index_url, param);
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_index_url, param);
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PIndexJGoods indexJGoods = JSONUtil.getJson2Entity(rStr, PIndexJGoods.class);
@@ -311,11 +311,11 @@ public class DataService {
 		return rvd;
 	}
 
-	        /**
-     * 首页推荐品牌商品
-     * 
-     * @return
-     */
+	/**
+	 * 首页推荐品牌商品
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getRecommendBrands(Integer cid) {
 		RtnValueDto rvd = new RtnValueDto();
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -342,15 +342,15 @@ public class DataService {
 		return rvd;
 	}
 
-	        /**
-     * 单一品牌查询
-     * 
-     * @param bid
-     * @param cid
-     * @param seqorderType
-     * @param seqorderValue
-     * @return
-     */
+	/**
+	 * 单一品牌查询
+	 * 
+	 * @param bid
+	 * @param cid
+	 * @param seqorderType
+	 * @param seqorderValue
+	 * @return
+	 */
 
 	public RtnValueDto getBrandGoods(Integer bid, Integer cid, String seqorderType,
 			Integer seqorderValue) {
@@ -391,17 +391,17 @@ public class DataService {
 		return rvd;
 	}
 
-	        /**
-     * 搜索物品
-     * 
-     * @param keywords
-     *            关键词
-     * @param seqorder
-     *            序号
-     * @param seqorderType
-     * @param seqorderValue
-     * @return
-     */
+	/**
+	 * 搜索物品
+	 * 
+	 * @param keywords
+	 *            关键词
+	 * @param seqorder
+	 *            序号
+	 * @param seqorderType
+	 * @param seqorderValue
+	 * @return
+	 */
 	public RtnValueDto searchGoods(String keywords, Integer seqorder, String seqorderType,
 			Integer seqorderValue) {
 		RtnValueDto rvd = new RtnValueDto();
@@ -441,11 +441,11 @@ public class DataService {
 		return rvd;
 	}
 
-	        /**
-     * 商品分类
-     * 
-     * @return
-     */
+	/**
+	 * 商品分类
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getCategorys() {
 		RtnValueDto rvd = new RtnValueDto();
 		List<Category> results = new ArrayList<Category>();
@@ -469,11 +469,11 @@ public class DataService {
 		return rvd;
 	}
 
-	        /**
-     * 商品排行列表
-     * 
-     * @return
-     */
+	/**
+	 * 商品排行列表
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getSortList() {
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sort_url, null);
@@ -496,11 +496,11 @@ public class DataService {
 		return rvd;
 	}
 
-	        /**
-     * 商品排行榜列表
-     * 
-     * @return
-     */
+	/**
+	 * 商品排行榜列表
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getJGoodsSortList(String sortUrl) {
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = "";
@@ -525,12 +525,12 @@ public class DataService {
 		return rvd;
 	}
 
-	        /**
-     * 商品详情
-     * 
-     * @param id
-     * @return
-     */
+	/**
+	 * 商品详情
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public RtnValueDto getGoodsDetail(Integer id) {
 		RtnValueDto rvd = new RtnValueDto();
 		String url = this.prefix_url + this.jGoods_detail_url;
@@ -558,11 +558,11 @@ public class DataService {
 		return rvd;
 	}
 
-	        /**
-     * 获得收货人列表
-     * 
-     * @return
-     */
+	/**
+	 * 获得收货人列表
+	 * 
+	 * @return
+	 */
 	public RtnValueDto getConsigneeList() {
 		RtnValueDto rvd = new RtnValueDto();
 		String url = prefix_url + address_list;
@@ -615,16 +615,17 @@ public class DataService {
 		}
 		return rvd;
 	}
-	
+
 	/**
 	 * 获取当前用户的收件人身份证信息
+	 * 
 	 * @return
 	 */
 	public RtnValueDto getIdcardsList() {
 		RtnValueDto rvd = new RtnValueDto();
 		String url = prefix_url + idcard_list;
 		System.out.println(url);
-//		String rStr = URLUtil.getStringByGet(url, null);
+		// String rStr = URLUtil.getStringByGet(url, null);
 		String rStr = "{\"data\":[{\"id\":\"1\",\"name\":\"张斌\",\"idcard\":\"330424198711111111\",\"photo\":\"/cocah_intern/200526_s.jpeg\"},{\"id\":\"2\",\"name\":\"张斌2\",\"idcard\":\"330424198712222222\",\"photo\":\"/cocah_intern/200574_s.jpeg\"}]}";
 		if (rStr != null && !"".equals(rStr)) {
 			try {

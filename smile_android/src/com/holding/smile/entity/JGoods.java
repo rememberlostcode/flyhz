@@ -95,6 +95,9 @@ public class JGoods implements Serializable {
 
 	private String				_version_;
 
+	/**
+	 * 同款号商品ID数组
+	 */
 	private Integer[]			ag;
 
 	public Integer[] getAg() {
