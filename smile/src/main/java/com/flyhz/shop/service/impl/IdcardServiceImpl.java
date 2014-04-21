@@ -48,7 +48,7 @@ public class IdcardServiceImpl implements IdcardService {
 					+ origName.substring(origName.lastIndexOf("."));
 			fileRepository.saveToTemp(multipartFile.getInputStream(), origName);
 			// 更新收件人地址中身份证照片路径
-			idcardModel.setPhoto("/photo/" + origName);
+			idcardModel.setPhoto("/idcard/" + origName);
 		} catch (IOException e) {
 			// 文件保存失败
 			// throw new ValidateException(101020);
