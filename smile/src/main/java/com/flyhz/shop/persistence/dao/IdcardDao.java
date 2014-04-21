@@ -5,4 +5,6 @@ import com.flyhz.shop.persistence.entity.IdcardModel;
 
 public interface IdcardDao extends GenericDao<IdcardModel> {
 
+	public void insertIdcard(IdcardModel idcardModel);
+
 }

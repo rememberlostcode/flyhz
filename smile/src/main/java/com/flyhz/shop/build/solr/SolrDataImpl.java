@@ -83,32 +83,64 @@ public class SolrDataImpl implements SolrData {
 		ProductBuildDto product = null;
 		SolrInputDocument doc = null;
 
+		String[] pictures = null;
 		for (int i = 0; i < productList.size(); i++) {
 			product = productList.get(i);
 			doc = new SolrInputDocument();
 			doc.addField("id", product.getId());// ID
 			doc.addField("n", product.getN());// 名称
 			doc.addField("d", product.getD());// 说明
+			doc.addField("bs", product.getBs());// 款号
 			doc.addField("lp", product.getLp());// 本地价格
 			doc.addField("pp", product.getPp());// 代购价格
 
-			// 计算差价
+			// 计算差价（即折扣）
 			if (product.getLp() != null && product.getPp() != null) {
 				doc.addField("sp", product.getLp().subtract(product.getPp()));
 			} else {
 				doc.addField("sp", 0);
 			}
-			doc.addField("p", product.getP());// 封面
+
+			if (594 == product.getId()) {
+				System.out.println(product);
+			}
+			// 原图封面
+			if (product.getImgs() != null) {
+				pictures = product.getImgs().replace("[", "").replace("]", "").replace("\"", "")
+									.split(",");
+				for (int k = 0; k < pictures.length; k++) {
+					doc.addField("imgs", pictures[k]);
+				}
+			}
+			// 大图封面
+			if (product.getBp() != null) {
+				pictures = product.getBp().replace("[", "").replace("]", "").replace("\"", "")
+									.split(",");
+				for (int k = 0; k < pictures.length; k++) {
+					doc.addField("bp", pictures[k]);
+				}
+			}
+			// 小图封面
+			if (product.getP() != null) {
+				pictures = product.getP().replace("[", "").replace("]", "").replace("\"", "")
+									.split(",");
+				for (int k = 0; k < pictures.length; k++) {
+					doc.addField("p", pictures[k]);
+				}
+			}
+
 			doc.addField("t", DateUtil.strToDateLong(product.getT()));// 时间
 			doc.addField("bid", product.getBid());// 品牌ID
 			doc.addField("be", product.getBe());// 品牌名称
 			doc.addField("cid", product.getCid());// 分类ID
+			doc.addField("ce", product.getCe());// 分类名称
 
 			doc.addField("sf", productFraction.getProductFraction(product));// 分数
 			doc.addField("st", product.getSt());// 时间排序值
 			doc.addField("sd", product.getSd());// 折扣排序值
 			doc.addField("ss", product.getSs());// 销售量排序值
 			doc.addField("sn", product.getSn());// 销售量
+			doc.addField("zsn", product.getZsn());// 一周销售量
 			docs.add(doc);
 		}
 

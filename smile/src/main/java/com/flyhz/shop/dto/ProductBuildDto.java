@@ -25,9 +25,17 @@ public class ProductBuildDto {
 	 */
 	private String		bs;
 	/**
-	 * 商品封面
+	 * 商品小图封面
 	 */
 	private String		p;
+	/**
+	 * 商品大图封面
+	 */
+	private String		bp;
+	/**
+	 * 商品原图封面
+	 */
+	private String		imgs;
 	/**
 	 * 商品最后更新时间
 	 */
@@ -93,10 +101,6 @@ public class ProductBuildDto {
 	 * 前一周销售数量
 	 */
 	private Integer		zsn;
-	/**
-	 * 大图封面
-	 */
-	private String		cover;
 
 	public Integer getId() {
 		return id;
@@ -266,11 +270,19 @@ public class ProductBuildDto {
 		this.zsn = zsn;
 	}
 
-	public String getCover() {
-		return cover;
+	public String getBp() {
+		return bp;
 	}
 
-	public void setCover(String cover) {
-		this.cover = cover;
+	public void setBp(String bp) {
+		this.bp = bp;
+	}
+
+	public String getImgs() {
+		return imgs;
+	}
+
+	public void setImgs(String imgs) {
+		this.imgs = imgs;
 	}
 }

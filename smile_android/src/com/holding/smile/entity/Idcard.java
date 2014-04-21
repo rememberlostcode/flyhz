@@ -5,8 +5,9 @@ import java.io.Serializable;
 
 /**
  * 身份证
+ * 
  * @author silvermoon
- *
+ * 
  */
 public class Idcard implements Serializable {
 
@@ -17,6 +18,8 @@ public class Idcard implements Serializable {
 	private String				idcard;
 	private String				photo;
 	private Integer				userId;
+	private String				gmtCreate;
+	private String				gmtModify;
 
 	public Integer getId() {
 		return id;
@@ -56,6 +59,22 @@ public class Idcard implements Serializable {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public String getGmtCreate() {
+		return gmtCreate;
+	}
+
+	public void setGmtCreate(String gmtCreate) {
+		this.gmtCreate = gmtCreate;
+	}
+
+	public String getGmtModify() {
+		return gmtModify;
+	}
+
+	public void setGmtModify(String gmtModify) {
+		this.gmtModify = gmtModify;
 	}
 
 }

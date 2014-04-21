@@ -1,7 +1,6 @@
 
 package com.holding.smile.activity;
 
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -21,20 +20,21 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Idcard;
 
 /**
- * 收货地址编辑
+ * 身份证信息编辑
  * 
- * @author zhangb 2014年4月15日 下午3:22:11
+ * @author zhangb 2014年4月21日 上午11:19:41
  * 
  */
 public class IdcardEditActivity extends BaseActivity implements OnClickListener {
-	private Idcard				idcard;
+	private Idcard		idcard;
+	private String		picturePath;
 
-	private EditText				idcardName;
-	private EditText				idcardNumber;
-	private Button					idcardPhotoButton;
-	private Button					idcardSave;
-	private Button					idcardDelete;
-	private ImageView				imageView;
+	private EditText	idcardName;
+	private EditText	idcardNumber;
+	private Button		idcardPhotoButton;
+	private Button		idcardSave;
+	private Button		idcardDelete;
+	private ImageView	imageView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +61,16 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 		try {
 			Intent intent = getIntent();
-			if (intent.getExtras() != null
-					&& intent.getExtras().getSerializable("idcard") != null) {
+			if (intent.getExtras() != null && intent.getExtras().getSerializable("idcard") != null) {
 				idcard = (Idcard) (intent.getExtras().getSerializable("idcard"));
 				if (idcard != null) {
 					idcardName.setText(idcard.getName());
 					idcardNumber.setText(idcard.getIdcard());
+					if (idcard.getPhoto() != null && !"".equals(idcard.getPhoto())) {
+						MyApplication.getImageLoader().DisplayImage(
+								MyApplication.jgoods_img_url + idcard.getPhoto(), imageView, false);
+						imageView.setVisibility(View.VISIBLE);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -101,11 +105,14 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				}
 				idcard.setIdcard(idcardNumber.getText().toString());
 
-
-				/****************** 如果是新增需要把ID传回来 *****************/
-				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
-												.idcardSave(idcard);
-				if (200000 == rvd.getCode()) {
+				RtnValueDto rvd = null;
+				try {
+					rvd = MyApplication.getInstance().getSubmitService()
+										.idcardSave(idcard, picturePath);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (rvd != null && 200000 == rvd.getCode()) {
 					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
 					intent.putExtra("idcard", idcard);
@@ -157,9 +164,10 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			cursor.moveToFirst();
 
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-			String picturePath = cursor.getString(columnIndex);
+			picturePath = cursor.getString(columnIndex);
 			cursor.close();
 			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+			imageView.setVisibility(View.VISIBLE);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

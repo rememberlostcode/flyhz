@@ -1,7 +1,12 @@
 
 package com.holding.smile.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Context;
 
@@ -12,6 +17,7 @@ import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.Idcard;
 import com.holding.smile.protocol.PConsignee;
 import com.holding.smile.tools.Constants;
+import com.holding.smile.tools.FileUtils;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.URLUtil;
 
@@ -21,18 +27,21 @@ public class SubmitService {
 	private String	address_add;
 	private String	address_modify;
 	private String	address_remove;
-	private String	address_set;
 	private String	password_reset;
 	private String	set_suer_info;
+	private String	idcard_save;
+	private String	idcard_delete;
 
 	public SubmitService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
 		address_add = context.getString(R.string.address_add);
 		address_modify = context.getString(R.string.address_modify);
 		address_remove = context.getString(R.string.address_remove);
-		address_set = context.getString(R.string.address_set);
 		password_reset = context.getString(R.string.reset_password);
 		set_suer_info = context.getString(R.string.set_suer_info);
+
+		idcard_save = context.getString(R.string.idcard_save);
+		idcard_delete = context.getString(R.string.idcard_delete);
 	}
 
 	/**
@@ -218,38 +227,31 @@ public class SubmitService {
 		}
 		return rvd;
 	}
-	
-	public RtnValueDto idcardSave(Idcard idcard) {
+
+	public RtnValueDto idcardSave(Idcard idcard, String filePath) throws Exception {
 		if (idcard == null) {
 			return null;
 		}
 		RtnValueDto rvd = new RtnValueDto();
-		HashMap<String, String> param = new HashMap<String, String>();
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		if (idcard.getId() != null) {
-			param.put("id", String.valueOf(idcard.getId()));
+			params.add(new BasicNameValuePair("id", String.valueOf(idcard.getId())));
 		}
 		if (idcard.getName() != null) {
-			param.put("name", String.valueOf(idcard.getName()));
+			params.add(new BasicNameValuePair("name", String.valueOf(idcard.getName())));
 		}
-		if (idcard.getIdcard()!= null) {
-			param.put("idcard", String.valueOf(idcard.getIdcard()));
+		if (idcard.getIdcard() != null) {
+			params.add(new BasicNameValuePair("idcard", String.valueOf(idcard.getIdcard())));
 		}
 
 		String url = "";
-		if (idcard.getId() != null) {
-			url = prefix_url + address_modify;
-		} else {
-			url = prefix_url + address_add;
-		}
-		String rStr = URLUtil.getStringByGet(url, param);
+		url = prefix_url + idcard_save;
+		// String rStr = URLUtil.getStringByGet(url, param);
+		String rStr = FileUtils.uploadIdcardPhoto(url, params, filePath);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
-				PConsignee pcons = JSONUtil.getJson2Entity(rStr, PConsignee.class);
-				if (pcons != null) {
-					rvd.setConsignee(pcons.getData());
-					rvd.setCode(pcons.getCode());
-				}
+				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -273,7 +275,7 @@ public class SubmitService {
 
 		param.put("id", String.valueOf(dicadrId));
 
-		String url = prefix_url + address_remove;
+		String url = prefix_url + idcard_delete;
 		String rStr = URLUtil.getStringByGet(url, param);
 
 		if (rStr != null && !"".equals(rStr)) {

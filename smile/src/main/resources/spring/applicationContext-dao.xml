@@ -38,6 +38,10 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.SalesvolumeDao"></property>
 	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	<bean id="idcardDao" name="idcardDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.IdcardDao"></property>
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 </beans>
 
 
