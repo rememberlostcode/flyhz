@@ -23,6 +23,7 @@ import com.holding.smile.protocol.PConsignees;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexJGoods;
+import com.holding.smile.protocol.POrder;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.protocol.PUser;
@@ -61,6 +62,10 @@ public class DataService {
 	private String			address_list;
 	private String			user_info;
 	private String			idcard_list;
+	private String			order_inform_url;
+	private String			order_updateQty_url;
+	private String			order_updateCartQty_url;
+	private String			order_confirm_url;
 
 	public DataService(Context context) {
 		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
@@ -86,6 +91,11 @@ public class DataService {
 		address_list = context.getString(R.string.address_list);
 		user_info = context.getString(R.string.user_info);
 		idcard_list = context.getString(R.string.idcard_list);
+
+		order_inform_url = context.getString(R.string.order_inform_url);
+		order_updateQty_url = context.getString(R.string.order_updateQty_url);
+		order_updateCartQty_url = context.getString(R.string.order_updateCartQty_url);
+		order_confirm_url = context.getString(R.string.order_confirm_url);
 	}
 
 	private String setJson(String fileName) {
@@ -638,6 +648,52 @@ public class DataService {
 				ValidateDto vd = new ValidateDto();
 				vd.setMessage(Constants.MESSAGE_EXCEPTION);
 				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 购买时生成的订单信息,pids与cartIds只传一种
+	 * 
+	 * @param pids
+	 *            格式：pid_qty(如：12_1,12_2)
+	 * @param cartIds
+	 *            购物车ID列表
+	 * @param addressId
+	 *            地址ID
+	 * @return
+	 */
+	public RtnValueDto getOrderInform(String pidQty, List<Integer> cartIds, Integer addressId) {
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (StrUtils.isNotEmpty(pidQty)) {
+			param.put("pids", pidQty);
+		} else {
+			if (cartIds != null && !cartIds.isEmpty()) {
+				for (Integer cartid : cartIds) {
+					param.put("cartIds", String.valueOf(cartid));
+				}
+			}
+		}
+		if (addressId != null) {
+			param.put("cid", String.valueOf(addressId));
+		}
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_inform_url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
+				if (pc != null)
+					rvd.setOrderData(pc.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
 			}
 		} else {
 			ValidateDto vd = new ValidateDto();

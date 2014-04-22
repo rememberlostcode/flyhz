@@ -169,15 +169,13 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			return;
 
 		// 处理同款颜色
-		for (int i = 0; i < 5; i++) {
-			for (JGoods g : details) {
-				if (g.getC() != null) {
-					JColor jcolor = new JColor();
-					jcolor.setId(g.getId());
-					jcolor.setC(g.getC());
-					jcolor.setCi(g.getCi());
-					colorList.add(jcolor);
-				}
+		for (JGoods g : details) {
+			if (g.getC() != null) {
+				JColor jcolor = new JColor();
+				jcolor.setId(g.getId());
+				jcolor.setC(g.getC());
+				jcolor.setCi(g.getCi());
+				colorList.add(jcolor);
 			}
 		}
 
@@ -194,8 +192,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 						gid = color.getId();
 						scolor.setText(color.getC());
 						initGoods();
-						// Toast.makeText(context, "您选择了" + color.getC(),
-						// Toast.LENGTH_SHORT).show();
 					}
 				}
 			});
@@ -212,9 +208,10 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			}
 			case R.id.nowbuy: {
 				Toast.makeText(context, "您点了立即购买", Toast.LENGTH_SHORT).show();
-				// Intent intent = new Intent(this, SearchGoodsActivity.class);
-				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				// startActivity(intent);
+				Intent intent = new Intent(this, OrderInformActivity.class);
+				intent.putExtra("gid", gid);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
 				// finish();
 				break;
 			}

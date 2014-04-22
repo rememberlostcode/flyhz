@@ -13,6 +13,7 @@
     <string name="good_detail">商品详情</string>
     <string name="choose_color">选择颜色：</string>
     <string name="good_desc">物品描述</string>
+    <string name="order_inform">订单确认信息页</string>
     
     <!-- 搜索 -->
     <string name="search">搜索</string>

@@ -31,6 +31,7 @@ public class RtnValueDto {
 	private Consignee			consignee;		// 返回收货人地址
 	private SUser				userData;		// 返回用户数据
 	private List<Idcard>		idcardsData;	// 返身份证集合
+	private OrderDto			orderData;		// 订单数据
 
 	public Integer getCode() {
 		return code;
@@ -134,5 +135,13 @@ public class RtnValueDto {
 
 	public void setIdcardsData(List<Idcard> idcardsData) {
 		this.idcardsData = idcardsData;
+	}
+
+	public OrderDto getOrderData() {
+		return orderData;
+	}
+
+	public void setOrderData(OrderDto orderData) {
+		this.orderData = orderData;
 	}
 }

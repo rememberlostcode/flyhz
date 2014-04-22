@@ -57,6 +57,11 @@
         </activity>
         
         <activity
+            android:name="com.holding.smile.activity.OrderInformActivity"
+            android:finishOnTaskLaunch="true">
+        </activity>
+        
+        <activity
             android:name="com.holding.smile.activity.CategoryActivity"
             android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:screenOrientation="portrait"

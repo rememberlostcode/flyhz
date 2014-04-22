@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
@@ -23,6 +24,7 @@ import com.holding.smile.activity.MainTwoActivity;
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.dto.BrandJGoods;
 import com.holding.smile.myview.MyGridView;
+import com.holding.smile.tools.Constants;
 
 /**
  * 
@@ -34,10 +36,10 @@ import com.holding.smile.myview.MyGridView;
 public class VerticalListAdapter extends BaseAdapter {
 
 	private float				density		= MyApplication.getInstance().getDensity();
-    // 列宽
-	private int					cWidth		= (int) (80*density);
-    // 水平间距
-	private int					hSpacing	= (int) (10*density);
+	// 列宽
+	private int					cWidth		= (int) (80 * density);
+	// 水平间距
+	private int					hSpacing	= (int) (10 * density);
 	private LayoutInflater		mInflater;
 	private List<BrandJGoods>	brandJGoodsList;
 	private Integer				cid;
@@ -47,12 +49,12 @@ public class VerticalListAdapter extends BaseAdapter {
 		this.cid = cid;
 	}
 
-    // 设置分类ID
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
+	// 设置分类ID
+	public void setCid(Integer cid) {
+		this.cid = cid;
+	}
 
-    @Override
+	@Override
 	public int getCount() {
 		return brandJGoodsList.size();
 	}
@@ -136,21 +138,27 @@ public class VerticalListAdapter extends BaseAdapter {
 				holder.brand.setText(brandJGoods.getN());
 				holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
 
+					@SuppressWarnings("unused")
 					@Override
 					public void onClick(View arg0) {
-						Intent intent = new Intent(context, MainTwoActivity.class);
-						intent.putExtra("bid", brandJGoods.getId());
-						intent.putExtra("bn", brandJGoods.getN());
-						intent.putExtra("cid", cid);
-						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-						Activity activity = (Activity) context;
-						activity.startActivityForResult(intent, BaseActivity.MORE_CODE);
-						activity.overridePendingTransition(0, 0);
+						if (brandJGoods != null) {
+							Intent intent = new Intent(context, MainTwoActivity.class);
+							intent.putExtra("bid", brandJGoods.getId());
+							intent.putExtra("bn", brandJGoods.getN());
+							intent.putExtra("cid", cid);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							Activity activity = (Activity) context;
+							activity.startActivityForResult(intent, BaseActivity.MORE_CODE);
+							activity.overridePendingTransition(0, 0);
+						} else {
+							Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT)
+									.show();
+							hlAdapter.notifyDataSetChanged();// 更新一下显示的数据
+						}
 					}
 				});
 			}
 		}
 		return convertView;
 	}
-
 }
