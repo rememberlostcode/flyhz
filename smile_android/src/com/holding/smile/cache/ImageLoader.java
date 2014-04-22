@@ -54,6 +54,27 @@ public class ImageLoader {
 		}
 	}
 
+	/**
+	 * 先从缓存中获取图片，没有再去网络下载并加入缓存中
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public Bitmap getBitmapFromCache(String url) {
+		if (!StrUtils.isNotEmpty(url))
+			return null;
+		// 先从内存缓存中查找
+		Bitmap bitmap = memoryCache.get(url);
+		if (bitmap != null) {
+			return bitmap;
+		} else {
+			bitmap = getBitmap(url);
+			if (bitmap != null)
+				memoryCache.put(url, bitmap);
+			return bitmap;
+		}
+	}
+
 	private void queuePhoto(String url, ImageView imageView) {
 		PhotoToLoad p = new PhotoToLoad(url, imageView);
 		executorService.submit(new PhotosLoader(p));

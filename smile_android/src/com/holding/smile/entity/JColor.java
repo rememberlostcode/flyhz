@@ -20,11 +20,11 @@ public class JColor implements Serializable {
 	/**
 	 * 颜色名称
 	 */
-	private String				color;
+	private String				c;
 	/**
 	 * 颜色图片路径
 	 */
-	private String				colorimg;
+	private String				ci;
 
 	public Integer getId() {
 		return id;
@@ -34,20 +34,20 @@ public class JColor implements Serializable {
 		this.id = id;
 	}
 
-	public String getColor() {
-		return color;
+	public String getC() {
+		return c;
 	}
 
-	public void setColor(String color) {
-		this.color = color;
+	public void setC(String c) {
+		this.c = c;
 	}
 
-	public String getColorimg() {
-		return colorimg;
+	public String getCi() {
+		return ci;
 	}
 
-	public void setColorimg(String colorimg) {
-		this.colorimg = colorimg;
+	public void setCi(String ci) {
+		this.ci = ci;
 	}
 
 }

@@ -21,7 +21,6 @@ import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.protocol.PCategory;
 import com.holding.smile.protocol.PConsignees;
 import com.holding.smile.protocol.PGoods;
-import com.holding.smile.protocol.PGoodsDetail;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexJGoods;
 import com.holding.smile.protocol.PSort;
@@ -528,22 +527,22 @@ public class DataService {
 	/**
 	 * 商品详情
 	 * 
-	 * @param id
+	 * @param bs
 	 * @return
 	 */
-	public RtnValueDto getGoodsDetail(Integer id) {
+	public RtnValueDto getGoodsDetail(String bs) {
 		RtnValueDto rvd = new RtnValueDto();
 		String url = this.prefix_url + this.jGoods_detail_url;
 		HashMap<String, String> param = new HashMap<String, String>();
-		if (id != null)
-			param.put("id", String.valueOf(id));
+		if (bs != null)
+			param.put("bs", String.valueOf(bs));
 
 		String rStr = URLUtil.getStringByGet(url, param);
 		if (rStr != null && !"".equals(rStr)) {
 			try {
-				PGoodsDetail detail = JSONUtil.getJson2Entity(rStr, PGoodsDetail.class);
-				if (detail != null)
-					rvd.setGoodDetail(detail.getData());
+				PGoods details = JSONUtil.getJson2Entity(rStr, PGoods.class);
+				if (details != null)
+					rvd.setData(details.getData());
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();

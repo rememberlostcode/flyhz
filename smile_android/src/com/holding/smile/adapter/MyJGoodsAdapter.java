@@ -31,7 +31,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 		this.mBusy = busy;
 	}
 
-    // 自己定义的构造函数
+	// 自己定义的构造函数
 	public MyJGoodsAdapter(Context context, List<JGoods> contacts) {
 		this.jGoodsList = contacts;
 		this.context = context;
@@ -70,7 +70,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			// MyApplication.getInstance().getDensity()));
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
-            holder.sn = (TextView) convertView.findViewById(R.id.sn);
+			holder.sn = (TextView) convertView.findViewById(R.id.sn);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -82,14 +82,14 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			holder.n.setText(jGoods.getN().trim());
 		}
 		if (jGoods.getPp() != null) {
-            holder.pp.setText("￥" + jGoods.getPp());
+			holder.pp.setText("￥" + jGoods.getPp());
 		}
-        if (jGoods.getSn() != null) {
-            holder.sn.setText("已售 " + jGoods.getSn() + " 件");
-            holder.sn.setVisibility(ViewGroup.VISIBLE);
-        } else {
-            holder.sn.setVisibility(ViewGroup.GONE);
-        }
+		if (jGoods.getSn() != null) {
+			holder.sn.setText("已售 " + jGoods.getSn() + " 件");
+			holder.sn.setVisibility(ViewGroup.VISIBLE);
+		} else {
+			holder.sn.setVisibility(ViewGroup.GONE);
+		}
 		if (jGoods.getP() != null && jGoods.getP().length > 0) {
 			String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
 			holder.p.setTag(url);
@@ -106,6 +106,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 				Intent intent = new Intent(context, GoodsDetailActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				intent.putExtra("gid", jGoods.getId());
+				intent.putExtra("bs", jGoods.getBs());
 				((Activity) parent.getContext()).startActivityForResult(intent,
 						BaseActivity.SEARCH_CODE);
 			}

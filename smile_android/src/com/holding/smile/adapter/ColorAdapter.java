@@ -56,10 +56,9 @@ public class ColorAdapter extends BaseAdapter {
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = LayoutInflater.from(context).inflate(R.layout.good_pic_item, parent,
-					false);
+			convertView = LayoutInflater.from(context).inflate(R.layout.color_item, parent, false);
 			holder = new ViewHolder();
-			holder.p = (ImageView) convertView.findViewById(R.id.good_pic);
+			holder.p = (ImageView) convertView.findViewById(R.id.good_color);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
