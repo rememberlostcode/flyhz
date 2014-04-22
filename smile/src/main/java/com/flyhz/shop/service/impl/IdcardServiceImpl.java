@@ -75,6 +75,7 @@ public class IdcardServiceImpl implements IdcardService {
 		}
 		IdcardModel im = new IdcardModel();
 		im.setId(id);
+		im.setUserId(userId);
 		idcardDao.delete(im);
 	}
 

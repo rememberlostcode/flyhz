@@ -110,7 +110,7 @@ public class MyLinearLayout extends LinearLayout {
 				JColor color = colorList.get(i);
 				ImageView tv = (ImageView) v.findViewById(R.id.good_color);
 				if (StrUtils.isNotEmpty(color.getColorimg())) {
-					String url = context.getString(R.string.jGoods_img_url) + color.getColorimg();
+					String url = MyApplication.jgoods_img_url + color.getColorimg();
 					tv.setTag(url);
 					mImageLoader.DisplayImage(url, tv, false);
 					v.setTag(color.getColorimg());

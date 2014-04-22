@@ -138,8 +138,9 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					finish();
 				} else {
 					if (idcard != null && idcard.getId() != null) {
-						Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+						Toast.makeText(context, "删除失败，请重试！", Toast.LENGTH_SHORT).show();
 					}
+					finish();
 				}
 				break;
 			}

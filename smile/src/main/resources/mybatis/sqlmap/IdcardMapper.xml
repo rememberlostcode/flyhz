@@ -16,7 +16,7 @@
 	<select id="getModelList" parameterType="IdcardModel" resultType="IdcardModel">
 	    select id,name,idcard,photo,user_id,gmt_create,gmt_modify,user_id
 	    from idcard
-	    where user_id = #{userId}
+	    where user_id = #{userId} and is_del = '0'
 	</select>
 	
 	<update id="update" parameterType="IdcardModel">
