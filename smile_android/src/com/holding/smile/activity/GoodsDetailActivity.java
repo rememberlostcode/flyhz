@@ -41,10 +41,17 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	private MyPagerAdapter	pagerAdapter;
 	// 装点点的ImageView数组
 	private ImageView[]		tips;
+	private TextView		b;										// 品牌名
+	private TextView		n;										// 商品名
+	private TextView		pp;									// 价格
+	private TextView		d;										// 描述
+	private TextView		scolor;								// 选择的颜色
+	private List<JGoods>	details		= new ArrayList<JGoods>();
 	private JGoods			jGoods		= null;
 	private List<String>	picList		= new ArrayList<String>();
 	private List<JColor>	colorList	= new ArrayList<JColor>();	// 相同款号的商品颜色列表
-	private Integer			gid			= null;
+	private Integer			gid			= null;					// 商品ID
+	private String			bs			= null;					// 款号
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +63,40 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		headerDesc.setText(R.string.good_detail);
 
 		Intent intent = getIntent();
+		bs = intent.getExtras().getString("bs");
 		gid = (Integer) intent.getExtras().getSerializable("gid");
-		if (gid != null) {
-			initGoods();
-			// 加载颜色
-			loadColors(jGoods);
+		if (StrUtils.isNotEmpty(bs)) {
+			RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(bs);
+			if (rtnValue != null) {
+				details = rtnValue.getData();
+				if (details == null) {
+					if (rtnValue.getValidate() != null
+							&& StrUtils.isNotEmpty(rtnValue.getValidate().getMessage())) {
+						Toast.makeText(context, rtnValue.getValidate().getMessage(),
+								Toast.LENGTH_SHORT).show();
+					} else {
+						Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+					}
+				}
+			}
+			if (details != null && !details.isEmpty()) {
+				setContentLayout(R.layout.goods_detail_view);
+				// 底部布局
+				View view = displayFooterMainBuyBtn();
+				View nowBuy = view.findViewById(R.id.nowbuy);
+				View addCart = view.findViewById(R.id.addcart);
+				nowBuy.setOnClickListener(this);
+				addCart.setOnClickListener(this);
+
+				b = (TextView) findViewById(R.id.b);
+				n = (TextView) findViewById(R.id.n);
+				pp = (TextView) findViewById(R.id.pp);
+				d = (TextView) findViewById(R.id.d);
+				scolor = (TextView) findViewById(R.id.select_color);
+				initGoods();
+				// 加载颜色
+				loadColors();
+			}
 		} else {
 			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
 		}
@@ -70,38 +106,20 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	/**
 	 * 初始化产品
 	 * 
-	 * @param gid
 	 */
 	private void initGoods() {
 		picList.clear();
-		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(gid);
-		if (rtnValue != null) {
-			jGoods = rtnValue.getGoodDetail();
-			if (jGoods == null) {
-				if (rtnValue.getValidate() != null
-						&& StrUtils.isNotEmpty(rtnValue.getValidate().getMessage())) {
-					Toast.makeText(context, rtnValue.getValidate().getMessage(), Toast.LENGTH_SHORT)
-							.show();
-				} else {
-					Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+		if (details != null && !details.isEmpty()) {
+			if (gid != null) {
+				for (JGoods g : details) {
+					if (gid.equals(g.getId())) {
+						jGoods = g;
+						break;
+					}
 				}
+			} else {
+				jGoods = details.get(0);
 			}
-		}
-
-		if (jGoods != null) {
-			setContentLayout(R.layout.goods_detail_view);
-			// 底部布局
-			View view = displayFooterMainBuyBtn();
-			View nowBuy = view.findViewById(R.id.nowbuy);
-			View addCart = view.findViewById(R.id.addcart);
-			nowBuy.setOnClickListener(this);
-			addCart.setOnClickListener(this);
-			TextView b = (TextView) findViewById(R.id.b);
-			TextView n = (TextView) findViewById(R.id.n);
-			TextView pp = (TextView) findViewById(R.id.pp);
-			TextView d = (TextView) findViewById(R.id.d);
-
-			// colorView = (MyGridView) findViewById(R.id.grid_color);
 
 			if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
 				b.setText(jGoods.getBe().trim());
@@ -146,20 +164,20 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	/**
 	 * 设置颜色标签布局
 	 */
-	private void loadColors(JGoods jGoods) {
+	private void loadColors() {
 		if (jGoods == null)
 			return;
 
-		colorList.clear();
 		// 处理同款颜色
-		if (jGoods.getAg() != null) {
-			Integer[] ag = jGoods.getAg();
-			int size = ag.length;
-			for (int i = 0; i < size; i++) {
-				JColor jcolor = new JColor();
-				jcolor.setId(ag[i]);
-				jcolor.setColor("颜色" + i);
-				colorList.add(jcolor);
+		for (int i = 0; i < 5; i++) {
+			for (JGoods g : details) {
+				if (g.getC() != null) {
+					JColor jcolor = new JColor();
+					jcolor.setId(g.getId());
+					jcolor.setC(g.getC());
+					jcolor.setCi(g.getCi());
+					colorList.add(jcolor);
+				}
 			}
 		}
 
@@ -174,39 +192,15 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 					JColor color = colorList.get(v.getId());
 					if (color != null) {
 						gid = color.getId();
+						scolor.setText(color.getC());
 						initGoods();
-						Toast.makeText(context, "您选择了" + color.getColor() + "色", Toast.LENGTH_SHORT)
-								.show();
+						// Toast.makeText(context, "您选择了" + color.getC(),
+						// Toast.LENGTH_SHORT).show();
 					}
 				}
 			});
 		}
 
-		// if (colorAdapter == null)
-		// colorAdapter = new ColorAdapter(context, colorList);
-		// colorAdapter.notifyDataSetChanged();
-
-		// if (colorView != null) {
-		// int ii = colorAdapter.getCount();
-		// colorView.setNumColumns(ii);
-		// colorView.setAdapter(colorAdapter);
-		// colorView.setOnItemClickListener(new OnItemClickListener() {
-		//
-		// @Override
-		// public void onItemClick(AdapterView<?> parent, View view, int
-		// position, long id) {
-		// // TODO Auto-generated method stub
-		// JColor color = colorList.get(position);
-		// if (color != null) {
-		// gid = color.getId();
-		// initGoods();
-		// Toast.makeText(context, "您选择了" + color.getColor() + "色",
-		// Toast.LENGTH_SHORT)
-		// .show();
-		// }
-		// }
-		// });
-		// }
 	}
 
 	@Override

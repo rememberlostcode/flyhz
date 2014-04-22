@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -109,11 +110,12 @@ public class MyLinearLayout extends LinearLayout {
 				View v = mInflater.inflate(R.layout.color_item, null);
 				JColor color = colorList.get(i);
 				ImageView tv = (ImageView) v.findViewById(R.id.good_color);
-				if (StrUtils.isNotEmpty(color.getColorimg())) {
-					String url = MyApplication.jgoods_img_url + color.getColorimg();
+				if (StrUtils.isNotEmpty(color.getCi())) {
+					String url = MyApplication.jgoods_img_url + color.getCi();
 					tv.setTag(url);
-					mImageLoader.DisplayImage(url, tv, false);
-					v.setTag(color.getColorimg());
+					Bitmap bitmap = mImageLoader.getBitmapFromCache(url);
+					tv.setImageBitmap(bitmap);
+					v.setTag(color.getCi());
 				} else {
 					tv.setImageResource(R.drawable.empty_photo);
 				}
@@ -150,7 +152,7 @@ public class MyLinearLayout extends LinearLayout {
 		int mY = 0;
 		mLeft = 4;
 		mRight = 4;
-		mTop = 5;
+		mTop = 4;
 		mBottom = 4;
 
 		int j = 0;
@@ -174,13 +176,13 @@ public class MyLinearLayout extends LinearLayout {
 				j = i;
 				mLeft = 4;
 				mRight = mLeft + child.getMeasuredWidth();
-				mTop = mY + 5;
+				mTop = mY + 4;
 				// PS：如果发现高度还是有问题就得自己再细调了
 			}
 			mBottom = mTop + child.getMeasuredHeight();
 			mY = mTop; // 每次的高度必须记录 否则控件会叠加到一起
 			position.left = mLeft;
-			position.top = mTop + 3;
+			position.top = mTop;
 			position.right = mRight;
 			position.bottom = mBottom;
 			map.put(child, position);
@@ -216,7 +218,7 @@ public class MyLinearLayout extends LinearLayout {
 	public int getPosition(int IndexInRow, int childIndex) {
 		if (IndexInRow > 0) {
 			return getPosition(IndexInRow - 1, childIndex - 1)
-					+ getChildAt(childIndex - 1).getMeasuredWidth() + 8;
+					+ getChildAt(childIndex - 1).getMeasuredWidth() + 4;
 		}
 		return getPaddingLeft();
 	}

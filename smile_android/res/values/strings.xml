@@ -11,7 +11,7 @@
     <string name="the_charts">排行榜</string>
     <string name="personal_information">个人设置</string>
     <string name="good_detail">商品详情</string>
-    <string name="choose_color">选择颜色</string>
+    <string name="choose_color">选择颜色：</string>
     <string name="good_desc">物品描述</string>
     
     <!-- 搜索 -->
