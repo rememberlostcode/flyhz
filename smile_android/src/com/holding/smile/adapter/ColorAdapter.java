@@ -66,7 +66,7 @@ public class ColorAdapter extends BaseAdapter {
 		holder.p.setImageResource(R.drawable.empty_photo);
 
 		if (colorList != null && !colorList.isEmpty()) {
-			String url = context.getString(R.string.jGoods_img_url) + colorList.get(position);
+			String url = MyApplication.jgoods_img_url + colorList.get(position);
 			holder.p.setTag(url);
 			mImageLoader.DisplayImage(url, holder.p, false);
 		}

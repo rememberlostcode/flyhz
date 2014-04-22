@@ -528,12 +528,12 @@ function sort(query,response) {
     var result = '[';
 
     result += '{';
-    result += '"n":"折扣排行","u":"http://'+solr_server_host+'/smile/node/ranking/discount"';
+    result += '"n":"折扣排行","u":"/smile/node/ranking/discount"';
     result += '}';
 
     result += ',';
     result += '{';
-    result += '"n":"销量排行","u":"http://'+solr_server_host+'/smile/node/ranking/sales"';
+    result += '"n":"销量排行","u":"/smile/node/ranking/sales"';
     result += '}';
 
     result += ']';
