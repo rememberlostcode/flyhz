@@ -11,6 +11,10 @@ public class ProductDto {
 
 	private String[]	imgs;
 
+	private String		color;
+
+	private String		brandstyle;
+
 	private BrandDto	brand;
 
 	private BigDecimal	purchasingPrice;
@@ -47,6 +51,22 @@ public class ProductDto {
 
 	public void setImgs(String[] imgs) {
 		this.imgs = imgs;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getBrandstyle() {
+		return brandstyle;
+	}
+
+	public void setBrandstyle(String brandstyle) {
+		this.brandstyle = brandstyle;
 	}
 
 	public BigDecimal getPurchasingPrice() {

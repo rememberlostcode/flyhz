@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="prefix_url">http://10.22.22.40</string>
-    <string name="login_url">http://10.22.22.40/smile/loginAuth.json</string>
-    <string name="auto_login_url">http://10.22.22.40/smile/loginAuto.json</string>
+    <string name="prefix_url">http://211.149.175.138</string>
+    <string name="login_url">http://211.149.175.138/smile/loginAuth.json</string>
+    <string name="auto_login_url">http://211.149.175.138/smile/loginAuto.json</string>
     
     <string name="img_static_url">/smile/static</string>
     <string name="jGoods_index_url">/smile/node/index</string>
@@ -30,9 +30,9 @@
     <string name="idcard_save">/smile/idcard/save.json</string>
     <string name="idcard_delete">/smile/idcard/delete.json</string>
     
-    <string name="order_inform_url">/user/orderInform.json</string>
-    <string name="order_updateQty_url">/user/updateQty.json</string>
-    <string name="order_updateCartQty_url">/user/updateCartQty.json</string>
-    <string name="order_confirm_url">/user/confirmOrder.json</string>
+    <string name="order_inform_url">/smile/user/orderInform.json</string>
+    <string name="order_updateQty_url">/smile/user/updateQty.json</string>
+    <string name="order_updateCartQty_url">/smile/user/updateCartQty.json</string>
+    <string name="order_confirm_url">/smile/user/confirmOrder.json</string>
     
 </resources>
