@@ -1,7 +1,6 @@
 
 package com.flyhz.shop.service.impl;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -42,26 +41,31 @@ public class IdcardServiceImpl implements IdcardService {
 		}
 		// 保存收件人地址身份证照片
 		try {
-			// 生成新文件名
-			String origName = multipartFile.getOriginalFilename();
-			origName = DateUtil.dateToStrMSec(new Date())
-					+ origName.substring(origName.lastIndexOf("."));
-			fileRepository.saveToTemp(multipartFile.getInputStream(), origName);
-			// 更新收件人地址中身份证照片路径
-			idcardModel.setPhoto("/idcard/" + origName);
-		} catch (IOException e) {
+			if (idcardModel.getId() == null && multipartFile == null) {
+				throw new ValidateException(120002);
+			}
+			if (multipartFile != null) {
+				// 生成新文件名
+				String origName = multipartFile.getOriginalFilename();
+				origName = DateUtil.dateToStrMSec(new Date())
+						+ origName.substring(origName.lastIndexOf("."));
+				fileRepository.saveToTemp(multipartFile.getInputStream(), origName);
+				// 更新收件人地址中身份证照片路径
+				idcardModel.setPhoto("/idcard/" + origName);
+			}
+
+			Date date = new Date();
+			if (idcardModel != null && idcardModel.getId() != null) {
+				idcardModel.setGmtModify(date);
+				idcardDao.update(idcardModel);
+			} else {
+				idcardModel.setGmtCreate(date);
+				idcardModel.setGmtModify(date);
+				idcardDao.insertIdcard(idcardModel);
+			}
+		} catch (Exception e) {
 			// 文件保存失败
-			// throw new ValidateException(101020);
-		}
-		Date date = new Date();
-		if (idcardModel != null && idcardModel.getId() != null) {
-			idcardModel.setGmtModify(date);
-			idcardDao.update(idcardModel);
-		}
-		if (idcardModel != null) {
-			idcardModel.setGmtCreate(date);
-			idcardModel.setGmtModify(date);
-			idcardDao.insertIdcard(idcardModel);
+			throw new ValidateException(122222);
 		}
 	}
 

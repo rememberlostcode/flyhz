@@ -119,13 +119,13 @@ public class OrderServiceImpl implements OrderService {
 			number = RandomString.generateRandomString8();
 			orderDto.setNumber(number);
 		}
-		// detail = JSONUtil.getEntity2Json(orderDto);
 
 		if (flag) {
 			OrderModel order = new OrderModel();
 			order.setNumber(number);
 			order.setUserId(userId);
 			order.setStatus('0');// 0表示待支付，1表示支付，2表示关闭
+			detail = JSONUtil.getEntity2Json(orderDto);
 			order.setDetail(detail);
 			order.setTotal(total);
 			Date date = new Date();

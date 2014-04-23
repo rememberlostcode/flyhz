@@ -9,7 +9,7 @@ public class ProductDto {
 
 	private String		name;
 
-	private String		imgs;
+	private String[]	imgs;
 
 	private BrandDto	brand;
 
@@ -41,11 +41,11 @@ public class ProductDto {
 		this.brand = brand;
 	}
 
-	public String getImgs() {
+	public String[] getImgs() {
 		return imgs;
 	}
 
-	public void setImgs(String imgs) {
+	public void setImgs(String[] imgs) {
 		this.imgs = imgs;
 	}
 

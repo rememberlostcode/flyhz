@@ -421,9 +421,9 @@ public class FileUtils {
 
 		HttpParams httpParams = new BasicHttpParams();
 		// 连接超时
-		httpParams.setParameter("http.connection.timeout", TIME_OUT);
+		httpParams.setParameter("http.connection.timeout", 60000);
 		// 请求超时
-		httpParams.setParameter("http.socket.timeout", TIME_OUT);
+		httpParams.setParameter("http.socket.timeout", 60000);
 		httpParams.setParameter("http.protocol.content-charset", CHARSET);
 		httpParams.setBooleanParameter("http.connection.stalecheck", false);
 		HttpProtocolParams.setContentCharset(httpParams, "UTF-8");
@@ -442,22 +442,25 @@ public class FileUtils {
 						new StringBody(nameValue.getValue(), Charset.forName("UTF-8")));
 			}
 
-		if (filePath == null || filePath.equals(""))
-			return "图片不能为空";
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ByteArrayBody bab = null;
-		// 先压缩图片再上传
-		try {
-			bos = BitmapUtils.getCompressBitmap(filePath, 1000, 1000, 100);
-			byte[] data = bos.toByteArray();
-			bab = new ByteArrayBody(data, filePath.substring(filePath.lastIndexOf("/") + 1));
-			reqEntity.addPart("file", bab);
-			bos.reset();// 清空
-			bos.flush();
-		} catch (Exception e) {
-			reqEntity.addPart("file", new StringBody("image error"));
+		// if (filePath == null || filePath.equals(""))
+		// return "图片不能为空";
+		if (filePath != null && !filePath.equals("")) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ByteArrayBody bab = null;
+			// 先压缩图片再上传
+			try {
+				bos = BitmapUtils.getCompressBitmap(filePath, 500, 500, 50);
+				byte[] data = bos.toByteArray();
+				bab = new ByteArrayBody(data, filePath.substring(filePath.lastIndexOf("/") + 1));
+				reqEntity.addPart("file", bab);
+				bos.reset();// 清空
+				bos.flush();
+			} catch (Exception e) {
+				reqEntity.addPart("file", new StringBody("image error"));
+			}
+			bos.close();
 		}
-		bos.close();
+
 		postRequest.setEntity(reqEntity);
 		String result = null;
 		try {

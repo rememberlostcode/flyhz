@@ -515,7 +515,7 @@ public class DataService {
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = "";
 		if (StrUtils.isNotEmpty(sortUrl)) {
-			rStr = URLUtil.getStringByGet(sortUrl, null);
+			rStr = URLUtil.getStringByGet(prefix_url + sortUrl, null);
 		}
 
 		if (rStr != null && !"".equals(rStr)) {

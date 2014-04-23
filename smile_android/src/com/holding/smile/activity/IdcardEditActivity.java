@@ -3,7 +3,6 @@ package com.holding.smile.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Idcard;
+import com.holding.smile.tools.BitmapUtils;
 
 /**
  * 身份证信息编辑
@@ -167,7 +167,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+			// imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+			imageView.setImageBitmap(BitmapUtils.decodeFile(picturePath, 500, 500));
 			imageView.setVisibility(View.VISIBLE);
 		}
 		super.onActivityResult(requestCode, resultCode, data);

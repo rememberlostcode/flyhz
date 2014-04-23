@@ -77,7 +77,6 @@ public class BaseActivity extends Activity {
 		setContentView(R.layout.base);
 		ly_content = (LinearLayout) findViewById(R.id.content);
 		progressBar = (ProgressBar) findViewById(R.id.load_progressbar);
-		MyApplication.getInstance().setProgressBar(progressBar);
 
 		// 删除窗口背景
 		getWindow().setBackgroundDrawable(null);

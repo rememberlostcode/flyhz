@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
-import com.flyhz.framework.util.UrlUtil;
-import com.flyhz.shop.dto.Result;
 import com.flyhz.shop.service.BuildService;
 
 @Controller
@@ -53,11 +51,6 @@ public class BuildController {
 			// "测试订单buildOrderToRedis");
 			// orderJson = redisRepository.getOrderFromRedis(1001, 1);
 			// System.out.println(orderJson);
-
-			String ttt = UrlUtil.getStringByGetNotEncod(
-					"http://smile.flyhz.com/smile/node/category", null);
-			Result res = JSONUtil.getJson2Entity(ttt, Result.class);
-			System.out.println(res);
 
 			// redisRepository.reBuildOrderToRedis(1, 1);
 

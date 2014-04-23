@@ -22,10 +22,8 @@ import com.flyhz.shop.dto.CategoryBuildDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.CategoryDao;
-import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.service.BuildService;
-import com.flyhz.shop.service.OrderService;
 
 @Service
 public class BuildServiceImpl implements BuildService {
@@ -37,13 +35,9 @@ public class BuildServiceImpl implements BuildService {
 	@Resource
 	private BrandDao		brandDao;
 	@Resource
-	private OrderDao		orderDao;
-	@Resource
 	private CacheRepository	cacheRepository;
 	@Resource
 	private ProductFraction	productFraction;
-	@Resource
-	private OrderService	orderService;
 	@Resource
 	private SolrData		solrData;
 	/**
@@ -91,48 +85,10 @@ public class BuildServiceImpl implements BuildService {
 		// TODO Auto-generated method stub
 		log.info("buildRedis开始...");
 
-		// /******** build商品详情 start *******/
-		// int thisNum = 0;
-		// SolrPage solrPage = new SolrPage();
-		// solrPage.setNum(mysqlSize);
-		// int maxIdCount = productDao.getCountOfAll();
-		// List<ProductBuildDto> productList = null;
-		// while (thisNum < maxIdCount) {
-		// solrPage.setStart(thisNum);
-		// productList = productDao.findAll(solrPage);
-		// for (int i = 0; i < productList.size(); i++) {
-		// if (productList.get(i) != null && productList.get(i).getId() != null
-		// || StringUtil.isNotBlank(productList.get(i).getBs())) {
-		// cacheRepository.hset(Constants.REDIS_KEY_PRODUCTS,
-		// productList.get(i).getId()
-		// .toString(),
-		// JSONUtil.getEntity2Json(productList.get(i)).replace("\"[", "[")
-		// .replace("]\"", "]").replace("\\", ""));
-		// cacheRepository.rpush(Constants.REDIS_KEY_PRODUCT_CN + "@"
-		// + productList.get(i).getBs(), productList.get(i).getId().toString());
-		// } else {
-		// if (productList.get(i) == null) {
-		// log.warn("build商品时，商品为空！");
-		// } else if (productList.get(i).getId() == null) {
-		// log.warn("build商品时，商品ID为空！");
-		// } else if (StringUtil.isNotBlank(productList.get(i).getBs())) {
-		// log.warn("build商品时，商品款号为空！");
-		// }
-		// }
-		// }
-		// // 设置新的分页查询参数
-		// thisNum += mysqlSize;
-		// }
-		// /******** build商品详情 end *******/
-
-		// /******** build订单 start *******/
-		// buildOrders();
-		// /******** build订单 end *******/
-
 		/******** build首页推荐商品 start *******/
 		cacheRepository.setString(Constants.REDIS_KEY_RECOMMEND_INDEX,
 				solrData.getProductsString(null, null));
-		/******** build商品详情 end *******/
+		/******** build首页推荐商品 end *******/
 
 		/******** build商品品牌分类 start *******/
 		List<CategoryBuildDto> catList = categoryDao.getCategoryBuildDtoList();
