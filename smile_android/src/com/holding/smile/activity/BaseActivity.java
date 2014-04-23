@@ -1,9 +1,6 @@
 
 package com.holding.smile.activity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -85,7 +82,9 @@ public class BaseActivity extends Activity {
 				|| MyApplication.getInstance().getScreenHeight() == null
 				|| MyApplication.getInstance().getDensity() == null) {
 			Display display = getWindowManager().getDefaultDisplay();
+			@SuppressWarnings("deprecation")
 			int h = display.getHeight();
+			@SuppressWarnings("deprecation")
 			int w = display.getWidth();
 			MyApplication.getInstance().setScreenWidth(w);
 			MyApplication.getInstance().setScreenHeight(h);
@@ -117,45 +116,24 @@ public class BaseActivity extends Activity {
 		setVisible(R.id.foot);
 	}
 
+	/**
+	 * 显示头部标题
+	 * 
+	 * @return
+	 */
 	public TextView displayHeaderDescription() {
 		setHeadVisible();
 		int id = R.id.header_description;
 		TextView textView = (TextView) findViewById(id);
 		setVisible(id);
-		SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
-		if (user != null) {
-			Toast.makeText(context, "欢迎您," + user.getUsername(), Toast.LENGTH_SHORT).show();
-		}
 		return textView;
 	}
 
-	public View displayFooterSearch(int idNow) {
-		setFootVisible();
-		View view = null;
-		// int id = R.id.searchs;
-		// View view = (View) findViewById(id);
-		// setVisible(id);
-		//
-		// int searchGoodId = R.id.search_good;
-		// View searchGood = view.findViewById(searchGoodId);
-		// searchGood.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// Intent intent = new Intent();
-		// // intent.setClass(context, SearchGoodsActivity.class);
-		// intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-		// startActivity(intent);
-		// finish();
-		// overridePendingTransition(0, 0);
-		// }
-		// });
-		//
-		// if (idNow == searchGoodId) {
-		// searchGood.setSelected(true);
-		// }
-		return view;
-	}
-
+	/**
+	 * 显示头部回退键
+	 * 
+	 * @return
+	 */
 	public ImageView displayHeaderBack() {
 		setHeadVisible();
 		int id = R.id.btn_back;
@@ -164,20 +142,17 @@ public class BaseActivity extends Activity {
 		return button;
 	}
 
+	/**
+	 * 显示头部分类
+	 * 
+	 * @return
+	 */
 	public TextView displayHeaderCate() {
 		setHeadVisible();
 		int id = R.id.btn_cate;
 		TextView textView = (TextView) findViewById(id);
 		setVisible(id);
 		return textView;
-	}
-
-	public ImageView displayHeaderSearch() {
-		setHeadVisible();
-		int id = R.id.mainfooter_search;
-		ImageView button = (ImageView) findViewById(id);
-		setVisible(id);
-		return button;
 	}
 
 	/***
@@ -194,18 +169,6 @@ public class BaseActivity extends Activity {
 		// contentView.setBackgroundDrawable(null);
 		if (null != ly_content) {
 			ly_content.addView(contentView);
-		}
-	}
-
-	/***
-	 * 设置内容区域
-	 * 
-	 * @param view
-	 *            View对象
-	 */
-	public void setContentLayout(View view) {
-		if (null != ly_content) {
-			ly_content.addView(view);
 		}
 	}
 
@@ -349,33 +312,17 @@ public class BaseActivity extends Activity {
 	public View displayFooterMain(int idNow) {
 		setFootVisible();
 		int id = R.id.mainfooter;
-		View view = (View) findViewById(id);
+		LinearLayout view = (LinearLayout) findViewById(id);
 		setVisible(id);
 
-		Map<Integer, View> footMap = new HashMap<Integer, View>();
-
-		int mainfooterOneId = R.id.mainfooter_one;
-		View mainfooterOne = view.findViewById(mainfooterOneId);
-		footMap.put(mainfooterOneId, mainfooterOne);
-
-		int mainfooterTwoId = R.id.mainfooter_two;
-		View mainfooterTwo = view.findViewById(mainfooterTwoId);
-		footMap.put(mainfooterTwoId, mainfooterTwo);
-
-		int mainfooterThreeId = R.id.mainfooter_three;
-		View mainfooterThree = view.findViewById(mainfooterThreeId);
-		footMap.put(mainfooterThreeId, mainfooterThree);
-
-		int mainfooterFourId = R.id.mainfooter_four;
-		View mainfooterFour = view.findViewById(mainfooterFourId);
-		footMap.put(mainfooterFourId, mainfooterFour);
-
-		for (Integer o : footMap.keySet()) {
+		int count = view.getChildCount();
+		for (int i = 0; i < count; i++) {
+			int o = view.getChildAt(i).getId();
 			if (o == idNow) {
-				footMap.get(o).setSelected(true);
+				view.getChildAt(i).setSelected(true);
 			} else {
-				if (o == mainfooterOneId) {
-					footMap.get(o).setOnClickListener(new OnClickListener() {
+				if (o == R.id.mainfooter_one) {// 首页
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent();
@@ -386,11 +333,10 @@ public class BaseActivity extends Activity {
 							overridePendingTransition(0, 0);
 						}
 					});
-				} else if (o == mainfooterTwoId) {
-					footMap.get(o).setOnClickListener(new OnClickListener() {
+				} else if (o == R.id.mainfooter_two) {// 排行榜
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							// 排行榜
 							Intent intent = new Intent();
 							intent.setClass(context, SortActivity.class);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -398,8 +344,8 @@ public class BaseActivity extends Activity {
 							overridePendingTransition(0, 0);
 						}
 					});
-				} else if (o == mainfooterThreeId) {
-					footMap.get(o).setOnClickListener(new OnClickListener() {
+				} else if (o == R.id.mainfooter_three) {// 搜索
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent();
@@ -409,12 +355,25 @@ public class BaseActivity extends Activity {
 							overridePendingTransition(0, 0);
 						}
 					});
-				} else if (o == mainfooterFourId) {
-					footMap.get(o).setOnClickListener(new OnClickListener() {
+				} else if (o == R.id.mainfooter_four) {// 购物车
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
+							Toast.makeText(context, "点击了购物车", Toast.LENGTH_SHORT).show();
+						}
+					});
+				} else if (o == R.id.mainfooter_more) {// 更多
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							SUser user = MyApplication.getInstance().getCurrentUser();
 							Intent intent = new Intent();
-							intent.setClass(context, PersonalSettingsActivity.class);
+							if (user == null) {
+								intent.putExtra("class", PersonalSettingsActivity.class);
+								intent.setClass(context, LoginActivity.class);
+							} else {
+								intent.setClass(context, PersonalSettingsActivity.class);
+							}
 							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							startActivity(intent);
 							overridePendingTransition(0, 0);

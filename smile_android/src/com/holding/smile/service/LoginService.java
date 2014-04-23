@@ -20,8 +20,9 @@ import android.content.Context;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.dto.RtnLoginDto;
+import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.protocol.PUser;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.NullHostNameVerifier;
 import com.holding.smile.tools.NullX509TrustManager;
@@ -31,6 +32,7 @@ public class LoginService {
 	private Context			context;
 	private static String	login_url;
 	private static String	auto_login_url;
+	private final int		SUCCESS_CODE	= 0;
 
 	public LoginService(Context context) {
 		super();
@@ -45,17 +47,19 @@ public class LoginService {
 	 * @param iuser
 	 * @return
 	 */
-	public RtnLoginDto login(SUser iuser) {
-		RtnLoginDto rvd = null;
+	public RtnValueDto login(SUser iuser) {
+		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		param.put("username", iuser.getUsername());
 		param.put("password", iuser.getPassword());
 		String rvdString = https_get(login_url, param);
 		if (rvdString != null) {
-			rvd = JSONUtil.changeJson2RtnLoginDto(rvdString);
-			if (rvd != null && rvd.getCode() != null && rvd.getData() != null && rvd.getCode() == 0) {
-				SUser ruser = JSONUtil.getJson2Entity(rvd.getData(), SUser.class);
-				setLoginUser(ruser);
+			PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
+			if (user != null && user.getData() != null && user.getCode() == SUCCESS_CODE) {
+				rvd = new RtnValueDto();
+				rvd.setUserData(user.getData());
+				rvd.setCode(200000);
+				setLoginUser(user.getData());
 				try {
 					// 添加本地数据库用户信息
 					MyApplication.getInstance().getSqliteService().addUser();
@@ -71,22 +75,23 @@ public class LoginService {
 		return rvd;
 	}
 
-	public RtnLoginDto autoLogin(SUser iuser) {
-		RtnLoginDto rvd = null;
+	public RtnValueDto autoLogin(SUser iuser) {
+		RtnValueDto rvd = null;
 		if (iuser != null && iuser.getUsername() != null && iuser.getToken() != null) {
 			HashMap<String, String> param = new HashMap<String, String>();
 			param.put("username", iuser.getUsername());
 			param.put("token", iuser.getToken());
 			String rvdString = https_get(auto_login_url, param);
 			if (rvdString != null) {
-				rvd = JSONUtil.changeJson2RtnLoginDto(rvdString);
-				if (rvd != null && rvd.getCode() != null && rvd.getData() != null
-						&& rvd.getCode() == 0) {
-					SUser ruser = JSONUtil.getJson2Entity(rvd.getData(), SUser.class);
-					setLoginUser(ruser);
+				PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
+				if (user != null && user.getData() != null && user.getCode() == SUCCESS_CODE) {
+					rvd = new RtnValueDto();
+					rvd.setUserData(user.getData());
+					rvd.setCode(200000);
+					setLoginUser(user.getData());
 					try {
-						// 更新本地数据库用户信息
-						MyApplication.getInstance().getSqliteService().updateUser();
+						// 添加本地数据库用户信息
+						MyApplication.getInstance().getSqliteService().addUser();
 					} catch (Exception e) {
 						System.out.println("SQLite出错了！");
 						e.printStackTrace();

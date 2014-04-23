@@ -13,6 +13,10 @@ public class ProductDto {
 
 	private BrandDto	brand;
 
+	private String		color;
+
+	private String		brandstyle;
+
 	private BigDecimal	purchasingPrice;
 
 	private short		qty;
@@ -63,6 +67,22 @@ public class ProductDto {
 
 	public void setQty(short qty) {
 		this.qty = qty;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getBrandstyle() {
+		return brandstyle;
+	}
+
+	public void setBrandstyle(String brandstyle) {
+		this.brandstyle = brandstyle;
 	}
 
 }

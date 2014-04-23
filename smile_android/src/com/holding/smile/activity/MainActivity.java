@@ -26,7 +26,6 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.adapter.VerticalListAdapter;
 import com.holding.smile.dto.BrandJGoods;
-import com.holding.smile.dto.RtnLoginDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JActivity;
@@ -357,12 +356,9 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 															SUser user = (SUser) msg.obj;
 															LoginService loginService = MyApplication.getInstance()
 																										.getLoginService();
-															RtnLoginDto rtnLoginDto = loginService.autoLogin(user);
-															if (rtnLoginDto == null
-																	|| rtnLoginDto.getCode() == null
-																	|| rtnLoginDto.getData() == null) {
-																//
-															} else {
+															RtnValueDto rvd = loginService.autoLogin(user);
+															if (rvd != null
+																	&& rvd.getUserData() != null) {
 																Toast.makeText(
 																		context,
 																		"自动登录成功！欢迎您,"

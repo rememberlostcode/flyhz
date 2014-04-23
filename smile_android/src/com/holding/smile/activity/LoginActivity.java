@@ -16,9 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.holding.smile.R;
-import com.holding.smile.dto.RtnLoginDto;
+import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.SUser;
-import com.holding.smile.service.DataService;
 import com.holding.smile.service.LoginService;
 import com.holding.smile.tools.MD5;
 
@@ -31,14 +30,16 @@ import com.holding.smile.tools.MD5;
  * @author Administrator
  * 
  */
-public class LoginActivity extends BaseActivity {
+@SuppressWarnings("rawtypes")
+public class LoginActivity extends BaseActivity implements OnClickListener {
 
-	private EditText		userAccount;	// 用户的账号
-	private EditText		userPwd;		// 用户密码
-	private Button			btnLogining;	// 登陆按钮
-	private Button			btnGetBackPwd;	// 取回密码按钮
-	private Button			btnSetLogin;	// 登录设置按钮
-	private Button			btnToRegister;	// 注册登录按钮
+	private Class			goingActivityClass;
+	private EditText		userAccount;		// 用户的账号
+	private EditText		userPwd;			// 用户密码
+	private Button			btnLogining;		// 登陆按钮
+	private Button			btnGetBackPwd;		// 取回密码按钮
+	private Button			btnSetLogin;		// 登录设置按钮
+	private Button			btnToRegister;		// 注册登录按钮
 
 	private LinearLayout	loginBySelf;
 
@@ -46,28 +47,16 @@ public class LoginActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.login);
-		if (DataService.getDataFromNet) {
-			loadData();
-		} else {
-			Intent intent = new Intent(this, MainActivity.class);
-			startActivity(intent);
-			finish();
-		}
+		loginViewInit();
 
-	}
+		try {
+			Intent intent = getIntent();
+			if (intent.getExtras() != null && intent.getExtras().getSerializable("class") != null) {
+				goingActivityClass = (Class) (intent.getExtras().getSerializable("class"));
 
-	@Override
-	public void loadData() {
-		SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
-		if (user != null) {
-			MyApplication.getInstance().setCurrentUser(user);
-		}
-		if (user != null && user.getUsername() != null && user.getToken() != null) {
-			Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
-			msg.obj = user;
-			msg.sendToTarget();
-		} else {
-			loginViewInit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -78,7 +67,6 @@ public class LoginActivity extends BaseActivity {
 	 */
 	private void loginViewInit() {
 		initView();// 初始化界面控件
-		addListener();// 添加监听响应事件
 	}
 
 	/**
@@ -97,12 +85,17 @@ public class LoginActivity extends BaseActivity {
 		loginBySelf = (LinearLayout) findViewById(R.id.login_by_self);
 
 		loginBySelf.setVisibility(View.VISIBLE);
+
+		btnLogining.setOnClickListener(this);
+		btnGetBackPwd.setOnClickListener(this);
+		btnSetLogin.setOnClickListener(this);
+		btnToRegister.setOnClickListener(this);
 	}
 
-	private void addListener() {
-		btnLogining.setOnClickListener(new OnClickListener() {// 添加登陆按钮监听事件
-			@Override
-			public void onClick(View v) {
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.self_login: {
 				String username = userAccount.getText().toString();// 获取用户输入的账号
 				String password = userPwd.getText().toString();// 获取用户输入的密码
 				password = MD5.getMD5(password);
@@ -116,65 +109,52 @@ public class LoginActivity extends BaseActivity {
 				Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
 				msg.obj = user;
 				msg.sendToTarget();
+				break;
 			}
-		});
+			case R.id.login_btn_to_register: {
+				// Toast.makeText(context, "点击了注册", Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(context, RegisterActivity.class);
+				startActivity(intent);
+				overridePendingTransition(0, 0);
+				finish();
+				break;
+			}
+		}
+		super.onClick(v);
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	private static final int	AUTO_LOGIN		= 0;
 	private static final int	LOGIN_BY_SELF	= 1;
 	@SuppressLint("HandlerLeak")
 	private Handler				mUIHandler		= new Handler() {
 													@Override
 													public void handleMessage(Message msg) {
 														switch (msg.what) {
-															case AUTO_LOGIN: {
-																if (msg.obj != null) {
-																	SUser user = (SUser) msg.obj;
-																	LoginService loginService = MyApplication.getInstance()
-																												.getLoginService();
-																	RtnLoginDto rtnLoginDto = loginService.autoLogin(user);
-																	if (rtnLoginDto == null
-																			|| rtnLoginDto.getCode() == null
-																			|| rtnLoginDto.getData() == null) {
-																		loginViewInit();
-																	} else {
-																		Intent intent = new Intent(
-																				context,
-																				MainActivity.class);
-																		startActivity(intent);
-																		finish();
-																	}
-																}
-																break;
-															}
 															case LOGIN_BY_SELF: {
 																if (msg.obj != null) {
 																	SUser user = (SUser) msg.obj;
 																	LoginService loginService = MyApplication.getInstance()
 																												.getLoginService();
-																	RtnLoginDto rtnLoginDto = loginService.login(user);
-																	if (rtnLoginDto == null
-																			|| rtnLoginDto.getCode() == null
-																			|| rtnLoginDto.getData() == null) {
+																	RtnValueDto rvd = loginService.login(user);
+																	if (rvd == null
+																			|| rvd.getCode() == null
+																			|| rvd.getUserData() == null) {
 																		loginViewInit();
 																		Toast.makeText(context,
-																				"登录失败，请稍后重试！",
+																				"登录失败！",
 																				Toast.LENGTH_SHORT)
 																				.show();
 																	} else {
-																		Intent intent = new Intent(
-																				context,
-																				MainActivity.class);
+																		Intent intent = null;
+																		if (goingActivityClass != null) {
+																			intent = new Intent(
+																					context,
+																					goingActivityClass);
+																			goingActivityClass = null;
+																		} else {
+																			intent = new Intent(
+																					context,
+																					MainActivity.class);
+																		}
 																		startActivity(intent);
 																		finish();
 																	}

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone" >
-        
+
         <LinearLayout
             android:id="@+id/mainfooter_one"
             android:layout_width="wrap_content"
@@ -22,15 +22,16 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical" >
-           <TextView 
-               android:id="@+id/mainfooter_jptj"
-            android:layout_width="fill_parent"
-            android:layout_height="50dip"
-            android:layout_marginLeft="5dip"
-            android:background="@android:color/transparent"
-            android:hint="@string/recommend_goods"/>
+
+            <TextView
+                android:id="@+id/mainfooter_jptj"
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_marginLeft="5dip"
+                android:background="@android:color/transparent"
+                android:hint="@string/recommend_goods" />
         </LinearLayout>
-        
+
         <LinearLayout
             android:id="@+id/mainfooter_two"
             android:layout_width="wrap_content"
@@ -38,15 +39,16 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical" >
-           <TextView 
-               android:id="@+id/mainfooter_phb"
-            android:layout_width="fill_parent"
-            android:layout_height="50dip"
-            android:layout_marginLeft="5dip"
-            android:background="@android:color/transparent"
-            android:hint="@string/the_charts"/>
+
+            <TextView
+                android:id="@+id/mainfooter_phb"
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_marginLeft="5dip"
+                android:background="@android:color/transparent"
+                android:hint="@string/the_charts" />
         </LinearLayout>
-        
+
         <LinearLayout
             android:id="@+id/mainfooter_three"
             android:layout_width="wrap_content"
@@ -54,14 +56,14 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical" >
-           
+
             <TextView
-               android:id="@+id/mainfooter_search"
-	            android:layout_width="fill_parent"
-	            android:layout_height="50dip"
-	            android:layout_marginLeft="5dip"
-	            android:background="@android:color/transparent"
-	            android:hint="@string/search"/>
+                android:id="@+id/mainfooter_search"
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_marginLeft="5dip"
+                android:background="@android:color/transparent"
+                android:hint="@string/search" />
         </LinearLayout>
 
         <LinearLayout
@@ -72,24 +74,40 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <TextView 
-               android:id="@+id/mainfooter_grsz"
-            android:layout_width="fill_parent"
-            android:layout_height="50dip"
-            android:layout_marginLeft="5dip"
-            android:background="@android:color/transparent"
-            android:hint="@string/personal_information"/>
+            <TextView
+                android:id="@+id/mainfooter_grsz"
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_marginLeft="5dip"
+                android:background="@android:color/transparent"
+                android:hint="@string/shopping_cart" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mainfooter_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="50dip"
+                android:layout_marginLeft="5dip"
+                android:background="@android:color/transparent"
+                android:hint="@string/more" />
         </LinearLayout>
     </LinearLayout>
-    
+
     <LinearLayout
         android:id="@+id/mainfooter_buy"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="#e5e5e5"
-        android:visibility="gone">
-        
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
         <LinearLayout
             android:id="@+id/nowbuy"
             android:layout_width="wrap_content"
@@ -97,31 +115,30 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical" >
-           <ImageView
+
+            <ImageView
                 android:id="@+id/now_buy"
-	            android:layout_width="wrap_content"
-	            android:layout_height="45dip"
-	            android:src="@drawable/now_buy_btn"
-	            android:contentDescription="@string/gu"
-	            />
+                android:layout_width="wrap_content"
+                android:layout_height="45dip"
+                android:contentDescription="@string/gu"
+                android:src="@drawable/now_buy_btn" />
         </LinearLayout>
-        
+
         <LinearLayout
             android:id="@+id/addcart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
-           <ImageView
+            android:orientation="vertical" >
+
+            <ImageView
                 android:id="@+id/add_cart"
-	            android:layout_width="wrap_content"
-	            android:layout_height="45dip"
-	            android:src="@drawable/add_cart_btn"
-	            android:contentDescription="@string/gu"
-	            />
+                android:layout_width="wrap_content"
+                android:layout_height="45dip"
+                android:contentDescription="@string/gu"
+                android:src="@drawable/add_cart_btn" />
         </LinearLayout>
-        
     </LinearLayout>
 
 </LinearLayout>
