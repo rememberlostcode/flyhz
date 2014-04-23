@@ -15,7 +15,9 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.Idcard;
+import com.holding.smile.entity.SUser;
 import com.holding.smile.protocol.PConsignee;
+import com.holding.smile.protocol.PUser;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.FileUtils;
 import com.holding.smile.tools.JSONUtil;
@@ -31,6 +33,7 @@ public class SubmitService {
 	private String	set_suer_info;
 	private String	idcard_save;
 	private String	idcard_delete;
+	private String	register_url;
 
 	public SubmitService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
@@ -42,6 +45,7 @@ public class SubmitService {
 
 		idcard_save = context.getString(R.string.idcard_save);
 		idcard_delete = context.getString(R.string.idcard_delete);
+		register_url = context.getString(R.string.register_url);
 	}
 
 	/**
@@ -291,6 +295,25 @@ public class SubmitService {
 			ValidateDto vd = new ValidateDto();
 			vd.setMessage(Constants.MESSAGE_NET);
 			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	public RtnValueDto register(SUser iuser) {
+		RtnValueDto rvd = null;
+		if (iuser != null && iuser.getUsername() != null && iuser.getPassword() != null) {
+			HashMap<String, String> param = new HashMap<String, String>();
+			param.put("username", iuser.getUsername());
+			param.put("password", iuser.getPassword());
+			String rvdString = URLUtil.getStringByGet(prefix_url + register_url, param);
+			if (rvdString != null) {
+				PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
+				if (user != null && user.getData() != null && user.getCode() == 200000) {
+					rvd = new RtnValueDto();
+					rvd.setUserData(user.getData());
+					rvd.setCode(200000);
+				}
+			}
 		}
 		return rvd;
 	}

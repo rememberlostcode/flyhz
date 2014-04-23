@@ -17,6 +17,7 @@
     <string name="jGoods_search_refresh_url">/smile/node/search</string>
     <string name="jGoods_search_more_url">/smile/node/search/more</string>
     
+    <string name="register_url">/smile/saveRegister.json</string>
     <string name="address_list">/smile/user/consignees.json</string>
     <string name="address_add">/smile/consignee/add.json</string>
     <string name="address_modify">/smile/consignee/modify.json</string>

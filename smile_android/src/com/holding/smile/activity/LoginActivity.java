@@ -96,19 +96,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.self_login: {
-				String username = userAccount.getText().toString();// 获取用户输入的账号
-				String password = userPwd.getText().toString();// 获取用户输入的密码
-				password = MD5.getMD5(password);
-				/* 关闭软键盘 */
-				InputMethodManager inputMgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-				inputMgr.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-						InputMethodManager.HIDE_NOT_ALWAYS);
-				SUser user = new SUser();
-				user.setUsername(username);
-				user.setPassword(password);
-				Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
-				msg.obj = user;
-				msg.sendToTarget();
+				startTask();
 				break;
 			}
 			case R.id.login_btn_to_register: {
@@ -116,11 +104,27 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				Intent intent = new Intent(context, RegisterActivity.class);
 				startActivity(intent);
 				overridePendingTransition(0, 0);
-				finish();
 				break;
 			}
 		}
 		super.onClick(v);
+	}
+
+	@Override
+	public void loadData() {
+		String username = userAccount.getText().toString();// 获取用户输入的账号
+		String password = userPwd.getText().toString();// 获取用户输入的密码
+		password = MD5.getMD5(password);
+		/* 关闭软键盘 */
+		InputMethodManager inputMgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputMgr.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+				InputMethodManager.HIDE_NOT_ALWAYS);
+		SUser user = new SUser();
+		user.setUsername(username);
+		user.setPassword(password);
+		Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
+		msg.obj = user;
+		msg.sendToTarget();
 	}
 
 	private static final int	LOGIN_BY_SELF	= 1;

@@ -29,14 +29,16 @@ import com.holding.smile.tools.NullX509TrustManager;
 
 public class LoginService {
 
-	private Context			context;
-	private static String	login_url;
-	private static String	auto_login_url;
-	private final int		SUCCESS_CODE	= 0;
+	private Context		context;
+	private String		login_url;
+	private String		auto_login_url;
+
+	private final int	SUCCESS_CODE	= 0;
 
 	public LoginService(Context context) {
 		super();
 		this.context = context;
+
 		login_url = context.getString(R.string.login_url);
 		auto_login_url = context.getString(R.string.auto_login_url);
 	}
@@ -207,5 +209,35 @@ public class LoginService {
 			e.printStackTrace();
 		}
 		return content;
+	}
+
+	public RtnValueDto register(SUser iuser) {
+		RtnValueDto rvd = null;
+		if (iuser != null && iuser.getUsername() != null && iuser.getToken() != null) {
+			HashMap<String, String> param = new HashMap<String, String>();
+			param.put("username", iuser.getUsername());
+			param.put("token", iuser.getToken());
+			String rvdString = https_get(auto_login_url, param);
+			if (rvdString != null) {
+				PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
+				if (user != null && user.getData() != null && user.getCode() == SUCCESS_CODE) {
+					rvd = new RtnValueDto();
+					rvd.setUserData(user.getData());
+					rvd.setCode(200000);
+					setLoginUser(user.getData());
+					try {
+						// 添加本地数据库用户信息
+						MyApplication.getInstance().getSqliteService().addUser();
+					} catch (Exception e) {
+						System.out.println("SQLite出错了！");
+						e.printStackTrace();
+						System.out.println("SQLite关闭并初始化！");
+						MyApplication.getInstance().getSqliteService().closeDB();
+						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+					}
+				}
+			}
+		}
+		return rvd;
 	}
 }
