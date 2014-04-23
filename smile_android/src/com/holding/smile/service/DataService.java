@@ -24,6 +24,7 @@ import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexJGoods;
 import com.holding.smile.protocol.POrder;
+import com.holding.smile.protocol.PProduct;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.protocol.PUser;
@@ -690,6 +691,82 @@ public class DataService {
 				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
 				if (pc != null)
 					rvd.setOrderData(pc.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 直接购买时，更改购买数量
+	 * 
+	 * @param gid
+	 *            商品ID
+	 * @param qty
+	 *            数量
+	 * @return
+	 */
+	public RtnValueDto updateOrderQty(Integer pid, short qty) {
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (pid != null) {
+			param.put("pid", String.valueOf(pid));
+		}
+		if (qty != 0) {
+			param.put("qty", String.valueOf(qty));
+		}
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_updateQty_url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PProduct pc = JSONUtil.getJson2Entity(rStr, PProduct.class);
+				if (pc != null)
+					rvd.setProductData(pc.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 从购物车购买时，更改购买数量
+	 * 
+	 * @param gid
+	 *            商品ID
+	 * @param qty
+	 *            数量
+	 * @return
+	 */
+	public RtnValueDto updateCartQty(Integer cartId, short qty) {
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (cartId != null) {
+			param.put("id", String.valueOf(cartId));
+		}
+		if (qty != 0) {
+			param.put("qty", String.valueOf(qty));
+		}
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_updateCartQty_url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PProduct pc = JSONUtil.getJson2Entity(rStr, PProduct.class);
+				if (pc != null)
+					rvd.setProductData(pc.getData());
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();

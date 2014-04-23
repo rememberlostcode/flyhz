@@ -32,6 +32,7 @@ public class RtnValueDto {
 	private SUser				userData;		// 返回用户数据
 	private List<Idcard>		idcardsData;	// 返身份证集合
 	private OrderDto			orderData;		// 订单数据
+	private ProductDto			productData;	// 更改商品时用
 
 	public Integer getCode() {
 		return code;
@@ -143,5 +144,13 @@ public class RtnValueDto {
 
 	public void setOrderData(OrderDto orderData) {
 		this.orderData = orderData;
+	}
+
+	public ProductDto getProductData() {
+		return productData;
+	}
+
+	public void setProductData(ProductDto productData) {
+		this.productData = productData;
 	}
 }

@@ -30,9 +30,9 @@
     <string name="idcard_save">/smile/idcard/save.json</string>
     <string name="idcard_delete">/smile/idcard/delete.json</string>
     
-    <string name="order_inform_url">/user/orderInform.json</string>
-    <string name="order_updateQty_url">/user/updateQty.json</string>
-    <string name="order_updateCartQty_url">/user/updateCartQty.json</string>
-    <string name="order_confirm_url">/user/confirmOrder.json</string>
+    <string name="order_inform_url">/smile/user/orderInform.json</string>
+    <string name="order_updateQty_url">/smile/user/updateQty.json</string>
+    <string name="order_updateCartQty_url">/smile/user/updateCartQty.json</string>
+    <string name="order_confirm_url">/smile/user/confirmOrder.json</string>
     
 </resources>
