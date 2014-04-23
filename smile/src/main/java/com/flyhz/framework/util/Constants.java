@@ -24,28 +24,19 @@ public class Constants {
 
 	/***************************** redis start *************************/
 	/**
-	 * 指定用户的订单KEY前缀，redis中完整的key=smile@user@orders@%userId%
-	 */
-	public static final String	PREFIX_USER_ORDERS				= "smile@user@orders@";
-	/**
-	 * 各品牌各分类推荐商品KEY前缀，redis中完整的key=smile@brands@recommend&cates@%cid%
+	 * 各品牌各分类推荐商品KEY前缀(选分类时)，redis中完整的key=smile@brands@recommend&cates@%cid%
 	 */
 	public static final String	PREFIX_BRANDS_RECOMMEND_CATES	= "smile@brands@recommend&cates@";
 	/**
 	 * 用户所有的订单KEY前缀，使用时再加上用户ID，如smile@orders@user@%userId%
 	 */
 	public static final String	PREFIX_ORDERS_USER				= "smile@orders@user@";
-
 	/**
 	 * 品牌推荐商品KEY（即不选分类时）
 	 */
 	public static final String	REDIS_KEY_BRANDS_RECOMMEND		= "smile@brands@recommend";
 	/**
-	 * 商品KEY，类型为map<productId,productJson>
-	 */
-	public static final String	REDIS_KEY_PRODUCTS				= "smile@products";
-	/**
-	 * 首页活动推荐商品KEY，类型为String
+	 * 首页活动推荐KEY，类型为String
 	 */
 	public static final String	REDIS_KEY_RECOMMEND_INDEX		= "smile@recommend@index";
 	/**
@@ -56,10 +47,6 @@ public class Constants {
 	 * 所有品牌KEY，类型为map<brandId,brandJson>
 	 */
 	public static final String	REDIS_KEY_BRANDS				= "smile@brands@all";
-	/**
-	 * 商品款号和产品ID对应关系KEY，类型为map<cn,productId>
-	 */
-	public static final String	REDIS_KEY_PRODUCT_CN			= "smile@product&cn";
 	/***************************** redis end *************************/
 
 	public static final String	MESSAGE_NODATA					= "暂无更新";

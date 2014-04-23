@@ -17,7 +17,6 @@ import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.BrandBuildDto;
 import com.flyhz.shop.dto.BrandDto;
-import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
@@ -42,50 +41,34 @@ public class RedisRepositoryImpl implements RedisRepository {
 	public ProductDto getProductFromRedis(String productId) throws ValidateException {
 		// TODO Auto-generated method stub
 		if (StringUtil.isBlank(productId)) {
-			throw new ValidateException("商品ID不能为空！");
+			throw new ValidateException(111111);
 		}
 		ProductDto productDto = new ProductDto();
-		String productJson = cacheRepository.hget(Constants.REDIS_KEY_PRODUCTS, productId);
-		if (StringUtil.isBlank(productJson)) {
-			log.warn("ID为" + productId + "的商品在redis中不存在！");
-			return null;
-		}
-		ProductBuildDto productBuildDto = JSONUtil.getJson2Entity(productJson,
-				ProductBuildDto.class);
-		if (productBuildDto == null) {// 如果为null，先查找数据库，如数据库存在则更新到redis
-			ProductModel productModel = productDao.getModelById(Integer.parseInt(productId));
-			if (productModel != null && productModel.getBrandId() != null) {
+		ProductModel productModel = productDao.getModelById(Integer.parseInt(productId));
+		if (productModel != null && productModel.getBrandId() != null) {
 
-				// 通过品牌ID获取品牌信息
-				BrandBuildDto brandBuildDto = getBrandFromRedis(productModel.getBrandId());
+			// 通过品牌ID获取品牌信息
+			BrandBuildDto brandBuildDto = getBrandFromRedis(productModel.getBrandId());
 
-				// 如果品牌不为空，把商品信息和品牌信息放入productDto
-				if (brandBuildDto != null) {
-					productDto.setId(productModel.getId());
-					productDto.setName(productModel.getName());
-					productDto.setPurchasingPrice(productModel.getPurchasingprice());
-					productDto.setImgs(productModel.getImgs());
-					BrandDto brand = new BrandDto();
-					brand.setId(brandBuildDto.getId());
-					brand.setName(brandBuildDto.getName());
-					productDto.setBrand(brand);
+			// 如果品牌不为空，把商品信息和品牌信息放入productDto
+			if (brandBuildDto != null) {
+				productDto.setId(productModel.getId());
+				productDto.setName(productModel.getName());
+				productDto.setPurchasingPrice(productModel.getPurchasingprice());
+
+				if (productModel.getImgs() != null && !"".equals(productModel.getImgs())) {
+					String[] p = JSONUtil.getJson2Entity(productModel.getImgs(), String[].class);
+					productDto.setImgs(p);
 				}
-			} else {
-				log.warn("ID为" + productId + "的商品在redis和数据库中都不存在！");
-				return null;
+
+				BrandDto brand = new BrandDto();
+				brand.setId(brandBuildDto.getId());
+				brand.setName(brandBuildDto.getName());
+				productDto.setBrand(brand);
 			}
 		} else {
-			// 通过品牌ID获取品牌信息
-			BrandBuildDto brandBuildDto = getBrandFromRedis(productBuildDto.getBid());
-
-			productDto.setId(productBuildDto.getId());
-			productDto.setName(productBuildDto.getN());
-			productDto.setPurchasingPrice(productBuildDto.getPp());
-			productDto.setImgs(productBuildDto.getP());
-			BrandDto brand = new BrandDto();
-			brand.setId(brandBuildDto.getId());
-			brand.setName(brandBuildDto.getName());
-			productDto.setBrand(brand);
+			log.warn("ID为" + productId + "的商品在redis和数据库中都不存在！");
+			return null;
 		}
 		return productDto;
 	}
