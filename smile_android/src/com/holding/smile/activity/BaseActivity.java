@@ -369,10 +369,10 @@ public class BaseActivity extends Activity {
 							SUser user = MyApplication.getInstance().getCurrentUser();
 							Intent intent = new Intent();
 							if (user == null) {
-								intent.putExtra("class", PersonalSettingsActivity.class);
+								intent.putExtra("class", MySmileActivity.class);
 								intent.setClass(context, LoginActivity.class);
 							} else {
-								intent.setClass(context, PersonalSettingsActivity.class);
+								intent.setClass(context, MySmileActivity.class);
 							}
 							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							startActivity(intent);

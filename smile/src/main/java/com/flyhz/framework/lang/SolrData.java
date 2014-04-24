@@ -53,4 +53,15 @@ public interface SolrData {
 	 * @param gmtModify
 	 */
 	public void submitOrder(Integer userId, Integer orderId, String status, Date gmtModify);
+
+	/**
+	 * 查询指定用户的订单ID
+	 * 
+	 * @param userId
+	 *            用户ID
+	 * @param status
+	 *            状态
+	 * @return
+	 */
+	public List<Integer> getOrderIdsFromSolr(Integer userId, String status);
 }

@@ -10,14 +10,22 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.flyhz.framework.lang.CacheRepository;
+import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.StringUtil;
@@ -36,6 +44,10 @@ public class SolrDataImpl implements SolrData {
 	private String					solr_url;
 	@Resource
 	private ProductFraction			productFraction;
+	@Resource
+	private CacheRepository			cacheRepository;
+	@Resource
+	private RedisRepository			redisRepository;
 	private static HttpSolrServer	productServer	= null;
 	private static HttpSolrServer	orderServer		= null;
 
@@ -229,9 +241,51 @@ public class SolrDataImpl implements SolrData {
 		int index = str.indexOf("\"docs\":[");
 		String ssss = str.substring(index + 7, str.length() - 2).replace("\"[", "[")
 							.replace("]\"", "]").replace("\\", "");
-		// RProductDto[] sz = JSONUtil.getJson2Entity(ssss,
-		// RProductDto[].class);
-		// System.out.println(sz);
 		return ssss;
+	}
+
+	@SuppressWarnings("deprecation")
+	public List<Integer> getOrderIdsFromSolr(Integer userId, String status) {
+		List<Integer> list = new ArrayList<Integer>();
+		HttpSolrServer solrServer = getServer(ORDER_URL);
+		SolrQuery sQuery = new SolrQuery();
+		String para = "";
+		if (userId != null) {
+			para = para + "user_id:" + userId;
+		}
+		if (StringUtils.isNotEmpty(status)) {
+			if (status.equals("finsh")) {
+				para = para + " AND status:4";
+			} else {
+				para = para + " AND (status:0 OR status:1 OR status:2 OR status:3 OR status:5)";
+			}
+		}
+
+		// 查询关键词，*:*代表所有属性、所有值，即所有index
+		if (!StringUtils.isNotEmpty(para)) {
+			para = "*:*";
+		}
+		sQuery.setQuery(para);
+		sQuery.setStart(0);
+		sQuery.setRows(10);
+		// 排序 如果按照blogId 排序，，那么将blogId desc(or asc) 改成 id desc(or asc)
+		sQuery.addSortField("gmt_modify", ORDER.desc);
+
+		try {
+			QueryResponse response = solrServer.query(sQuery);
+			SolrDocumentList doclist = response.getResults();
+			Integer orderId = null;
+			for (SolrDocument solrDocument : doclist) {
+				orderId = solrDocument.getFieldValue("id") != null ? Integer.valueOf(solrDocument.getFieldValue(
+						"id").toString())
+						: null;
+				if (orderId != null) {
+					list.add(orderId);
+				}
+			}
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

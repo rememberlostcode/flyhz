@@ -1,13 +1,17 @@
 
 package com.holding.smile.dto;
 
-public class VoucherDto {
+import java.io.Serializable;
 
-	private Integer	id;
+public class VoucherDto implements Serializable {
 
-	private String	name;
+	private static final long	serialVersionUID	= -5591693379407487935L;
 
-	private String	desc;
+	private Integer				id;
+
+	private String				name;
+
+	private String				desc;
 
 	public Integer getId() {
 		return id;

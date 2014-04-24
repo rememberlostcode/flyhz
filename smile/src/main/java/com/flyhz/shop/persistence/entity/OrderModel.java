@@ -17,7 +17,7 @@ public class OrderModel implements Serializable {
 	private String				detail;
 	private Date				gmtCreate;
 	private Date				gmtModify;
-	private Character			status;
+	private String				status;
 	private BigDecimal			total;
 
 	private Integer				userId;
@@ -65,11 +65,11 @@ public class OrderModel implements Serializable {
 		this.gmtModify = gmtModify;
 	}
 
-	public Character getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(Character status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

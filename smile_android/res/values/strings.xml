@@ -32,7 +32,8 @@
     <string name="btn_register">注册</string>
     <string name="get_pwd">找回密码</string>
     <string name="set_login">登录设置 </string>
-
+	<string name="my_orders">我的订单</string>
+	<string name="my_coupons">我的优惠券</string>
     <string name="user_info_myaddress">我的收货地址</string>
     <string name="setting_logout">注销</string>
     <string name="user_info_right">&gt;</string>

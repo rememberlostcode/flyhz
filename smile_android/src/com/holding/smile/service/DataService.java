@@ -24,6 +24,7 @@ import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexJGoods;
 import com.holding.smile.protocol.POrder;
+import com.holding.smile.protocol.POrderList;
 import com.holding.smile.protocol.PProduct;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
@@ -67,6 +68,7 @@ public class DataService {
 	private String			order_updateQty_url;
 	private String			order_updateCartQty_url;
 	private String			order_confirm_url;
+	private String			order_list_url;
 
 	public DataService(Context context) {
 		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
@@ -97,6 +99,7 @@ public class DataService {
 		order_updateQty_url = context.getString(R.string.order_updateQty_url);
 		order_updateCartQty_url = context.getString(R.string.order_updateCartQty_url);
 		order_confirm_url = context.getString(R.string.order_confirm_url);
+		order_list_url = context.getString(R.string.order_list_url);
 	}
 
 	private String setJson(String fileName) {
@@ -771,6 +774,37 @@ public class DataService {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
 				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	public RtnValueDto getOrdersList(String status) {
+		RtnValueDto rvd = new RtnValueDto();
+
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (status != null && !"".equals(status)) {
+			param.put("status", status);
+		}
+
+		String url = prefix_url + order_list_url;
+		String rStr = URLUtil.getStringByGet(url, param);
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				POrderList orders = JSONUtil.getJson2Entity(rStr, POrderList.class);
+				if (orders != null) {
+					rvd.setOrderListData(orders.getData());
+					rvd.setCode(orders.getCode());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
 			}
 		} else {
 			ValidateDto vd = new ValidateDto();

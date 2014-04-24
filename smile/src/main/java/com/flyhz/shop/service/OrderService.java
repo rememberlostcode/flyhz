@@ -35,7 +35,15 @@ public interface OrderService {
 	 */
 	public String getOrder(Integer userId, Integer orderId) throws ValidateException;
 
-	public List<OrderDto> listOrders(Integer userId, Character status);
+	/**
+	 * 获取指定用户的订单
+	 * 
+	 * @param userId
+	 * @param status
+	 * @return
+	 * @throws ValidateException
+	 */
+	public List<OrderDto> listOrders(Integer userId, String status) throws ValidateException;
 
 	/**
 	 * 支付成功后的操作

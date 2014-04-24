@@ -1,17 +1,20 @@
 
 package com.holding.smile.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderItem {
+public class OrderItem implements Serializable {
 
-	private Integer		id;
+	private static final long	serialVersionUID	= 7947163388048463540L;
 
-	private short		qty;
+	private Integer				id;
 
-	private ProductDto	product;
+	private short				qty;
 
-	private BigDecimal	total;
+	private ProductDto			product;
+
+	private BigDecimal			total;
 
 	public Integer getId() {
 		return id;

@@ -14,9 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.RedisRepository;
+import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.RandomString;
+import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
@@ -45,6 +47,8 @@ public class OrderServiceImpl implements OrderService {
 	private ProductDao		productDao;
 	@Resource
 	private RedisRepository	redisRepository;
+	@Resource
+	private SolrData		solrData;
 
 	@Override
 	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds,
@@ -124,7 +128,7 @@ public class OrderServiceImpl implements OrderService {
 			OrderModel order = new OrderModel();
 			order.setNumber(number);
 			order.setUserId(userId);
-			order.setStatus('0');// 0表示待支付，1表示支付，2表示关闭
+			order.setStatus("0");// 0表示待支付，1表示支付，2表示关闭
 			detail = JSONUtil.getEntity2Json(orderDto);
 			order.setDetail(detail);
 			order.setTotal(total);
@@ -133,7 +137,9 @@ public class OrderServiceImpl implements OrderService {
 			order.setGmtModify(date);
 			orderDao.generateOrder(order);
 			log.debug("====={}", order.getId());
-			redisRepository.buildOrderToRedis(userId, order.getId(), detail);
+			orderDto.setId(order.getId());
+			redisRepository.buildOrderToRedis(userId, orderDto.getId(),
+					JSONUtil.getEntity2Json(orderDto));
 		}
 		return orderDto;
 	}
@@ -144,21 +150,20 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderDto> listOrders(Integer userId, Character status) {
-		OrderModel order = new OrderModel();
-		order.setUserId(userId);
-		order.setStatus(status);
-		List<OrderModel> orderList = orderDao.getModelList(order);
-		if (orderList != null && !orderList.isEmpty()) {
-			List<OrderDto> orderDtoList = new ArrayList<OrderDto>();
-			for (OrderModel orderModel : orderList) {
-				OrderDto orderDto = JSONUtil.getJson2Entity(orderModel.getDetail(), OrderDto.class);
-				if (orderDto != null)
+	public List<OrderDto> listOrders(Integer userId, String status) throws ValidateException {
+		List<OrderDto> orderDtoList = new ArrayList<OrderDto>();
+		String json = null;
+		List<Integer> idsList = solrData.getOrderIdsFromSolr(userId, status);
+		for (Integer orderId : idsList) {
+			json = getOrder(userId, orderId);
+			if (json != null && StringUtil.isNotBlank(json)) {
+				OrderDto orderDto = JSONUtil.getJson2Entity(json, OrderDto.class);
+				if (orderDto != null) {
 					orderDtoList.add(orderDto);
+				}
 			}
-			return orderDtoList;
 		}
-		return null;
+		return orderDtoList;
 	}
 
 	@Override
@@ -172,7 +177,8 @@ public class OrderServiceImpl implements OrderService {
 		orderModel.setNumber(number);
 		orderModel.setUserId(userId);
 		orderModel = orderDao.getModel(orderModel);
-		if (orderModel != null && orderModel.getStatus() != null && orderModel.getStatus() == '1') {// 表示已付款
+		if (orderModel != null && orderModel.getStatus() != null
+				&& "1".equals(orderModel.getStatus())) {// 表示已付款
 			flag = true;
 			redisRepository.reBuildOrderToRedis(userId, orderModel.getId());
 		}

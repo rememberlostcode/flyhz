@@ -5,7 +5,8 @@ import java.util.List;
 
 public class OrderDetailDto extends OrderItem {
 
-	private List<CouponDto>	coupons;
+	private static final long	serialVersionUID	= -6330260477468777186L;
+	private List<CouponDto>		coupons;
 
 	public List<CouponDto> getCoupons() {
 		return coupons;
