@@ -4,6 +4,7 @@ package com.holding.smile.adapter;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -33,6 +34,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 	private ImageLoader				mImageLoader	= MyApplication.getImageLoader();
 	private boolean					mBusy			= false;
 	private Integer					sWidth			= MyApplication.getInstance().getScreenWidth();
+	private ProgressDialog			pDialog;
 	private Handler					mUIHandler;
 
 	public void setFlagBusy(boolean busy) {
@@ -41,10 +43,11 @@ public class MyOrderInformAdapter extends BaseAdapter {
 
 	// 自己定义的构造函数
 	public MyOrderInformAdapter(Context context, List<OrderDetailDto> contacts, TextView total,
-			Handler mUIHandler) {
+			ProgressDialog pDialog, Handler mUIHandler) {
 		this.orderDetails = contacts;
 		this.context = context;
 		this.total = total;
+		this.pDialog = pDialog;
 		this.mUIHandler = mUIHandler;
 	}
 
@@ -148,6 +151,10 @@ public class MyOrderInformAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View arg0) {
 					if (orderDetail.getQty() > 1) {
+
+						// 先发送空信息显示进度条
+						showPDialog();
+
 						orderDetail.setQty((short) (orderDetail.getQty() - 1));
 						RtnValueDto rtnValue = MyApplication.getInstance()
 															.getDataService()
@@ -163,6 +170,9 @@ public class MyOrderInformAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View arg0) {
+					// 先发送空信息显示进度条
+					showPDialog();
+
 					orderDetail.setQty((short) (orderDetail.getQty() + 1));
 					RtnValueDto rtnValue = MyApplication.getInstance()
 														.getDataService()
@@ -175,5 +185,11 @@ public class MyOrderInformAdapter extends BaseAdapter {
 			});
 		}
 		return convertView;
+	}
+
+	// 显示进度条
+	private void showPDialog() {
+		pDialog.show();
+		mUIHandler.sendEmptyMessage(2);
 	}
 }

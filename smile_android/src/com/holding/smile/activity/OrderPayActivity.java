@@ -30,12 +30,12 @@ import com.holding.smile.tools.StrUtils;
 
 /**
  * 
- * 类说明：订单确认信息页
+ * 类说明：订单支付页
  * 
  * @author robin 2014-4-22下午1:52:45
  * 
  */
-public class OrderInformActivity extends BaseActivity implements OnClickListener {
+public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
 	private static final int		WHAT_DID_LOAD_DATA		= 0;
 	private static final int		WHAT_DID_UPDATE_DATA	= 1;
@@ -61,7 +61,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		backBtn.setOnClickListener(this);
 
 		TextView headerDesc = displayHeaderDescription();
-		headerDesc.setText(R.string.order_inform);
+		headerDesc.setText(R.string.order_pay);
 
 		Intent intent = getIntent();
 		try {
