@@ -804,6 +804,52 @@ public class DataService {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
 				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 确认订单后生成订单信息,pids与cartIds只传一种
+	 * 
+	 * @param pids
+	 *            格式：pid_qty(如：12_1,12_2)
+	 * @param cartIds
+	 *            购物车ID列表
+	 * @param addressId
+	 *            地址ID
+	 * @return
+	 */
+	public RtnValueDto confirmOrder(String pidQty, List<Integer> cartIds, Integer addressId) {
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (StrUtils.isNotEmpty(pidQty)) {
+			param.put("pids", pidQty);
+		} else {
+			if (cartIds != null && !cartIds.isEmpty()) {
+				for (Integer cartid : cartIds) {
+					param.put("cartIds", String.valueOf(cartid));
+				}
+			}
+		}
+		if (addressId != null) {
+			param.put("cid", String.valueOf(addressId));
+		}
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_confirm_url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
+				if (pc != null)
+					rvd.setOrderData(pc.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
 				rvd.setValidate(vd);
 			}
 		} else {
