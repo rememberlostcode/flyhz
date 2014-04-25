@@ -4,8 +4,11 @@ package com.holding.smile.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,41 +69,44 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		bs = intent.getExtras().getString("bs");
 		gid = (Integer) intent.getExtras().getSerializable("gid");
 		if (StrUtils.isNotEmpty(bs)) {
-			RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(bs);
-			if (rtnValue != null) {
-				details = rtnValue.getData();
-				if (details == null) {
-					if (rtnValue.getValidate() != null
-							&& StrUtils.isNotEmpty(rtnValue.getValidate().getMessage())) {
-						Toast.makeText(context, rtnValue.getValidate().getMessage(),
-								Toast.LENGTH_SHORT).show();
-					} else {
-						Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
-					}
-				}
-			}
-			if (details != null && !details.isEmpty()) {
-				setContentLayout(R.layout.goods_detail_view);
-				// 底部布局
-				View view = displayFooterMainBuyBtn();
-				View nowBuy = view.findViewById(R.id.nowbuy);
-				View addCart = view.findViewById(R.id.addcart);
-				nowBuy.setOnClickListener(this);
-				addCart.setOnClickListener(this);
-
-				b = (TextView) findViewById(R.id.b);
-				n = (TextView) findViewById(R.id.n);
-				pp = (TextView) findViewById(R.id.pp);
-				d = (TextView) findViewById(R.id.d);
-				scolor = (TextView) findViewById(R.id.select_color);
-				initGoods();
-				// 加载颜色
-				loadColors();
-			}
+			startTask();
 		} else {
 			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
 		}
 
+	}
+
+	private void initView() {
+		if (details != null && !details.isEmpty()) {
+			setContentLayout(R.layout.goods_detail_view);
+			// 底部布局
+			View view = displayFooterMainBuyBtn();
+			View nowBuy = view.findViewById(R.id.nowbuy);
+			View addCart = view.findViewById(R.id.addcart);
+			nowBuy.setOnClickListener(this);
+			addCart.setOnClickListener(this);
+
+			b = (TextView) findViewById(R.id.b);
+			n = (TextView) findViewById(R.id.n);
+			pp = (TextView) findViewById(R.id.pp);
+			d = (TextView) findViewById(R.id.d);
+			scolor = (TextView) findViewById(R.id.select_color);
+			initGoods();
+			// 加载颜色
+			loadColors();
+		}
+	}
+
+	@Override
+	public void loadData() {
+		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(bs);
+		if (rtnValue != null) {
+			Message msg = mUIHandler.obtainMessage(0);
+			msg.obj = rtnValue;
+			msg.sendToTarget();
+		} else {
+			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	/**
@@ -322,4 +328,45 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		tips = null;
 		setResult(RESULT_CANCELED, null);
 	}
+
+	@SuppressLint("HandlerLeak")
+	private final Handler	mUIHandler	= new Handler() {
+
+											@Override
+											public void handleMessage(Message msg) {
+												progressBar.setVisibility(View.GONE);
+												switch (msg.what) {
+													case 0: {
+														if (msg.obj != null) {
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															details = obj.getData();
+															if (details == null) {
+																if (obj.getValidate() != null
+																		&& StrUtils.isNotEmpty(obj.getValidate()
+																									.getMessage())) {
+																	Toast.makeText(
+																			context,
+																			obj.getValidate()
+																				.getMessage(),
+																			Toast.LENGTH_SHORT)
+																			.show();
+																} else {
+																	Toast.makeText(context,
+																			Constants.MESSAGE_NET,
+																			Toast.LENGTH_SHORT)
+																			.show();
+																}
+															} else {
+																initView();
+															}
+														} else {
+															Toast.makeText(context, "暂无数据",
+																	Toast.LENGTH_SHORT).show();
+														}
+														break;
+													}
+												}
+											}
+										};
+
 }

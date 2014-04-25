@@ -61,8 +61,16 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 		TextView headerDescription = displayHeaderDescription();
 		headerDescription.setText(bn);
-		displayFooterMain(0);
 
+		startTask();
+
+	}
+
+	/**
+	 * 初始化View
+	 */
+	private void initView() {
+		displayFooterMain(0);
 		setSortTypeLayout();// 设置排序标签
 
 		adapter = new MyJGoodsAdapter(context, mStrings);
@@ -72,9 +80,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		mListView.setOnScrollListener(mScrollListener);
 		mPullToRefreshView.setOnHeaderRefreshListener(this);
 		mPullToRefreshView.setOnFooterRefreshListener(this);
-
-		startTask();
-
 	}
 
 	/**
@@ -246,6 +251,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 													progressBar.setVisibility(View.GONE);
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
+															initView();// 初始化View
 															if (msg.obj != null) {
 																mStrings.clear();
 																RtnValueDto obj = (RtnValueDto) msg.obj;

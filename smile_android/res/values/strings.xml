@@ -24,6 +24,13 @@
     <string name="order_time">订单生成时间：</string>
     <string name="order_amount">总金额：</string>
     <string name="taobao_pay_btn">去淘宝支付</string>
+    
+    <!-- 购物车 -->
+    <string name="shoppingcart">我的购物车</string>
+    <string name="shoppingcart_list">购物车列表</string>
+    <string name="settle_accounts">结算</string>
+    <string name="all">全部</string>
+    <string name="del">删除</string>
 
     <!-- 搜索 -->
     <string name="search">搜索</string>
