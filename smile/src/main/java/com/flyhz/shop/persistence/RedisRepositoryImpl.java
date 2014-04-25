@@ -1,6 +1,8 @@
 
 package com.flyhz.shop.persistence;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -15,8 +17,10 @@ import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
+import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.dto.BrandBuildDto;
 import com.flyhz.shop.dto.BrandDto;
+import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
@@ -142,5 +146,48 @@ public class RedisRepositoryImpl implements RedisRepository {
 		}
 		// solr修改订单索引
 		solrData.submitOrder(userId, orderId, "1", null);
+	}
+
+	public void chacheOrders() {
+		// TODO Auto-generated method stub
+		int mysqlSize = 500;// 每次取500条
+		SolrPage solrPage = new SolrPage();
+		// 500条数据查询一次并插入数据库
+		int orderStart = 0;
+
+		int maxOrderCount = orderDao.getAllOrdersCount(solrPage);
+		List<OrderModel> detailList = null;
+		OrderDto orderDto = null;
+		solrPage.setNum(mysqlSize);
+
+		while (orderStart < maxOrderCount) {
+			solrPage.setStart(orderStart);
+			detailList = orderDao.findAllOrders(solrPage);
+			for (int i = 0; i < detailList.size(); i++) {
+				if (detailList.get(i) != null && detailList.get(i).getDetail() != null
+						&& detailList.get(i).getId() != null) {
+					try {
+
+						// 转换后获取商品购买数量
+						orderDto = JSONUtil.getJson2Entity(detailList.get(i).getDetail(),
+								OrderDto.class);
+						if (orderDto != null) {
+							orderDto.setId(detailList.get(i).getId());
+							String userId = String.valueOf(orderDto.getUser().getId());
+							cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
+									String.valueOf(orderDto.getId()),
+									JSONUtil.getEntity2Json(orderDto));
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						log.error(e.getMessage());
+					}
+
+				}
+			}
+
+			// 设置新的分页查询参数
+			orderStart += mysqlSize;
+		}
 	}
 }

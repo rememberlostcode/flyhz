@@ -232,6 +232,16 @@ public class SubmitService {
 		return rvd;
 	}
 
+	/**
+	 * 身份证保存
+	 * 
+	 * @param idcard
+	 *            身份证信息
+	 * @param filePath
+	 *            身份证图片
+	 * @return
+	 * @throws Exception
+	 */
 	public RtnValueDto idcardSave(Idcard idcard, String filePath) throws Exception {
 		if (idcard == null) {
 			return null;
@@ -270,6 +280,13 @@ public class SubmitService {
 		return rvd;
 	}
 
+	/**
+	 * 身份证删除
+	 * 
+	 * @param dicadrId
+	 *            身份证表主键ID
+	 * @return
+	 */
 	public RtnValueDto idcardRemove(Integer dicadrId) {
 		if (dicadrId == null) {
 			return null;
@@ -299,6 +316,13 @@ public class SubmitService {
 		return rvd;
 	}
 
+	/**
+	 * 注册
+	 * 
+	 * @param iuser
+	 *            用户信息
+	 * @return
+	 */
 	public RtnValueDto register(SUser iuser) {
 		RtnValueDto rvd = null;
 		if (iuser != null && iuser.getUsername() != null && iuser.getPassword() != null) {

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.CacheRepository;
+import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.JSONUtil;
@@ -40,6 +41,8 @@ public class BuildServiceImpl implements BuildService {
 	private ProductFraction	productFraction;
 	@Resource
 	private SolrData		solrData;
+	@Resource
+	private RedisRepository	redisRepository;
 	/**
 	 * 500条数据查询一次并插入数据库
 	 */
@@ -165,6 +168,10 @@ public class BuildServiceImpl implements BuildService {
 		}
 
 		/******** build商品品牌分类 end *******/
+
+		/******** build用户订单 start *******/
+		redisRepository.chacheOrders();
+		/******** build用户订单 end *******/
 		log.info("buildRedis结束");
 	}
 

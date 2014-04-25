@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="prefix_url">http://211.149.175.138</string>
-    <string name="login_url">https://211.149.175.138:8443/smile/loginAuth.json</string>
-    <string name="auto_login_url">https://211.149.175.138:8443/smile/loginAuto.json</string>
+    <string name="prefix_url">http://10.22.22.40</string>
+    <string name="login_url">http://10.22.22.40/smile/loginAuth.json</string>
+    <string name="auto_login_url">http://10.22.22.40/smile/loginAuto.json</string>
     
     <string name="img_static_url">/smile/static</string>
     <string name="jGoods_index_url">/smile/node/index</string>

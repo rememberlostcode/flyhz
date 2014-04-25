@@ -1,58 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="300dp"
     android:background="#E8E8E8"
-    android:gravity="center" >
+    android:gravity="center_vertical" >
+
+    <LinearLayout
+        android:id="@+id/order_list_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="fill_horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:text="订单号："
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/order_list_number"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/number_color"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:text="时间："
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/order_list_time"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/number_color"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/order_list_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/order_list_button_more"
+            android:layout_width="fill_parent"
+            android:layout_height="20dp"
+            android:text="显示更多"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/order_list_pricetotal"
         android:layout_width="fill_parent"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
         android:layout_margin="5dip"
         android:layout_weight="1.0" >
 
         <TextView
-            android:id="@+id/order_list_name"
+            android:id="@+id/order_list_price"
             android:layout_width="50dp"
             android:layout_height="20dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:gravity="center_vertical"
-            android:text="名称"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/order_list_price"
-            android:layout_width="fill_parent"
-            android:layout_height="20dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:layout_marginBottom="6dip"
             android:gravity="center_vertical"
             android:text="总价"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
-        
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1.0dip"
-            android:layout_alignBottom="@id/order_list_price"
-            android:layout_marginTop="5dip"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="-15dip"
-            android:background="@android:color/darker_gray" />
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/order_list_price_value"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_alignRight="@+id/order_list_price"
+            android:layout_marginBottom="6dip"
+            android:gravity="center_vertical"
+            android:text="1000"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
-    <TextView
-        android:layout_width="20dp"
-        android:layout_height="fill_parent"
-        android:layout_gravity="right"
-        android:layout_marginRight="10dip"
-        android:gravity="center_vertical"
-        android:text="@string/user_info_right"
-        android:textColor="@color/black"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/order_list_totalnum"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="6dip"
+            android:gravity="center_vertical"
+            android:text="总量"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/order_list_totalnum_value"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_alignRight="@id/order_list_totalnum"
+            android:layout_marginBottom="6dip"
+            android:gravity="center_vertical"
+            android:text="3"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+    </RelativeLayout>
 
 </TableRow>

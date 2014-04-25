@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.RandomString;
 import com.flyhz.framework.util.StringUtil;
@@ -76,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
 		// 处理商品信息
 		List<OrderDetailDto> orderDetails = new ArrayList<OrderDetailDto>();
 		BigDecimal total = new BigDecimal(0);
+		int allqty = 0;
 		for (String pidstr : productIds) {
 			if (StringUtils.isBlank(pidstr))
 				continue;
@@ -94,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
 						BigDecimal detailTotal = product.getPurchasingPrice().multiply(
 								BigDecimal.valueOf(qty));
 						orderDetailDto.setTotal(detailTotal);
+						allqty += qty;
 						total = total.add(detailTotal);
 					}
 					orderDetails.add(orderDetailDto);
@@ -107,11 +110,14 @@ public class OrderServiceImpl implements OrderService {
 		if (orderDetails.isEmpty())
 			throw new ValidateException("产品为空！");
 
+		Date date = new Date();
 		OrderDto orderDto = new OrderDto();
 		orderDto.setDetails(orderDetails);
 		orderDto.setConsignee(consigneeDto);
 		orderDto.setTotal(total);
+		orderDto.setQty(allqty);
 		orderDto.setUser(user);
+		orderDto.setTime(DateUtil.dateToStr(date));
 
 		// 优惠卷
 		List<VoucherDto> vouchers = null;
@@ -128,11 +134,10 @@ public class OrderServiceImpl implements OrderService {
 			OrderModel order = new OrderModel();
 			order.setNumber(number);
 			order.setUserId(userId);
-			order.setStatus("0");// 0表示待支付，1表示支付，2表示关闭
+			order.setStatus("10");// 10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
 			detail = JSONUtil.getEntity2Json(orderDto);
 			order.setDetail(detail);
 			order.setTotal(total);
-			Date date = new Date();
 			order.setGmtCreate(date);
 			order.setGmtModify(date);
 			orderDao.generateOrder(order);
