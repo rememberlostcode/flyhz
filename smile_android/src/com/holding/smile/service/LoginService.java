@@ -33,7 +33,7 @@ public class LoginService {
 	private String		login_url;
 	private String		auto_login_url;
 
-	private final int	SUCCESS_CODE	= 0;
+	private final int	SUCCESS_CODE	= 200000;
 
 	public LoginService(Context context) {
 		super();
