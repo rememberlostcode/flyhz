@@ -30,6 +30,14 @@ public interface CartItemDao extends GenericDao<CartitemModel> {
 	public CartitemModel getCartItem(CartitemModel cartitemModel);
 
 	/**
+	 * 查找购物车商品
+	 * 
+	 * @param cartItem
+	 * @return cartItem
+	 */
+	public CartitemModel getCartItemByProductId(CartitemModel cartitemModel);
+
+	/**
 	 * 更新购物车商品
 	 * 
 	 * @param cartItem

@@ -44,7 +44,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		CartitemModel cartitemModel = new CartitemModel();
 		cartitemModel.setProductId(productId);
 		cartitemModel.setUserId(userId);
-		CartitemModel cartitemModelNew = cartItemDao.getCartItem(cartitemModel);
+		CartitemModel cartitemModelNew = cartItemDao.getCartItemByProductId(cartitemModel);
 		// 购物车无此商品
 		if (cartitemModelNew == null) {
 			cartitemModel.setGmtCreate(new Date());
