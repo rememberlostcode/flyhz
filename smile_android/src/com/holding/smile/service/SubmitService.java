@@ -16,6 +16,7 @@ import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.Idcard;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.protocol.PCartItem;
 import com.holding.smile.protocol.PConsignee;
 import com.holding.smile.protocol.PUser;
 import com.holding.smile.tools.Constants;
@@ -34,6 +35,9 @@ public class SubmitService {
 	private String	idcard_save;
 	private String	idcard_delete;
 	private String	register_url;
+	private String	cart_add_url;
+	private String	cart_setQty_url;
+	private String	cart_remove_url;
 
 	public SubmitService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
@@ -46,6 +50,10 @@ public class SubmitService {
 		idcard_save = context.getString(R.string.idcard_save);
 		idcard_delete = context.getString(R.string.idcard_delete);
 		register_url = context.getString(R.string.register_url);
+
+		cart_add_url = context.getString(R.string.cart_add_url);
+		cart_setQty_url = context.getString(R.string.cart_setQty_url);
+		cart_remove_url = context.getString(R.string.cart_remove_url);
 	}
 
 	/**
@@ -313,6 +321,34 @@ public class SubmitService {
 					rvd.setUserData(user.getData());
 					rvd.setCode(200000);
 				}
+			}
+		}
+		return rvd;
+	}
+
+	/**
+	 * 添加购物车
+	 * 
+	 * @param pid
+	 * @param qty
+	 * @return
+	 */
+	public RtnValueDto addCart(Integer pid, Integer qty) {
+		RtnValueDto rvd = null;
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (pid != null) {
+			param.put("pid", String.valueOf(pid));
+		}
+		if (qty != null) {
+			param.put("qty", String.valueOf(qty));
+		}
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_add_url, param);
+		if (rvdString != null) {
+			PCartItem pc = JSONUtil.getJson2Entity(rvdString, PCartItem.class);
+			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
+				rvd = new RtnValueDto();
+				rvd.setCartData(pc.getData());
+				rvd.setCode(200000);
 			}
 		}
 		return rvd;
