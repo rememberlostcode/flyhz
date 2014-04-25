@@ -72,6 +72,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 		ImageView backBtn = (ImageView) findViewById(R.id.back_normal);
 		backBtn.setOnClickListener(this);
 
+		displayFooterMain(R.id.mainfooter_three);
+
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.search_pull_refresh_view);
 		mListView = (ListView) findViewById(R.id.searchlistview);
 		mListView.setAdapter(adapter);

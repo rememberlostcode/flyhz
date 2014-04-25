@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +19,7 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.MyOrdersAdapter;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.myview.MyListView;
 
 /**
  * 我的订单
@@ -30,7 +30,7 @@ import com.holding.smile.dto.RtnValueDto;
 public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	private List<OrderDto>	list;
 	private MyOrdersAdapter	adapter;
-	private ListView		listView;
+	private MyListView		listView;
 
 	private String			status;
 
@@ -56,7 +56,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 		finshButton.setOnClickListener(this);
 		unfinshButton.setOnClickListener(this);
 
-		listView = (ListView) findViewById(R.id.list_orders_list);
+		listView = (MyListView) findViewById(R.id.list_orders_list);
 		startTask();
 	}
 

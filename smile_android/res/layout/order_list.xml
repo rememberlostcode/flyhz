@@ -45,21 +45,13 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-    <LinearLayout
+    <com.holding.smile.myview.MyListView
         android:id="@+id/order_list_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/order_list_button_more"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:text="显示更多"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-    </LinearLayout>
+        android:background="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="1sp" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -69,7 +61,7 @@
         <RelativeLayout
             android:id="@+id/order_list_pricetotal"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="52dp"
             android:layout_margin="5dp"
             android:layout_weight="1" >
 
@@ -121,7 +113,7 @@
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_margin="10.0dip"
-            android:background="@color/lightgreen"
+            android:background="@color/zhifu_color"
             android:textSize="18sp" />
     </LinearLayout>
 

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,8 +34,13 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.my_smile);
 
+		ImageView backBtn = displayHeaderBack();
+		backBtn.setOnClickListener(this);
+
 		TextView textView = displayHeaderDescription();
 		textView.setText("我的SMILE");
+
+		displayFooterMain(R.id.mainfooter_more);
 
 		myOrdersLayout = (LinearLayout) findViewById(R.id.mysmile_myorders_layout);
 		myCouponLayout = (LinearLayout) findViewById(R.id.mysmile_mycoupon_layout);
@@ -48,6 +54,11 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+			case R.id.btn_back: {
+				setResult(RESULT_CANCELED, null);
+				finish();
+				break;
+			}
 			case R.id.mysmile_myorders_layout: {
 				Intent intent = new Intent();
 				intent.setClass(context, MyOrdersActivity.class);

@@ -16,10 +16,13 @@ import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.OrderDto;
+import com.holding.smile.myview.MyListView;
 
 public class MyOrdersAdapter extends BaseAdapter {
-	private Context			context;
-	private List<OrderDto>	orderList;
+	private Context					context;
+	private List<OrderDto>			orderList;
+	private MyListView				listView;
+	private MyOrderInformAdapter	orderAdapter;
 
 	// 自己定义的构造函数
 	public MyOrdersAdapter(Context context, List<OrderDto> orderList) {
@@ -48,7 +51,6 @@ public class MyOrdersAdapter extends BaseAdapter {
 		TextView	price;
 		TextView	totalnum;
 		ImageView	cover;
-		Button		moreButton;
 		Button		statusButton;
 	}
 
@@ -63,7 +65,6 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder.time = (TextView) convertView.findViewById(R.id.order_list_time);
 			holder.price = (TextView) convertView.findViewById(R.id.order_list_price_value);
 			holder.totalnum = (TextView) convertView.findViewById(R.id.order_list_totalnum_value);
-			holder.moreButton = (Button) convertView.findViewById(R.id.order_list_button_more);
 			holder.statusButton = (Button) convertView.findViewById(R.id.order_list_status);
 			convertView.setTag(holder);
 		} else {
@@ -75,13 +76,6 @@ public class MyOrdersAdapter extends BaseAdapter {
 		holder.time.setText(order.getTime());
 		holder.price.setText(String.valueOf(order.getTotal()));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
-
-		holder.moreButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(context, "点击了more", Toast.LENGTH_SHORT).show();
-			}
-		});
 
 		holder.statusButton.setText(getTextByStatus(order.getStatus()));
 		holder.statusButton.setOnClickListener(new OnClickListener() {
@@ -103,6 +97,13 @@ public class MyOrdersAdapter extends BaseAdapter {
 				// BaseActivity.IDCARD_EDIT_CODE);
 			}
 		});
+
+		listView = (MyListView) convertView.findViewById(R.id.order_list_content);
+		orderAdapter = new MyOrderInformAdapter(context, order.getDetails(), holder.totalnum, null,
+				null);
+		orderAdapter.setIsShowOrder(true);
+		orderAdapter.setActivityParent(parent);
+		listView.setAdapter(orderAdapter);
 		return convertView;
 	}
 

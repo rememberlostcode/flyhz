@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.holding.smile.R;
-import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.cache.ImageLoader;
@@ -36,9 +35,19 @@ public class MyOrderInformAdapter extends BaseAdapter {
 	private Integer					sWidth			= MyApplication.getInstance().getScreenWidth();
 	private ProgressDialog			pDialog;
 	private Handler					mUIHandler;
+	private boolean					isShowOrder		= false;										// 是否是显示我的订单页面
+	private ViewGroup				activityParent;
 
 	public void setFlagBusy(boolean busy) {
 		this.mBusy = busy;
+	}
+
+	public void setIsShowOrder(boolean isShowOrder) {
+		this.isShowOrder = isShowOrder;
+	}
+
+	public void setActivityParent(ViewGroup activityParent) {
+		this.activityParent = activityParent;
 	}
 
 	// 自己定义的构造函数
@@ -74,6 +83,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 	static class ViewHolder {
 		TextView	n;
 		TextView	pp;
+		TextView	spq;
 		ImageView	p;
 		TextView	color;
 		TextView	brandstyle;
@@ -91,6 +101,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			holder.n = (TextView) convertView.findViewById(R.id.n);
 			holder.n.setWidth((int) (sWidth - 190 * MyApplication.getInstance().getDensity()));
+			holder.spq = (TextView) convertView.findViewById(R.id.show_product_qty);
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 			holder.brandstyle = (TextView) convertView.findViewById(R.id.brand_style);
@@ -139,23 +150,50 @@ public class MyOrderInformAdapter extends BaseAdapter {
 						Intent intent = new Intent(context, GoodsDetailActivity.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						intent.putExtra("gid", jGoods.getId());
-						((Activity) parent.getContext()).startActivityForResult(intent,
-								BaseActivity.SEARCH_CODE);
+						intent.putExtra("bs", jGoods.getBrandstyle());
+						if (isShowOrder) {
+							((Activity) activityParent.getContext()).startActivity(intent);
+						} else {
+							((Activity) parent.getContext()).startActivity(intent);
+						}
 					} else {
 						notifyDataSetChanged();
 					}
 				}
 			});
-			holder.subBtn.setOnClickListener(new OnClickListener() {
+			if (isShowOrder) {
+				holder.spq.setText("x" + orderDetail.getQty());
+				convertView.findViewById(R.id.layout_buyqty).setVisibility(View.GONE);
+			} else {
+				holder.spq.setVisibility(View.GONE);
+				holder.subBtn.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View arg0) {
-					if (orderDetail.getQty() > 1) {
+					@Override
+					public void onClick(View arg0) {
+						if (orderDetail.getQty() > 1) {
 
+							// 先发送空信息显示进度条
+							showPDialog();
+
+							orderDetail.setQty((short) (orderDetail.getQty() - 1));
+							RtnValueDto rtnValue = MyApplication.getInstance()
+																.getSubmitService()
+																.updateOrderQty(jGoods.getId(),
+																		orderDetail.getQty());
+							Message msg = mUIHandler.obtainMessage(1);
+							msg.obj = rtnValue;
+							msg.sendToTarget();
+						}
+					}
+				});
+				holder.addBtn.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
 						// 先发送空信息显示进度条
 						showPDialog();
 
-						orderDetail.setQty((short) (orderDetail.getQty() - 1));
+						orderDetail.setQty((short) (orderDetail.getQty() + 1));
 						RtnValueDto rtnValue = MyApplication.getInstance()
 															.getSubmitService()
 															.updateOrderQty(jGoods.getId(),
@@ -164,32 +202,19 @@ public class MyOrderInformAdapter extends BaseAdapter {
 						msg.obj = rtnValue;
 						msg.sendToTarget();
 					}
-				}
-			});
-			holder.addBtn.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View arg0) {
-					// 先发送空信息显示进度条
-					showPDialog();
-
-					orderDetail.setQty((short) (orderDetail.getQty() + 1));
-					RtnValueDto rtnValue = MyApplication.getInstance()
-														.getSubmitService()
-														.updateOrderQty(jGoods.getId(),
-																orderDetail.getQty());
-					Message msg = mUIHandler.obtainMessage(1);
-					msg.obj = rtnValue;
-					msg.sendToTarget();
-				}
-			});
+				});
+			}
 		}
 		return convertView;
 	}
 
 	// 显示进度条
 	private void showPDialog() {
-		pDialog.show();
-		mUIHandler.sendEmptyMessage(2);
+		if (pDialog != null) {
+			pDialog.show();
+		}
+		if (mUIHandler != null) {
+			mUIHandler.sendEmptyMessage(2);
+		}
 	}
 }
