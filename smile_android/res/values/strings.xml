@@ -20,8 +20,9 @@
     <string name="color_cate">颜色分类</string>
     <string name="confirm_btn">确定</string>
     <string name="order_pay">订单支付页</string>
-    <string name="order_number">订单编号</string>
-    <string name="order_amount">总金额</string>
+    <string name="order_number">订单编号：</string>
+    <string name="order_time">订单生成时间：</string>
+    <string name="order_amount">总金额：</string>
     <string name="taobao_pay_btn">去淘宝支付</string>
 
     <!-- 搜索 -->

@@ -2,8 +2,6 @@
 package com.holding.smile.activity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -13,18 +11,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
-import com.holding.smile.adapter.MyOrderInformAdapter;
-import com.holding.smile.dto.OrderDetailDto;
-import com.holding.smile.dto.OrderDto;
-import com.holding.smile.dto.ProductDto;
-import com.holding.smile.dto.RtnValueDto;
-import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
 
@@ -37,22 +29,14 @@ import com.holding.smile.tools.StrUtils;
  */
 public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
-	private static final int		WHAT_DID_LOAD_DATA		= 0;
-	private static final int		WHAT_DID_UPDATE_DATA	= 1;
-	private static final int		WHAT_PROGRESS_STATE		= 2;
-	private ProgressDialog			pDialog;
-	private int						mProgress;
-	private MyListView				listView;
-	private MyOrderInformAdapter	orderAdapter;
-	private ImageButton				confirmBtn;
-	private TextView				total;
-	private OrderDto				order					= null;
-	private List<OrderDetailDto>	orderDetails			= new ArrayList<OrderDetailDto>();
-	private Integer					gid						= null;							// 商品ID
-	private String					bs						= null;							// 款号
-	private Integer					addressId				= 1;								// 地址id
-	private Integer					qty						= 1;								// 购买数量，默认是1
-	private List<Integer>			cartIds					= null;							// 从购物车结算时用，保存选中的购物车ID
+	private static final int	WHAT_DID_LOAD_DATA	= 0;
+	private static final int	WHAT_PROGRESS_STATE	= 2;
+	private ProgressDialog		pDialog;
+	private int					mProgress;
+	private Button				payBtn;
+	private TextView			numberText;
+	private TextView			amountText;
+	private TextView			timeText;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,47 +49,28 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
 		Intent intent = getIntent();
 		try {
-			gid = (Integer) intent.getExtras().getSerializable("gid");
-			startTask();
-		} catch (Exception e) {
-			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
-		}
-
-	}
-
-	/**
-	 * 初始化View
-	 */
-	private void initView() {
-		if (order == null)
-			return;
-		setContentLayout(R.layout.order_inform_view);
-		confirmBtn = (ImageButton) findViewById(R.id.confirm_btn);
-		confirmBtn.setOnClickListener(this);
-		total = (TextView) findViewById(R.id.total);
-
-		initPDialog();// 初始化进度条
-		listView = (MyListView) findViewById(R.id.order_list);
-		orderAdapter = new MyOrderInformAdapter(context, orderDetails, total, pDialog, mUIHandler);
-		listView.setAdapter(orderAdapter);
-
-	}
-
-	public void loadData() {
-		if (gid != null) {
-			String pidQty = gid + "_" + qty;
-			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
-												.getOrderInform(pidQty, cartIds, addressId);
-			if (rtnValue != null) {
-				Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-				msg.obj = rtnValue;
-				msg.sendToTarget();
+			initPDialog();// 初始化进度条
+			String number = intent.getExtras().getString("number");// 订单号
+			String time = intent.getExtras().getString("time");// 订单生成时间
+			BigDecimal amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
+			if (StrUtils.isNotEmpty(number) && StrUtils.isNotEmpty(time) && amount != null) {
+				setContentLayout(R.layout.order_pay_view);
+				payBtn = (Button) findViewById(R.id.taobao_pay_btn);
+				payBtn.setOnClickListener(this);
+				numberText = (TextView) findViewById(R.id.number);
+				timeText = (TextView) findViewById(R.id.time);
+				amountText = (TextView) findViewById(R.id.amount);
+				numberText.setText(number);
+				timeText.setText(time);
+				amountText.setText(amount + "");
+				mUIHandler.sendEmptyMessage(WHAT_DID_LOAD_DATA);
 			} else {
-				Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, Constants.MESSAGE_EXCEPTION, Toast.LENGTH_SHORT).show();
 			}
-		} else {
-			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+		} catch (Exception e) {
+			Toast.makeText(context, Constants.MESSAGE_EXCEPTION, Toast.LENGTH_SHORT).show();
 		}
+
 	}
 
 	/**
@@ -130,7 +95,8 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 		pDialog.setProgress(0);
 		mProgress = 0;
 		// 当要显示进度效果时，再给handler发送一个空消息
-		// mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
+		pDialog.show();
+		mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
 	}
 
 	@Override
@@ -140,8 +106,8 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 				finish();
 				break;
 			}
-			case R.id.confirm_btn: {
-				Toast.makeText(context, "您确认了订单信息", Toast.LENGTH_SHORT).show();
+			case R.id.taobao_pay_btn: {
+				Toast.makeText(context, "您点了去淘宝支付", Toast.LENGTH_SHORT).show();
 				// Intent intent = new Intent(this, SearchGoodsActivity.class);
 				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				// startActivity(intent);
@@ -163,17 +129,14 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (listView != null) {
-			listView.invalidate();
-			listView = null;
+		if (pDialog != null) {
+			pDialog.cancel();
+			pDialog = null;
 		}
-		if (orderAdapter != null) {
-			orderAdapter.notifyDataSetChanged();
-			orderAdapter = null;
-		}
-		orderDetails.clear();
-		orderDetails = null;
-		setResult(RESULT_CANCELED, null);
+		payBtn = null;
+		numberText = null;
+		amountText = null;
+		timeText = null;
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -185,87 +148,12 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
-															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj != null) {
-																order = obj.getOrderData();
-																if (order == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		Toast.makeText(
-																				context,
-																				obj.getValidate()
-																					.getMessage(),
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	} else {
-																		Toast.makeText(
-																				context,
-																				Constants.MESSAGE_NET,
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	}
-																} else {
-																	orderDetails = order.getDetails();
-																	if (orderDetails != null
-																			&& !orderDetails.isEmpty()) {
-																		initView();
-																		// orderAdapter.setData(orderDetails);
-																	}
-																}
-															}
-														}
-														break;
-													}
-													case WHAT_DID_UPDATE_DATA: {
-														if (msg.obj != null) {
-															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj != null) {
-																ProductDto product = obj.getProductData();
-																if (product == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		Toast.makeText(
-																				context,
-																				obj.getValidate()
-																					.getMessage(),
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	} else {
-																		Toast.makeText(
-																				context,
-																				Constants.MESSAGE_NET,
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	}
-																} else {
-																	if (orderDetails != null
-																			&& !orderDetails.isEmpty()) {
-																		for (OrderDetailDto orderDetail : orderDetails) {
-																			ProductDto p = orderDetail.getProduct();
-																			if (p.getId()
-																					.equals(product.getId())) {
-																				orderDetail.setQty(product.getQty());
-																				p.setPurchasingPrice(product.getPurchasingPrice()
-																											.divide(BigDecimal.valueOf(orderDetail.getQty())));
-																				orderDetail.setTotal(product.getPurchasingPrice());
-																				order.setTotal(orderDetail.getTotal());
-																				break;
-																			}
-																		}
-																		orderAdapter.notifyDataSetChanged();
-																	}
-																}
-															}
-														} else {
-															Toast.makeText(context,
-																	Constants.MESSAGE_NET,
-																	Toast.LENGTH_SHORT).show();
+
 														}
 														pDialog.dismiss();
 														break;
 													}
+
 													case WHAT_PROGRESS_STATE: {
 														if (mProgress >= 100) {
 															// pDialog.dismiss();

@@ -3,6 +3,7 @@ package com.holding.smile.activity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -26,6 +27,7 @@ import com.holding.smile.dto.ProductDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.Constants;
+import com.holding.smile.tools.DateUtil;
 import com.holding.smile.tools.StrUtils;
 
 /**
@@ -37,22 +39,23 @@ import com.holding.smile.tools.StrUtils;
  */
 public class OrderInformActivity extends BaseActivity implements OnClickListener {
 
-	private static final int		WHAT_DID_LOAD_DATA		= 0;
-	private static final int		WHAT_DID_UPDATE_DATA	= 1;
-	private static final int		WHAT_PROGRESS_STATE		= 2;
+	private static final int		WHAT_DID_LOAD_DATA			= 0;
+	private static final int		WHAT_DID_UPDATE_DATA		= 1;
+	private static final int		WHAT_PROGRESS_STATE			= 2;
+	private static final int		WHAT_DID_CONFIRMORDER_DATA	= 3;
 	private ProgressDialog			pDialog;
 	private int						mProgress;
 	private MyListView				listView;
 	private MyOrderInformAdapter	orderAdapter;
 	private ImageButton				confirmBtn;
 	private TextView				total;
-	private OrderDto				order					= null;
-	private List<OrderDetailDto>	orderDetails			= new ArrayList<OrderDetailDto>();
-	private Integer					gid						= null;							// 商品ID
-	private String					bs						= null;							// 款号
-	private Integer					addressId				= 1;								// 地址id
-	private Integer					qty						= 1;								// 购买数量，默认是1
-	private List<Integer>			cartIds					= null;							// 从购物车结算时用，保存选中的购物车ID
+	private OrderDto				order						= null;
+	private List<OrderDetailDto>	orderDetails				= new ArrayList<OrderDetailDto>();
+	private Integer					gid							= null;							// 商品ID
+	private String					bs							= null;							// 款号
+	private Integer					addressId					= 1;								// 地址id
+	private Integer					qty							= 1;								// 购买数量，默认是1
+	private List<Integer>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +95,11 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	}
 
 	public void loadData() {
-		if (gid != null) {
-			String pidQty = gid + "_" + qty;
+		if (gid != null || (cartIds != null && cartIds.isEmpty())) {
+			String pidQty = "";
+			if (gid != null) {
+				pidQty = gid + "_" + qty;
+			}
 			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
 												.getOrderInform(pidQty, cartIds, addressId);
 			if (rtnValue != null) {
@@ -117,8 +123,9 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		// pDialog.closeOptionsMenu();
 		pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		// pDialog.setMax(100);
-		pDialog.setMessage("正在刷新...");
+		pDialog.setMessage("正在加载...");
 		pDialog.setIndeterminate(false);
+		pDialog.setCanceledOnTouchOutside(true);
 		// pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "右键",
 		// new DialogInterface.OnClickListener() {
 		// @Override
@@ -133,6 +140,32 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		// mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
 	}
 
+	/**
+	 * 确认订单并生成订单信息
+	 */
+	private void confirmOrder() {
+		if (gid != null || (cartIds != null && cartIds.isEmpty())) {
+			pDialog.show();
+			mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
+
+			String pidQty = "";
+			if (gid != null) {
+				pidQty = gid + "_" + qty;
+			}
+			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
+												.confirmOrder(pidQty, cartIds, addressId);
+			if (rtnValue != null) {
+				Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);
+				msg.obj = rtnValue;
+				msg.sendToTarget();
+			} else {
+				Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+			}
+		} else {
+			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+		}
+	}
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -141,11 +174,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 				break;
 			}
 			case R.id.confirm_btn: {
-				Toast.makeText(context, "您确认了订单信息", Toast.LENGTH_SHORT).show();
-				// Intent intent = new Intent(this, SearchGoodsActivity.class);
-				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				// startActivity(intent);
-				// finish();
+				confirmOrder();
 				break;
 			}
 		}
@@ -181,7 +210,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 											@Override
 											public void handleMessage(Message msg) {
-												// progressBar.setVisibility(View.GONE);
+												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
@@ -210,7 +239,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																	if (orderDetails != null
 																			&& !orderDetails.isEmpty()) {
 																		initView();
-																		// orderAdapter.setData(orderDetails);
 																	}
 																}
 															}
@@ -251,6 +279,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																											.divide(BigDecimal.valueOf(orderDetail.getQty())));
 																				orderDetail.setTotal(product.getPurchasingPrice());
 																				order.setTotal(orderDetail.getTotal());
+																				qty = (int) orderDetail.getQty();
 																				break;
 																			}
 																		}
@@ -262,6 +291,52 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 															Toast.makeText(context,
 																	Constants.MESSAGE_NET,
 																	Toast.LENGTH_SHORT).show();
+														}
+														pDialog.dismiss();
+														break;
+													}
+													case WHAT_DID_CONFIRMORDER_DATA: {
+														if (msg.obj != null) {
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															if (obj != null) {
+																order = obj.getOrderData();
+																if (order == null) {
+																	if (obj.getValidate() != null
+																			&& StrUtils.isNotEmpty(obj.getValidate()
+																										.getMessage())) {
+																		Toast.makeText(
+																				context,
+																				obj.getValidate()
+																					.getMessage(),
+																				Toast.LENGTH_SHORT)
+																				.show();
+																	} else {
+																		Toast.makeText(
+																				context,
+																				Constants.MESSAGE_NET,
+																				Toast.LENGTH_SHORT)
+																				.show();
+																	}
+																} else {
+																	orderDetails = order.getDetails();
+																	if (orderDetails != null
+																			&& !orderDetails.isEmpty()) {
+																		Intent intent = new Intent(
+																				context,
+																				OrderPayActivity.class);
+																		intent.putExtra("number",
+																				order.getNumber());
+																		intent.putExtra(
+																				"time",
+																				DateUtil.dateToStr(new Date()));
+																		intent.putExtra("amount",
+																				order.getTotal());
+																		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+																		startActivity(intent);
+																		finish();
+																	}
+																}
+															}
 														}
 														pDialog.dismiss();
 														break;
