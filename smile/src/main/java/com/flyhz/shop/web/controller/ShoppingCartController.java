@@ -77,7 +77,6 @@ public class ShoppingCartController {
 			Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			userId = 2;
 			protocol.setData(shoppingCartService.setQty(userId, itemId, qty));
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
