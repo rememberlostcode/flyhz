@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,11 +43,12 @@ public class MyOrdersAdapter extends BaseAdapter {
 	}
 
 	static class ViewHolder {
-		TextView	name;
 		TextView	number;
+		TextView	time;
 		TextView	price;
+		TextView	totalnum;
 		ImageView	cover;
-		ImageView	button;
+		Button		moreButton;
 	}
 
 	@Override
@@ -56,16 +58,21 @@ public class MyOrdersAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(R.layout.order_list, null);
 			holder = new ViewHolder();
 
-			holder.name = (TextView) convertView.findViewById(R.id.order_list_name);
-			holder.price = (TextView) convertView.findViewById(R.id.order_list_price);
+			holder.number = (TextView) convertView.findViewById(R.id.order_list_number);
+			holder.time = (TextView) convertView.findViewById(R.id.order_list_time);
+			holder.price = (TextView) convertView.findViewById(R.id.order_list_price_value);
+			holder.totalnum = (TextView) convertView.findViewById(R.id.order_list_totalnum_value);
+			holder.moreButton = (Button) convertView.findViewById(R.id.order_list_button_more);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
 		final OrderDto order = (OrderDto) getItem(position);
-		holder.name.setText(order.getDetails().get(0).getProduct().getName().trim());
-		holder.price.setText(order.getDetails().get(0).getTotal() + "");
+		holder.number.setText(order.getNumber());
+		holder.time.setText(order.getTime());
+		holder.price.setText(String.valueOf(order.getTotal()));
+		holder.totalnum.setText(String.valueOf(order.getQty()));
 
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override

@@ -29,9 +29,13 @@ public class OrderDto implements Serializable {
 
 	private BigDecimal				total;
 
+	private Integer					qty;
+
 	private List<VoucherDto>		vouchers;
 
 	private UserDto					user;
+
+	private String					time;
 
 	public Integer getId() {
 		return id;
@@ -89,4 +93,19 @@ public class OrderDto implements Serializable {
 		this.user = user;
 	}
 
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public Integer getQty() {
+		return qty;
+	}
+
+	public void setQty(Integer qty) {
+		this.qty = qty;
+	}
 }

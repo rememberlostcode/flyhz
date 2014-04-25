@@ -253,11 +253,12 @@ public class SolrDataImpl implements SolrData {
 		if (userId != null) {
 			para = para + "user_id:" + userId;
 		}
+		// 10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
 		if (StringUtils.isNotEmpty(status)) {
 			if (status.equals("finsh")) {
-				para = para + " AND status:4";
+				para = para + " AND status:60";
 			} else {
-				para = para + " AND (status:0 OR status:1 OR status:2 OR status:3 OR status:5)";
+				para = para + " AND -status:60";
 			}
 		}
 

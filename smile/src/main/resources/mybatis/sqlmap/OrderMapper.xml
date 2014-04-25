@@ -47,9 +47,16 @@
 	</update>
 	
 	<select id="getFinshedOrdersCount" resultType="Integer" parameterType="SolrPage">
-		select count(1) count from `order` t where t.status=1 <![CDATA[and t.gmt_modify >= #{startDate} and t.gmt_modify < #{endDate}]]>
+		select count(1) count from `order` where (status=60 or status=70) <![CDATA[and gmt_modify >= #{startDate} and gmt_modify < #{endDate}]]>
     </select>
-	<select id="findFinshedOrders" parameterType="SolrPage" resultType="String">
-		select t.detail count from `order` t where t.status=1 <![CDATA[and t.gmt_modify >= #{startDate} and t.gmt_modify < #{endDate} ]]> limit #{start},#{num}
+	<select id="findFinshedOrders" parameterType="SolrPage" resultType="OrderModel">
+		select id,detail from `order` where (status=60 or status=70) <![CDATA[and gmt_modify >= #{startDate} and gmt_modify < #{endDate} ]]> limit #{start},#{num}
+    </select>
+    
+    <select id="getAllOrdersCount" resultType="Integer" parameterType="SolrPage">
+		select count(1) count from `order`
+    </select>
+	<select id="findAllOrders" parameterType="SolrPage" resultType="OrderModel">
+		select id,detail from `order` limit #{start},#{num}
     </select>
 </mapper>

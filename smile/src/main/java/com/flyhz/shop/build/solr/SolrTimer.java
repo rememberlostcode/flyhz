@@ -21,22 +21,23 @@ import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.SalesvolumeDao;
+import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.persistence.entity.SalesvolumeModel;
 
 public class SolrTimer extends QuartzJobBean {
 	private Logger			log	= LoggerFactory.getLogger(SolrTimer.class);
-	private OrderDao		orderDao;
 	private SalesvolumeDao	salesvolumeDao;
-
-	// private CacheRepository cacheRepository;
+	private OrderDao		orderDao;
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		int mysqlSize = 500;// 每次取500条
 		orderDao = (OrderDao) context.getMergedJobDataMap().get("orderDao");
 		salesvolumeDao = (SalesvolumeDao) context.getMergedJobDataMap().get("salesvolumeDao");
-		// cacheRepository = (CacheRepository)
-		// context.getMergedJobDataMap().get("cacheRepository");
+	}
+
+	public void dealSalesvolume() {
+		// TODO Auto-generated method stub
+		int mysqlSize = 500;// 每次取500条
 
 		SolrPage solrPage = new SolrPage();
 		Date date = new Date();
@@ -53,7 +54,7 @@ public class SolrTimer extends QuartzJobBean {
 		solrPage.setEndDate(date);
 
 		int maxOrderCount = orderDao.getFinshedOrdersCount(solrPage);
-		List<String> detailList = null;
+		List<OrderModel> detailList = null;
 		OrderDto orderDto = null;
 		List<OrderDetailDto> detailDtoList = null;
 		OrderDetailDto detailDto = null;
@@ -64,31 +65,29 @@ public class SolrTimer extends QuartzJobBean {
 			solrPage.setStart(orderStart);
 			detailList = orderDao.findFinshedOrders(solrPage);
 			for (int i = 0; i < detailList.size(); i++) {
-				if (detailList.get(i) != null) {
+				if (detailList.get(i) != null && detailList.get(i).getDetail() != null
+						&& detailList.get(i).getId() != null) {
 					try {
 
 						// 转换后获取商品购买数量
-						orderDto = JSONUtil.getJson2Entity(detailList.get(i), OrderDto.class);
-						detailDtoList = orderDto.getDetails();
-						for (int j = 0; j < detailDtoList.size(); j++) {
-							detailDto = detailDtoList.get(j);
-							if (detailDto != null && detailDto.getProduct() != null) {
-								productId = detailDto.getProduct().getId();
-								if (prdouctSaleNumbers.get(productId) == null) {
-									prdouctSaleNumbers.put(productId, detailDto.getQty());
-								} else {
-									prdouctSaleNumbers.put(
-											productId,
-											(short) (prdouctSaleNumbers.get(productId) + detailDto.getQty()));
+						orderDto = JSONUtil.getJson2Entity(detailList.get(i).getDetail(),
+								OrderDto.class);
+						if (orderDto != null) {
+							detailDtoList = orderDto.getDetails();
+							for (int j = 0; j < detailDtoList.size(); j++) {
+								detailDto = detailDtoList.get(j);
+								if (detailDto != null && detailDto.getProduct() != null) {
+									productId = detailDto.getProduct().getId();
+									if (prdouctSaleNumbers.get(productId) == null) {
+										prdouctSaleNumbers.put(productId, detailDto.getQty());
+									} else {
+										prdouctSaleNumbers.put(
+												productId,
+												(short) (prdouctSaleNumbers.get(productId) + detailDto.getQty()));
+									}
 								}
 							}
 						}
-
-						// String userId =
-						// String.valueOf(orderDto.getUser().getId());
-						// cacheRepository.hset(Constants.PREFIX_ORDERS_USER +
-						// userId,
-						// String.valueOf(orderDto.getId()), detailList.get(i));
 					} catch (Exception e) {
 						e.printStackTrace();
 						log.error(e.getMessage());

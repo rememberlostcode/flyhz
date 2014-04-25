@@ -57,4 +57,10 @@ public interface RedisRepository {
 	 * @throws ValidateException
 	 */
 	public void reBuildOrderToRedis(Integer userId, Integer orderId) throws ValidateException;
+
+	/**
+	 * 缓存订单到redis及更新商品的销售量（增量方式）
+	 */
+	public void chacheOrders();
+
 }
