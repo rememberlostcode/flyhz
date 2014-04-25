@@ -30,6 +30,7 @@ import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
+import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 
 @Service
@@ -245,8 +246,8 @@ public class SolrDataImpl implements SolrData {
 	}
 
 	@SuppressWarnings("deprecation")
-	public List<Integer> getOrderIdsFromSolr(Integer userId, String status) {
-		List<Integer> list = new ArrayList<Integer>();
+	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId, String status) {
+		List<OrderSimpleDto> list = new ArrayList<OrderSimpleDto>();
 		HttpSolrServer solrServer = getServer(ORDER_URL);
 		SolrQuery sQuery = new SolrQuery();
 		String para = "";
@@ -280,8 +281,13 @@ public class SolrDataImpl implements SolrData {
 				orderId = solrDocument.getFieldValue("id") != null ? Integer.valueOf(solrDocument.getFieldValue(
 						"id").toString())
 						: null;
+				status = solrDocument.getFieldValue("status") != null ? solrDocument.getFieldValue(
+						"status").toString() : null;
 				if (orderId != null) {
-					list.add(orderId);
+					OrderSimpleDto or = new OrderSimpleDto();
+					or.setId(orderId);
+					or.setStatus(status);
+					list.add(or);
 				}
 			}
 		} catch (SolrServerException e) {

@@ -49,6 +49,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		TextView	totalnum;
 		ImageView	cover;
 		Button		moreButton;
+		Button		statusButton;
 	}
 
 	@Override
@@ -63,6 +64,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder.price = (TextView) convertView.findViewById(R.id.order_list_price_value);
 			holder.totalnum = (TextView) convertView.findViewById(R.id.order_list_totalnum_value);
 			holder.moreButton = (Button) convertView.findViewById(R.id.order_list_button_more);
+			holder.statusButton = (Button) convertView.findViewById(R.id.order_list_status);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -74,6 +76,20 @@ public class MyOrdersAdapter extends BaseAdapter {
 		holder.price.setText(String.valueOf(order.getTotal()));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 
+		holder.moreButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(context, "点击了more", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		holder.statusButton.setText(getTextByStatus(order.getStatus()));
+		holder.statusButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(context, "点击了status", Toast.LENGTH_SHORT).show();
+			}
+		});
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -89,4 +105,58 @@ public class MyOrdersAdapter extends BaseAdapter {
 		});
 		return convertView;
 	}
+
+	private String getTextByStatus(String status) {
+		// 10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；15发货中；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
+		String text = "待支付";
+		if (status == null) {
+			return text;
+		}
+		int ints = Integer.parseInt(status);
+		switch (ints) {
+			case 10:
+				text = "待支付";
+				break;
+			case 11:
+				text = "支付中";
+				break;
+			case 12:
+				text = "已支付";
+				break;
+			case 13:
+				text = "缺少身份证";
+				break;
+			case 14:
+				text = "已有身份证";
+				break;
+			case 15:
+				text = "发货中";
+				break;
+			case 20:
+				text = "已发货";
+				break;
+			case 21:
+				text = "国外清关";
+				break;
+			case 30:
+				text = "国内清关";
+				break;
+			case 40:
+				text = "国内物流";
+				break;
+			case 50:
+				text = "已关闭";
+				break;
+			case 60:
+				text = "已完成";
+				break;
+			case 70:
+				text = "已删除";
+				break;
+			default:
+				break;
+		}
+		return text;
+	}
+
 }

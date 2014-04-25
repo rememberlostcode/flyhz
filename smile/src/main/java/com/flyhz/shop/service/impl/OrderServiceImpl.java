@@ -24,6 +24,7 @@ import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.OrderPayDto;
+import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.dto.VoucherDto;
@@ -134,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
 			OrderModel order = new OrderModel();
 			order.setNumber(number);
 			order.setUserId(userId);
-			order.setStatus("10");// 10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
+			order.setStatus("10");// 10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；15发货中；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
 			detail = JSONUtil.getEntity2Json(orderDto);
 			order.setDetail(detail);
 			order.setTotal(total);
@@ -143,6 +144,7 @@ public class OrderServiceImpl implements OrderService {
 			orderDao.generateOrder(order);
 			log.debug("====={}", order.getId());
 			orderDto.setId(order.getId());
+			orderDto.setStatus(order.getStatus());
 			redisRepository.buildOrderToRedis(userId, orderDto.getId(),
 					JSONUtil.getEntity2Json(orderDto));
 		}
@@ -158,12 +160,13 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderDto> listOrders(Integer userId, String status) throws ValidateException {
 		List<OrderDto> orderDtoList = new ArrayList<OrderDto>();
 		String json = null;
-		List<Integer> idsList = solrData.getOrderIdsFromSolr(userId, status);
-		for (Integer orderId : idsList) {
-			json = getOrder(userId, orderId);
+		List<OrderSimpleDto> idsList = solrData.getOrderIdsFromSolr(userId, status);
+		for (OrderSimpleDto order : idsList) {
+			json = getOrder(userId, order.getId());
 			if (json != null && StringUtil.isNotBlank(json)) {
 				OrderDto orderDto = JSONUtil.getJson2Entity(json, OrderDto.class);
 				if (orderDto != null) {
+					orderDto.setStatus(order.getStatus());// 把订单的状态塞入dto
 					orderDtoList.add(orderDto);
 				}
 			}
