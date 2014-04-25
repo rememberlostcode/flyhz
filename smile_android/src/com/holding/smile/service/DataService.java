@@ -18,14 +18,13 @@ import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
 import com.holding.smile.protocol.PBrandJGoods;
+import com.holding.smile.protocol.PCartItem;
 import com.holding.smile.protocol.PCategory;
 import com.holding.smile.protocol.PConsignees;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexJGoods;
-import com.holding.smile.protocol.POrder;
 import com.holding.smile.protocol.POrderList;
-import com.holding.smile.protocol.PProduct;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.protocol.PUser;
@@ -64,11 +63,8 @@ public class DataService {
 	private String			address_list;
 	private String			user_info;
 	private String			idcard_list;
-	private String			order_inform_url;
-	private String			order_updateQty_url;
-	private String			order_updateCartQty_url;
-	private String			order_confirm_url;
 	private String			order_list_url;
+	private String			cart_list_url;
 
 	public DataService(Context context) {
 		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
@@ -94,12 +90,8 @@ public class DataService {
 		address_list = context.getString(R.string.address_list);
 		user_info = context.getString(R.string.user_info);
 		idcard_list = context.getString(R.string.idcard_list);
-
-		order_inform_url = context.getString(R.string.order_inform_url);
-		order_updateQty_url = context.getString(R.string.order_updateQty_url);
-		order_updateCartQty_url = context.getString(R.string.order_updateCartQty_url);
-		order_confirm_url = context.getString(R.string.order_confirm_url);
 		order_list_url = context.getString(R.string.order_list_url);
+		cart_list_url = context.getString(R.string.cart_list_url);
 	}
 
 	private String setJson(String fileName) {
@@ -661,128 +653,6 @@ public class DataService {
 		return rvd;
 	}
 
-	/**
-	 * 购买时生成的订单信息,pids与cartIds只传一种
-	 * 
-	 * @param pids
-	 *            格式：pid_qty(如：12_1,12_2)
-	 * @param cartIds
-	 *            购物车ID列表
-	 * @param addressId
-	 *            地址ID
-	 * @return
-	 */
-	public RtnValueDto getOrderInform(String pidQty, List<Integer> cartIds, Integer addressId) {
-		RtnValueDto rvd = new RtnValueDto();
-		HashMap<String, String> param = new HashMap<String, String>();
-		if (StrUtils.isNotEmpty(pidQty)) {
-			param.put("pids", pidQty);
-		} else {
-			if (cartIds != null && !cartIds.isEmpty()) {
-				for (Integer cartid : cartIds) {
-					param.put("cartIds", String.valueOf(cartid));
-				}
-			}
-		}
-		if (addressId != null) {
-			param.put("cid", String.valueOf(addressId));
-		}
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_inform_url, param);
-
-		if (rStr != null && !"".equals(rStr)) {
-			try {
-				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
-				if (pc != null)
-					rvd.setOrderData(pc.getData());
-			} catch (Exception e) {
-				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
-		}
-		return rvd;
-	}
-
-	/**
-	 * 直接购买时，更改购买数量
-	 * 
-	 * @param gid
-	 *            商品ID
-	 * @param qty
-	 *            数量
-	 * @return
-	 */
-	public RtnValueDto updateOrderQty(Integer pid, short qty) {
-		RtnValueDto rvd = new RtnValueDto();
-		HashMap<String, String> param = new HashMap<String, String>();
-		if (pid != null) {
-			param.put("pid", String.valueOf(pid));
-		}
-		if (qty != 0) {
-			param.put("qty", String.valueOf(qty));
-		}
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_updateQty_url, param);
-
-		if (rStr != null && !"".equals(rStr)) {
-			try {
-				PProduct pc = JSONUtil.getJson2Entity(rStr, PProduct.class);
-				if (pc != null)
-					rvd.setProductData(pc.getData());
-			} catch (Exception e) {
-				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
-		}
-		return rvd;
-	}
-
-	/**
-	 * 从购物车购买时，更改购买数量
-	 * 
-	 * @param gid
-	 *            商品ID
-	 * @param qty
-	 *            数量
-	 * @return
-	 */
-	public RtnValueDto updateCartQty(Integer cartId, short qty) {
-		RtnValueDto rvd = new RtnValueDto();
-		HashMap<String, String> param = new HashMap<String, String>();
-		if (cartId != null) {
-			param.put("id", String.valueOf(cartId));
-		}
-		if (qty != 0) {
-			param.put("qty", String.valueOf(qty));
-		}
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_updateCartQty_url, param);
-
-		if (rStr != null && !"".equals(rStr)) {
-			try {
-				PProduct pc = JSONUtil.getJson2Entity(rStr, PProduct.class);
-				if (pc != null)
-					rvd.setProductData(pc.getData());
-			} catch (Exception e) {
-				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
-		}
-		return rvd;
-	}
-
 	public RtnValueDto getOrdersList(String status) {
 		RtnValueDto rvd = new RtnValueDto();
 
@@ -814,48 +684,20 @@ public class DataService {
 	}
 
 	/**
-	 * 确认订单后生成订单信息,pids与cartIds只传一种
+	 * 获取购物车列表
 	 * 
-	 * @param pids
-	 *            格式：pid_qty(如：12_1,12_2)
-	 * @param cartIds
-	 *            购物车ID列表
-	 * @param addressId
-	 *            地址ID
 	 * @return
 	 */
-	public RtnValueDto confirmOrder(String pidQty, List<Integer> cartIds, Integer addressId) {
-		RtnValueDto rvd = new RtnValueDto();
-		HashMap<String, String> param = new HashMap<String, String>();
-		if (StrUtils.isNotEmpty(pidQty)) {
-			param.put("pids", pidQty);
-		} else {
-			if (cartIds != null && !cartIds.isEmpty()) {
-				for (Integer cartid : cartIds) {
-					param.put("cartIds", String.valueOf(cartid));
-				}
+	public RtnValueDto getCartItemList() {
+		RtnValueDto rvd = null;
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_list_url, null);
+		if (rvdString != null) {
+			PCartItem pc = JSONUtil.getJson2Entity(rvdString, PCartItem.class);
+			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
+				rvd = new RtnValueDto();
+				rvd.setCartListData(pc.getData());
+				rvd.setCode(200000);
 			}
-		}
-		if (addressId != null) {
-			param.put("cid", String.valueOf(addressId));
-		}
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_confirm_url, param);
-
-		if (rStr != null && !"".equals(rStr)) {
-			try {
-				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
-				if (pc != null)
-					rvd.setOrderData(pc.getData());
-			} catch (Exception e) {
-				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
-			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
 		}
 		return rvd;
 	}

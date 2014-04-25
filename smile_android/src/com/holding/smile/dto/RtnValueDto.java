@@ -35,7 +35,8 @@ public class RtnValueDto {
 	private OrderDto			orderData;		// 订单数据
 	private ProductDto			productData;	// 更改商品时用
 	private List<OrderDto>		orderListData;	// 订单集合
-	private List<CartItem>		cartData;		// 购物车数据
+	private CartItem			cartData;		// 购物车数据
+	private List<CartItem>		cartListData;	// 购物车列表数据
 
 	public Integer getCode() {
 		return code;
@@ -165,12 +166,20 @@ public class RtnValueDto {
 		this.orderListData = orderListData;
 	}
 
-	public List<CartItem> getCartData() {
+	public CartItem getCartData() {
 		return cartData;
 	}
 
-	public void setCartData(List<CartItem> cartData) {
+	public void setCartData(CartItem cartData) {
 		this.cartData = cartData;
+	}
+
+	public List<CartItem> getCartListData() {
+		return cartListData;
+	}
+
+	public void setCartListData(List<CartItem> cartListData) {
+		this.cartListData = cartListData;
 	}
 
 }

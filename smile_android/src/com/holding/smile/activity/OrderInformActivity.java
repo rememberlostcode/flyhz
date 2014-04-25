@@ -100,7 +100,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
 			}
-			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
+			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.getOrderInform(pidQty, cartIds, addressId);
 			if (rtnValue != null) {
 				Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
@@ -152,7 +152,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
 			}
-			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
+			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.confirmOrder(pidQty, cartIds, addressId);
 			if (rtnValue != null) {
 				Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);

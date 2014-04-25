@@ -95,22 +95,13 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	}
 
 	public void loadData() {
-		if (gid != null || (cartIds != null && cartIds.isEmpty())) {
-			String pidQty = "";
-			if (gid != null) {
-				pidQty = gid + "_" + qty;
-			}
-			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
-												.getOrderInform(pidQty, cartIds, addressId);
-			if (rtnValue != null) {
-				Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-				msg.obj = rtnValue;
-				msg.sendToTarget();
-			} else {
-				Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
-			}
+		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getCartItemList();
+		if (rtnValue != null) {
+			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
+			msg.obj = rtnValue;
+			msg.sendToTarget();
 		} else {
-			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -141,19 +132,15 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	}
 
 	/**
-	 * 确认订单并生成订单信息
+	 * 结算
 	 */
-	private void confirmOrder() {
-		if (gid != null || (cartIds != null && cartIds.isEmpty())) {
+	private void settleAccounts() {
+		if (cartIds != null && cartIds.isEmpty()) {
 			pDialog.show();
 			mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
 
-			String pidQty = "";
-			if (gid != null) {
-				pidQty = gid + "_" + qty;
-			}
-			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
-												.confirmOrder(pidQty, cartIds, addressId);
+			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
+												.getOrderInform(null, cartIds, addressId);
 			if (rtnValue != null) {
 				Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);
 				msg.obj = rtnValue;
@@ -174,7 +161,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 				break;
 			}
 			case R.id.confirm_btn: {
-				confirmOrder();
+				settleAccounts();
 				break;
 			}
 		}

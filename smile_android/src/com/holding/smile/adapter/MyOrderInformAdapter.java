@@ -157,7 +157,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 
 						orderDetail.setQty((short) (orderDetail.getQty() - 1));
 						RtnValueDto rtnValue = MyApplication.getInstance()
-															.getDataService()
+															.getSubmitService()
 															.updateOrderQty(jGoods.getId(),
 																	orderDetail.getQty());
 						Message msg = mUIHandler.obtainMessage(1);
@@ -175,7 +175,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 
 					orderDetail.setQty((short) (orderDetail.getQty() + 1));
 					RtnValueDto rtnValue = MyApplication.getInstance()
-														.getDataService()
+														.getSubmitService()
 														.updateOrderQty(jGoods.getId(),
 																orderDetail.getQty());
 					Message msg = mUIHandler.obtainMessage(1);

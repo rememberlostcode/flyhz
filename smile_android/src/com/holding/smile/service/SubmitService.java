@@ -16,12 +16,15 @@ import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.Idcard;
 import com.holding.smile.entity.SUser;
-import com.holding.smile.protocol.PCartItem;
+import com.holding.smile.protocol.PCartItemDetail;
 import com.holding.smile.protocol.PConsignee;
+import com.holding.smile.protocol.POrder;
+import com.holding.smile.protocol.PProduct;
 import com.holding.smile.protocol.PUser;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.FileUtils;
 import com.holding.smile.tools.JSONUtil;
+import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.URLUtil;
 
 public class SubmitService {
@@ -35,6 +38,10 @@ public class SubmitService {
 	private String	idcard_save;
 	private String	idcard_delete;
 	private String	register_url;
+
+	private String	order_inform_url;
+	private String	order_updateQty_url;
+	private String	order_confirm_url;
 	private String	cart_add_url;
 	private String	cart_setQty_url;
 	private String	cart_remove_url;
@@ -50,6 +57,10 @@ public class SubmitService {
 		idcard_save = context.getString(R.string.idcard_save);
 		idcard_delete = context.getString(R.string.idcard_delete);
 		register_url = context.getString(R.string.register_url);
+
+		order_inform_url = context.getString(R.string.order_inform_url);
+		order_updateQty_url = context.getString(R.string.order_updateQty_url);
+		order_confirm_url = context.getString(R.string.order_confirm_url);
 
 		cart_add_url = context.getString(R.string.cart_add_url);
 		cart_setQty_url = context.getString(R.string.cart_setQty_url);
@@ -351,6 +362,137 @@ public class SubmitService {
 	}
 
 	/**
+	 * 购买时生成的订单信息,pids与cartIds只传一种
+	 * 
+	 * @param pids
+	 *            格式：pid_qty(如：12_1,12_2)
+	 * @param cartIds
+	 *            购物车ID列表
+	 * @param addressId
+	 *            地址ID
+	 * @return
+	 */
+	public RtnValueDto getOrderInform(String pidQty, List<Integer> cartIds, Integer addressId) {
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (StrUtils.isNotEmpty(pidQty)) {
+			param.put("pids", pidQty);
+		} else {
+			if (cartIds != null && !cartIds.isEmpty()) {
+				for (Integer cartid : cartIds) {
+					param.put("cartIds", String.valueOf(cartid));
+				}
+			}
+		}
+		if (addressId != null) {
+			param.put("cid", String.valueOf(addressId));
+		}
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_inform_url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
+				if (pc != null)
+					rvd.setOrderData(pc.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 直接购买时，更改购买数量
+	 * 
+	 * @param gid
+	 *            商品ID
+	 * @param qty
+	 *            数量
+	 * @return
+	 */
+	public RtnValueDto updateOrderQty(Integer pid, short qty) {
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (pid != null) {
+			param.put("pid", String.valueOf(pid));
+		}
+		if (qty != 0) {
+			param.put("qty", String.valueOf(qty));
+		}
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_updateQty_url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PProduct pc = JSONUtil.getJson2Entity(rStr, PProduct.class);
+				if (pc != null)
+					rvd.setProductData(pc.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 确认订单后生成订单信息,pids与cartIds只传一种
+	 * 
+	 * @param pids
+	 *            格式：pid_qty(如：12_1,12_2)
+	 * @param cartIds
+	 *            购物车ID列表
+	 * @param addressId
+	 *            地址ID
+	 * @return
+	 */
+	public RtnValueDto confirmOrder(String pidQty, List<Integer> cartIds, Integer addressId) {
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (StrUtils.isNotEmpty(pidQty)) {
+			param.put("pids", pidQty);
+		} else {
+			if (cartIds != null && !cartIds.isEmpty()) {
+				for (Integer cartid : cartIds) {
+					param.put("cartIds", String.valueOf(cartid));
+				}
+			}
+		}
+		if (addressId != null) {
+			param.put("cid", String.valueOf(addressId));
+		}
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_confirm_url, param);
+
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
+				if (pc != null)
+					rvd.setOrderData(pc.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
 	 * 添加购物车
 	 * 
 	 * @param pid
@@ -368,7 +510,60 @@ public class SubmitService {
 		}
 		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_add_url, param);
 		if (rvdString != null) {
-			PCartItem pc = JSONUtil.getJson2Entity(rvdString, PCartItem.class);
+			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
+			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
+				rvd = new RtnValueDto();
+				rvd.setCartData(pc.getData());
+				rvd.setCode(200000);
+			}
+		}
+		return rvd;
+	}
+
+	/**
+	 * 移除出购物车
+	 * 
+	 * @param pid
+	 * @param qty
+	 * @return
+	 */
+	public RtnValueDto removeCart(Integer itemId) {
+		RtnValueDto rvd = null;
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (itemId != null) {
+			param.put("id", String.valueOf(itemId));
+		}
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_remove_url, param);
+		if (rvdString != null) {
+			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
+			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
+				rvd = new RtnValueDto();
+				rvd.setCartData(pc.getData());
+				rvd.setCode(200000);
+			}
+		}
+		return rvd;
+	}
+
+	/**
+	 * 购物车中修改购买数量
+	 * 
+	 * @param pid
+	 * @param qty
+	 * @return
+	 */
+	public RtnValueDto updateCartQty(Integer itemId, Integer qty) {
+		RtnValueDto rvd = null;
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (itemId != null) {
+			param.put("id", String.valueOf(itemId));
+		}
+		if (qty != null) {
+			param.put("qty", String.valueOf(qty));
+		}
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_setQty_url, param);
+		if (rvdString != null) {
+			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
 			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
 				rvd = new RtnValueDto();
 				rvd.setCartData(pc.getData());
