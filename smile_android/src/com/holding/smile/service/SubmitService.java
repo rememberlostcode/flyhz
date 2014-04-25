@@ -499,19 +499,19 @@ public class SubmitService {
 	 * @param qty
 	 * @return
 	 */
-	public RtnValueDto addCart(Integer pid, Integer qty) {
+	public RtnValueDto addCart(Integer pid, short qty) {
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (pid != null) {
 			param.put("pid", String.valueOf(pid));
 		}
-		if (qty != null) {
+		if (qty != 0) {
 			param.put("qty", String.valueOf(qty));
 		}
 		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_add_url, param);
 		if (rvdString != null) {
 			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
-			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
+			if (pc != null && pc.getCode() == 200000) {
 				rvd = new RtnValueDto();
 				rvd.setCartData(pc.getData());
 				rvd.setCode(200000);
@@ -536,7 +536,7 @@ public class SubmitService {
 		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_remove_url, param);
 		if (rvdString != null) {
 			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
-			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
+			if (pc != null && pc.getCode() == 200000) {
 				rvd = new RtnValueDto();
 				rvd.setCartData(pc.getData());
 				rvd.setCode(200000);
@@ -552,19 +552,19 @@ public class SubmitService {
 	 * @param qty
 	 * @return
 	 */
-	public RtnValueDto updateCartQty(Integer itemId, Integer qty) {
+	public RtnValueDto updateCartQty(Integer itemId, short qty) {
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (itemId != null) {
 			param.put("id", String.valueOf(itemId));
 		}
-		if (qty != null) {
+		if (qty != 0) {
 			param.put("qty", String.valueOf(qty));
 		}
 		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_setQty_url, param);
 		if (rvdString != null) {
 			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
-			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
+			if (pc != null && pc.getCode() == 200000) {
 				rvd = new RtnValueDto();
 				rvd.setCartData(pc.getData());
 				rvd.setCode(200000);

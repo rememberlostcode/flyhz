@@ -22,7 +22,7 @@
             android:background="#e5e5e5" />
 
         <com.holding.smile.myview.MyListView
-            android:id="@+id/order_list"
+            android:id="@+id/cart_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"

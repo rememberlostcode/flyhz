@@ -213,19 +213,20 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				break;
 			}
 			case R.id.nowbuy: {
-				Toast.makeText(context, "您点了立即购买", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(this, OrderInformActivity.class);
 				intent.putExtra("gid", gid);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
-				// finish();
 				break;
 			}
 			case R.id.addcart: {
-				Toast.makeText(context, "您点了加入购物车", Toast.LENGTH_SHORT).show();
-				// Intent intent = new Intent(this, SearchGoodsActivity.class);
-				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				// startActivity(intent);
+				RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
+													.addCart(gid, (short) 1);
+				if (rtnValue != null) {
+					Toast.makeText(context, "已加入购物车", Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+				}
 				break;
 			}
 		}

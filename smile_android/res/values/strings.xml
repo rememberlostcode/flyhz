@@ -26,8 +26,8 @@
     <string name="taobao_pay_btn">去淘宝支付</string>
     
     <!-- 购物车 -->
-    <string name="shoppingcart">我的购物车</string>
-    <string name="shoppingcart_list">购物车列表</string>
+    <string name="my_shopping_cart">我的购物车</string>
+    <string name="shopping_cart_list">购物车列表</string>
     <string name="settle_accounts">结算</string>
     <string name="all">全部</string>
     <string name="del">删除</string>

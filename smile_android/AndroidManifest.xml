@@ -126,6 +126,11 @@
             android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.holding.smile.activity.ShoppingCartActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait" >
+        </activity>
         
     </application>
 
