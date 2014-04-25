@@ -3,6 +3,7 @@ package com.holding.smile.dto;
 
 import java.util.List;
 
+import com.holding.smile.entity.CartItem;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.Idcard;
@@ -34,6 +35,7 @@ public class RtnValueDto {
 	private OrderDto			orderData;		// 订单数据
 	private ProductDto			productData;	// 更改商品时用
 	private List<OrderDto>		orderListData;	// 订单集合
+	private List<CartItem>		cartData;		// 购物车数据
 
 	public Integer getCode() {
 		return code;
@@ -162,4 +164,13 @@ public class RtnValueDto {
 	public void setOrderListData(List<OrderDto> orderListData) {
 		this.orderListData = orderListData;
 	}
+
+	public List<CartItem> getCartData() {
+		return cartData;
+	}
+
+	public void setCartData(List<CartItem> cartData) {
+		this.cartData = cartData;
+	}
+
 }
