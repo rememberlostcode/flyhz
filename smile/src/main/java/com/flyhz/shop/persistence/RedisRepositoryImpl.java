@@ -136,7 +136,8 @@ public class RedisRepositoryImpl implements RedisRepository {
 	}
 
 	@Override
-	public void reBuildOrderToRedis(Integer userId, Integer orderId) throws ValidateException {
+	public void reBuildOrderToRedis(Integer userId, Integer orderId, String status)
+			throws ValidateException {
 		// TODO Auto-generated method stub
 		if (userId == null) {
 			throw new ValidateException("用户ID不能为空！");
@@ -145,7 +146,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 			throw new ValidateException("订单ID不能为空！");
 		}
 		// solr修改订单索引
-		solrData.submitOrder(userId, orderId, "1", null);
+		solrData.submitOrder(userId, orderId, status, null);
 	}
 
 	public void chacheOrders() {

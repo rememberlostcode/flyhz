@@ -38,12 +38,18 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <com.holding.smile.myview.MyListView
-        android:id="@+id/list_orders_list"
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="1sp" />
+        android:scrollbars="none" >
+
+        <com.holding.smile.myview.MyListView
+            android:id="@+id/list_orders_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="1sp" />
+    </ScrollView>
 
 </LinearLayout>

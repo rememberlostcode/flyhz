@@ -131,7 +131,8 @@ public class MyOrderInformAdapter extends BaseAdapter {
 				holder.pp.setText("￥" + jGoods.getPurchasingPrice());
 			}
 			holder.qty.setText(orderDetail.getQty() + "");
-			total.setText("共计" + orderDetail.getQty() + "件商品，￥" + orderDetail.getTotal() + "元");
+			if (total != null)
+				total.setText("共计" + orderDetail.getQty() + "件商品，￥" + orderDetail.getTotal() + "元");
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
@@ -147,13 +148,22 @@ public class MyOrderInformAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					if (jGoods != null) {
-						Intent intent = new Intent(context, GoodsDetailActivity.class);
-						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-						intent.putExtra("gid", jGoods.getId());
-						intent.putExtra("bs", jGoods.getBrandstyle());
+
 						if (isShowOrder) {
-							((Activity) activityParent.getContext()).startActivity(intent);
+							if (activityParent != null) {
+								Intent intent = new Intent(context, GoodsDetailActivity.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								intent.putExtra("gid", jGoods.getId());
+								intent.putExtra("bs", jGoods.getBrandstyle());
+								((Activity) activityParent.getContext()).startActivity(intent);
+							} else {
+								notifyDataSetChanged();
+							}
 						} else {
+							Intent intent = new Intent(context, GoodsDetailActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							intent.putExtra("gid", jGoods.getId());
+							intent.putExtra("bs", jGoods.getBrandstyle());
 							((Activity) parent.getContext()).startActivity(intent);
 						}
 					} else {

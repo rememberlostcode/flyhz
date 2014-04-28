@@ -123,7 +123,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 															break;
 														}
 
-														adapter = new MyOrdersAdapter(context, list);
+														adapter = new MyOrdersAdapter(
+																MyOrdersActivity.this, list);
 														listView.setAdapter(adapter);
 														if (status == null) {
 															allButton.setBackgroundResource(R.color.lightgreen);

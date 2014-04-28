@@ -1,25 +1,28 @@
 
 package com.holding.smile.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class ProductDto {
+public class ProductDto implements Serializable {
 
-	private Integer		id;				// 主键ID
+	private static final long	serialVersionUID	= 8125482699743499286L;
 
-	private String		name;
+	private Integer				id;										// 主键ID
 
-	private String[]	imgs;
+	private String				name;
 
-	private String		color;
+	private String[]			imgs;
 
-	private String		brandstyle;
+	private String				color;
 
-	private BrandDto	brand;
+	private String				brandstyle;
 
-	private BigDecimal	purchasingPrice;
+	private BrandDto			brand;
 
-	private short		qty;
+	private BigDecimal			purchasingPrice;
+
+	private short				qty;
 
 	public Integer getId() {
 		return id;

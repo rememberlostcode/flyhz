@@ -52,6 +52,15 @@ public interface OrderService {
 	 */
 	public boolean pay(Integer userId, String number) throws ValidateException;
 
+	/**
+	 * 关闭订单
+	 * 
+	 * @param userId
+	 * @param id
+	 * @throws ValidateException
+	 */
+	public void closeOrder(Integer userId, Integer id) throws ValidateException;
+
 	public OrderPayDto getOrderPay(OrderPayDto orderPayDto);
 
 }

@@ -35,4 +35,16 @@ public class OrderController {
 		}
 		model.addAttribute("protocol", protocol);
 	}
+
+	@RequestMapping(value = "/close")
+	public void close(@Identify Integer userId, Integer id, Model model) {
+		Protocol protocol = new Protocol();
+		try {
+			orderService.closeOrder(userId, id);
+			protocol.setCode(200000);
+		} catch (ValidateException e) {
+			protocol.setCode(e.getCode());
+		}
+		model.addAttribute("protocol", protocol);
+	}
 }

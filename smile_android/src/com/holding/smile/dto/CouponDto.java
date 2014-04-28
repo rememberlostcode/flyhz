@@ -1,13 +1,17 @@
 
 package com.holding.smile.dto;
 
-public class CouponDto {
+import java.io.Serializable;
 
-	private Integer	id;
+public class CouponDto implements Serializable {
 
-	private String	name;
+	private static final long	serialVersionUID	= -1046689045939187548L;
 
-	private String	desc;
+	private Integer				id;
+
+	private String				name;
+
+	private String				desc;
 
 	public Integer getId() {
 		return id;

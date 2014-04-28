@@ -45,6 +45,7 @@ public class SubmitService {
 	private String	cart_add_url;
 	private String	cart_setQty_url;
 	private String	cart_remove_url;
+	private String	order_close_url;
 
 	public SubmitService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
@@ -61,6 +62,7 @@ public class SubmitService {
 		order_inform_url = context.getString(R.string.order_inform_url);
 		order_updateQty_url = context.getString(R.string.order_updateQty_url);
 		order_confirm_url = context.getString(R.string.order_confirm_url);
+		order_close_url = context.getString(R.string.order_close_url);
 
 		cart_add_url = context.getString(R.string.cart_add_url);
 		cart_setQty_url = context.getString(R.string.cart_setQty_url);
@@ -569,6 +571,20 @@ public class SubmitService {
 				rvd.setCartData(pc.getData());
 				rvd.setCode(200000);
 			}
+		}
+		return rvd;
+	}
+
+	public RtnValueDto closeOrder(Integer orderId) {
+		RtnValueDto rvd = null;
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (orderId != null) {
+			param.put("id", String.valueOf(orderId));
+		}
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.order_close_url, param);
+		if (rvdString != null) {
+			rvd = JSONUtil.getJson2Entity(rvdString, RtnValueDto.class);
+			rvd.setCode(200000);
 		}
 		return rvd;
 	}

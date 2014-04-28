@@ -158,6 +158,8 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<OrderDto> listOrders(Integer userId, String status) throws ValidateException {
+		if (userId == null)
+			throw new ValidateException(101002);
 		List<OrderDto> orderDtoList = new ArrayList<OrderDto>();
 		String json = null;
 		List<OrderSimpleDto> idsList = solrData.getOrderIdsFromSolr(userId, status);
@@ -177,20 +179,39 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public boolean pay(Integer userId, String number) throws ValidateException {
 		if (userId == null)
-			throw new ValidateException("您没有登录！");
+			throw new ValidateException(101002);
 		if (StringUtils.isBlank(number))
-			throw new ValidateException("订单ID不能为空！");
+			throw new ValidateException(111111);
 		boolean flag = false;
 		OrderModel orderModel = new OrderModel();
 		orderModel.setNumber(number);
 		orderModel.setUserId(userId);
 		orderModel = orderDao.getModel(orderModel);
 		if (orderModel != null && orderModel.getStatus() != null
-				&& "1".equals(orderModel.getStatus())) {// 表示已付款
+				&& "12".equals(orderModel.getStatus())) {// 表示已付款
 			flag = true;
-			redisRepository.reBuildOrderToRedis(userId, orderModel.getId());
+			redisRepository.reBuildOrderToRedis(userId, orderModel.getId(), "12");
 		}
 		return flag;
+	}
+
+	public void closeOrder(Integer userId, Integer id) throws ValidateException {
+		if (userId == null)
+			throw new ValidateException(101002);
+		if (id == null)
+			throw new ValidateException(111111);
+		String status = "50";
+		OrderModel orderModel = new OrderModel();
+		orderModel.setId(id);
+		orderModel.setUserId(userId);
+		orderModel.setStatus(status);
+		orderModel.setGmtModify(new Date());
+		int num = orderDao.update(orderModel);
+		if (num == 1) {
+			redisRepository.reBuildOrderToRedis(userId, orderModel.getId(), status);
+		} else {
+			throw new ValidateException(130001);
+		}
 	}
 
 	@Override

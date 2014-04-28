@@ -3,10 +3,15 @@ package com.holding.smile.adapter;
 
 import java.util.List;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -15,7 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.activity.MyApplication;
+import com.holding.smile.activity.OrderDetailActivity;
 import com.holding.smile.dto.OrderDto;
+import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.myview.MyListView;
 
 public class MyOrdersAdapter extends BaseAdapter {
@@ -56,7 +64,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
-		ViewHolder holder;
+		final ViewHolder holder;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.order_list, null);
 			holder = new ViewHolder();
@@ -87,20 +95,48 @@ public class MyOrdersAdapter extends BaseAdapter {
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(context, "点击了某一个订单", Toast.LENGTH_SHORT).show();
-				// Intent intent = new Intent(context,
-				// IdcardEditActivity.class);
-				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				// intent.putExtra("order", order);
-				// ((Activity)
-				// parent.getContext()).startActivityForResult(intent,
-				// BaseActivity.IDCARD_EDIT_CODE);
+				Intent intent = new Intent(context, OrderDetailActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.putExtra("order", order);
+				((Activity) parent.getContext()).startActivity(intent);
+			}
+		});
+		convertView.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				final String[] mItems = { "详情", "关闭" };
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				// builder.setTitle("订单操作");
+				builder.setItems(mItems, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// 点击后弹出窗口选择了第几项
+						switch (which) {
+							case 0:
+								Intent intent = new Intent(context, OrderDetailActivity.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								intent.putExtra("order", order);
+								((Activity) parent.getContext()).startActivity(intent);
+								break;
+							case 1:
+								RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
+																.closeOrder(order.getId());
+								if (200000 == rvd.getCode()) {
+									Toast.makeText(context, "订单已关闭", Toast.LENGTH_SHORT).show();
+									holder.statusButton.setText(getTextByStatus("50"));
+								}
+								break;
+						}
+					}
+				});
+				builder.create().show();
+				return false;
 			}
 		});
 
 		listView = (MyListView) convertView.findViewById(R.id.order_list_content);
-		orderAdapter = new MyOrderInformAdapter(context, order.getDetails(), holder.totalnum, null,
-				null);
+		orderAdapter = new MyOrderInformAdapter(context, order.getDetails(), new TextView(context),
+				null, null);
 		orderAdapter.setIsShowOrder(true);
 		orderAdapter.setActivityParent(parent);
 		listView.setAdapter(orderAdapter);
