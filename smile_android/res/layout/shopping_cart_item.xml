@@ -12,13 +12,14 @@
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
-        <CheckBox
+        <ImageView
             android:id="@+id/check_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dip"
+            android:layout_height="40dip"
             android:layout_gravity="center_vertical"
             android:layout_alignParentLeft="true"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical" 
+            android:contentDescription="@string/gu"/>
 
         <Button
             android:id="@+id/del_btn"

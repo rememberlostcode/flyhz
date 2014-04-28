@@ -14,7 +14,7 @@
         android:layout_height="40dip"
         android:gravity="center_vertical"
         android:orientation="horizontal" 
-        android:background="#e5e5e5"
+        android:background="#C9C9C9"
         android:visibility="gone">
 
         <CheckBox
@@ -28,28 +28,27 @@
             android:id="@+id/all_select"
             android:layout_width="wrap_content"
             android:layout_height="40dip"
-            android:background="#ffffff"
             android:gravity="center_vertical"
             android:text="@string/select_all"
-            android:textSize="14sp" />
+            android:textSize="14sp" 
+            android:textColor="#4A4A4A"/>
 
         <TextView
             android:id="@+id/total"
             android:layout_width="wrap_content"
             android:layout_height="40dip"
-            android:background="#ffffff"
             android:gravity="center_vertical"
             android:textColor="#f50606"
             android:textSize="14sp" />
 
         <ImageButton
             android:id="@+id/payoff_btn"
-            android:layout_width="80dip"
+            android:layout_width="fill_parent"
             android:layout_height="40dip"
-            android:background="#ffffff"
+            android:layout_marginRight="1dip"
             android:contentDescription="@string/gu"
             android:layout_gravity="right"
-            android:gravity="center"
+            android:background="#C9C9C9"
             android:src="@drawable/payoff" />
     </LinearLayout>
 
