@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:paddingLeft="4dip"
+    android:paddingRight="4dip"
+    android:paddingTop="5dip"
+    android:scrollbars="none" >
+    
+    <com.holding.smile.myview.MyListView
+        android:id="@+id/cart_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="1sp" />
+    
+</ScrollView>

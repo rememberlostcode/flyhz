@@ -57,6 +57,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private Integer					qty							= 1;								// 购买数量，默认是1
 	private List<Integer>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,7 +69,11 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 		Intent intent = getIntent();
 		try {
-			gid = (Integer) intent.getExtras().getSerializable("gid");
+			if (intent.getExtras().getSerializable("gid") != null) {
+				gid = (Integer) intent.getExtras().getSerializable("gid");
+			} else if (intent.getExtras().getSerializable("cartIds") != null) {
+				cartIds = (List<Integer>) intent.getExtras().getSerializable("cartIds");
+			}
 			startTask();
 		} catch (Exception e) {
 			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
@@ -170,6 +175,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
+				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
 			}
@@ -202,7 +208,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		}
 		orderDetails.clear();
 		orderDetails = null;
-		setResult(RESULT_CANCELED, null);
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -333,6 +338,17 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																				order.getTotal());
 																		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 																		startActivity(intent);
+
+																		if (cartIds != null
+																				&& !cartIds.isEmpty()) {
+																			for (Integer cartId : cartIds) {
+																				MyApplication.getInstance()
+																								.getSubmitService()
+																								.removeCart(
+																										cartId);
+																			}
+																		}
+																		setResult(RESULT_OK, null);
 																		finish();
 																	}
 																}

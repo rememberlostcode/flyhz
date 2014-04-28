@@ -1,7 +1,9 @@
 
 package com.holding.smile.adapter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -14,6 +16,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,8 +43,32 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 	private ProgressDialog	pDialog;
 	private Handler			mUIHandler;
 
+	private Set<Integer>	sIds			= new HashSet<Integer>();
+	private Boolean			editFlag		= false;
+	private Boolean			selectAll		= false;
+
 	public void setFlagBusy(boolean busy) {
 		this.mBusy = busy;
+	}
+
+	public void setEditFlag(boolean editFlag) {
+		this.editFlag = editFlag;
+		notifyDataSetChanged();
+	}
+
+	public void setSelectAll(Boolean selectAll) {
+		this.selectAll = selectAll;
+		if (selectAll) {
+			if (cartItemList != null && !cartItemList.isEmpty()) {
+				for (CartItem item : cartItemList) {
+					if (item.getId() != null)
+						sIds.add(item.getId());
+				}
+			}
+		} else {
+			sIds.clear();
+		}
+		mUIHandler.sendEmptyMessage(3);
 	}
 
 	// 自己定义的构造函数
@@ -54,6 +84,20 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 	public void setData(List<CartItem> contacts) {
 		this.cartItemList = contacts;
 		notifyDataSetChanged();
+	}
+
+	public void removeItem(CartItem item) {
+		cartItemList.remove(item);
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * 获取已选中的itemId
+	 * 
+	 * @return
+	 */
+	public Set<Integer> getSelectIds() {
+		return sIds;
 	}
 
 	@Override
@@ -81,13 +125,15 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 		TextView	qty;
 		ImageView	subBtn;
 		ImageView	addBtn;
+		CheckBox	checkBox;
+		Button		delBtn;
 	}
 
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = LayoutInflater.from(context).inflate(R.layout.order_item, null);
+			convertView = LayoutInflater.from(context).inflate(R.layout.shopping_cart_item, null);
 			holder = new ViewHolder();
 			holder.n = (TextView) convertView.findViewById(R.id.n);
 			holder.n.setWidth((int) (sWidth - 190 * MyApplication.getInstance().getDensity()));
@@ -99,13 +145,28 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 			holder.qty = (TextView) convertView.findViewById(R.id.qty);
 			holder.subBtn = (ImageView) convertView.findViewById(R.id.sub_qty);
 			holder.addBtn = (ImageView) convertView.findViewById(R.id.add_qty);
+			holder.checkBox = (CheckBox) convertView.findViewById(R.id.check_box);
+			holder.delBtn = (Button) convertView.findViewById(R.id.del_btn);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.p.setImageResource(R.drawable.empty_photo);
+
+		if (editFlag) {
+			holder.delBtn.setVisibility(View.VISIBLE);
+		} else {
+			holder.delBtn.setVisibility(View.GONE);
+		}
+
 		final CartItem cartItem = (CartItem) getItem(position);
 		if (cartItem != null && cartItem.getProduct() != null) {
+
+			if (selectAll) {
+				holder.checkBox.setChecked(true);
+				sIds.add(cartItem.getId());
+			}
+
 			final ProductDto jGoods = cartItem.getProduct();
 			if (StrUtils.isNotEmpty(jGoods.getName())) {
 				holder.n.setText(jGoods.getName().trim());
@@ -180,6 +241,40 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 					Message msg = mUIHandler.obtainMessage(1);
 					msg.obj = rtnValue;
 					msg.sendToTarget();
+				}
+			});
+
+			holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if (isChecked) {
+						sIds.add(cartItem.getId());
+					} else {
+						sIds.remove(cartItem.getId());
+					}
+					mUIHandler.sendEmptyMessage(3);
+				}
+			});
+
+			holder.delBtn.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					showPDialog();
+
+					RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
+														.removeCart(cartItem.getId());
+					if (rtnValue != null) {
+						if (sIds.contains(cartItem.getId())) {
+							sIds.remove(cartItem.getId());
+						}
+						Message msg = mUIHandler.obtainMessage(4);
+						msg.obj = cartItem.getId();
+						msg.sendToTarget();
+					} else {
+						mUIHandler.sendEmptyMessage(4);
+					}
 				}
 			});
 		}

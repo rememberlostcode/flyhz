@@ -61,7 +61,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.smile_main);
 
-		TextView cateBtn = displayHeaderCate();
+		TextView cateBtn = displayHeaderRight();
+		cateBtn.setText(R.string.category);
 		cateBtn.setOnClickListener(this);
 
 		headerDescription = displayHeaderDescription();
@@ -113,7 +114,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 				startActivityForResult(intent, SEARCH_CODE);
 				break;
 			}
-			case R.id.btn_cate: {
+			case R.id.header_right: {
 				// Toast.makeText(context, "您点了类别！", Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(this, CategoryActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -56,6 +56,10 @@ public class BaseActivity extends Activity {
 	 * 选择身份证照片编辑身份证操作代码
 	 */
 	public static final int	IDCARD_EDIT_CODE	= 16;
+	/**
+	 * 订单代码
+	 */
+	public static final int	ORDER_CODE			= 17;
 
 	public Context			context;
 
@@ -142,13 +146,13 @@ public class BaseActivity extends Activity {
 	}
 
 	/**
-	 * 显示头部分类
+	 * 显示头部右边部分
 	 * 
 	 * @return
 	 */
-	public TextView displayHeaderCate() {
+	public TextView displayHeaderRight() {
 		setHeadVisible();
-		int id = R.id.btn_cate;
+		int id = R.id.header_right;
 		TextView textView = (TextView) findViewById(id);
 		setVisible(id);
 		return textView;
@@ -391,6 +395,19 @@ public class BaseActivity extends Activity {
 	public View displayFooterMainBuyBtn() {
 		setFootVisible();
 		int id = R.id.mainfooter_buy;
+		View view = (View) findViewById(id);
+		setVisible(id);
+		return view;
+	}
+
+	/**
+	 * 进入购物车时显示
+	 * 
+	 * @return
+	 */
+	public View displayFooterMainTotal() {
+		setFootVisible();
+		int id = R.id.calculate_total;
 		View view = (View) findViewById(id);
 		setVisible(id);
 		return view;
