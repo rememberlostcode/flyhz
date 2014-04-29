@@ -6,7 +6,51 @@
     android:layout_alignParentBottom="true"
     android:background="#36293f"
     android:gravity="bottom"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
+    
+    <LinearLayout
+        android:id="@+id/calculate_total"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" 
+        android:background="#C9C9C9"
+        android:visibility="gone">
+
+        <CheckBox
+            android:id="@+id/all_checked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical" />
+        
+        <TextView
+            android:id="@+id/all_select"
+            android:layout_width="wrap_content"
+            android:layout_height="40dip"
+            android:gravity="center_vertical"
+            android:text="@string/select_all"
+            android:textSize="14sp" 
+            android:textColor="#4A4A4A"/>
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="40dip"
+            android:gravity="center_vertical"
+            android:textColor="#f50606"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/payoff_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_marginRight="1dip"
+            android:contentDescription="@string/gu"
+            android:layout_gravity="right"
+            android:background="#C9C9C9"
+            android:src="@drawable/payoff" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/mainfooter"

@@ -4,6 +4,8 @@ package com.flyhz.shop.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class OrderDto {
 
 	private Integer					id;
@@ -20,6 +22,7 @@ public class OrderDto {
 
 	private List<VoucherDto>		vouchers;
 
+	@JsonIgnore
 	private UserDto					user;
 
 	private String					time;

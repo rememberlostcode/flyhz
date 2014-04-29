@@ -1,18 +1,15 @@
 
 package com.flyhz.shop.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class ConsigneeDto {
 	private Integer	id;
 	private String	name;
-	private Integer	conturyId;
-	private Integer	provinceId;
-	private Integer	cityId;
-	private Integer	districtId;
 	private String	address;
 	private Integer	zipcode;
-	private Integer	areacode;
-	private Integer	telephone;
-	private String	mobilephone;
+	private String	phone;
+	@JsonIgnore
 	private UserDto	user;
 
 	public Integer getId() {
@@ -31,38 +28,6 @@ public class ConsigneeDto {
 		this.name = name;
 	}
 
-	public Integer getConturyId() {
-		return conturyId;
-	}
-
-	public void setConturyId(Integer conturyId) {
-		this.conturyId = conturyId;
-	}
-
-	public Integer getProvinceId() {
-		return provinceId;
-	}
-
-	public void setProvinceId(Integer provinceId) {
-		this.provinceId = provinceId;
-	}
-
-	public Integer getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(Integer cityId) {
-		this.cityId = cityId;
-	}
-
-	public Integer getDistrictId() {
-		return districtId;
-	}
-
-	public void setDistrictId(Integer districtId) {
-		this.districtId = districtId;
-	}
-
 	public String getAddress() {
 		return address;
 	}
@@ -79,28 +44,12 @@ public class ConsigneeDto {
 		this.zipcode = zipcode;
 	}
 
-	public Integer getAreacode() {
-		return areacode;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setAreacode(Integer areacode) {
-		this.areacode = areacode;
-	}
-
-	public Integer getTelephone() {
-		return telephone;
-	}
-
-	public void setTelephone(Integer telephone) {
-		this.telephone = telephone;
-	}
-
-	public String getMobilephone() {
-		return mobilephone;
-	}
-
-	public void setMobilephone(String mobilephone) {
-		this.mobilephone = mobilephone;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public UserDto getUser() {

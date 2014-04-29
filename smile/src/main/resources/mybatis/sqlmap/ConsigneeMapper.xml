@@ -32,8 +32,7 @@
 	    zipcode,mobilephone,user_id userId from consignee where user_id = #{id}
 	</select>
 	<select id="getConsigneeByModel" parameterType="ConsigneeModel" resultType="ConsigneeDetailDto">
-	   select a.id,a.name,a.contury_id conturyId,a.city_id cityId,a.province_id provinceId,a.district_id districtId,
-	   CONCAT(p.name,c.name,d.name,a.address) as address,a.zipcode,a.mobilephone,a.user_id userId from consignee a 
+	   select a.id,a.name, CONCAT(p.name,c.name,d.name,a.address) as address,a.zipcode,a.mobilephone phone,a.user_id userId from consignee a 
 	   inner join district d on a.district_id=d.id inner join city c on d.city_id = c.id inner join province p 
 	   on c.province_id=p.id where a.id = #{id} and a.user_id = #{userId}
 	</select>
