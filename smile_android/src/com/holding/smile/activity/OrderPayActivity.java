@@ -37,6 +37,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	private TextView			numberText;
 	private TextView			amountText;
 	private TextView			timeText;
+	private String				number;					// 订单号
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 		Intent intent = getIntent();
 		try {
 			initPDialog();// 初始化进度条
-			String number = intent.getExtras().getString("number");// 订单号
+			number = intent.getExtras().getString("number");// 订单号
 			String time = intent.getExtras().getString("time");// 订单生成时间
 			BigDecimal amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
 			if (StrUtils.isNotEmpty(number) && StrUtils.isNotEmpty(time) && amount != null) {
@@ -107,10 +108,10 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.taobao_pay_btn: {
-				Toast.makeText(context, "您点了去淘宝支付", Toast.LENGTH_SHORT).show();
-				// Intent intent = new Intent(this, SearchGoodsActivity.class);
-				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				// startActivity(intent);
+				Intent intent = new Intent(this, WebViewActivity.class);
+				intent.putExtra("number", number);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(intent);
 				// finish();
 				break;
 			}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	<string name="taobaodian_url">http://h5.m.taobao.com/awp/core/detail.htm?id=38752474914</string>
     <string name="prefix_url">http://211.149.175.138</string>
     <string name="login_url">https://211.149.175.138:8443/smile/loginAuth.json</string>
     <string name="auto_login_url">https://211.149.175.138:8443/smile/loginAuto.json</string>
