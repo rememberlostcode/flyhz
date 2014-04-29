@@ -65,10 +65,10 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				idcard = (Idcard) (intent.getExtras().getSerializable("idcard"));
 				if (idcard != null) {
 					idcardName.setText(idcard.getName());
-					idcardNumber.setText(idcard.getIdcard());
-					if (idcard.getPhoto() != null && !"".equals(idcard.getPhoto())) {
+					idcardNumber.setText(idcard.getNumber());
+					if (idcard.getUrl() != null && !"".equals(idcard.getUrl())) {
 						MyApplication.getImageLoader().DisplayImage(
-								MyApplication.jgoods_img_url + idcard.getPhoto(), imageView, false);
+								MyApplication.jgoods_img_url + idcard.getUrl(), imageView, false);
 						imageView.setVisibility(View.VISIBLE);
 					}
 				}
@@ -103,7 +103,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					Toast.makeText(context, "联系电话不能为空", Toast.LENGTH_SHORT).show();
 					break;
 				}
-				idcard.setIdcard(idcardNumber.getText().toString());
+				idcard.setNumber(idcardNumber.getText().toString());
 
 				RtnValueDto rvd = null;
 				try {

@@ -1,8 +1,6 @@
 
 package com.holding.smile.activity;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,8 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.holding.smile.R;
-import com.holding.smile.adapter.MyOrderInformAdapter;
-import com.holding.smile.dto.OrderDetailDto;
+import com.holding.smile.adapter.OrderDetailAdapter;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.myview.MyListView;
 
@@ -23,11 +20,10 @@ import com.holding.smile.myview.MyListView;
  * 
  */
 public class OrderDetailActivity extends BaseActivity implements OnClickListener {
-	private List<OrderDetailDto>	list;
-	private MyOrderInformAdapter	adapter;
-	private MyListView				listView;
-	private OrderDto				order;
-	private TextView				total;
+	private OrderDetailAdapter	adapter;
+	private MyListView			listView;
+	private OrderDto			order;
+	private TextView			total;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,19 +42,15 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 			if (intent.getExtras() != null && intent.getExtras().getSerializable("order") != null) {
 				order = (OrderDto) (intent.getExtras().getSerializable("order"));
 				if (order != null) {
+					adapter = new OrderDetailAdapter(OrderDetailActivity.this, order);
+					listView.setAdapter(adapter);
 					total = (TextView) findViewById(R.id.order_detail_total);
 					total.setText("共计" + order.getQty() + "件商品，￥" + order.getTotal() + "元");
-					list = order.getDetails();
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		adapter = new MyOrderInformAdapter(OrderDetailActivity.this, list, null, null, null);
-		adapter.setIsShowOrder(true);
-		// adapter.setActivityParent(context);
-		listView.setAdapter(adapter);
 	}
 
 	@Override

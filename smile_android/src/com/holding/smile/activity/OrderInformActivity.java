@@ -57,7 +57,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private Integer					qty							= 1;								// 购买数量，默认是1
 	private List<Integer>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
 	private Integer					allQty						= 0;								// 结算总数量，默认是0
-	private BigDecimal				allTotal					= new BigDecimal(0);				// 结算总金额,默认是0
+	private BigDecimal				allTotal					= null;							// 结算总金额
+	private boolean					cartFlag					= false;							// 为true是指从购物车中结算的
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -75,6 +76,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 				gid = (Integer) intent.getExtras().getSerializable("gid");
 			} else if (intent.getExtras().getSerializable("cartIds") != null) {
 				cartIds = (List<Integer>) intent.getExtras().getSerializable("cartIds");
+				cartFlag = true;
 			}
 			startTask();
 		} catch (Exception e) {
@@ -93,11 +95,11 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		confirmBtn = (ImageButton) findViewById(R.id.confirm_btn);
 		confirmBtn.setOnClickListener(this);
 		total = (TextView) findViewById(R.id.total);
-		total.setText("共计" + allQty + "件商品，￥" + allTotal.doubleValue() + "元");
 
 		initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.order_list);
-		orderAdapter = new MyOrderInformAdapter(context, orderDetails, total, pDialog, mUIHandler);
+		orderAdapter = new MyOrderInformAdapter(context, orderDetails, pDialog, mUIHandler,
+				cartFlag);
 		listView.setAdapter(orderAdapter);
 
 	}
@@ -248,7 +250,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																	orderDetails = order.getDetails();
 																	if (orderDetails != null
 																			&& !orderDetails.isEmpty()) {
-																		initView();
+																		initView();// 初始化view
+																		calculateTotal();// 计算总额
 																	}
 																}
 															}
@@ -293,6 +296,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																				break;
 																			}
 																		}
+																		// 计算总额
+																		calculateTotal();
 																		orderAdapter.notifyDataSetChanged();
 																	}
 																}
@@ -377,6 +382,24 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 														break;
 													}
 												}
+											}
+
+											/**
+											 * 计算总额
+											 */
+											private void calculateTotal() {
+												allQty = 0;
+												allTotal = new BigDecimal(0);
+												if (orderDetails != null && !orderDetails.isEmpty()) {
+													for (OrderDetailDto orderDetail : orderDetails) {
+														if (orderDetail != null) {
+															allQty += (int) orderDetail.getQty();
+															allTotal = allTotal.add(orderDetail.getTotal());
+														}
+													}
+												}
+												total.setText("已选商品" + allQty + "件,合计:￥"
+														+ allTotal.doubleValue() + "元");
 											}
 										};
 }

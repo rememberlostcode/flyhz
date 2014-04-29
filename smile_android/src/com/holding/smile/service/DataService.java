@@ -20,7 +20,6 @@ import com.holding.smile.entity.SortType;
 import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.protocol.PCartItem;
 import com.holding.smile.protocol.PCategory;
-import com.holding.smile.protocol.PConsignees;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexJGoods;
@@ -60,7 +59,6 @@ public class DataService {
 	private String			jGoods_sort_url;
 	private String			jGoods_search_url;
 	private String			jGoods_search_more_url;
-	private String			address_list;
 	private String			user_info;
 	private String			idcard_list;
 	private String			order_list_url;
@@ -87,7 +85,6 @@ public class DataService {
 		jGoods_sort_url = context.getString(R.string.jGoods_sort_url);
 		jGoods_search_url = context.getString(R.string.jGoods_search_refresh_url);
 		jGoods_search_more_url = context.getString(R.string.jGoods_search_more_url);
-		address_list = context.getString(R.string.address_list);
 		user_info = context.getString(R.string.user_info);
 		idcard_list = context.getString(R.string.idcard_list);
 		order_list_url = context.getString(R.string.order_list_url);
@@ -549,37 +546,6 @@ public class DataService {
 				PGoods details = JSONUtil.getJson2Entity(rStr, PGoods.class);
 				if (details != null)
 					rvd.setData(details.getData());
-			} catch (Exception e) {
-				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
-			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
-		}
-		return rvd;
-	}
-
-	/**
-	 * 获得收货人列表
-	 * 
-	 * @return
-	 */
-	public RtnValueDto getConsigneeList() {
-		RtnValueDto rvd = new RtnValueDto();
-		String url = prefix_url + address_list;
-
-		String rStr = URLUtil.getStringByGet(url, null);
-		if (rStr != null && !"".equals(rStr)) {
-			try {
-				PConsignees consignees = JSONUtil.getJson2Entity(rStr, PConsignees.class);
-				if (consignees != null) {
-					rvd.setConsigneeData(consignees.getData());
-					rvd.setCode(consignees.getCode());
-				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();

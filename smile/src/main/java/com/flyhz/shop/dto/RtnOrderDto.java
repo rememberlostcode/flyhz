@@ -2,7 +2,6 @@
 package com.flyhz.shop.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * 
@@ -13,7 +12,7 @@ import java.util.Date;
  */
 public class RtnOrderDto {
 	private String		number;
-	private Date		time;
+	private String		time;
 	private BigDecimal	total;
 
 	public RtnOrderDto() {
@@ -27,11 +26,11 @@ public class RtnOrderDto {
 		this.number = number;
 	}
 
-	public Date getTime() {
+	public String getTime() {
 		return time;
 	}
 
-	public void setTime(Date time) {
+	public void setTime(String time) {
 		this.time = time;
 	}
 

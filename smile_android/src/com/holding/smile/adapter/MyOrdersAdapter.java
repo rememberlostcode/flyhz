@@ -27,10 +27,10 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.myview.MyListView;
 
 public class MyOrdersAdapter extends BaseAdapter {
-	private Context					context;
-	private List<OrderDto>			orderList;
-	private MyListView				listView;
-	private MyOrderInformAdapter	orderAdapter;
+	private Context				context;
+	private List<OrderDto>		orderList;
+	private MyListView			listView;
+	private OrderDetailAdapter	orderAdapter;
 
 	// 自己定义的构造函数
 	public MyOrdersAdapter(Context context, List<OrderDto> orderList) {
@@ -60,6 +60,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		TextView	totalnum;
 		ImageView	cover;
 		Button		statusButton;
+		TextView	total;
 	}
 
 	@Override
@@ -135,9 +136,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		});
 
 		listView = (MyListView) convertView.findViewById(R.id.order_list_content);
-		orderAdapter = new MyOrderInformAdapter(context, order.getDetails(), new TextView(context),
-				null, null);
-		orderAdapter.setIsShowOrder(true);
+		orderAdapter = new OrderDetailAdapter(context, order);
 		orderAdapter.setActivityParent(parent);
 		listView.setAdapter(orderAdapter);
 		return convertView;

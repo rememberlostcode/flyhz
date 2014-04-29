@@ -2,8 +2,8 @@
 <resources>
 
     <string name="prefix_url">http://211.149.175.138</string>
-    <string name="login_url">http://211.149.175.138/smile/loginAuth.json</string>
-    <string name="auto_login_url">http://211.149.175.138/smile/loginAuto.json</string>
+    <string name="login_url">https://211.149.175.138:8443/smile/loginAuth.json</string>
+    <string name="auto_login_url">https://211.149.175.138:8443/smile/loginAuto.json</string>
     
     <string name="img_static_url">/smile/static</string>
     <string name="jGoods_index_url">/smile/node/index</string>
@@ -18,11 +18,6 @@
     <string name="jGoods_search_more_url">/smile/node/search/more</string>
     
     <string name="register_url">/smile/saveRegister.json</string>
-    <string name="address_list">/smile/user/consignees.json</string>
-    <string name="address_add">/smile/consignee/add.json</string>
-    <string name="address_modify">/smile/consignee/modify.json</string>
-    <string name="address_remove">/smile/consignee/remove.json</string>
-    <string name="address_set">/smile/consignee/setIdCard.json</string>
     <string name="user_info">/smile/user/getPInfo.json</string>
     <string name="reset_password">/smile/user/resetPwd.json</string>
     <string name="releive_email">/smile/user/releiveEmail.json</string>

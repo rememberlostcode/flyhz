@@ -20,6 +20,7 @@ import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.dto.CartItemParamDto;
@@ -267,7 +268,7 @@ public class UserController {
 
 					RtnOrderDto rtnOrder = new RtnOrderDto();
 					rtnOrder.setNumber(orderPayDto.getNumber());
-					rtnOrder.setTime(orderPayDto.getGmtCreate());
+					rtnOrder.setTime(DateUtil.dateToStr(orderPayDto.getGmtCreate()));
 					rtnOrder.setTotal(orderPayDto.getTotal());
 					protocol.setData(rtnOrder);
 				} else {
