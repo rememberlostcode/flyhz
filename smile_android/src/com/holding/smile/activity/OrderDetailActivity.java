@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +25,17 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 	private MyListView			listView;
 	private OrderDto			order;
 	private TextView			total;
+	private TextView			orderNumberView;
+	private TextView			orderTimeView;
+	private TextView			consigneeAddressView;
+	private TextView			consigneePhoneView;
+	private TextView			consigneeNameView;
+
+	private TextView			idcardView;
+	private ImageView			idcardImageView;
+
+	private Button				statusButton;
+	private MyListView			logisticsListView;		// 物流
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 					listView.setAdapter(adapter);
 					total = (TextView) findViewById(R.id.order_detail_total);
 					total.setText("共计" + order.getQty() + "件商品，￥" + order.getTotal() + "元");
+					System.out.println("status=" + order.getStatus());
+					System.out.println("consignee=" + order.getConsignee());
 				}
 			}
 		} catch (Exception e) {

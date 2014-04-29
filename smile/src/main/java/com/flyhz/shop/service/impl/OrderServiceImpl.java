@@ -82,8 +82,8 @@ public class OrderServiceImpl implements OrderService {
 			if (idcardData != null) {
 				IdentitycardDto identitycard = new IdentitycardDto();
 				identitycard.setName(idcardData.getName());
-				identitycard.setNumber(idcardData.getIdcard());
-				identitycard.setUrl(idcardData.getPhoto());
+				identitycard.setNumber(idcardData.getNumber());
+				identitycard.setUrl(idcardData.getUrl());
 				consigneeDto.setIdentitycard(identitycard);
 			}
 		}

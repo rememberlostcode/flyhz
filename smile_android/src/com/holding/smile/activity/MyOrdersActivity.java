@@ -63,13 +63,9 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void loadData() {
 		RtnValueDto orders = MyApplication.getInstance().getDataService().getOrdersList(status);
-		if (orders != null) {
-			Message msg = mUIHandler.obtainMessage(1);
-			msg.obj = orders;
-			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
-		}
+		Message msg = mUIHandler.obtainMessage(1);
+		msg.obj = orders;
+		msg.sendToTarget();
 	}
 
 	@Override
@@ -117,7 +113,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 													case 1: {
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
 														list = rvd.getOrderListData();
-														if (list == null) {
+														if (list == null || list.size() == 0) {
 															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
 															break;

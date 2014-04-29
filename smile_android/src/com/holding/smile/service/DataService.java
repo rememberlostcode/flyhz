@@ -594,7 +594,6 @@ public class DataService {
 	public RtnValueDto getIdcardsList() {
 		RtnValueDto rvd = new RtnValueDto();
 		String url = prefix_url + idcard_list;
-		System.out.println(url);
 		String rStr = URLUtil.getStringByGet(url, null);
 		// String rStr =
 		// "{\"data\":[{\"id\":\"1\",\"name\":\"张斌\",\"idcard\":\"330424198711111111\",\"photo\":\"/cocah_intern/200526_s.jpeg\"},{\"id\":\"2\",\"name\":\"张斌2\",\"idcard\":\"330424198712222222\",\"photo\":\"/cocah_intern/200574_s.jpeg\"}]}";

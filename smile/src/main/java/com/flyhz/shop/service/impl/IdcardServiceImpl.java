@@ -51,7 +51,7 @@ public class IdcardServiceImpl implements IdcardService {
 						+ origName.substring(origName.lastIndexOf("."));
 				fileRepository.saveToTemp(multipartFile.getInputStream(), origName);
 				// 更新收件人地址中身份证照片路径
-				idcardModel.setPhoto("/idcard/" + origName);
+				idcardModel.setUrl("/idcard/" + origName);
 			}
 
 			Date date = new Date();
