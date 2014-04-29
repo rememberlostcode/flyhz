@@ -56,6 +56,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private Integer					addressId					= 1;								// 地址id
 	private Integer					qty							= 1;								// 购买数量，默认是1
 	private List<Integer>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
+	private Integer					allQty						= 0;								// 结算总数量，默认是0
+	private BigDecimal				allTotal					= new BigDecimal(0);				// 结算总金额,默认是0
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -91,6 +93,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		confirmBtn = (ImageButton) findViewById(R.id.confirm_btn);
 		confirmBtn.setOnClickListener(this);
 		total = (TextView) findViewById(R.id.total);
+		total.setText("共计" + allQty + "件商品，￥" + allTotal.doubleValue() + "元");
 
 		initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.order_list);
@@ -100,7 +103,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	}
 
 	public void loadData() {
-		if (gid != null || (cartIds != null && cartIds.isEmpty())) {
+		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
 			String pidQty = "";
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
@@ -113,9 +116,11 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 				msg.sendToTarget();
 			} else {
 				Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+				finish();
 			}
 		} else {
 			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+			finish();
 		}
 	}
 
@@ -149,7 +154,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	 * 确认订单并生成订单信息
 	 */
 	private void confirmOrder() {
-		if (gid != null || (cartIds != null && cartIds.isEmpty())) {
+		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
 			pDialog.show();
 			mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
 
