@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyJGoodsAdapter;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
 import com.holding.smile.myview.MyLinearLayout;
@@ -53,6 +54,9 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		setContentLayout(R.layout.activity_main);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
+		TextView cateBtn = displayHeaderRight();
+		cateBtn.setText(R.string.category);
+		cateBtn.setOnClickListener(this);
 
 		Intent intent = this.getIntent();
 		bid = (Integer) intent.getExtras().getSerializable("bid");
@@ -97,7 +101,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 				public void onClick(View v) {
 					sortTypeLayout.setBackgroundBtn(v.getId());
 					seqorderType = v.getTag().toString();
-					loadData();
+					onRefresh();
 				}
 			});
 		}
@@ -110,13 +114,25 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 				finish();
 				break;
 			}
+			case R.id.header_right: {
+				Intent intent = new Intent(this, CategoryActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivityForResult(intent, CATE_CODE);
+				break;
+			}
 		}
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
-
+		if (requestCode == CATE_CODE && resultCode == RESULT_OK) {
+			if (data != null) {
+				Category cate = (Category) data.getExtras().getSerializable("cate");
+				if (cate != null) {
+					cid = cate.getId();
+					onRefresh();
+				}
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -301,8 +317,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																			mStrings.remove(i);
 																		}
 																	}
-																	adapter.notifyDataSetChanged();
 																}
+																adapter.notifyDataSetChanged();
 															}
 															mPullToRefreshView.onHeaderRefreshComplete();
 															break;
