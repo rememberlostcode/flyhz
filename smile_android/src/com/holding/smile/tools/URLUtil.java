@@ -33,8 +33,7 @@ public class URLUtil {
 					if (count > 0) {
 						paramsBuffer.append("&");
 					}
-					 paramsBuffer.append(key + "=" + URLEncoder.encode(value,
-					 "UTF-8"));
+					paramsBuffer.append(key + "=" + URLEncoder.encode(value, "UTF-8"));
 					count++;
 				}
 			}
@@ -56,8 +55,8 @@ public class URLUtil {
 			conn.setRequestMethod("GET");
 			conn.setDoInput(true);
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
-			if(MyApplication.getInstance().getSessionId()!=null)
-			conn.setRequestProperty("Cookie",MyApplication.getInstance().getSessionId());
+			if (MyApplication.getInstance().getSessionId() != null)
+				conn.setRequestProperty("Cookie", MyApplication.getInstance().getSessionId());
 			conn.connect();
 			if (conn.getResponseCode() == 200) {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -104,7 +103,7 @@ public class URLUtil {
 			conn.setDoInput(true);
 			conn.setUseCaches(false);
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
-			conn.setRequestProperty("Cookie",MyApplication.getInstance().getSessionId());
+			conn.setRequestProperty("Cookie", MyApplication.getInstance().getSessionId());
 			conn.connect();
 			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
 			out.writeBytes(paramsBuffer.toString());
@@ -139,11 +138,11 @@ public class URLUtil {
 				int count = 0;
 				while (it.hasNext()) {
 					String key = it.next();
-					if (count > 0) {
-						paramsBuffer.append("&");
-					}
 					List<String> value = param.get(key);
 					for (String each : value) {
+						if (count > 0) {
+							paramsBuffer.append("&");
+						}
 						paramsBuffer.append(key + "=" + URLEncoder.encode(each, "UTF-8"));
 					}
 					count++;
@@ -158,7 +157,7 @@ public class URLUtil {
 			conn.setDoInput(true);
 			conn.setUseCaches(false);
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
-			conn.setRequestProperty("Cookie",MyApplication.getInstance().getSessionId());
+			conn.setRequestProperty("Cookie", MyApplication.getInstance().getSessionId());
 			conn.connect();
 			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
 			out.writeBytes(paramsBuffer.toString());

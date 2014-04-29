@@ -152,6 +152,10 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				}
 			}
 
+			if (jGoods.getC() != null) {
+				scolor.setText(jGoods.getC());
+			}
+
 			if (mViewPager == null)
 				mViewPager = (MyViewPager) findViewById(R.id.mypicpager);
 

@@ -260,22 +260,24 @@ public class SubmitService {
 	 *            地址ID
 	 * @return
 	 */
-	public RtnValueDto getOrderInform(String pidQty, List<Integer> cartIds, Integer addressId) {
+	public RtnValueDto getOrderInform(String pidQty, List<String> cartIds, Integer addressId) {
 		RtnValueDto rvd = new RtnValueDto();
-		HashMap<String, String> param = new HashMap<String, String>();
+		List<String> listParam = new ArrayList<String>();
+		HashMap<String, List<String>> param = new HashMap<String, List<String>>();
 		if (StrUtils.isNotEmpty(pidQty)) {
-			param.put("pids", pidQty);
+			listParam.add(pidQty);
+			param.put("pids", listParam);
 		} else {
 			if (cartIds != null && !cartIds.isEmpty()) {
-				for (Integer cartid : cartIds) {
-					param.put("cartIds", String.valueOf(cartid));
-				}
+				param.put("cartIds", cartIds);
 			}
 		}
 		if (addressId != null) {
-			param.put("cid", String.valueOf(addressId));
+			listParam = new ArrayList<String>();
+			listParam.add(addressId + "");
+			param.put("cid", listParam);
 		}
-		String rStr = URLUtil.getStringByPost(this.prefix_url + this.order_inform_url, param);
+		String rStr = URLUtil.getStringByPostMulti(this.prefix_url + this.order_inform_url, param);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
@@ -344,22 +346,24 @@ public class SubmitService {
 	 *            地址ID
 	 * @return
 	 */
-	public RtnValueDto confirmOrder(String pidQty, List<Integer> cartIds, Integer addressId) {
+	public RtnValueDto confirmOrder(String pidQty, List<String> cartIds, Integer addressId) {
 		RtnValueDto rvd = new RtnValueDto();
-		HashMap<String, String> param = new HashMap<String, String>();
+		List<String> listParam = new ArrayList<String>();
+		HashMap<String, List<String>> param = new HashMap<String, List<String>>();
 		if (StrUtils.isNotEmpty(pidQty)) {
-			param.put("pids", pidQty);
+			listParam.add(pidQty);
+			param.put("pids", listParam);
 		} else {
 			if (cartIds != null && !cartIds.isEmpty()) {
-				for (Integer cartid : cartIds) {
-					param.put("cartIds", String.valueOf(cartid));
-				}
+				param.put("cartIds", cartIds);
 			}
 		}
 		if (addressId != null) {
-			param.put("cid", String.valueOf(addressId));
+			listParam = new ArrayList<String>();
+			listParam.add(addressId + "");
+			param.put("cid", listParam);
 		}
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_confirm_url, param);
+		String rStr = URLUtil.getStringByPostMulti(this.prefix_url + this.order_confirm_url, param);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {

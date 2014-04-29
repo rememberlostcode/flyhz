@@ -129,10 +129,6 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (pDialog != null) {
-			pDialog.cancel();
-			pDialog = null;
-		}
 		payBtn = null;
 		numberText = null;
 		amountText = null;

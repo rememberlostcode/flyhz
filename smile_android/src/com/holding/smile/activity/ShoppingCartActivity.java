@@ -54,9 +54,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	private TextView				total;
 	private CheckBox				allChecked;
 	private List<CartItem>			cartItemList			= new ArrayList<CartItem>();
-	private Integer					gid						= null;						// 商品ID
-	private String					bs						= null;						// 款号
-	private List<Integer>			cartIds					= null;						// 从购物车结算时用，保存选中的购物车ID
 	private Integer					allQty					= 0;							// 结算总数量，默认是0
 	private BigDecimal				allTotal				= new BigDecimal(0);			// 结算总金额,默认是0
 
@@ -101,6 +98,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 			}
 		});
 
+		allQty = 0;
+		allTotal = new BigDecimal(0);
 		total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.doubleValue() + "元");
 
 		initPDialog();// 初始化进度条
@@ -165,9 +164,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 			case R.id.payoff_btn: {
 				Set<Integer> sIds = cartAdapter.getSelectIds();
 				if (sIds != null && !sIds.isEmpty()) {
-					List<Integer> cartIds = new ArrayList<Integer>();
+					List<String> cartIds = new ArrayList<String>();
 					for (Integer cartId : sIds) {
-						cartIds.add(cartId);
+						cartIds.add(String.valueOf(cartId));
 					}
 					Intent intent = new Intent(this, OrderInformActivity.class);
 					intent.putExtra("cartIds", (Serializable) cartIds);
