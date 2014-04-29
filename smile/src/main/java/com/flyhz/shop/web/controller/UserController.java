@@ -25,7 +25,9 @@ import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.OrderDto;
+import com.flyhz.shop.dto.OrderPayDto;
 import com.flyhz.shop.dto.ProductDto;
+import com.flyhz.shop.dto.RtnOrderDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.service.OrderService;
@@ -70,15 +72,15 @@ public class UserController {
 				try {
 					user = userService.register(userDetail);
 				} catch (ValidateException e) {
-					code = 4;
+					code = 400000;
 					msg = e.getMessage();
 					log.error("=======在注册时=========" + e.getMessage());
 				}
 			} else {
-				code = 3;// 用户名或者密码错误
+				code = 300000;// 用户名或者密码错误
 			}
 		} else {
-			code = 5;
+			code = 500000;
 		}
 		protocol.setCode(code);
 		if (user != null) {
@@ -104,9 +106,11 @@ public class UserController {
 			code = 100000;
 		List<ConsigneeDetailDto> consigneeDtoList = null;
 		try {
-			consigneeDtoList = userService.listConsignees(userId);
+			if (code.equals(200000)) {
+				consigneeDtoList = userService.listConsignees(userId);
+			}
 		} catch (Exception e) {
-			code = 4;
+			code = 400000;
 			e.printStackTrace();
 			log.error("=======查询地址时=========" + e.getMessage());
 		}
@@ -131,21 +135,23 @@ public class UserController {
 		if (userId == null)
 			code = 100000;
 		if (pid == null)
-			code = 5;
-		if (qty == null || qty == 0)
-			qty = 1;
+			code = 500000;
 		ProductDto product = null;
 		try {
-			product = redistRepository.getProductFromRedis(pid);
-			if (product != null) {
-				product.setQty(qty.shortValue());
-				product.setPurchasingPrice(product.getPurchasingPrice().multiply(
-						BigDecimal.valueOf(qty)));
-			} else {
-				code = 300000;// 商品不存在
+			if (code.equals(200000)) {
+				if (qty == null || qty == 0)
+					qty = 1;
+				product = redistRepository.getProductFromRedis(pid);
+				if (product != null) {
+					product.setQty(qty.shortValue());
+					product.setPurchasingPrice(product.getPurchasingPrice().multiply(
+							BigDecimal.valueOf(qty)));
+				} else {
+					code = 300000;// 商品不存在
+				}
 			}
 		} catch (Exception e) {
-			code = 4;// 错误
+			code = 400000;// 错误
 			log.error("=======在修改购买数量时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
@@ -166,18 +172,20 @@ public class UserController {
 			@RequestParam Integer qty) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
-
 		if (userId == null)
 			code = 100000;
 		if (id == null)
-			code = 5;
-		if (qty == null || qty == 0)
-			qty = 1;
+			code = 500000;
 		CartItemDto cartItemDto = null;
 		try {
-			cartItemDto = shoppingCartService.setQty(userId, Integer.valueOf(id), qty.byteValue());
+			if (code.equals(200000)) {
+				if (qty == null || qty == 0)
+					qty = 1;
+				cartItemDto = shoppingCartService.setQty(userId, Integer.valueOf(id),
+						qty.byteValue());
+			}
 		} catch (Exception e) {
-			code = 4;
+			code = 400000;
 			log.error("=======在修改购买数量时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
@@ -201,20 +209,21 @@ public class UserController {
 		if (userId == null)
 			code = 100000;
 		OrderDto orderDto = null;
-		if ((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
-			code = 5;
-
-		if (cartIds != null && cartIds.length > 0) {
-			CartItemParamDto cartItemParam = new CartItemParamDto();
-			cartItemParam.setUserId(userId);
-			cartItemParam.setItemIds(cartIds);
-			pids = shoppingCartService.listItemsByUserIdAndIds(cartItemParam);
-		}
-
 		try {
-			orderDto = orderService.generateOrder(userId, cid, pids, false);
+			if ((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
+				code = 500000;
+
+			if (code.equals(200000)) {
+				if (cartIds != null && cartIds.length > 0) {
+					CartItemParamDto cartItemParam = new CartItemParamDto();
+					cartItemParam.setUserId(userId);
+					cartItemParam.setItemIds(cartIds);
+					pids = shoppingCartService.listItemsByUserIdAndIds(cartItemParam);
+				}
+				orderDto = orderService.generateOrder(userId, cid, pids, false);
+			}
 		} catch (ValidateException e) {
-			code = 4;
+			code = 400000;
 			log.error("=======在生成订单时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
@@ -232,31 +241,45 @@ public class UserController {
 	 */
 	@RequestMapping(value = { "user/confirmOrder" })
 	public String confirmOrder(Model model, @Identify Integer userId, String[] pids,
-			Integer[] cartIds, @RequestParam Integer cid) {
+			Integer[] cartIds, Integer cid) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
 			code = 100000;
-		OrderDto details = null;
-		if (((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
-				|| cid == null)
-			code = 5;
-
-		if (cartIds != null && cartIds.length > 0) {
-			CartItemParamDto cartItemParam = new CartItemParamDto();
-			cartItemParam.setUserId(userId);
-			cartItemParam.setItemIds(cartIds);
-			pids = shoppingCartService.listItemsByUserIdAndIds(cartItemParam);
-		}
-
 		try {
-			details = orderService.generateOrder(userId, cid, pids, true);
+			if (((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0)))
+				code = 500000;
+
+			if (code.equals(200000)) {
+				if (cartIds != null && cartIds.length > 0) {
+					CartItemParamDto cartItemParam = new CartItemParamDto();
+					cartItemParam.setUserId(userId);
+					cartItemParam.setItemIds(cartIds);
+					pids = shoppingCartService.listItemsByUserIdAndIds(cartItemParam);
+				}
+
+				OrderDto details = orderService.generateOrder(userId, cid, pids, true);
+				if (details != null) {
+					OrderPayDto orderPayDto = new OrderPayDto();
+					orderPayDto.setUserId(userId);
+					orderPayDto.setId(details.getId());
+					orderPayDto = orderService.getOrderPay(orderPayDto);
+
+					RtnOrderDto rtnOrder = new RtnOrderDto();
+					rtnOrder.setNumber(orderPayDto.getNumber());
+					rtnOrder.setTime(orderPayDto.getGmtCreate());
+					rtnOrder.setTotal(orderPayDto.getTotal());
+					protocol.setData(rtnOrder);
+				} else {
+					code = 400000;
+					log.error("=======在生成订单时=========出现异常！");
+				}
+			}
 		} catch (ValidateException e) {
-			code = 4;
+			code = 400000;
 			log.error("=======在生成订单时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
-		protocol.setData(details);
 		model.addAttribute("protocol", protocol);
 		return "";
 	}
@@ -276,7 +299,7 @@ public class UserController {
 			code = 100000;
 		String details = "";
 		if (StringUtil.isBlank(num))
-			code = 5;
+			code = 500000;
 
 		try {
 			if (orderService.pay(userId, num)) {
@@ -285,7 +308,7 @@ public class UserController {
 				code = 300000;
 			}
 		} catch (ValidateException e) {
-			code = 4;
+			code = 400000;
 			log.error("=======在生成订单时=========" + e.getMessage());
 		}
 		protocol.setCode(code);

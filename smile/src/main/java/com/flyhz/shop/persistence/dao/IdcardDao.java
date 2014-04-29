@@ -7,4 +7,6 @@ public interface IdcardDao extends GenericDao<IdcardModel> {
 
 	public void insertIdcard(IdcardModel idcardModel);
 
+	public IdcardModel getModelByName(IdcardModel idcardModel);
+
 }

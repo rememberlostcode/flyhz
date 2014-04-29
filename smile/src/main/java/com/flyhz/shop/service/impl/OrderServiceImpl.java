@@ -21,6 +21,7 @@ import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.RandomString;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
+import com.flyhz.shop.dto.IdentitycardDto;
 import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.OrderPayDto;
@@ -29,10 +30,12 @@ import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.dto.VoucherDto;
 import com.flyhz.shop.persistence.dao.ConsigneeDao;
+import com.flyhz.shop.persistence.dao.IdcardDao;
 import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
+import com.flyhz.shop.persistence.entity.IdcardModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.OrderService;
 
@@ -43,6 +46,8 @@ public class OrderServiceImpl implements OrderService {
 	private OrderDao		orderDao;
 	@Resource
 	private UserDao			userDao;
+	@Resource
+	private IdcardDao		idcardDao;
 	@Resource
 	private ConsigneeDao	consigneeDao;
 	@Resource
@@ -68,12 +73,20 @@ public class OrderServiceImpl implements OrderService {
 		consignee.setId(consigneeId);
 		consignee.setUserId(userId);
 		ConsigneeDetailDto consigneeDto = consigneeDao.getConsigneeByModel(consignee);
-		if (flag) {
-			if (consigneeDto == null)
-				throw new ValidateException("收件人地址为空！");
-		}
-		if (consigneeDto != null)
+		if (consigneeDto != null) {
 			consigneeDto.setUser(user);
+			IdcardModel idcard = new IdcardModel();
+			idcard.setUserId(userId);
+			idcard.setName(consigneeDto.getName());
+			IdcardModel idcardData = idcardDao.getModelByName(idcard);
+			if (idcardData != null) {
+				IdentitycardDto identitycard = new IdentitycardDto();
+				identitycard.setName(idcardData.getName());
+				identitycard.setNumber(idcardData.getIdcard());
+				identitycard.setUrl(idcardData.getPhoto());
+				consigneeDto.setIdentitycard(identitycard);
+			}
+		}
 
 		// 处理商品信息
 		List<OrderDetailDto> orderDetails = new ArrayList<OrderDetailDto>();
@@ -84,6 +97,8 @@ public class OrderServiceImpl implements OrderService {
 				continue;
 			try {
 				String[] pid_qty = pidstr.split("_");// 格式是pid_qty,如：1_2
+				if (pid_qty.length != 2)
+					continue;
 				int qty = Integer.parseInt(pid_qty[1]);
 				if (qty <= 0)
 					continue;
@@ -135,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
 			OrderModel order = new OrderModel();
 			order.setNumber(number);
 			order.setUserId(userId);
-			order.setStatus("10");// 10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；15发货中；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
+			order.setStatus("10");// 10待支付；12已支付；13缺少身份证；14已有身份证；15等待发货；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
 			detail = JSONUtil.getEntity2Json(orderDto);
 			order.setDetail(detail);
 			order.setTotal(total);
@@ -147,6 +162,7 @@ public class OrderServiceImpl implements OrderService {
 			orderDto.setStatus(order.getStatus());
 			redisRepository.buildOrderToRedis(userId, orderDto.getId(),
 					JSONUtil.getEntity2Json(orderDto));
+
 		}
 		return orderDto;
 	}
