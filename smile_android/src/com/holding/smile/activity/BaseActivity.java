@@ -375,7 +375,7 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							SUser user = MyApplication.getInstance().getCurrentUser();
 							Intent intent = new Intent();
-							if (user == null) {
+							if (user == null || MyApplication.getInstance().getSessionId() == null) {
 								intent.putExtra("class", MySmileActivity.class);
 								intent.setClass(context, LoginActivity.class);
 							} else {

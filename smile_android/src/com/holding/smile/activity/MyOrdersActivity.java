@@ -34,6 +34,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 	private String			status;
 
+	private TextView		editView;
 	private Button			allButton;
 	private Button			finshButton;
 	private Button			unfinshButton;
@@ -47,6 +48,22 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 		TextView textView = displayHeaderDescription();
 		textView.setText("订单管理");
+
+		editView = displayHeaderRight();
+		editView.setText("编辑");
+		editView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if ("编辑".equals(editView.getText().toString())) {
+					editView.setText("取消");
+					adapter.showEdit(true);
+				} else {
+					editView.setText("编辑");
+					adapter.showEdit(false);
+				}
+			}
+		});
 
 		allButton = (Button) findViewById(R.id.list_orders_button_all);
 		finshButton = (Button) findViewById(R.id.list_orders_button_finsh);
@@ -113,14 +130,19 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 													case 1: {
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
 														list = rvd.getOrderListData();
+
 														if (list == null || list.size() == 0) {
 															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
-															break;
 														}
 
-														adapter = new MyOrdersAdapter(
-																MyOrdersActivity.this, list);
+														if (adapter != null) {
+															adapter.setData(list);
+														} else {
+															adapter = new MyOrdersAdapter(
+																	MyOrdersActivity.this, list);
+														}
+
 														listView.setAdapter(adapter);
 														if (status == null) {
 															allButton.setBackgroundResource(R.color.lightgreen);

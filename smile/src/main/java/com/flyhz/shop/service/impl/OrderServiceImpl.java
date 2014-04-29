@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.RandomString;
@@ -150,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
 			OrderModel order = new OrderModel();
 			order.setNumber(number);
 			order.setUserId(userId);
-			order.setStatus("10");// 10待支付；12已支付；13缺少身份证；14已有身份证；15等待发货；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
+			order.setStatus(Constants.OrderStateCode.FOR_PAYMENT.code);// 默认待付款
 			detail = JSONUtil.getEntity2Json(orderDto);
 			order.setDetail(detail);
 			order.setTotal(total);
@@ -206,7 +207,8 @@ public class OrderServiceImpl implements OrderService {
 		if (orderModel != null && orderModel.getStatus() != null
 				&& "12".equals(orderModel.getStatus())) {// 表示已付款
 			flag = true;
-			redisRepository.reBuildOrderToRedis(userId, orderModel.getId(), "12");
+			redisRepository.reBuildOrderToRedis(userId, orderModel.getId(),
+					Constants.OrderStateCode.HAVE_BEEN_PAID.code);
 		}
 		return flag;
 	}
@@ -216,7 +218,7 @@ public class OrderServiceImpl implements OrderService {
 			throw new ValidateException(101002);
 		if (id == null)
 			throw new ValidateException(111111);
-		String status = "50";
+		String status = Constants.OrderStateCode.HAVE_BEEN_CLOSED.code;
 		OrderModel orderModel = new OrderModel();
 		orderModel.setId(id);
 		orderModel.setUserId(userId);

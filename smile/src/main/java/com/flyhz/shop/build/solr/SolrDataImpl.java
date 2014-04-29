@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import com.flyhz.framework.lang.CacheRepository;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
+import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
@@ -173,7 +174,7 @@ public class SolrDataImpl implements SolrData {
 
 	public void submitOrder(Integer userId, Integer orderId, String status, Date gmtModify) {
 		if (StringUtil.isBlank(status)) {
-			status = "0";
+			status = Constants.OrderStateCode.FOR_PAYMENT.code;
 		}
 		if (gmtModify == null) {
 			gmtModify = new Date();
@@ -254,12 +255,11 @@ public class SolrDataImpl implements SolrData {
 		if (userId != null) {
 			para = para + "user_id:" + userId;
 		}
-		// 10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
 		if (StringUtils.isNotEmpty(status)) {
 			if (status.equals("finsh")) {
-				para = para + " AND status:60";
+				para = para + " AND status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 等于已完成的
 			} else {
-				para = para + " AND -status:60";
+				para = para + " AND -status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 不等于已完成的
 			}
 		}
 

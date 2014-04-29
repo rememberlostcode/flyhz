@@ -101,6 +101,8 @@ public class LoginService {
 						MyApplication.getInstance().getSqliteService().closeDB();
 						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
 					}
+				} else {
+					MyApplication.getInstance().setSessionId(null);
 				}
 			}
 		}

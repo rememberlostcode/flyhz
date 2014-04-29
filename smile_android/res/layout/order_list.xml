@@ -43,6 +43,16 @@
             android:gravity="center_vertical"
             android:textColor="@color/number_color"
             android:textSize="15sp" />
+        <Button
+            android:id="@+id/order_list_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/red"
+            android:text="关闭"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginRight="1dp" />
     </LinearLayout>
 
     <com.holding.smile.myview.MyListView
@@ -116,5 +126,12 @@
             android:background="@color/zhifu_color"
             android:textSize="18sp" />
     </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
+        android:layout_marginLeft="5.0dip"
+        android:layout_marginRight="5.0dip"
+        android:background="@android:color/darker_gray" />
 
 </LinearLayout>

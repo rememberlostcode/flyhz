@@ -29,12 +29,17 @@ public class OrderDetailAdapter extends BaseAdapter {
 	private OrderDto				orderDto;
 	private List<OrderDetailDto>	orderDetails;
 	private ImageLoader				mImageLoader	= MyApplication.getImageLoader();
-	private boolean					mBusy			= false;
+	private boolean					isNeedClick		= true;
 	private Integer					sWidth			= MyApplication.getInstance().getScreenWidth();
 	private ViewGroup				activityParent;
 
-	public void setFlagBusy(boolean busy) {
-		this.mBusy = busy;
+	/**
+	 * 不需要点击跳到订单详情页面，已经在订单详情页面调用
+	 * 
+	 * @param isNeedClick
+	 */
+	public void notNeedClick() {
+		this.isNeedClick = false;
 	}
 
 	public void setActivityParent(ViewGroup activityParent) {
@@ -43,13 +48,9 @@ public class OrderDetailAdapter extends BaseAdapter {
 
 	// 自己定义的构造函数
 	public OrderDetailAdapter(Context context, OrderDto orderDto) {
+		this.orderDto = orderDto;
 		this.orderDetails = orderDto.getDetails();
 		this.context = context;
-	}
-
-	public void setData(List<OrderDetailDto> contacts) {
-		this.orderDetails = contacts;
-		notifyDataSetChanged();
 	}
 
 	@Override
@@ -95,15 +96,17 @@ public class OrderDetailAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		convertView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(context, OrderDetailActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra("order", orderDto);
-				((Activity) parent.getContext()).startActivity(intent);
-			}
-		});
+		if (isNeedClick) {
+			convertView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(context, OrderDetailActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					intent.putExtra("order", orderDto);
+					((Activity) parent.getContext()).startActivity(intent);
+				}
+			});
+		}
 
 		holder.p.setImageResource(R.drawable.empty_photo);
 		final OrderDetailDto orderDetail = (OrderDetailDto) getItem(position);
@@ -124,11 +127,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
-				if (!mBusy) {
-					mImageLoader.DisplayImage(url, holder.p, false);
-				} else {
-					mImageLoader.DisplayImage(url, holder.p, false);
-				}
+				mImageLoader.DisplayImage(url, holder.p, false);
 			}
 
 			holder.p.setOnClickListener(new OnClickListener() {
@@ -141,8 +140,6 @@ public class OrderDetailAdapter extends BaseAdapter {
 							intent.putExtra("gid", jGoods.getId());
 							intent.putExtra("bs", jGoods.getBrandstyle());
 							((Activity) activityParent.getContext()).startActivity(intent);
-						} else {
-							notifyDataSetChanged();
 						}
 					}
 				}
