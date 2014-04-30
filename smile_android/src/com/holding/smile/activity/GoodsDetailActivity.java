@@ -245,16 +245,10 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		LayoutInflater inflater = getLayoutInflater();
 		// 添加页卡数据
 		if (picList != null && !picList.isEmpty()) {
-			float density = MyApplication.getInstance().getDensity();
-			int cWidth = (int) (MyApplication.getInstance().getScreenWidth() * density);
 			int size = picList.size();
 			for (int i = 0; i < size; i++) {
 				View view = inflater.inflate(R.layout.good_pic_item, null);
-				view.setLayoutParams(new LayoutParams(cWidth, cWidth));
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
-				imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-				imageView.setMaxHeight(cWidth);
-				imageView.setMinimumHeight(cWidth);
 				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
 				viewList.add(view);
 			}
