@@ -252,7 +252,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				View view = inflater.inflate(R.layout.good_pic_item, null);
 				view.setLayoutParams(new LayoutParams(cWidth, cWidth));
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
-				imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+				imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 				imageView.setMaxHeight(cWidth);
 				imageView.setMinimumHeight(cWidth);
 				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
