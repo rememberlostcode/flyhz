@@ -33,7 +33,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private List<OrderDto>		orderList;
 	private MyListView			listView;
 	private OrderDetailAdapter	orderAdapter;
-	private boolean				showDelete	= false;
+	private boolean				showDelete	= true;
 
 	// 自己定义的构造函数
 	public MyOrdersAdapter(Context context, List<OrderDto> orderList) {

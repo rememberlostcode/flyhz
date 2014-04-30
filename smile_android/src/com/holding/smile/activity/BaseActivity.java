@@ -362,8 +362,14 @@ public class BaseActivity extends Activity {
 					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							Intent intent = new Intent(context, ShoppingCartActivity.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							SUser user = MyApplication.getInstance().getCurrentUser();
+							Intent intent = new Intent();
+							if (user == null || MyApplication.getInstance().getSessionId() == null) {
+								intent.putExtra("class", ShoppingCartActivity.class);
+								intent.setClass(context, LoginActivity.class);
+							} else {
+								intent.setClass(context, ShoppingCartActivity.class);
+							}
 							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
