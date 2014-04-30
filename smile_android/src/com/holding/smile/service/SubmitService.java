@@ -162,7 +162,7 @@ public class SubmitService {
 			params.add(new BasicNameValuePair("name", String.valueOf(idcard.getName())));
 		}
 		if (idcard.getNumber() != null) {
-			params.add(new BasicNameValuePair("idcard", String.valueOf(idcard.getNumber())));
+			params.add(new BasicNameValuePair("number", String.valueOf(idcard.getNumber())));
 		}
 
 		String url = "";

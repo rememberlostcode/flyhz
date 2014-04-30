@@ -123,11 +123,11 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 					MyApplication.getInstance().getSqliteService()
 									.setCurrentUserEmpty(user.getId());
 				}
+				finish();
 				Intent intent = new Intent();
 				intent.setClass(context, LoginActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				startActivity(intent);
-				finish();
 				break;
 			}
 		}

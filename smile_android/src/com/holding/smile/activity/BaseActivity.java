@@ -37,10 +37,6 @@ public class BaseActivity extends Activity {
 	public static final int	SEARCH_CODE			= 10;
 	public static final int	UPLOAD_IMAGE_CODE	= 11;
 	/**
-	 * 编辑收货人地址操作代码
-	 */
-	public static final int	ADDRESS_EDIT_CODE	= 12;
-	/**
 	 * 编辑邮箱操作代码
 	 */
 	public static final int	EMAIL_CODE			= 13;

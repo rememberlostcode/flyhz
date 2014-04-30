@@ -25,6 +25,7 @@ import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JColor;
 import com.holding.smile.entity.JGoods;
+import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyLinearLayout;
 import com.holding.smile.myview.MyViewPager;
 import com.holding.smile.tools.Constants;
@@ -217,19 +218,37 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				break;
 			}
 			case R.id.nowbuy: {
-				Intent intent = new Intent(this, OrderInformActivity.class);
+				SUser user = MyApplication.getInstance().getCurrentUser();
+				Intent intent = new Intent();
+				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					intent.putExtra("class", OrderInformActivity.class);
+					intent.setClass(context, LoginActivity.class);
+				} else {
+					intent.setClass(context, OrderInformActivity.class);
+				}
 				intent.putExtra("gid", gid);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				startActivity(intent);
+				overridePendingTransition(0, 0);
 				break;
 			}
 			case R.id.addcart: {
-				RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
-													.addCart(gid, (short) 1);
-				if (rtnValue != null) {
-					Toast.makeText(context, "已加入购物车", Toast.LENGTH_SHORT).show();
+				SUser user = MyApplication.getInstance().getCurrentUser();
+				Intent intent = new Intent();
+				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					intent.setClass(context, LoginActivity.class);
+					intent.putExtra("isClose", true);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					startActivity(intent);
+					overridePendingTransition(0, 0);
 				} else {
-					Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+					RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
+														.addCart(gid, (short) 1);
+					if (rtnValue != null) {
+						Toast.makeText(context, "已加入购物车", Toast.LENGTH_SHORT).show();
+					} else {
+						Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+					}
 				}
 				break;
 			}

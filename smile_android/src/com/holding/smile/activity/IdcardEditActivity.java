@@ -1,10 +1,13 @@
 
 package com.holding.smile.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -92,7 +95,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				break;
 			}
 			case R.id.idcard_add_save: {
-
+				progressBar.setVisibility(View.VISIBLE);
 				if ("".equals(idcardName.getText().toString())) {
 					Toast.makeText(context, "姓名不能为空", Toast.LENGTH_SHORT).show();
 					break;
@@ -107,11 +110,14 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 				RtnValueDto rvd = null;
 				try {
+					progressBar.setVisibility(View.VISIBLE);
 					rvd = MyApplication.getInstance().getSubmitService()
 										.idcardSave(idcard, picturePath);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				Message msg = mUIHandler.obtainMessage(1);
+				msg.sendToTarget();
 				if (rvd != null && 200000 == rvd.getCode()) {
 					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
@@ -127,9 +133,16 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			case R.id.idcard_delete: {
 				RtnValueDto rvd = null;
 				if (idcard != null && idcard.getId() != null) {
-					rvd = MyApplication.getInstance().getSubmitService()
-										.idcardRemove(idcard.getId());
+					try {
+						progressBar.setVisibility(View.VISIBLE);
+						rvd = MyApplication.getInstance().getSubmitService()
+											.idcardRemove(idcard.getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
+				Message msg = mUIHandler.obtainMessage(1);
+				msg.sendToTarget();
 				if (rvd != null && 200000 == rvd.getCode()) {
 					Toast.makeText(context, "删除成功！", Toast.LENGTH_SHORT).show();
 					Intent intent = new Intent();
@@ -173,5 +186,19 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+
+	@SuppressLint("HandlerLeak")
+	private final Handler	mUIHandler	= new Handler() {
+
+											@Override
+											public void handleMessage(Message msg) {
+												progressBar.setVisibility(View.GONE);
+												switch (msg.what) {
+													case 1: {
+														break;
+													}
+												}
+											}
+										};
 
 }
