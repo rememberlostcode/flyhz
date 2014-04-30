@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.entity.SUser;
 
 /**
  * 更多
@@ -55,8 +56,14 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.mysmile_myorders_layout: {
+				SUser user = MyApplication.getInstance().getCurrentUser();
 				Intent intent = new Intent();
-				intent.setClass(context, MyOrdersActivity.class);
+				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					intent.putExtra("class", MyOrdersActivity.class);
+					intent.setClass(context, LoginActivity.class);
+				} else {
+					intent.setClass(context, MyOrdersActivity.class);
+				}
 				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				startActivity(intent);
 				overridePendingTransition(0, 0);
@@ -67,8 +74,14 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.mysmile_setting_layout: {
+				SUser user = MyApplication.getInstance().getCurrentUser();
 				Intent intent = new Intent();
-				intent.setClass(context, PersonalSettingsActivity.class);
+				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					intent.putExtra("class", PersonalSettingsActivity.class);
+					intent.setClass(context, LoginActivity.class);
+				} else {
+					intent.setClass(context, PersonalSettingsActivity.class);
+				}
 				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				startActivity(intent);
 				overridePendingTransition(0, 0);

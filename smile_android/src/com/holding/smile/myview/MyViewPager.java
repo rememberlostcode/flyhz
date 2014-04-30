@@ -10,8 +10,7 @@ import com.holding.smile.activity.MyApplication;
 
 public class MyViewPager extends ViewPager {
 
-	float		density	= MyApplication.getInstance().getDensity();
-	private int	cWidth	= (int) (MyApplication.getInstance().getScreenWidth() * density);
+	private int	cWidth	= (int) MyApplication.getInstance().getScreenWidth();
 
 	public MyViewPager(Context context) {
 		super(context);
