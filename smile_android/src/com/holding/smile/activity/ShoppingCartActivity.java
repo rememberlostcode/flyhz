@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -337,18 +339,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														if (msg.obj != null) {
 															Integer itemId = (Integer) msg.obj;
 															if (itemId != null) {
-																if (cartItemList != null
-																		&& !cartItemList.isEmpty()) {
-																	for (CartItem item : cartItemList) {
-																		if (item.getId().equals(
-																				itemId)) {
-																			cartItemList.remove(item);
-																			break;
-																		}
-																	}
-																	// 计算总金额
-																	calculateTotal();
-																}
+																alert(itemId);
 															}
 														} else {
 															Toast.makeText(context,
@@ -380,4 +371,44 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 												}
 											}
 										};
+
+	private void alert(final Integer itemId) {
+		new AlertDialog.Builder(this).setTitle("提示")
+										.setMessage("您确定要删除此商品吗？")
+										.setPositiveButton("确定",
+												new DialogInterface.OnClickListener() {
+													public void onClick(DialogInterface dialog,
+															int which) {
+
+														RtnValueDto rtnValue = MyApplication.getInstance()
+																							.getSubmitService()
+																							.removeCart(
+																									itemId);
+														if (rtnValue != null
+																&& rtnValue.getCode()
+																			.equals(200000)) {
+															cartAdapter.getSelectIds().remove(
+																	itemId);
+															if (cartItemList != null
+																	&& !cartItemList.isEmpty()) {
+																for (CartItem item : cartItemList) {
+																	if (item.getId().equals(itemId)) {
+																		cartItemList.remove(item);
+																		break;
+																	}
+																}
+																// 计算总金额
+																calculateTotal();
+															}
+															Toast.makeText(context, "删除成功！",
+																	Toast.LENGTH_SHORT).show();
+														} else {
+															Toast.makeText(context,
+																	Constants.MESSAGE_NET,
+																	Toast.LENGTH_SHORT).show();
+														}
+
+													}
+												}).setNegativeButton("取消", null).show();
+	}
 }

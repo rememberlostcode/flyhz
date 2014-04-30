@@ -2,6 +2,7 @@
 package com.holding.smile.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -23,12 +24,17 @@ import com.holding.smile.R;
 public class WebViewActivity extends BaseActivity implements OnClickListener {
 
 	private WebView	webView;
+	private String	number;	// 订单号
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.web_view);
+
+		Intent intent = this.getIntent();
+		number = intent.getExtras().getString("number");
+
 		// 获取webView控件
 		webView = (WebView) findViewById(R.id.webView);
 		WebSettings webSettings = webView.getSettings();
