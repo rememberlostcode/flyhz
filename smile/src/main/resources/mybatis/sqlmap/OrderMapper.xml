@@ -16,7 +16,13 @@
 	<select id="getOrderPay" parameterType="OrderPayDto" resultType="OrderPayDto">
 	    select id, number,gmt_create gmtCreate,gmt_modify gmtModify,status,total,user_id userId
 	    from `order`
-	    where id = #{id} and user_id = #{userId}
+	    where user_id = #{userId} 
+	    <if test="id!=null">
+	       and id = #{id}
+	    </if>
+	    <if test="number!=null and number !='' ">
+	       and number = #{number}
+	    </if>
 	</select>
 	<select id="getModel" parameterType="OrderModel" resultType="OrderModel">
 	    select id, number,gmt_create gmtCreate,gmt_modify gmtModify,detail,status,total,user_id userId
