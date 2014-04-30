@@ -32,6 +32,7 @@
     <string name="order_updateCartQty_url">/smile/user/updateCartQty.json</string>
     <string name="order_confirm_url">/smile/user/confirmOrder.json</string>
     <string name="order_close_url">/smile/order/close.json</string>
+    <string name="order_status_url">/smile/order/status.json</string>
     
     <string name="cart_list_url">/smile/cart/list.json</string>
     <string name="cart_add_url">/smile/cart/add.json</string>

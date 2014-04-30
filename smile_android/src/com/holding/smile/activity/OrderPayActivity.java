@@ -17,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.dto.OrderDto;
+import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.tools.ClickUtil;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
 
@@ -38,6 +41,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	private TextView			amountText;
 	private TextView			timeText;
 	private String				number;					// 订单号
+	private BigDecimal			amount;					// 总额
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 			initPDialog();// 初始化进度条
 			number = intent.getExtras().getString("number");// 订单号
 			String time = intent.getExtras().getString("time");// 订单生成时间
-			BigDecimal amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
+			amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
 			if (StrUtils.isNotEmpty(number) && StrUtils.isNotEmpty(time) && amount != null) {
 				setContentLayout(R.layout.order_pay_view);
 				payBtn = (Button) findViewById(R.id.taobao_pay_btn);
@@ -63,7 +67,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 				amountText = (TextView) findViewById(R.id.amount);
 				numberText.setText(number);
 				timeText.setText(time);
-				amountText.setText(amount + "");
+				amountText.setText("￥" + amount + "元");
 				mUIHandler.sendEmptyMessage(WHAT_DID_LOAD_DATA);
 			} else {
 				Toast.makeText(context, Constants.MESSAGE_EXCEPTION, Toast.LENGTH_SHORT).show();
@@ -110,8 +114,9 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 			case R.id.taobao_pay_btn: {
 				Intent intent = new Intent(this, WebViewActivity.class);
 				intent.putExtra("number", number);
+				intent.putExtra("amount", amount);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent);
+				startActivityForResult(intent, ORDER_CODE);
 				// finish();
 				break;
 			}
@@ -121,8 +126,19 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
-
+		if (requestCode == ORDER_CODE) {
+			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
+												.getOrderStatus(number);
+			if (rtnValue != null) {
+				OrderDto order = rtnValue.getOrderData();
+				if (order != null) {
+					if (!"10".equals(order.getStatus())) {
+						String text = ClickUtil.getTextByStatus(order.getStatus());
+						payBtn.setText(text);
+						payBtn.setFocusable(false);
+					}
+				}
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

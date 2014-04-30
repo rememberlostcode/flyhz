@@ -234,7 +234,8 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderPayDto getOrderPay(OrderPayDto orderPayDto) {
-		if (orderPayDto == null || orderPayDto.getUserId() == null || orderPayDto.getId() == null)
+		if (orderPayDto == null || orderPayDto.getUserId() == null
+				|| (orderPayDto.getId() == null && StringUtils.isBlank(orderPayDto.getNumber())))
 			return null;
 		return orderDao.getOrderPay(orderPayDto);
 	}

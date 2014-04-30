@@ -23,6 +23,7 @@ import com.holding.smile.protocol.PCategory;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexJGoods;
+import com.holding.smile.protocol.POrder;
 import com.holding.smile.protocol.POrderList;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
@@ -63,6 +64,7 @@ public class DataService {
 	private String			idcard_list;
 	private String			order_list_url;
 	private String			cart_list_url;
+	private String			order_status_url;
 
 	public DataService(Context context) {
 		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
@@ -89,6 +91,7 @@ public class DataService {
 		idcard_list = context.getString(R.string.idcard_list);
 		order_list_url = context.getString(R.string.order_list_url);
 		cart_list_url = context.getString(R.string.cart_list_url);
+		order_status_url = context.getString(R.string.order_status_url);
 	}
 
 	private String setJson(String fileName) {
@@ -634,6 +637,42 @@ public class DataService {
 				if (orders != null) {
 					rvd.setOrderListData(orders.getData());
 					rvd.setCode(orders.getCode());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 获取订单的状态信息
+	 * 
+	 * @param number
+	 * @return
+	 */
+	public RtnValueDto getOrderStatus(String number) {
+		RtnValueDto rvd = new RtnValueDto();
+
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (StrUtils.isNotEmpty(number)) {
+			param.put("num", number);
+		}
+
+		String url = prefix_url + order_status_url;
+		String rStr = URLUtil.getStringByGet(url, param);
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				POrder order = JSONUtil.getJson2Entity(rStr, POrder.class);
+				if (order != null) {
+					rvd.setOrderData(order.getData());
+					rvd.setCode(order.getCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
