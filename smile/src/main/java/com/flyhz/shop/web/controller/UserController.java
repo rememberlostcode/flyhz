@@ -65,7 +65,6 @@ public class UserController {
 	public String saveRegister(Model model, @ModelAttribute UserDetailDto userDetail) {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
-		String msg = "";
 		UserDto user = null;
 		if (userDetail != null) {
 			if (StringUtils.isNotBlank(userDetail.getUsername())
@@ -74,8 +73,7 @@ public class UserController {
 					user = userService.register(userDetail);
 				} catch (ValidateException e) {
 					code = 400000;
-					msg = e.getMessage();
-					log.error("=======在注册时=========" + e.getMessage());
+					log.error("=======在注册时报=========" + e.getMessage());
 				}
 			} else {
 				code = 300000;// 用户名或者密码错误
@@ -86,8 +84,6 @@ public class UserController {
 		protocol.setCode(code);
 		if (user != null) {
 			protocol.setData(user);
-		} else {
-			protocol.setData(msg);
 		}
 		model.addAttribute("protocol", protocol);
 		return "";
@@ -162,7 +158,7 @@ public class UserController {
 	}
 
 	/**
-	 * 针对直接购买：修改订单商品数量,这时还没有生成订单
+	 * 针对从购物车结算：不能修改订单商品数量,这时还没有生成订单
 	 * 
 	 * @param model
 	 * @param orderDto
@@ -286,7 +282,7 @@ public class UserController {
 	}
 
 	/**
-	 * 支付成功后返回结果
+	 * 支付成功后返回结果状态
 	 * 
 	 * @param model
 	 * @param orderDto
@@ -298,22 +294,19 @@ public class UserController {
 		Integer code = 200000;
 		if (userId == null)
 			code = 100000;
-		String details = "";
 		if (StringUtil.isBlank(num))
 			code = 500000;
 
 		try {
-			if (orderService.pay(userId, num)) {
-				details = "支付成功！";
-			} else {
+			// true代表已付款，false代表未付款
+			if (!orderService.pay(userId, num)) {
 				code = 300000;
 			}
 		} catch (ValidateException e) {
 			code = 400000;
-			log.error("=======在生成订单时=========" + e.getMessage());
+			log.error("=======在付款时报=========" + e.getMessage());
 		}
 		protocol.setCode(code);
-		protocol.setData(details);
 		model.addAttribute("protocol", protocol);
 		return "";
 	}
