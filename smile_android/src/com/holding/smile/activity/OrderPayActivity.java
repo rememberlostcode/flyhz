@@ -37,6 +37,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	private ProgressDialog		pDialog;
 	private int					mProgress;
 	private Button				payBtn;
+	private TextView			payMsgText;
 	private TextView			numberText;
 	private TextView			amountText;
 	private TextView			timeText;
@@ -62,6 +63,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 				setContentLayout(R.layout.order_pay_view);
 				payBtn = (Button) findViewById(R.id.taobao_pay_btn);
 				payBtn.setOnClickListener(this);
+				payMsgText = (TextView) findViewById(R.id.pay_message);
 				numberText = (TextView) findViewById(R.id.number);
 				timeText = (TextView) findViewById(R.id.time);
 				amountText = (TextView) findViewById(R.id.amount);
@@ -115,7 +117,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 				Intent intent = new Intent(this, WebViewActivity.class);
 				intent.putExtra("number", number);
 				intent.putExtra("amount", amount);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, ORDER_CODE);
 				// finish();
 				break;
@@ -126,16 +128,17 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == ORDER_CODE) {
+		if (requestCode == ORDER_CODE && RESULT_CANCELED == resultCode) {
 			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
 												.getOrderStatus(number);
 			if (rtnValue != null) {
 				OrderDto order = rtnValue.getOrderData();
 				if (order != null) {
 					if (!"10".equals(order.getStatus())) {
+						payBtn.setVisibility(View.GONE);
 						String text = ClickUtil.getTextByStatus(order.getStatus());
-						payBtn.setText(text);
-						payBtn.setFocusable(false);
+						payMsgText.setText(text);
+						payMsgText.setVisibility(View.VISIBLE);
 					}
 				}
 			}

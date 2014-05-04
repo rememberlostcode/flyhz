@@ -315,7 +315,7 @@ public class SubmitService {
 		if (qty != 0) {
 			param.put("qty", String.valueOf(qty));
 		}
-		String rStr = URLUtil.getStringByGet(this.prefix_url + this.order_updateQty_url, param);
+		String rStr = URLUtil.getStringByPost(this.prefix_url + this.order_updateQty_url, param);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
@@ -400,7 +400,7 @@ public class SubmitService {
 		if (qty != 0) {
 			param.put("qty", String.valueOf(qty));
 		}
-		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_add_url, param);
+		String rvdString = URLUtil.getStringByPost(this.prefix_url + this.cart_add_url, param);
 		if (rvdString != null) {
 			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
 			if (pc != null && pc.getCode() == 200000) {
@@ -425,7 +425,7 @@ public class SubmitService {
 		if (itemId != null) {
 			param.put("id", String.valueOf(itemId));
 		}
-		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_remove_url, param);
+		String rvdString = URLUtil.getStringByPost(this.prefix_url + this.cart_remove_url, param);
 		if (rvdString != null) {
 			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
 			if (pc != null && pc.getCode() == 200000) {
@@ -453,7 +453,7 @@ public class SubmitService {
 		if (qty != 0) {
 			param.put("qty", String.valueOf(qty));
 		}
-		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_setQty_url, param);
+		String rvdString = URLUtil.getStringByPost(this.prefix_url + this.cart_setQty_url, param);
 		if (rvdString != null) {
 			PCartItemDetail pc = JSONUtil.getJson2Entity(rvdString, PCartItemDetail.class);
 			if (pc != null && pc.getCode() == 200000) {
@@ -471,7 +471,7 @@ public class SubmitService {
 		if (orderId != null) {
 			param.put("id", String.valueOf(orderId));
 		}
-		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.order_close_url, param);
+		String rvdString = URLUtil.getStringByPost(this.prefix_url + this.order_close_url, param);
 		if (rvdString != null) {
 			rvd = JSONUtil.getJson2Entity(rvdString, RtnValueDto.class);
 			rvd.setCode(200000);

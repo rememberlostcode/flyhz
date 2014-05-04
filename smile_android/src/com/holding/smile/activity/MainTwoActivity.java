@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,20 +52,27 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentLayout(R.layout.activity_main);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 		TextView cateBtn = displayHeaderRight();
 		cateBtn.setText(R.string.category);
 		cateBtn.setOnClickListener(this);
 
-		Intent intent = this.getIntent();
-		bid = (Integer) intent.getExtras().getSerializable("bid");
-		cid = (Integer) intent.getExtras().getSerializable("cid");
-		String bn = intent.getExtras().getString("bn");
+		try {
+			Intent intent = this.getIntent();
+			if (intent.getExtras().getSerializable("bid") != null)
+				bid = (Integer) intent.getExtras().getSerializable("bid");
 
-		TextView headerDescription = displayHeaderDescription();
-		headerDescription.setText(bn);
+			if (intent.getExtras().getSerializable("cid") != null)
+				cid = (Integer) intent.getExtras().getSerializable("cid");
+
+			String bn = intent.getExtras().getString("bn");
+			TextView headerDescription = displayHeaderDescription();
+			if (bn != null)
+				headerDescription.setText(bn);
+		} catch (Exception e) {
+			Log.e("查看全部时报错：", e.getMessage());
+		}
 
 		startTask();
 
@@ -74,6 +82,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	 * 初始化View
 	 */
 	private void initView() {
+		setContentLayout(R.layout.activity_main);
 		displayFooterMain(0);
 		setSortTypeLayout();// 设置排序标签
 

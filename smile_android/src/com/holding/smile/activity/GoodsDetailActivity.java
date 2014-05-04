@@ -128,6 +128,9 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				jGoods = details.get(0);
 			}
 
+			if (jGoods == null)
+				return;
+
 			if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
 				b.setText(jGoods.getBe().trim());
 			}
