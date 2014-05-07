@@ -49,7 +49,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 			number = intent.getExtras().getString("number");
 			amount = (BigDecimal) intent.getExtras().getSerializable("amount");
 		} catch (Exception e) {
-			Log.e("去淘宝支付时出错：", e.getMessage());
+			Log.e(MyApplication.LOG_TAG, "去淘宝支付时出错：" + e.getMessage());
 			Toast.makeText(this, "订单号或金额不能为空！", Toast.LENGTH_SHORT).show();
 			setResult(RESULT_CANCELED, null);
 			finish();

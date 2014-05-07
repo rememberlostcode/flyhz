@@ -206,7 +206,7 @@ public class MyLinearLayout extends LinearLayout {
 			if (pos != null) {
 				child.layout(pos.left, pos.top, pos.right, pos.bottom);
 			} else {
-				Log.i("MyLayout", "error");
+				Log.i(MyApplication.LOG_TAG, "MyLayout error");
 			}
 		}
 	}
