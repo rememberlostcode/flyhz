@@ -20,12 +20,12 @@ public class WebClientUtil {
 		final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_24);
 		try {
 			// 设置webClient的相关参数
-			webClient.getOptions().setCssEnabled(true);
+			webClient.getOptions().setCssEnabled(false);
 			webClient.getOptions().setJavaScriptEnabled(true);
 			// 模拟浏览器打开一个目标网址
 			final HtmlPage page = webClient.getPage(url);
 			if (page != null) {
-				html = page.asText();
+				html = page.asXml();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
