@@ -1,0 +1,8 @@
+<script src="/static/js/jquery-1.8.3.js" type="text/javascript"></script>
+<script>
+	$(function(){
+		alert("1238666");
+	});
+</script>
+123456
+$!hello

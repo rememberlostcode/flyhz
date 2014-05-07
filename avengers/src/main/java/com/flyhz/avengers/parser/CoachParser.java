@@ -13,8 +13,8 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.data.system.persistence.entity.ProductModel;
-import com.flyhz.avengers.util.HtmlParserUtils;
+import com.flyhz.avengers.dto.ProductModel;
+import com.flyhz.avengers.util.WebClientUtil;
 
 /**
  * 
@@ -30,7 +30,7 @@ public class CoachParser {
 
 	public List<String> getAllProductUrls(String url) {
 		List<String> urls = new ArrayList<String>();
-		String html = HtmlParserUtils.getHtmlByUrl(url);
+		String html = WebClientUtil.getContent(url);
 
 		if (StringUtils.isNotBlank(html)) {
 			Document doc = Jsoup.parse(html);
@@ -53,7 +53,7 @@ public class CoachParser {
 	 * @return
 	 */
 	public ProductModel parserHtmlToProduct(String url) {
-		String html = HtmlParserUtils.getHtmlByUrl(url);
+		String html = WebClientUtil.getContent(url);
 		ProductModel product = null;
 		if (StringUtils.isNotBlank(html)) {
 			Document doc = Jsoup.parse(html);
