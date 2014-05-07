@@ -40,15 +40,6 @@ public class DataService {
 	 */
 	public static boolean	getDataFromNet	= true;
 
-	private String			jGoodsTwoInitJson;
-	private String			jGoodsTwoMoreJson;
-
-	private String			jGoodsSearchInitJson;
-	private String			jGoodsSearchRefreshJson;
-	private String			jGoodsSearchMoreJson;
-
-	private String			brandJGoodsInitJson;
-
 	private String			prefix_url;
 	private String			jGoods_index_url;
 	private String			jGoods_recommend_url;
@@ -67,15 +58,6 @@ public class DataService {
 	private String			order_status_url;
 
 	public DataService(Context context) {
-		jGoodsTwoInitJson = setJson("jGoodsTwoInitJson.json");
-		jGoodsTwoMoreJson = setJson("jGoodsTwoMoreJson.json");
-
-		jGoodsSearchInitJson = setJson("jGoodsSearchInitJson.json");
-		jGoodsSearchRefreshJson = setJson("jGoodsSearchRefreshJson.json");
-		jGoodsSearchMoreJson = setJson("jGoodsSearchMoreJson.json");
-
-		brandJGoodsInitJson = setJson("brandJGoodsInitJson.json");
-
 		prefix_url = context.getString(R.string.prefix_url);
 		jGoods_index_url = context.getString(R.string.jGoods_index_url);
 		jGoods_recommend_url = context.getString(R.string.jGoods_recommend_url);
@@ -119,12 +101,7 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIndexListInit(Integer cid) {
-		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			obj = getIndexJGoods(cid);
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(brandJGoodsInitJson);
-		}
+		RtnValueDto obj = getIndexJGoods(cid);
 		return obj;
 	}
 
@@ -134,12 +111,7 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getRecommendBrandsListInit(Integer cid) {
-		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			obj = getRecommendBrands(cid);
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(brandJGoodsInitJson);
-		}
+		RtnValueDto obj = getRecommendBrands(cid);
 		return obj;
 	}
 
@@ -149,12 +121,7 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getBrandJGoodsListInit(Integer bid, Integer cid, String seqorderType) {
-		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			obj = getBrandGoods(bid, cid, seqorderType, null);
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(jGoodsTwoInitJson);
-		}
+		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, null);
 		return obj;
 	}
 
@@ -169,20 +136,11 @@ public class DataService {
 	 */
 	public List<SortType> getSortTypeList() {
 		List<SortType> results = new ArrayList<SortType>();
-		if (getDataFromNet) {
-			String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sorttype_url, null);
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sorttype_url, null);
+		if (StrUtils.isNotEmpty(rStr)) {
 			PSortTypes pst = JSONUtil.getJson2Entity(rStr, PSortTypes.class);
-			results = pst.getData();
-		} else {
-			SortType sort = new SortType();
-			sort.setN("销售量");
-			sort.setV("sales");
-			results.add(sort);
-
-			sort = new SortType();
-			sort.setN("折扣");
-			sort.setV("discount");
-			results.add(sort);
+			if (pst != null)
+				results = pst.getData();
 		}
 		return results;
 	}
@@ -198,12 +156,7 @@ public class DataService {
 	 */
 	public RtnValueDto getBrandJGoodsListMore(Integer bid, Integer cid, String seqorderType,
 			Integer seqorderValue) {
-		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			obj = getBrandGoods(bid, cid, seqorderType, seqorderValue);
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(jGoodsTwoMoreJson);
-		}
+		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, seqorderValue);
 		return obj;
 	}
 
@@ -219,12 +172,8 @@ public class DataService {
 	public RtnValueDto getJGoodsSearchListInit(String keywords, String seqorderType,
 			Integer seqorderValue) {
 		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			if (keywords != null && !"".equals(keywords.trim())) {
-				obj = searchGoods(keywords, null, seqorderType, seqorderValue);
-			}
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(jGoodsSearchInitJson);
+		if (keywords != null && !"".equals(keywords.trim())) {
+			obj = searchGoods(keywords, null, seqorderType, seqorderValue);
 		}
 		return obj;
 	}
@@ -243,16 +192,12 @@ public class DataService {
 	public RtnValueDto getJGoodsSearchListRefresh(String keywords, JGoods jGoodsFirst,
 			String seqorderType, Integer seqorderValue) {
 		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			if (keywords != null && !"".equals(keywords.trim())) {
-				if (jGoodsFirst != null && jGoodsFirst.getSt() != null) {
-					obj = searchGoods(keywords, jGoodsFirst.getSt(), seqorderType, seqorderValue);
-				} else {
-					obj = searchGoods(keywords, null, seqorderType, seqorderValue);
-				}
+		if (keywords != null && !"".equals(keywords.trim())) {
+			if (jGoodsFirst != null && jGoodsFirst.getSt() != null) {
+				obj = searchGoods(keywords, jGoodsFirst.getSt(), seqorderType, seqorderValue);
+			} else {
+				obj = searchGoods(keywords, null, seqorderType, seqorderValue);
 			}
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(jGoodsSearchRefreshJson);
 		}
 		return obj;
 	}
@@ -271,16 +216,12 @@ public class DataService {
 	public RtnValueDto getJGoodsSearchListMore(String keywords, JGoods jGoodsLast,
 			String seqorderType, Integer seqorderValue) {
 		RtnValueDto obj = null;
-		if (getDataFromNet) {
-			if (keywords != null && !"".equals(keywords.trim())) {
-				if (jGoodsLast != null && jGoodsLast.getSt() != null) {
-					obj = searchGoods(keywords, jGoodsLast.getSt(), seqorderType, seqorderValue);
-				} else {
-					obj = searchGoods(keywords, null, seqorderType, seqorderValue);
-				}
+		if (keywords != null && !"".equals(keywords.trim())) {
+			if (jGoodsLast != null && jGoodsLast.getSt() != null) {
+				obj = searchGoods(keywords, jGoodsLast.getSt(), seqorderType, seqorderValue);
+			} else {
+				obj = searchGoods(keywords, null, seqorderType, seqorderValue);
 			}
-		} else {
-			obj = JSONUtil.changeJson2RtnValueDto(jGoodsSearchMoreJson);
 		}
 		return obj;
 	}
