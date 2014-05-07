@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.SalesvolumeDao">
+	<select id="getLastStartDate" resultType="Date">
+		select max(s.time_start) timeLast from  salesvolume s 
+    </select>
+	<select id="getLastEndDate" resultType="Date">
+		select max(s.time_end) timeLast from  salesvolume s 
+    </select>
+	<insert id="batchInsert" parameterType="java.util.List">
+		insert into salesvolume(gmt_create,gmt_modify,product_id,totalnumber,time_start,time_end)
+		values 
+		<foreach collection="list" index="index" item="item" separator=",">
+	        (#{item.gmtCreate},#{item.gmtModify},#{item.productId},#{item.totalnumber},#{item.timeStart},#{item.timeEnd})
+	    </foreach>
+	</insert>
+</mapper>
