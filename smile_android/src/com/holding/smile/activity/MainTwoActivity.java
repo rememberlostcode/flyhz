@@ -71,7 +71,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			if (bn != null)
 				headerDescription.setText(bn);
 		} catch (Exception e) {
-			Log.e("查看全部时报错：", e.getMessage());
+			Log.e(MyApplication.LOG_TAG, "查看全部时报错：" + e.getMessage());
 		}
 
 		startTask();

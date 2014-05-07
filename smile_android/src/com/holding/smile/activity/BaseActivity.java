@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -210,40 +209,40 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.e("====", "start onStart~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onStart~~~");
 	}
 
 	// 当按HOME键时，然后再次启动应用时，我们要恢复先前状态
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		Log.e("====", "start onRestart~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onRestart~~~");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.e("====", "start onResume~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onResume~~~");
 	}
 
 	// 当我们按HOME键时
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.e("====", "start onPause~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onPause~~~");
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.e("====", "start onStop~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onStop~~~");
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		// MyApplication.getInstance().finishActivity(this);
-		Log.e("====", "start onDestroy~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onDestroy~~~");
 	}
 
 	long	waitTime	= 2000;
