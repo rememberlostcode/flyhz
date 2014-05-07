@@ -16,7 +16,7 @@
 # "proguard-android-optimize.txt" file instead of this one from your
 # project.properties file.
 
--keepattributes *Annotation*
+-keepattributes *Annotation*,Signature
 -keep public class com.google.vending.licensing.ILicensingService
 -keep public class com.android.vending.licensing.ILicensingService
 
@@ -63,6 +63,9 @@
 #-dontwarn java.beans.Introspector
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 -keep class org.** { *;}
--keep class com.holding.smile.** { *;}
+-keep class com.holding.smile.activity.** { *;}
+-keep class com.holding.smile.entity.** { *;}
+-keep class com.holding.smile.protocol.** { *;}
+-keep class com.holding.smile.dto.** { *;}
 
 

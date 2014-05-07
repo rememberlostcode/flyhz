@@ -18,12 +18,13 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.holding.smile.R;
+import com.holding.smile.activity.MyApplication;
 
 public class PullToRefreshView extends LinearLayout {
-	private static final String		TAG					= "PullToRefreshView";
+	// private static final String TAG = "PullToRefreshView";
 
-	private boolean					refreshFlag			= true;				// 默认可以下拉刷新
-	private boolean					moreFlag			= true;				// 默认可以上拉查看更多
+	private boolean					refreshFlag			= true; // 默认可以下拉刷新
+	private boolean					moreFlag			= true; // 默认可以上拉查看更多
 	// refresh states
 	private static final int		PULL_TO_REFRESH		= 2;
 	private static final int		RELEASE_TO_REFRESH	= 3;
@@ -327,12 +328,12 @@ public class PullToRefreshView extends LinearLayout {
 				int deltaY = y - mLastMotionY;
 				if (mPullState == PULL_DOWN_STATE) {
 					// PullToRefreshView执行下拉
-					Log.i(TAG, " pull down!parent view move!");
+					Log.i(MyApplication.LOG_TAG, "PullToRefreshView pull down!parent view move!");
 					headerPrepareToRefresh(deltaY);
 					// setHeaderPadding(-mHeaderViewHeight);
 				} else if (mPullState == PULL_UP_STATE) {
 					// PullToRefreshView执行上拉
-					Log.i(TAG, "pull up!parent view move!");
+					Log.i(MyApplication.LOG_TAG, "PullToRefreshView pull up!parent view move!");
 					footerPrepareToRefresh(deltaY);
 				}
 				mLastMotionY = y;

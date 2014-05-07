@@ -6,6 +6,7 @@ import java.io.File;
 import android.content.Context;
 import android.util.Log;
 
+import com.holding.smile.activity.MyApplication;
 import com.holding.smile.tools.FileHelper;
 
 public abstract class AbstractFileCache {
@@ -16,7 +17,7 @@ public abstract class AbstractFileCache {
 
 		dirString = getCacheDir();
 		boolean ret = FileHelper.createDirectory(dirString);
-		Log.e("", "FileHelper.createDirectory:" + dirString + ", ret = " + ret);
+		Log.e(MyApplication.LOG_TAG, "FileHelper.createDirectory:" + dirString + ", ret = " + ret);
 	}
 
 	public File getFile(String url) {

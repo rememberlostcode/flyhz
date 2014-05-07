@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.holding.smile.activity.MyApplication;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -214,8 +216,8 @@ public class BitmapUtils {
 			bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height);
 		}
 
-		// Log.i(TAG, width + " width");
-		// Log.i(TAG, height + " height");
+		// Log.i(MyApplication.LOG_TAG, width + " width");
+		// Log.i(MyApplication.LOG_TAG, height + " height");
 
 		return bitmap;
 	}
@@ -304,9 +306,9 @@ public class BitmapUtils {
 			}
 			fos.flush();
 		} catch (FileNotFoundException exception) {
-			Log.e("debug_log", exception.toString());
+			Log.e(MyApplication.LOG_TAG, "debug_log:" + exception.toString());
 		} catch (IOException exception) {
-			Log.e("debug_log", exception.toString());
+			Log.e(MyApplication.LOG_TAG, "debug_log:" + exception.toString());
 		} finally {
 			try {
 				if (fos != null)

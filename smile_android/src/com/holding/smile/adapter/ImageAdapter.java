@@ -24,8 +24,8 @@ import com.holding.smile.cache.ImageLoader;
  */
 public class ImageAdapter extends BaseAdapter {
 
-	private int				maxWidth		= MyApplication.getInstance().getScreenWidth();
-	private int				maxHeight		= MyApplication.getInstance().getScreenHeight();
+	// private int maxWidth = MyApplication.getInstance().getScreenWidth();
+	// private int maxHeight = MyApplication.getInstance().getScreenHeight();
 	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private List<String>	picList;
 	private Context			context;
