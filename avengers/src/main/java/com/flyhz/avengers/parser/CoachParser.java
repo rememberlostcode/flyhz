@@ -14,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.dto.ProductModel;
+import com.flyhz.avengers.template.CoachDetailTemplate;
+import com.flyhz.avengers.template.CoachListTemplate;
+import com.flyhz.avengers.util.UrlUtil;
 import com.flyhz.avengers.util.WebClientUtil;
 
 /**
@@ -24,23 +27,34 @@ import com.flyhz.avengers.util.WebClientUtil;
  * 
  */
 public class CoachParser {
-	Logger			log			= LoggerFactory.getLogger(CoachParser.class);
+	private Logger	log			= LoggerFactory.getLogger(CoachParser.class);
 	private String	tempUrl		= "http://www.coach.com/online/handbags/";
 	private String	chartset	= "UTF-8";
 
 	public List<String> getAllProductUrls(String url) {
+		CoachListTemplate template = new CoachListTemplate();
 		List<String> urls = new ArrayList<String>();
-		String html = WebClientUtil.getContent(url);
+		long b = System.currentTimeMillis();
+		String html = WebClientUtil.getContent(url, false, true);
+		if (StringUtils.isBlank(html)) {
+			html = UrlUtil.sendGet(url);
+		}
+		long e = System.currentTimeMillis();
+		log.debug("爬网页时，花费时间{}毫秒", new Object[] { (e - b) });
 
 		if (StringUtils.isNotBlank(html)) {
 			Document doc = Jsoup.parse(html);
-			Element e = doc.getElementById("productGrid");
-			Elements linksElements = e.select("div.oneByOne");
+			System.out.println("=====" + doc.toString());
+			Elements mainEls = doc.select(template.getMainEls());
+			Elements linksElements = mainEls != null ? mainEls.eq(0).select(
+					template.getLinksElements()) : null;
 			log.debug("品牌：coach");
-			for (Element ele : linksElements) {
-				String href = ele.select("a").eq(0).attr("href");
-				if (StringUtils.isNotBlank(href))
-					urls.add(tempUrl + href);
+			if (linksElements != null) {
+				for (Element ele : linksElements) {
+					String href = ele.select("a").eq(0).attr("href");
+					if (StringUtils.isNotBlank(href))
+						urls.add(tempUrl + href);
+				}
 			}
 		}
 		return urls;
@@ -53,38 +67,44 @@ public class CoachParser {
 	 * @return
 	 */
 	public ProductModel parserHtmlToProduct(String url) {
-		String html = WebClientUtil.getContent(url);
+		CoachDetailTemplate template = new CoachDetailTemplate();
+		long begin = System.currentTimeMillis();
+		String html = WebClientUtil.getContent(url, true, true);
+		long end = System.currentTimeMillis();
+		log.debug("爬网页时，花费时间{}毫秒", new Object[] { (end - begin) });
+
 		ProductModel product = null;
 		if (StringUtils.isNotBlank(html)) {
 			Document doc = Jsoup.parse(html);
-			Element mainEl = doc.getElementById("prod_container");
-			Elements prodElements = mainEl != null ? mainEl.select("div.prod_desc_container")
-					: null;
+			Elements mainEls = doc.select(template.getMainEls());
+			Elements prodElements = mainEls != null ? mainEls.eq(0).select(
+					template.getProdElements()) : null;
 			if (prodElements == null)
 				return product;
 
 			log.debug("品牌:coach");
 			if (prodElements != null) {
 				Element ele = prodElements.get(0);
-				String name = ele.select("h1").eq(0).text();
+				String name = ele.select(template.getName()).eq(0).text();
 				if (StringUtils.isBlank(name))
 					return null;
 
 				product = new ProductModel();
 				product.setName(name);
 
-				Elements es = ele.select("div .pdTabProductStyle");
+				Elements es = ele.select(template.getStyle());
 				if (es != null) {
 					String style = es.eq(0).text();
 					if (StringUtils.isNotBlank(style)) {
-						style = style.substring(style.indexOf("Style No.") + 10).trim();
+						style = style.substring(style.indexOf(template.getStyleSeparate()) + 10)
+										.trim();
 						if (StringUtils.isNotBlank(style))
 							product.setBrandstyle(style);
 					}
 				}
 
 				// 采价格
-				es = ele.select("span #pdTabProductPriceSpan");
+				es = ele.select(template.getPrice());
 				if (es != null) {
 					String price = es.eq(0).text();
 					if (StringUtils.isNotBlank(price) && price.indexOf("$") > -1) {
@@ -94,8 +114,8 @@ public class CoachParser {
 							if (prodPrice != 0) {
 								product.setPurchasingprice(new BigDecimal(prodPrice));
 							}
-						} catch (NumberFormatException e) {
-							log.error("解析产品价格时出错", e.getMessage());
+						} catch (NumberFormatException ex) {
+							log.error("解析产品价格时出错", ex.getMessage());
 						}
 					} else {
 						return null;
@@ -103,9 +123,9 @@ public class CoachParser {
 				}
 
 				// 采描述信息
-				Element e = ele.getElementById("pdpDescription");
-				if (e != null) {
-					Elements ds = e.select("span");
+				es = ele.select(template.getDescription());
+				if (es != null) {
+					Elements ds = es.select("span");
 					String description = ds != null ? ds.eq(0).text() : null;
 					if (StringUtils.isNotBlank(description)) {
 						product.setDescription(description.trim().substring(0,
@@ -114,9 +134,9 @@ public class CoachParser {
 				}
 
 				// 采颜色信息
-				e = ele.getElementById("selectedColorText");
-				if (e != null) {
-					String color = e.text();
+				es = ele.select(template.getColor());
+				if (es != null) {
+					String color = es.eq(0).text();
 					if (StringUtils.isNotBlank(color)) {
 						product.setColor(color.trim());
 					}
@@ -124,19 +144,26 @@ public class CoachParser {
 
 				// 采图片
 				StringBuffer imgs = new StringBuffer();
-				es = mainEl.select("table[id=pdp-left]");
+				es = mainEls.select(template.getImgEls());
 				if (es != null && !es.isEmpty()) {
 					Element tableEl = es.get(0);
-					es = tableEl.select("img");
-					if (es != null && !es.isEmpty()) {
+					Elements imgEls = tableEl.select("img");
+					if (imgEls != null && !imgEls.isEmpty()) {
 						imgs.append("[");
-						for (Element imgEl : es) {
+						for (Element imgEl : imgEls) {
 							String imgUrl = imgEl.attr("src");
-							if (StringUtils.isNotBlank(imgUrl)) {
+							if (StringUtils.isNotBlank(imgUrl)
+									&& !imgUrl.contains(template.getImgUrlFilter())) {
+								imgUrl = imgEl.attr(template.getImgAttr());
+							}
+							// 在这里过滤
+							if (imgUrl.contains(template.getImgUrlFilter())) {
 								if (imgs.length() > 1) {
 									imgs.append(",");
 								}
+								imgs.append("\"");
 								imgs.append(imgUrl);
+								imgs.append("\"");
 							}
 						}
 						imgs.append("]");
