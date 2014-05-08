@@ -4,7 +4,6 @@ package com.flyhz.avengers.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
@@ -29,7 +28,7 @@ public class WebClientUtil {
 	public static String getContent(String url, boolean css, boolean js) {
 		String html = "";
 		// 模拟一个火狐浏览器
-		final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_24);
+		final WebClient webClient = new WebClient();
 		try {
 			// 设置webClient的相关参数
 			webClient.getOptions().setCssEnabled(css);

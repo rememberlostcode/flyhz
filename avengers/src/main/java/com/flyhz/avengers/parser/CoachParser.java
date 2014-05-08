@@ -44,7 +44,6 @@ public class CoachParser {
 
 		if (StringUtils.isNotBlank(html)) {
 			Document doc = Jsoup.parse(html);
-			System.out.println("=====" + doc.toString());
 			Elements mainEls = doc.select(template.getMainEls());
 			Elements linksElements = mainEls != null ? mainEls.eq(0).select(
 					template.getLinksElements()) : null;
