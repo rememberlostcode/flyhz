@@ -229,6 +229,8 @@ public class PullToRefreshView extends LinearLayout {
 				footerRefreshing();
 			}
 		});
+		mFooterImageView.setVisibility(View.GONE);
+		mFooterTextView.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -599,6 +601,9 @@ public class PullToRefreshView extends LinearLayout {
 		mFooterProgressBar.setVisibility(View.GONE);
 		// mHeaderUpdateTextView.setText("");
 		mFooterState = PULL_TO_REFRESH;
+
+		mFooterImageView.setVisibility(View.VISIBLE);
+		mFooterTextView.setVisibility(View.VISIBLE);
 	}
 
 	/**
