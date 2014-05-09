@@ -13,29 +13,59 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ImagePool {
-	Logger								log			= LoggerFactory.getLogger(ImagePool.class);
-	private static LinkedList<Image>	imagesList	= new LinkedList<Image>();
+	Logger								log					= LoggerFactory.getLogger(ImagePool.class);
+	private static LinkedList<Image>	imagesList			= new LinkedList<Image>();
+	private static LinkedList<Image>	imagesFinshedList	= new LinkedList<Image>();
+	private static int					threadNum			= 0;
 
 	/**
-	 * 添加到线程的图片集合
+	 * 获取下一个为完成下载的图片
 	 * 
 	 * @param image
+	 *            参数是null时，返回下一个图片；不是null时，image添加到线程的图片数组
+	 * @return
 	 */
-	public static synchronized void addImage(Image image) {
-		imagesList.add(image);
+	public static synchronized Image getNextImage(Image image) {
+		if (image == null) {
+			if (imagesList.size() > 0) {
+				image = imagesList.get(0);
+				imagesList.remove(0);
+			}
+			return image;
+		} else {
+			imagesList.add(image);
+			return null;
+		}
 	}
 
 	/**
-	 * 获取下一个图片
+	 * 获取下一个已完成下载的图片
 	 * 
+	 * @param image
+	 *            参数是null时，返回所有已完成下载的图片；不是null时，image添加到已完成下载的图片数组
 	 * @return
 	 */
-	public static synchronized Image getNextImage() {
-		Image image = null;
-		if (imagesList.size() > 0) {
-			image = imagesList.get(0);
-			imagesList.remove(0);
+	public static synchronized LinkedList<Image> getFinshedImage(Image image) {
+		if (image == null) {
+			@SuppressWarnings("unchecked")
+			LinkedList<Image> list = (LinkedList<Image>) imagesFinshedList.clone();
+			imagesFinshedList.clear();
+			return list;
+		} else {
+			imagesFinshedList.add(image);
+			return null;
 		}
-		return image;
+	}
+
+	/**
+	 * 加减当前线程数并获取当前线程数
+	 * 
+	 * @param number
+	 *            加减的值，一般是1或者-1
+	 * @return
+	 */
+	public static synchronized int getThreadNum(int number) {
+		threadNum += number;
+		return threadNum;
 	}
 }

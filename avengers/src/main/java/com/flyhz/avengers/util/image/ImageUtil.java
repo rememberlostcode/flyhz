@@ -47,18 +47,6 @@ public class ImageUtil {
 		this.rootPath = rootPath;
 	}
 
-	private void addError(Image image, String errorMessage) {
-		image.getMessage().add(errorMessage);
-		image.setNumber(image.getNumber() + 1);
-		if (image.getNumber() <= MAX_NUM) {
-			ImagePool.addImage(image);
-		} else {
-			String msg = "超过了限制的尝试次数，结束本次下载！";
-			image.getMessage().add(msg);
-			log.warn(msg);
-		}
-	}
-
 	/**
 	 * 下载图片
 	 * 
@@ -83,9 +71,10 @@ public class ImageUtil {
 					image.setFilePath(rootPath + image.getStaticPath());
 				}
 				imageUtil.writeImageToDisk(btImg, image);
-			}/*
-			 * else { addError(image, "未获取到图片流"); }
-			 */
+			}
+			// else {
+			// addError(image, "连接成功但未获取到图片流");
+			// }
 		}
 	}
 
@@ -166,6 +155,14 @@ public class ImageUtil {
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			addError(image, e.getMessage());
+		} finally {
+			if (inStream != null) {
+				try {
+					inStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return btImg;
 	}
@@ -198,5 +195,17 @@ public class ImageUtil {
 		ImageUtil imageUtil = new ImageUtil("E:/tmp/images");
 		imageUtil.downloadImage(image);
 		System.exit(0);
+	}
+
+	private void addError(Image image, String errorMessage) {
+		image.getMessage().add(errorMessage);
+		image.setNumber(image.getNumber() + 1);
+		if (image.getNumber() <= MAX_NUM) {
+			ImagePool.getNextImage(image);
+		} else {
+			String msg = "超过了限制的尝试次数，结束本次下载！";
+			image.getMessage().add(msg);
+			log.warn(msg);
+		}
 	}
 }

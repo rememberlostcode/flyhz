@@ -8,16 +8,19 @@ import com.flyhz.avengers.util.image.ImagePool;
 public class TestImageDownload {
 
 	public static void main(String[] rags) {
-		new ImageMitiThread().start();
+		ImageMitiThread it = new ImageMitiThread();
+		it.start();
 
-		ImagePool.addImage(new Image(
+		ImagePool.getNextImage(new Image(
 				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
-		ImagePool.addImage(new Image(
+		ImagePool.getNextImage(new Image(
 				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
-		ImagePool.addImage(new Image(
+		ImagePool.getNextImage(new Image(
 				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
-		ImagePool.addImage(new Image("http://s7d2.scene7.com/is/image/Coa"));
-		ImagePool.addImage(new Image(
+		ImagePool.getNextImage(new Image("http://s7d2.scene7.com/is/image/Coa"));
+		ImagePool.getNextImage(new Image(
 				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
+
+		// it.stopDownloadThread();
 	}
 }
