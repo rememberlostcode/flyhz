@@ -3,7 +3,7 @@ package com.flyhz.avengers.framework;
 
 import java.util.List;
 
-import com.flyhz.avengers.framework.xml.Domain.Templates.Template;
+import com.flyhz.avengers.framework.xml.Domain;
 
 /**
  * URL过滤：属于URL白名单且不属于URL黑名单
@@ -14,11 +14,9 @@ public interface UrlFilter {
 	/**
 	 * 过滤有效UR
 	 * 
-	 * @param black
-	 * @param templates
+	 * @param domain
 	 * @param waitFilterUrls
-	 * @return List<String>
+	 * @return
 	 */
-	public List<String> filterValidUrl(List<String> black, List<Template> templates,
-			List<String> waitFilterUrls);
+	public List<String> filterValidUrl(Domain domain, List<String> waitFilterUrls);
 }

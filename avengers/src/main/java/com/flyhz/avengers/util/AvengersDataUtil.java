@@ -2,6 +2,8 @@
 package com.flyhz.avengers.util;
 
 import java.net.URL;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
@@ -10,7 +12,9 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.SAXException;
 
-import com.flyhz.avengers.Avengers;
+import com.flyhz.avengers.framework.xml.Avengers;
+import com.flyhz.avengers.framework.xml.Domain;
+import com.flyhz.avengers.framework.xml.Domain.Templates.Template;
 
 /**
  * 类说明:分类工具类
@@ -110,5 +114,33 @@ public class AvengersDataUtil {
 			e.printStackTrace();
 		}
 		return data;
+	}
+
+	/**
+	 * 查询url对应的解析器类名
+	 * 
+	 * @param url
+	 * @param templates
+	 * @return String
+	 */
+	public static String getUrlParserName(String url, Domain domain) {
+		if (StringUtils.isNotBlank(url)) {
+			// 循环匹配节点
+			if (domain != null && domain.getTemplates() != null) {
+				List<Template> templates = domain.getTemplates().getTemplate();
+				if (templates != null && !templates.isEmpty()) {
+					for (Template template : templates) {
+						String whiteRegex = template.getUrl();
+						if (StringUtils.isNotBlank(whiteRegex)) {
+							boolean result = Pattern.compile(whiteRegex).matcher(url).find();
+							if (result) {
+								return template.getParser();
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 }
