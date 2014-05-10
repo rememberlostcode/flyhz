@@ -1,6 +1,8 @@
 
 package com.flyhz.avengers.util.image;
 
+import java.util.LinkedList;
+
 /**
  * 图片下载线程
  * 
@@ -15,20 +17,6 @@ public class ImageMitiThread extends Thread {
 	private static final int	threadNumber	= 10;
 	private boolean				isRunning		= true;
 
-	public static void main(String[] rags) {
-		new ImageMitiThread().start();
-
-		ImagePool.getNextImage(new Image(
-				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
-		ImagePool.getNextImage(new Image(
-				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
-		ImagePool.getNextImage(new Image(
-				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
-		ImagePool.getNextImage(new Image("http://s7d2.scene7.com/is/image/Coa"));
-		ImagePool.getNextImage(new Image(
-				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
-	}
-
 	@Override
 	public void run() {
 		startDownloadThread();
@@ -39,7 +27,14 @@ public class ImageMitiThread extends Thread {
 	 */
 	public void startDownloadThread() {
 		Image image = null;
+		int i = 0;
 		while (isRunning) {
+			if (i > 10) {
+				LinkedList<Image> list = ImagePool.getFinshedImage(null);
+				for (int j = 0; j < list.size(); j++) {
+					System.out.println(list.get(j).getFilePath());
+				}
+			}
 			image = ImagePool.getNextImage(null);
 			while (image != null) {
 				if (ImagePool.getThreadNum(0) <= threadNumber) {
@@ -51,6 +46,7 @@ public class ImageMitiThread extends Thread {
 				}
 			}
 			sleepSeconds();
+			i++;
 		}
 	}
 
@@ -68,5 +64,19 @@ public class ImageMitiThread extends Thread {
 	 */
 	public void stopDownloadThread() {
 		isRunning = false;
+	}
+
+	public static void main(String[] rags) {
+		new ImageMitiThread().start();
+
+		ImagePool.getNextImage(new Image(
+				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
+		ImagePool.getNextImage(new Image(
+				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
+		ImagePool.getNextImage(new Image(
+				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
+		ImagePool.getNextImage(new Image("http://s7d2.scene7.com/is/image/Coa"));
+		ImagePool.getNextImage(new Image(
+				"http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
 	}
 }

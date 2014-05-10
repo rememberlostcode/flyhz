@@ -14,12 +14,18 @@ import org.slf4j.LoggerFactory;
  */
 public class ImagePool {
 	Logger								log					= LoggerFactory.getLogger(ImagePool.class);
+	/**
+	 * 待下载图片
+	 */
 	private static LinkedList<Image>	imagesList			= new LinkedList<Image>();
+	/**
+	 * 已下载图片
+	 */
 	private static LinkedList<Image>	imagesFinshedList	= new LinkedList<Image>();
 	private static int					threadNum			= 0;
 
 	/**
-	 * 获取下一个为完成下载的图片
+	 * 获取下一个待下载的图片/添加一个待下载的图片
 	 * 
 	 * @param image
 	 *            参数是null时，返回下一个图片；不是null时，image添加到线程的图片数组
@@ -39,7 +45,7 @@ public class ImagePool {
 	}
 
 	/**
-	 * 获取下一个已完成下载的图片
+	 * 获取下一个已完成下载的图片/添加已完成下载的图片
 	 * 
 	 * @param image
 	 *            参数是null时，返回所有已完成下载的图片；不是null时，image添加到已完成下载的图片数组
@@ -61,7 +67,7 @@ public class ImagePool {
 	 * 加减当前线程数并获取当前线程数
 	 * 
 	 * @param number
-	 *            加减的值，一般是1或者-1
+	 *            加减的值，一般是1或者-1；要获得当前的线程数值使用0
 	 * @return
 	 */
 	public static synchronized int getThreadNum(int number) {

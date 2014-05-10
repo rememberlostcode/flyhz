@@ -136,6 +136,9 @@ public class ImageUtil {
 	 */
 	private byte[] getImageFromNetByUrl(Image image) {
 		String strUrl = image.getUrl();
+		if (strUrl == null || "".equals(strUrl)) {
+			addError(image, "url为空");
+		}
 		InputStream inStream = null;
 		byte[] btImg = null;
 		try {
@@ -188,15 +191,6 @@ public class ImageUtil {
 		return outBuffer;
 	}
 
-	public static void main(String[] args) {
-		Image image = new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$");
-
-		// image.setUrl("http://www.baidu.com/img/bdlogo.gif");
-		ImageUtil imageUtil = new ImageUtil("E:/tmp/images");
-		imageUtil.downloadImage(image);
-		System.exit(0);
-	}
-
 	private void addError(Image image, String errorMessage) {
 		image.getMessage().add(errorMessage);
 		image.setNumber(image.getNumber() + 1);
@@ -207,5 +201,14 @@ public class ImageUtil {
 			image.getMessage().add(msg);
 			log.warn(msg);
 		}
+	}
+
+	public static void main(String[] args) {
+		Image image = new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$");
+
+		// image.setUrl("http://www.baidu.com/img/bdlogo.gif");
+		ImageUtil imageUtil = new ImageUtil("E:/tmp/images");
+		imageUtil.downloadImage(image);
+		System.exit(0);
 	}
 }

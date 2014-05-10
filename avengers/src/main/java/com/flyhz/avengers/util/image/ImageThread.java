@@ -51,7 +51,7 @@ public class ImageThread extends Thread {
 			log.info("图片已经写入到磁盘目录：" + image.getFilePath());
 			ImagePool.getFinshedImage(image);
 		} else {
-			// log.error("图片下载失败，" + image.getMessage());
+			log.error("图片下载失败，" + image.getMessage());
 		}
 
 		// 完成一个，线程总数减一
