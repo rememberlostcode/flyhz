@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.flyhz.com/avengrs" xmlns:ave="http://www.flyhz.com/avengrs" elementFormDefault="qualified">
+	<element name="avengers">
+		<complexType>
+			<sequence>
+				<element name="domain" type="ave:domain"/>
+			</sequence>
+		</complexType>
+	</element>
+	<complexType name="domain">
+		<all>
+			<element name="blackList" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="black" type="token" minOccurs="0" maxOccurs="unbounded"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="templates" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="template">
+							<complexType>
+								<attribute name="url" type="token" use="required"/>
+								<attribute name="parser" type="token" use="required"/>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+		</all>
+		<attribute name="root" use="required"/>
+	</complexType>
+</schema>
