@@ -10,7 +10,7 @@ public class ImageConsole {
 	}
 
 	public static void main(String[] rags) {
-		start();
+		startDownloadThread();
 
 		addImage(new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
 		addImage(new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
@@ -24,7 +24,10 @@ public class ImageConsole {
 		// it.stopDownloadThread();
 	}
 
-	public static void start() {
+	/**
+	 * 开始下载图片进程
+	 */
+	public static void startDownloadThread() {
 		if (it == null) {
 			it = new ImageMitiThread();
 			it.start();
@@ -42,7 +45,7 @@ public class ImageConsole {
 	}
 
 	/**
-	 * 获取已完成下载的图片
+	 * 获取已结束下载的图片（包括成功和失败的）
 	 * 
 	 * @return
 	 */

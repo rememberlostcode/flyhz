@@ -48,7 +48,7 @@ public class ImageThread extends Thread {
 		ImageUtil imageUtil = new ImageUtil(rootPath);
 		imageUtil.downloadImage(image);
 		if (image.isFinshed()) {
-			log.info("图片已经写入到磁盘目录：" + image.getFilePath());
+			log.debug("图片已经写入到磁盘目录：" + image.getFilePath());
 			ImagePool.getFinshedImage(image);
 		} else {
 			log.error("图片下载失败，" + image.getMessage());
