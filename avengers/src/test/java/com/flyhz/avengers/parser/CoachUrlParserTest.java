@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import com.flyhz.avengers.dto.RtnResult;
 
-public class CoachListParserTest extends TestCase {
-	private String	testUrl	= "http://www.coach.com/online/handbags/-newatcoach_allnewatcoach-us-us-5000000000000000002-en?t1Id=5000000000000258802&t2Id=5000000000000000002&LOC=SN1";
+public class CoachUrlParserTest extends TestCase {
+	private String	testUrl	= "http://www.coach.com/online/handbags/-handbags_features_newarrivals_1-us-us-5000000000000015027-en?navCatId=62&LOC=HN2";
 
 	@Test
 	public void testParserContent() {
