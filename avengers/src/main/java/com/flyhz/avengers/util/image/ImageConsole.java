@@ -4,6 +4,7 @@ package com.flyhz.avengers.util.image;
 import java.util.LinkedList;
 
 public class ImageConsole {
+	private static ImageMitiThread	it;
 
 	public static void main(String[] rags) {
 		start();
@@ -13,13 +14,18 @@ public class ImageConsole {
 		addImage(new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
 		addImage(new Image("http://s7d2.scene7.com/is/image/Coa"));
 		addImage(new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
+		addImage(new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
+		addImage(new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
+		addImage(new Image("http://s7d2.scene7.com/is/image/Coach/99864_b4baj_a0?$pd_main$"));
 
 		// it.stopDownloadThread();
 	}
 
 	public static void start() {
-		ImageMitiThread it = new ImageMitiThread();
-		it.start();
+		if (it == null) {
+			it = new ImageMitiThread();
+			it.start();
+		}
 	}
 
 	/**
