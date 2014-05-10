@@ -244,6 +244,23 @@ public class StringUtil extends StringUtils {
 		return Math.ceil(valueLength);
 	}
 
+	/**
+	 * 替换字符串
+	 * 
+	 * @param str
+	 *            字符串
+	 * @param replaceChar
+	 *            替换的原始字符
+	 * @param targetChar
+	 *            目标字符
+	 * @return
+	 */
+	public String replaceAllStr(String str, String replaceChar, String targetChar) {
+		if (StringUtils.isNotBlank(str))
+			str = str.replaceAll(replaceChar, targetChar);
+		return str;
+	}
+
 	public static void main(String[] name) {
 		// System.out.println(convertStringToDate("2011-06-16 11:30:20",
 		// DEFAULT_DATE_FORMAT));
