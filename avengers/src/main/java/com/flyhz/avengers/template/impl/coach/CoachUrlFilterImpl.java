@@ -2,22 +2,45 @@
 package com.flyhz.avengers.template.impl.coach;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.flyhz.avengers.framework.UrlFilter;
+import com.flyhz.avengers.framework.xml.Avengers;
+import com.flyhz.avengers.framework.xml.Domain;
 import com.flyhz.avengers.framework.xml.Domain.Templates.Template;
 import com.flyhz.avengers.template.impl.BaseUrlFilter;
+import com.flyhz.avengers.util.AvengersDataUtil;
 
 public class CoachUrlFilterImpl extends BaseUrlFilter implements UrlFilter {
 	@Override
-	public List<String> filterValidUrl(List<String> black, List<Template> templates,
-			List<String> waitFilterUrls) {
+	public List<String> filterValidUrl(Avengers avengers, List<String> waitFilterUrls) {
 		if (waitFilterUrls != null && !waitFilterUrls.isEmpty()) {
+			if (avengers == null) {
+				avengers = AvengersDataUtil.getDataByXmlFileName("avengers.xml");
+			}
+			// URL去重
 			Set<String> filterUrlsSet = rmDuplicate(waitFilterUrls);
-			filterUrlsSet = checkWhiteUrls(templates, filterUrlsSet);
-			filterUrlsSet = checkBlackUrls(black, filterUrlsSet);
+			// URL过滤
+			if (avengers != null) {
+				List<Domain> domains = avengers.getDomain();
+				if (domains != null && !domains.isEmpty()) {
+					for (Domain domain : domains) {
+						if (domain != null) {
+							if (domain.getTemplates() != null) {
+								List<Template> templates = domain.getTemplates().getTemplate();
+								filterUrlsSet = checkWhiteUrls(templates, filterUrlsSet);
+							}
+							if (domain.getBlackList() != null) {
+								List<String> black = domain.getBlackList().getBlack();
+								filterUrlsSet = checkBlackUrls(black, filterUrlsSet);
+							}
+						}
+
+					}
+				}
+			}
+			// URLs转换为list
 			if (filterUrlsSet != null && !filterUrlsSet.isEmpty()) {
 				List<String> result = new ArrayList<String>();
 				result.addAll(filterUrlsSet);
@@ -69,6 +92,6 @@ public class CoachUrlFilterImpl extends BaseUrlFilter implements UrlFilter {
 		waitFilterUrls.add("http://s7d2.scene7.com/is/image/Coach/31623_m1?$pd_vertical$");
 
 		UrlFilter urlFilter = new CoachUrlFilterImpl();
-		urlFilter.filterValidUrl(blackUrls, templates, waitFilterUrls);
+		urlFilter.filterValidUrl(null, waitFilterUrls);
 	}
 }

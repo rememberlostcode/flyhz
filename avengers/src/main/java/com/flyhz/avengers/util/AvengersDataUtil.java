@@ -2,6 +2,8 @@
 package com.flyhz.avengers.util;
 
 import java.net.URL;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
@@ -10,7 +12,9 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.SAXException;
 
-import com.flyhz.avengers.Avengers;
+import com.flyhz.avengers.framework.xml.Avengers;
+import com.flyhz.avengers.framework.xml.Domain;
+import com.flyhz.avengers.framework.xml.Domain.Templates.Template;
 
 /**
  * 类说明:分类工具类
@@ -71,23 +75,22 @@ public class AvengersDataUtil {
 	 * @param fileName
 	 * @return
 	 */
-	public static String getDataByXmlFileName(String fileName) {
+	public static Avengers getDataByXmlFileName(String fileName) {
 		if (StringUtils.isBlank(fileName))
 			return null;
 
-		String data = null;
+		Avengers avengers = null;
 		try {
 			ClassLoader classLoader = AvengersDataUtil.class.getClassLoader();
 			URL schemaUrl = classLoader.getResource("avengers.xsd");
 			Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
 											.newSchema(schemaUrl);
 			URL xmlUrl = classLoader.getResource(fileName);
-			Avengers Avengers = XmlUtil.convertXmlToObject(Avengers.class, xmlUrl, schema);
-			data = XmlUtil.convertObjectToString(Avengers, schema);
+			avengers = XmlUtil.convertXmlToObject(Avengers.class, xmlUrl, schema);
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		return data;
+		return avengers;
 	}
 
 	/**
@@ -111,5 +114,45 @@ public class AvengersDataUtil {
 			e.printStackTrace();
 		}
 		return data;
+	}
+
+	/**
+	 * 查询url对应的解析器类名
+	 * 
+	 * @param url
+	 * @param templates
+	 * @return String
+	 */
+	public static String getUrlParserName(String url, Avengers avengers) {
+		if (StringUtils.isNotBlank(url)) {
+			if (avengers == null) {
+				avengers = AvengersDataUtil.getDataByXmlFileName("avengers.xml");
+			}
+			// 循环匹配节点
+			if (avengers != null) {
+				List<Domain> domains = avengers.getDomain();
+				if (domains != null && !domains.isEmpty()) {
+					for (Domain domain : domains) {
+						if (domain != null && domain.getTemplates() != null) {
+							List<Template> templates = domain.getTemplates().getTemplate();
+							if (templates != null && !templates.isEmpty()) {
+								for (Template template : templates) {
+									String whiteRegex = template.getUrl();
+									if (StringUtils.isNotBlank(whiteRegex)) {
+										boolean result = Pattern.compile(whiteRegex).matcher(url)
+																.find();
+										if (result) {
+											return template.getParser();
+										}
+									}
+								}
+							}
+						}
+
+					}
+				}
+			}
+		}
+		return null;
 	}
 }
