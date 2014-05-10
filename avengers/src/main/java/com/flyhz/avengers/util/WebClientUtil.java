@@ -1,6 +1,7 @@
 
 package com.flyhz.avengers.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,9 @@ public class WebClientUtil {
 	 * @return
 	 */
 	public static String getContent(String url, boolean css, boolean js) {
+		if (StringUtils.isBlank(url))
+			return null;
+
 		String html = "";
 		// 模拟一个火狐浏览器
 		final WebClient webClient = new WebClient();

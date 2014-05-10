@@ -13,7 +13,8 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.dto.ProductModel;
+import com.flyhz.avengers.dto.ProductDto;
+import com.flyhz.avengers.dto.RtnResult;
 import com.flyhz.avengers.template.CoachDetailTemplate;
 import com.flyhz.avengers.template.CoachListTemplate;
 import com.flyhz.avengers.util.UrlUtil;
@@ -26,7 +27,7 @@ import com.flyhz.avengers.util.WebClientUtil;
  * @author robin 2014-5-5下午7:00:21
  * 
  */
-public class CoachParser {
+public class CoachParser implements BaseParser {
 	private Logger	log			= LoggerFactory.getLogger(CoachParser.class);
 	private String	tempUrl		= "http://www.coach.com/online/handbags/";
 	private String	chartset	= "UTF-8";
@@ -65,14 +66,14 @@ public class CoachParser {
 	 * @param url
 	 * @return
 	 */
-	public ProductModel parserHtmlToProduct(String url) {
+	public ProductDto parserHtmlToProduct(String url) {
 		CoachDetailTemplate template = new CoachDetailTemplate();
 		long begin = System.currentTimeMillis();
 		String html = WebClientUtil.getContent(url, true, true);
 		long end = System.currentTimeMillis();
 		log.debug("爬网页时，花费时间{}毫秒", new Object[] { (end - begin) });
 
-		ProductModel product = null;
+		ProductDto product = null;
 		if (StringUtils.isNotBlank(html)) {
 			Document doc = Jsoup.parse(html);
 			Elements mainEls = doc.select(template.getMainEls());
@@ -88,7 +89,7 @@ public class CoachParser {
 				if (StringUtils.isBlank(name))
 					return null;
 
-				product = new ProductModel();
+				product = new ProductDto();
 				product.setName(name);
 
 				Elements es = ele.select(template.getStyle());
@@ -176,5 +177,28 @@ public class CoachParser {
 			}
 		}
 		return product;
+	}
+
+	@Override
+	public RtnResult parserContent(String url) {
+		try {
+			ProductDto product = parserHtmlToProduct(url);
+			if (product != null) {
+				RtnResult result = new RtnResult();
+				result.setSiteName("coach");
+				result.setDataType(getDataType());
+				result.setResult(product.toString());
+				return result;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("采集coach详情页时出错：", e.getMessage());
+		}
+		return null;
+	}
+
+	@Override
+	public String getDataType() {
+		return "json";
 	}
 }
