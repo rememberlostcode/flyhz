@@ -40,10 +40,10 @@ public class TestAll {
 			waitFilterUrls.add("http://www.coach.com/online/handbags/-handbags_features_newarrivals_1-us-us-5000000000000015027-en?navCatId=7100000000000000590&LOC=HN2");
 			waitFilterUrls.add("http://www.coach.com/online/handbags/-handbags_silhouettes_satchels-us-us-5000000000000015033-en?t1Id=62&t2Id=5000000000000015033&navCatId=7100000000000000594&LOC=HN2");
 			waitFilterUrls.add("http://www.coach.com/online/handbags/-handbags_feature_madison-us-us-5000000000000049554-en?t1Id=62&t2Id=5000000000000049554&navCatId=7100000000000000604&LOC=HN2");
-			waitFilterUrls.add("http://www.coach.com/online/handbags/Product-bleecker_preston_satchel_in_pebbled_leather-10551-10051-30144-en?cs=svckc&catId=5000000000000015027&navCatId=7100000000000000590");
+			// waitFilterUrls.add("http://www.coach.com/online/handbags/Product-bleecker_preston_satchel_in_pebbled_leather-10551-10051-30144-en?cs=svckc&catId=5000000000000015027&navCatId=7100000000000000590");
 			waitFilterUrls.add("http://www.coach.com/online/handbags/Product-bleecker_triple_zip_crossbody_in_edgepaint_leather-10551-10051-51636-en?cs=svcmo&catId=5000000000000015027&navCatId=7100000000000000590");
-			waitFilterUrls.add("http://www.coach.com/online/handbags/Product-bleecker_sullivan_hobo_in_pebbled_leather-10551-10051-31623-en?cs=gdckm&catId=5000000000000015027&navCatId=7100000000000000590");
-			waitFilterUrls.add("http://www.coach.com/online/handbags/Product-madison_hobo_in_leather-10551-10051-27858-en?cs=licht");
+			// waitFilterUrls.add("http://www.coach.com/online/handbags/Product-bleecker_sullivan_hobo_in_pebbled_leather-10551-10051-31623-en?cs=gdckm&catId=5000000000000015027&navCatId=7100000000000000590");
+			// waitFilterUrls.add("http://www.coach.com/online/handbags/Product-madison_hobo_in_leather-10551-10051-27858-en?cs=licht");
 			waitFilterUrls.add("http://s7d2.scene7.com/is/image/Coach/31623_a4?$pd_altsq$");
 			waitFilterUrls.add("http://s7d2.scene7.com/is/image/Coach/31623_a3?$pd_altsq$");
 			waitFilterUrls.add("http://s7d2.scene7.com/is/image/Coach/31623_gdckm_a0?$pd_main$");
