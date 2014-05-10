@@ -1,6 +1,8 @@
 
 package com.flyhz.avengers.util.image;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 图片下载线程
@@ -9,7 +11,7 @@ package com.flyhz.avengers.util.image;
  * 
  */
 public class ImageMitiThread extends Thread {
-
+	Logger						log				= LoggerFactory.getLogger(ImageMitiThread.class);
 	/**
 	 * 开启的线程总数
 	 */
@@ -43,7 +45,7 @@ public class ImageMitiThread extends Thread {
 
 	private void sleepSeconds() {
 		try {
-			System.out.println("waiting...");
+			log.info("waiting...");
 			sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
