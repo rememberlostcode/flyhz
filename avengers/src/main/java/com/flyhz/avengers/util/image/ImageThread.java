@@ -52,6 +52,9 @@ public class ImageThread extends Thread {
 			ImagePool.getFinshedImage(image);
 		} else {
 			log.error("图片下载失败，" + image.getMessage());
+			if (image.getNumber() == ImageUtil.MAX_NUM) {
+				ImagePool.getFinshedImage(image);
+			}
 		}
 
 		// 完成一个，线程总数减一

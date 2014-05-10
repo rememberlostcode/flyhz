@@ -1,7 +1,6 @@
 
 package com.flyhz.avengers.util.image;
 
-import java.util.LinkedList;
 
 /**
  * 图片下载线程
@@ -27,14 +26,7 @@ public class ImageMitiThread extends Thread {
 	 */
 	public void startDownloadThread() {
 		Image image = null;
-		int i = 0;
 		while (isRunning) {
-			if (i > 10) {
-				LinkedList<Image> list = ImagePool.getFinshedImage(null);
-				for (int j = 0; j < list.size(); j++) {
-					System.out.println(list.get(j).getFilePath());
-				}
-			}
 			image = ImagePool.getNextImage(null);
 			while (image != null) {
 				if (ImagePool.getThreadNum(0) <= threadNumber) {
@@ -46,7 +38,6 @@ public class ImageMitiThread extends Thread {
 				}
 			}
 			sleepSeconds();
-			i++;
 		}
 	}
 

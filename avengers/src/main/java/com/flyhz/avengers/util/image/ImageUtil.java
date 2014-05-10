@@ -24,15 +24,15 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ImageUtil {
-	Logger				log			= LoggerFactory.getLogger(ImageUtil.class);
+	Logger					log			= LoggerFactory.getLogger(ImageUtil.class);
 	/**
 	 * 文件的根目录
 	 */
-	public String		rootPath	= "E:/tmp/images";
+	public String			rootPath	= "E:/tmp/images";
 	/**
 	 * 最大连接次数限制
 	 */
-	private final int	MAX_NUM		= 3;
+	public static final int	MAX_NUM		= 3;
 
 	private ImageUtil() {
 

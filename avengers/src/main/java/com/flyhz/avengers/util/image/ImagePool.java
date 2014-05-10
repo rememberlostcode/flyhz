@@ -48,7 +48,7 @@ public class ImagePool {
 	 * 获取下一个已完成下载的图片/添加已完成下载的图片
 	 * 
 	 * @param image
-	 *            参数是null时，返回所有已完成下载的图片；不是null时，image添加到已完成下载的图片数组
+	 *            参数是null时，返回所有已完成下载/下载失败的图片；不是null时，image添加到已完成下载的图片数组
 	 * @return
 	 */
 	public static synchronized LinkedList<Image> getFinshedImage(Image image) {
