@@ -31,12 +31,15 @@ public class WebClientUtil {
 			return null;
 
 		String html = "";
-		// 模拟一个火狐浏览器
+		// 模拟一个浏览器
 		final WebClient webClient = new WebClient();
 		try {
 			// 设置webClient的相关参数
 			webClient.getOptions().setCssEnabled(css);
 			webClient.getOptions().setJavaScriptEnabled(js);
+			webClient.getOptions().setThrowExceptionOnScriptError(false); // js运行错误时，是否抛出异常
+			webClient.getOptions().setTimeout(0); // 设置连接超时时间
+													// ，这里是10S。如果为0，则无限期等待
 			// 模拟浏览器打开一个目标网址
 			final HtmlPage page = webClient.getPage(url);
 			if (page != null) {
@@ -46,6 +49,11 @@ public class WebClientUtil {
 			log.error("爬网页时出错：", e.getMessage());
 		} finally {
 			webClient.closeAllWindows();
+		}
+
+		if (StringUtils.isBlank(html)) {
+			log.debug("=======采用直接请求方式=========");
+			html = UrlUtil.sendGet(url);
 		}
 		return html;
 	}
