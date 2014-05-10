@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.flyhz.avengers.TestAll;
 import com.flyhz.avengers.dto.ProductDto;
 import com.flyhz.avengers.dto.RtnResult;
 import com.flyhz.avengers.template.CoachDetailTemplate;
@@ -188,6 +189,7 @@ public class CoachParser implements BaseParser {
 				result.setSiteName("coach");
 				result.setDataType(getDataType());
 				result.setResult(product.toString());
+				TestAll.productList.add(product.getImgs());
 				return result;
 			}
 		} catch (Exception e) {

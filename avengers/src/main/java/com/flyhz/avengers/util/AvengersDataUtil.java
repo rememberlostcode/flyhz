@@ -123,32 +123,20 @@ public class AvengersDataUtil {
 	 * @param templates
 	 * @return String
 	 */
-	public static String getUrlParserName(String url, Avengers avengers) {
+	public static String getUrlParserName(String url, Domain domain) {
 		if (StringUtils.isNotBlank(url)) {
-			if (avengers == null) {
-				avengers = AvengersDataUtil.getDataByXmlFileName("avengers.xml");
-			}
 			// 循环匹配节点
-			if (avengers != null) {
-				List<Domain> domains = avengers.getDomain();
-				if (domains != null && !domains.isEmpty()) {
-					for (Domain domain : domains) {
-						if (domain != null && domain.getTemplates() != null) {
-							List<Template> templates = domain.getTemplates().getTemplate();
-							if (templates != null && !templates.isEmpty()) {
-								for (Template template : templates) {
-									String whiteRegex = template.getUrl();
-									if (StringUtils.isNotBlank(whiteRegex)) {
-										boolean result = Pattern.compile(whiteRegex).matcher(url)
-																.find();
-										if (result) {
-											return template.getParser();
-										}
-									}
-								}
+			if (domain != null && domain.getTemplates() != null) {
+				List<Template> templates = domain.getTemplates().getTemplate();
+				if (templates != null && !templates.isEmpty()) {
+					for (Template template : templates) {
+						String whiteRegex = template.getUrl();
+						if (StringUtils.isNotBlank(whiteRegex)) {
+							boolean result = Pattern.compile(whiteRegex).matcher(url).find();
+							if (result) {
+								return template.getParser();
 							}
 						}
-
 					}
 				}
 			}

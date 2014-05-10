@@ -35,31 +35,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity-tools</artifactId>
-			<version>2.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.struts</groupId>
-					<artifactId>struts-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.struts</groupId>
-					<artifactId>struts-taglib</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.struts</groupId>
-					<artifactId>struts-tiles</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.7.3</version>
