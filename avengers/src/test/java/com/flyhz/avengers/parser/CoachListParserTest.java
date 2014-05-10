@@ -15,7 +15,7 @@ public class CoachListParserTest extends TestCase {
 
 	@Test
 	public void testParserContent() {
-		CoachListParser coachParser = new CoachListParser();
+		CoachUrlParser coachParser = new CoachUrlParser();
 		long b = System.currentTimeMillis();
 		RtnResult result = coachParser.parserContent(testUrl);
 		long e = System.currentTimeMillis();

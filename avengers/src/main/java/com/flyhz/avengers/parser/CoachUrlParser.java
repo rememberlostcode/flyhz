@@ -18,13 +18,13 @@ import com.flyhz.avengers.util.WebClientUtil;
 
 /**
  * 
- * 类说明：coach列表解析器
+ * 类说明：coachURL列表解析器
  * 
  * @author robin 2014-5-5下午7:00:21
  * 
  */
-public class CoachListParser implements BaseParser {
-	private Logger	log			= LoggerFactory.getLogger(CoachListParser.class);
+public class CoachUrlParser implements BaseParser {
+	private Logger	log			= LoggerFactory.getLogger(CoachUrlParser.class);
 	private String	tempUrl		= "http://www.coach.com/online/handbags/";
 	private String	chartset	= "UTF-8";
 
