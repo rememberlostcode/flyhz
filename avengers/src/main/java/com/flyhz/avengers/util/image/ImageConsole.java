@@ -6,6 +6,9 @@ import java.util.LinkedList;
 public class ImageConsole {
 	private static ImageMitiThread	it;
 
+	private ImageConsole() {
+	}
+
 	public static void main(String[] rags) {
 		start();
 
