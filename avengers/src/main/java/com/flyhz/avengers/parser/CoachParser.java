@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.flyhz.avengers.dto.ProductDto;
 import com.flyhz.avengers.dto.RtnResult;
 import com.flyhz.avengers.template.CoachDetailTemplate;
-import com.flyhz.avengers.template.CoachListTemplate;
+import com.flyhz.avengers.template.CoachUrlTemplate;
 import com.flyhz.avengers.util.UrlUtil;
 import com.flyhz.avengers.util.WebClientUtil;
 
@@ -33,7 +33,7 @@ public class CoachParser implements BaseParser {
 	private String	chartset	= "UTF-8";
 
 	public List<String> getAllProductUrls(String url) {
-		CoachListTemplate template = new CoachListTemplate();
+		CoachUrlTemplate template = new CoachUrlTemplate();
 		List<String> urls = new ArrayList<String>();
 		long b = System.currentTimeMillis();
 		String html = WebClientUtil.getContent(url, false, true);

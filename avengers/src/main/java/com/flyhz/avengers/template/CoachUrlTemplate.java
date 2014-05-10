@@ -7,7 +7,7 @@ package com.flyhz.avengers.template;
  * @author robin 2014-5-8上午10:15:04
  * 
  */
-public class CoachListTemplate {
+public class CoachUrlTemplate {
 	private String	mainEls			= "div#productGrid";						// 找出整体详情父节点
 	private String	linksElements	= "div.oneByOne";							// 找出产品url
 	private String	imgUrlFilter	= "http://s7d2.scene7.com/is/image/Coach";	// 图片过滤
