@@ -3,7 +3,7 @@
 	<element name="avengers">
 		<complexType>
 			<sequence>
-				<element name="domain" type="ave:domain"/>
+				<element name="domain" type="ave:domain" minOccurs="1" maxOccurs="unbounded"/>
 			</sequence>
 		</complexType>
 	</element>
@@ -19,7 +19,7 @@
 			<element name="templates" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="template">
+						<element name="template" minOccurs="1" maxOccurs="unbounded">
 							<complexType>
 								<attribute name="url" type="token" use="required"/>
 								<attribute name="parser" type="token" use="required"/>
