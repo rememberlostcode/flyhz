@@ -2,7 +2,6 @@
 package com.flyhz.avengers.framework;
 
 import java.util.List;
-import java.util.Set;
 
 import com.flyhz.avengers.framework.xml.Domain.Templates.Template;
 
@@ -18,8 +17,8 @@ public interface UrlFilter {
 	 * @param black
 	 * @param templates
 	 * @param waitFilterUrls
-	 * @return
+	 * @return List<String>
 	 */
-	public Set<String> filterValidUrl(List<String> black, List<Template> templates,
+	public List<String> filterValidUrl(List<String> black, List<Template> templates,
 			List<String> waitFilterUrls);
 }

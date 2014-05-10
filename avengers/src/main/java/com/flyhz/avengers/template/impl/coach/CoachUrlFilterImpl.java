@@ -2,6 +2,7 @@
 package com.flyhz.avengers.template.impl.coach;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -11,13 +12,17 @@ import com.flyhz.avengers.template.impl.BaseUrlFilter;
 
 public class CoachUrlFilterImpl extends BaseUrlFilter implements UrlFilter {
 	@Override
-	public Set<String> filterValidUrl(List<String> black, List<Template> templates,
+	public List<String> filterValidUrl(List<String> black, List<Template> templates,
 			List<String> waitFilterUrls) {
 		if (waitFilterUrls != null && !waitFilterUrls.isEmpty()) {
 			Set<String> filterUrlsSet = rmDuplicate(waitFilterUrls);
 			filterUrlsSet = checkWhiteUrls(templates, filterUrlsSet);
 			filterUrlsSet = checkBlackUrls(black, filterUrlsSet);
-			return filterUrlsSet;
+			if (filterUrlsSet != null && !filterUrlsSet.isEmpty()) {
+				List<String> result = new ArrayList<String>();
+				result.addAll(filterUrlsSet);
+				return result;
+			}
 		}
 		return null;
 	}
