@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ave:avengers xmlns:ave="http://www.flyhz.com/avengrs"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.flyhz.com/avengrs avengers.xsd ">
+	<ave:domain root="http://wwww.sina.com.cn">
+		<ave:blackList>
+			<ave:black>http://www.sina.com.cn/news</ave:black>
+		</ave:blackList>
+		<ave:templates>
+			<ave:template url="http://www.sina.com.cn/sports"
+				parser="com.flyhz.avengers.parser.SinaSportsParser" />
+			<ave:template url="http://wwww.sina.com.cn/music"
+				parser="com.flyhz.avengers.parser.SinaMusicParser" />
+		</ave:templates>
+	</ave:domain>
+	<ave:domain root="http://www.baidu.com">
+	    
+	</ave:domain>
+</ave:avengers>

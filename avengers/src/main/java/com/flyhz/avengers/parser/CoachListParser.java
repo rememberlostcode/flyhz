@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.dto.RtnResult;
 import com.flyhz.avengers.template.CoachListTemplate;
-import com.flyhz.avengers.util.UrlUtil;
 import com.flyhz.avengers.util.WebClientUtil;
 
 /**
@@ -36,9 +35,6 @@ public class CoachListParser implements BaseParser {
 			List<String> urls = new ArrayList<String>();
 			long b = System.currentTimeMillis();
 			String html = WebClientUtil.getContent(url, false, true);
-			if (StringUtils.isBlank(html)) {
-				html = UrlUtil.sendGet(url);
-			}
 			long e = System.currentTimeMillis();
 			log.debug("爬网页时，花费时间{}毫秒", new Object[] { (e - b) });
 
