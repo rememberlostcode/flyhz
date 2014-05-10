@@ -71,23 +71,22 @@ public class AvengersDataUtil {
 	 * @param fileName
 	 * @return
 	 */
-	public static String getDataByXmlFileName(String fileName) {
+	public static Avengers getDataByXmlFileName(String fileName) {
 		if (StringUtils.isBlank(fileName))
 			return null;
 
-		String data = null;
+		Avengers avengers = null;
 		try {
 			ClassLoader classLoader = AvengersDataUtil.class.getClassLoader();
 			URL schemaUrl = classLoader.getResource("avengers.xsd");
 			Schema schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
 											.newSchema(schemaUrl);
 			URL xmlUrl = classLoader.getResource(fileName);
-			Avengers Avengers = XmlUtil.convertXmlToObject(Avengers.class, xmlUrl, schema);
-			data = XmlUtil.convertObjectToString(Avengers, schema);
+			avengers = XmlUtil.convertXmlToObject(Avengers.class, xmlUrl, schema);
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		return data;
+		return avengers;
 	}
 
 	/**
