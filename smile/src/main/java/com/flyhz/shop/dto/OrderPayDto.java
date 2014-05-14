@@ -4,6 +4,8 @@ package com.flyhz.shop.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * 
  * 类说明：订单支付Dto
@@ -12,12 +14,17 @@ import java.util.Date;
  * 
  */
 public class OrderPayDto {
+	@JsonIgnore
 	private Integer		id;
 	private String		number;
+	private String		time;
+	@JsonIgnore
 	private Date		gmtCreate;
+	@JsonIgnore
 	private Date		gmtModify;
 	private Character	status;
 	private BigDecimal	total;
+	@JsonIgnore
 	private Integer		userId;
 
 	public OrderPayDto() {
@@ -37,6 +44,14 @@ public class OrderPayDto {
 
 	public void setNumber(String number) {
 		this.number = number;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
 	}
 
 	public Date getGmtCreate() {

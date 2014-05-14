@@ -13,17 +13,11 @@ public class Consignee implements Serializable {
 	private static final long	serialVersionUID	= 3730923451209957486L;
 	private Integer				id;
 	private String				name;
-	private Integer				conturyId;
-	private Integer				provinceId;
-	private Integer				cityId;
-	private Integer				districtId;
 	private String				address;
 	private String				zipcode;
-	private Integer				areacode;
-	private Integer				telephone;
-	private String				mobilephone;
+	private String				phone;
 	private UserDto				user;
-	private Idcard		identitycard;
+	private Idcard				identitycard;
 	private boolean				isDel;
 
 	public Integer getId() {
@@ -42,36 +36,16 @@ public class Consignee implements Serializable {
 		this.name = name;
 	}
 
-	public Integer getConturyId() {
-		return conturyId;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setConturyId(Integer conturyId) {
-		this.conturyId = conturyId;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
-	public Integer getProvinceId() {
-		return provinceId;
-	}
-
-	public void setProvinceId(Integer provinceId) {
-		this.provinceId = provinceId;
-	}
-
-	public Integer getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(Integer cityId) {
-		this.cityId = cityId;
-	}
-
-	public Integer getDistrictId() {
-		return districtId;
-	}
-
-	public void setDistrictId(Integer districtId) {
-		this.districtId = districtId;
+	public void setDel(boolean isDel) {
+		this.isDel = isDel;
 	}
 
 	public String getAddress() {
@@ -88,30 +62,6 @@ public class Consignee implements Serializable {
 
 	public void setZipcode(String zipcode) {
 		this.zipcode = zipcode;
-	}
-
-	public Integer getAreacode() {
-		return areacode;
-	}
-
-	public void setAreacode(Integer areacode) {
-		this.areacode = areacode;
-	}
-
-	public Integer getTelephone() {
-		return telephone;
-	}
-
-	public void setTelephone(Integer telephone) {
-		this.telephone = telephone;
-	}
-
-	public String getMobilephone() {
-		return mobilephone;
-	}
-
-	public void setMobilephone(String mobilephone) {
-		this.mobilephone = mobilephone;
 	}
 
 	public UserDto getUser() {

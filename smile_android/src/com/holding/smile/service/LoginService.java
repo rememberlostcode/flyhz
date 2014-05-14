@@ -26,6 +26,7 @@ import com.holding.smile.protocol.PUser;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.NullHostNameVerifier;
 import com.holding.smile.tools.NullX509TrustManager;
+import com.holding.smile.tools.URLUtil;
 
 public class LoginService {
 
@@ -54,7 +55,12 @@ public class LoginService {
 		HashMap<String, String> param = new HashMap<String, String>();
 		param.put("username", iuser.getUsername());
 		param.put("password", iuser.getPassword());
-		String rvdString = https_get(login_url, param);
+		String rvdString = null;
+		if (login_url.indexOf("https") > -1) {
+			rvdString = https_get(login_url, param);
+		} else {
+			rvdString = URLUtil.getStringByGet(login_url, param);
+		}
 		if (rvdString != null) {
 			PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
 			if (user != null && user.getData() != null && user.getCode() == SUCCESS_CODE) {
@@ -101,6 +107,8 @@ public class LoginService {
 						MyApplication.getInstance().getSqliteService().closeDB();
 						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
 					}
+				} else {
+					MyApplication.getInstance().setSessionId(null);
 				}
 			}
 		}

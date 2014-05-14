@@ -7,12 +7,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.holding.smile.activity.MyApplication;
+
 import android.graphics.Bitmap;
 import android.util.Log;
 
 public class MemoryCache {
 
-	private static String		TAG		= "MemoryCache";
+	// private static String TAG = "MemoryCache";
 	// 放入缓存时是个同步操作
 	// LinkedHashMap构造方法的最后一个参数true代表这个map里的元素将按照最近使用次数由少到多排列，即LRU
 	// 这样的好处是如果要将缓存中的元素替换，则先遍历出最近最少使用的元素来替换以提高效率
@@ -35,7 +37,7 @@ public class MemoryCache {
 
 	public void setLimit(long new_limit) {
 		limit = new_limit;
-		Log.i(TAG, "MemoryCache will use up to " + limit / 1024. / 1024. + "MB");
+		Log.i(MyApplication.LOG_TAG, "MemoryCache will use up to " + limit / 1024. / 1024. + "MB");
 	}
 
 	public Bitmap get(String id) {
@@ -65,7 +67,7 @@ public class MemoryCache {
 	 * 
 	 */
 	private void checkSize() {
-		Log.i(TAG, "cache size=" + size + " length=" + cache.size());
+		Log.i(MyApplication.LOG_TAG, "cache size=" + size + " length=" + cache.size());
 		if (size > limit) {
 			// 先遍历最近最少使用的元素
 			Iterator<Entry<String, Bitmap>> iter = cache.entrySet().iterator();
@@ -76,7 +78,7 @@ public class MemoryCache {
 				if (size <= limit)
 					break;
 			}
-			Log.i(TAG, "Clean cache. New size " + cache.size());
+			Log.i(MyApplication.LOG_TAG, "Clean cache. New size " + cache.size());
 		}
 	}
 

@@ -7,14 +7,8 @@
     <uses-sdk android:minSdkVersion="8" />
     
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
 
     <application
         android:name="com.holding.smile.activity.MyApplication"
@@ -72,16 +66,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.holding.smile.activity.AddressManagerActivity"
-            android:windowSoftInputMode="stateUnchanged|adjustPan"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.holding.smile.activity.AddressEditActivity"
-            android:windowSoftInputMode="stateUnchanged|adjustPan"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.holding.smile.activity.IdcardManagerActivity"
             android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:screenOrientation="portrait" >
@@ -133,6 +117,11 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.OrderDetailActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustPan"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.holding.smile.activity.WebViewActivity"
             android:windowSoftInputMode="stateUnchanged|adjustPan"
             android:screenOrientation="portrait" >
         </activity>

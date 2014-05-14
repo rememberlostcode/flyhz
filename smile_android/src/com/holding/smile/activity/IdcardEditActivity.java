@@ -1,10 +1,15 @@
 
 package com.holding.smile.activity;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +41,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 	private Button		idcardDelete;
 	private ImageView	imageView;
 
+	private int			optNum	= 1;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,10 +72,10 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				idcard = (Idcard) (intent.getExtras().getSerializable("idcard"));
 				if (idcard != null) {
 					idcardName.setText(idcard.getName());
-					idcardNumber.setText(idcard.getIdcard());
-					if (idcard.getPhoto() != null && !"".equals(idcard.getPhoto())) {
+					idcardNumber.setText(idcard.getNumber());
+					if (idcard.getUrl() != null && !"".equals(idcard.getUrl())) {
 						MyApplication.getImageLoader().DisplayImage(
-								MyApplication.jgoods_img_url + idcard.getPhoto(), imageView, false);
+								MyApplication.jgoods_img_url + idcard.getUrl(), imageView, false);
 						imageView.setVisibility(View.VISIBLE);
 					}
 				}
@@ -84,6 +91,34 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 	}
 
 	@Override
+	public void loadData() {
+		RtnValueDto rvd = null;
+		try {
+			switch (optNum) {
+				case OPT_CODE_SAVE:
+					rvd = MyApplication.getInstance().getSubmitService()
+										.idcardSave(idcard, picturePath);
+					break;
+				case OPT_CODE_REMOVE:
+					if (idcard != null && idcard.getId() != null) {
+						rvd = MyApplication.getInstance().getSubmitService()
+											.idcardRemove(idcard.getId());
+					}
+					break;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Message msg = mUIHandler.obtainMessage(optNum);
+		msg.obj = rvd;
+		msg.sendToTarget();
+	}
+
+	private final int	OPT_CODE_SAVE	= 1;
+	private final int	OPT_CODE_REMOVE	= 2;
+
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
@@ -92,7 +127,6 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				break;
 			}
 			case R.id.idcard_add_save: {
-
 				if ("".equals(idcardName.getText().toString())) {
 					Toast.makeText(context, "姓名不能为空", Toast.LENGTH_SHORT).show();
 					break;
@@ -103,45 +137,25 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					Toast.makeText(context, "联系电话不能为空", Toast.LENGTH_SHORT).show();
 					break;
 				}
-				idcard.setIdcard(idcardNumber.getText().toString());
+				idcard.setNumber(idcardNumber.getText().toString());
 
-				RtnValueDto rvd = null;
-				try {
-					rvd = MyApplication.getInstance().getSubmitService()
-										.idcardSave(idcard, picturePath);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				if (rvd != null && 200000 == rvd.getCode()) {
-					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
-					Intent intent = new Intent();
-					intent.putExtra("idcard", idcard);
-					setResult(RESULT_OK, intent);
-					finish();
-				} else {
-					Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
-				}
+				optNum = OPT_CODE_SAVE;
+				startTask();
 				break;
 			}
 
 			case R.id.idcard_delete: {
-				RtnValueDto rvd = null;
-				if (idcard != null && idcard.getId() != null) {
-					rvd = MyApplication.getInstance().getSubmitService()
-										.idcardRemove(idcard.getId());
-				}
-				if (rvd != null && 200000 == rvd.getCode()) {
-					Toast.makeText(context, "删除成功！", Toast.LENGTH_SHORT).show();
-					Intent intent = new Intent();
-					intent.putExtra("idcard", idcard);
-					setResult(RESULT_OK, intent);
-					finish();
-				} else {
-					if (idcard != null && idcard.getId() != null) {
-						Toast.makeText(context, "删除失败，请重试！", Toast.LENGTH_SHORT).show();
-					}
-					finish();
-				}
+				new AlertDialog.Builder(this).setTitle("提示框")
+												.setMessage("确定删除该记录吗？")
+												.setPositiveButton("确定",
+														new DialogInterface.OnClickListener() {
+															public void onClick(
+																	DialogInterface dialog,
+																	int which) {
+																optNum = OPT_CODE_REMOVE;
+																startTask();
+															}
+														}).setNegativeButton("取消", null).show();
 				break;
 			}
 			case R.id.idcard_photo_button: {
@@ -173,5 +187,53 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
+
+	@SuppressLint("HandlerLeak")
+	private final Handler	mUIHandler	= new Handler() {
+
+											@Override
+											public void handleMessage(Message msg) {
+												progressBar.setVisibility(View.GONE);
+												// if (msg.obj != null) {
+												switch (msg.what) {
+													case OPT_CODE_SAVE: {
+														RtnValueDto rvd = (RtnValueDto) msg.obj;
+														if (rvd != null && 200000 == rvd.getCode()) {
+															Toast.makeText(context, "保存成功！",
+																	Toast.LENGTH_SHORT).show();
+															Intent intent = new Intent();
+															intent.putExtra("idcard", idcard);
+															setResult(RESULT_OK, intent);
+															finish();
+														} else {
+															Toast.makeText(context, "保存失败，请重试！",
+																	Toast.LENGTH_SHORT).show();
+														}
+														break;
+													}
+													case OPT_CODE_REMOVE: {
+														RtnValueDto rvd = (RtnValueDto) msg.obj;
+														if (rvd != null && 200000 == rvd.getCode()) {
+															Toast.makeText(context, "删除成功！",
+																	Toast.LENGTH_SHORT).show();
+															Intent intent = new Intent();
+															intent.putExtra("idcard", idcard);
+															setResult(RESULT_OK, intent);
+															finish();
+														} else {
+															if (idcard != null
+																	&& idcard.getId() != null) {
+																Toast.makeText(context,
+																		"删除失败，请重试！",
+																		Toast.LENGTH_SHORT).show();
+															}
+															finish();
+														}
+														break;
+													}
+												}
+												// }
+											}
+										};
 
 }

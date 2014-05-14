@@ -30,7 +30,7 @@
             android:dividerHeight="1sp" />
 
         <TextView
-            android:id="@+id/total"
+            android:id="@+id/order_inform_total"
             android:layout_width="fill_parent"
             android:layout_height="40dip"
             android:background="#ffffff"

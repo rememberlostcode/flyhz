@@ -1,6 +1,8 @@
 
 package com.holding.smile.tools;
 
+import com.holding.smile.activity.MyApplication;
+
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
@@ -18,9 +20,9 @@ import android.widget.ImageView;
  */
 public class RecycleBitmapUtil {
 
-	private static final String	TAG					= "RecycleBitmapUtil";
+	// private static final String TAG = "RecycleBitmapUtil";
 	/* 是否释放背景图 true:释放;false:不释放 */
-	private boolean				flagWithBackgroud	= false;
+	private boolean	flagWithBackgroud	= false;
 
 	/**
 	 * 
@@ -86,7 +88,7 @@ public class RecycleBitmapUtil {
 
 	private void rceycleBitmap(Bitmap bitmap) {
 		if (bitmap != null && !bitmap.isRecycled()) {
-			Log.e(TAG, "rceycleBitmap");
+			Log.e(MyApplication.LOG_TAG, "RecycleBitmapUtil rceycleBitmap");
 			bitmap.recycle();
 			bitmap = null;
 			System.gc();

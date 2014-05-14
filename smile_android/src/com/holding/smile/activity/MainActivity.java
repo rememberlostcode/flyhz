@@ -108,14 +108,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 	@Override
 	public void onClick(View view) {
 		switch (view.getId()) {
-			case R.id.mainfooter_search: {
-				Intent intent = new Intent(this, SearchGoodsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResult(intent, SEARCH_CODE);
-				break;
-			}
 			case R.id.header_right: {
-				// Toast.makeText(context, "您点了类别！", Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(this, CategoryActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, CATE_CODE);

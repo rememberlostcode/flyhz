@@ -28,36 +28,26 @@ import com.holding.smile.tools.StrUtils;
 
 public class MyOrderInformAdapter extends BaseAdapter {
 	private Context					context;
-	private TextView				total;
 	private List<OrderDetailDto>	orderDetails;
 	private ImageLoader				mImageLoader	= MyApplication.getImageLoader();
 	private boolean					mBusy			= false;
 	private Integer					sWidth			= MyApplication.getInstance().getScreenWidth();
 	private ProgressDialog			pDialog;
 	private Handler					mUIHandler;
-	private boolean					isShowOrder		= false;										// 是否是显示我的订单页面
-	private ViewGroup				activityParent;
+	private boolean					cartFlag		= false;										// 为true时，说明是从购物车结算的，这时不能修改购买数量
 
 	public void setFlagBusy(boolean busy) {
 		this.mBusy = busy;
 	}
 
-	public void setIsShowOrder(boolean isShowOrder) {
-		this.isShowOrder = isShowOrder;
-	}
-
-	public void setActivityParent(ViewGroup activityParent) {
-		this.activityParent = activityParent;
-	}
-
 	// 自己定义的构造函数
-	public MyOrderInformAdapter(Context context, List<OrderDetailDto> contacts, TextView total,
-			ProgressDialog pDialog, Handler mUIHandler) {
+	public MyOrderInformAdapter(Context context, List<OrderDetailDto> contacts,
+			ProgressDialog pDialog, Handler mUIHandler, boolean cartFlag) {
 		this.orderDetails = contacts;
 		this.context = context;
-		this.total = total;
 		this.pDialog = pDialog;
 		this.mUIHandler = mUIHandler;
+		this.cartFlag = cartFlag;
 	}
 
 	public void setData(List<OrderDetailDto> contacts) {
@@ -117,6 +107,11 @@ public class MyOrderInformAdapter extends BaseAdapter {
 		holder.p.setImageResource(R.drawable.empty_photo);
 		final OrderDetailDto orderDetail = (OrderDetailDto) getItem(position);
 		if (orderDetail != null && orderDetail.getProduct() != null) {
+			if (cartFlag) {
+				holder.subBtn.setVisibility(View.GONE);
+				holder.addBtn.setVisibility(View.GONE);
+			}
+
 			final ProductDto jGoods = orderDetail.getProduct();
 			if (StrUtils.isNotEmpty(jGoods.getName())) {
 				holder.n.setText(jGoods.getName().trim());
@@ -131,8 +126,6 @@ public class MyOrderInformAdapter extends BaseAdapter {
 				holder.pp.setText("￥" + jGoods.getPurchasingPrice());
 			}
 			holder.qty.setText(orderDetail.getQty() + "");
-			if (total != null)
-				total.setText("共计" + orderDetail.getQty() + "件商品，￥" + orderDetail.getTotal() + "元");
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
@@ -148,62 +141,26 @@ public class MyOrderInformAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View v) {
 					if (jGoods != null) {
-
-						if (isShowOrder) {
-							if (activityParent != null) {
-								Intent intent = new Intent(context, GoodsDetailActivity.class);
-								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								intent.putExtra("gid", jGoods.getId());
-								intent.putExtra("bs", jGoods.getBrandstyle());
-								((Activity) activityParent.getContext()).startActivity(intent);
-							} else {
-								notifyDataSetChanged();
-							}
-						} else {
-							Intent intent = new Intent(context, GoodsDetailActivity.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							intent.putExtra("gid", jGoods.getId());
-							intent.putExtra("bs", jGoods.getBrandstyle());
-							((Activity) parent.getContext()).startActivity(intent);
-						}
+						Intent intent = new Intent(context, GoodsDetailActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						intent.putExtra("gid", jGoods.getId());
+						intent.putExtra("bs", jGoods.getBrandstyle());
+						((Activity) parent.getContext()).startActivity(intent);
 					} else {
 						notifyDataSetChanged();
 					}
 				}
 			});
-			if (isShowOrder) {
-				holder.spq.setText("x" + orderDetail.getQty());
-				convertView.findViewById(R.id.layout_buyqty).setVisibility(View.GONE);
-			} else {
-				holder.spq.setVisibility(View.GONE);
-				holder.subBtn.setOnClickListener(new OnClickListener() {
+			holder.subBtn.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View arg0) {
-						if (orderDetail.getQty() > 1) {
+				@Override
+				public void onClick(View arg0) {
+					if (orderDetail.getQty() > 1) {
 
-							// 先发送空信息显示进度条
-							showPDialog();
-
-							orderDetail.setQty((short) (orderDetail.getQty() - 1));
-							RtnValueDto rtnValue = MyApplication.getInstance()
-																.getSubmitService()
-																.updateOrderQty(jGoods.getId(),
-																		orderDetail.getQty());
-							Message msg = mUIHandler.obtainMessage(1);
-							msg.obj = rtnValue;
-							msg.sendToTarget();
-						}
-					}
-				});
-				holder.addBtn.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View arg0) {
 						// 先发送空信息显示进度条
 						showPDialog();
 
-						orderDetail.setQty((short) (orderDetail.getQty() + 1));
+						orderDetail.setQty((short) (orderDetail.getQty() - 1));
 						RtnValueDto rtnValue = MyApplication.getInstance()
 															.getSubmitService()
 															.updateOrderQty(jGoods.getId(),
@@ -212,8 +169,25 @@ public class MyOrderInformAdapter extends BaseAdapter {
 						msg.obj = rtnValue;
 						msg.sendToTarget();
 					}
-				});
-			}
+				}
+			});
+			holder.addBtn.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					// 先发送空信息显示进度条
+					showPDialog();
+
+					orderDetail.setQty((short) (orderDetail.getQty() + 1));
+					RtnValueDto rtnValue = MyApplication.getInstance()
+														.getSubmitService()
+														.updateOrderQty(jGoods.getId(),
+																orderDetail.getQty());
+					Message msg = mUIHandler.obtainMessage(1);
+					msg.obj = rtnValue;
+					msg.sendToTarget();
+				}
+			});
 		}
 		return convertView;
 	}

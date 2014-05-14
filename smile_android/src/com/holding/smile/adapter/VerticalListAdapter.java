@@ -100,7 +100,8 @@ public class VerticalListAdapter extends BaseAdapter {
 				final HorizontalGridViewAdapter hlAdapter = new HorizontalGridViewAdapter(context,
 						brandJGoods.getGs());
 				int ii = hlAdapter.getCount();
-				LayoutParams params = new LayoutParams(ii * cWidth, LayoutParams.WRAP_CONTENT);
+				LayoutParams params = new LayoutParams(ii * (cWidth + hSpacing),
+						LayoutParams.WRAP_CONTENT);
 				holder.gridView.setLayoutParams(params);
 				holder.gridView.setColumnWidth(cWidth);
 				holder.gridView.setHorizontalSpacing(hSpacing);

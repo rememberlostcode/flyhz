@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,11 +56,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	private TextView				total;
 	private CheckBox				allChecked;
 	private List<CartItem>			cartItemList			= new ArrayList<CartItem>();
-    private Integer               gid                  = null;                     // 商品ID
-    private String                bs                   = null;                     // 款号
-    private Integer               allQty               = 0;                        // 结算总数量，默认是0
-    private List<Integer>         cartIds              = null;                     // 从购物车结算时用，保存选中的购物车ID
-    private BigDecimal            allTotal             = new BigDecimal(0);        // 结算总金额,默认是0
+	private Integer					allQty					= 0;							// 结算总数量，默认是0
+	private BigDecimal				allTotal				= new BigDecimal(0);			// 结算总金额,默认是0
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +75,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 
 	}
 
-	                        /**
-     * 初始化View
-     */
+	/**
+	 * 初始化View
+	 */
 	private void initView() {
 		displayFooterMain(R.id.mainfooter_four);
 		displayFooterMainTotal();
@@ -101,11 +100,13 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 			}
 		});
 
-        total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.floatValue() + "元");
+		allQty = 0;
+		allTotal = new BigDecimal(0);
+		total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.doubleValue() + "元");
 
-        initPDialog();// 初始化进度条
+		initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.cart_list);
-        cartAdapter = new MyShoppingCartAdapter(context, cartItemList, pDialog, mUIHandler);
+		cartAdapter = new MyShoppingCartAdapter(context, cartItemList, pDialog, mUIHandler);
 		listView.setAdapter(cartAdapter);
 	}
 
@@ -116,19 +117,19 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		msg.sendToTarget();
 	}
 
-	                        /**
-     * 进度条初始化
-     */
+	/**
+	 * 进度条初始化
+	 */
 	private void initPDialog() {
 		pDialog = new ProgressDialog(this);
 		// pDialog.setTitle("");
 		// pDialog.closeOptionsMenu();
 		pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		// pDialog.setMax(100);
-        pDialog.setMessage("正在加载...");
+		pDialog.setMessage("正在加载...");
 		pDialog.setIndeterminate(false);
 		pDialog.setCanceledOnTouchOutside(true);
-        // pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "右键",
+		// pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "右键",
 		// new DialogInterface.OnClickListener() {
 		// @Override
 		// public void onClick(DialogInterface dialog, int which) {
@@ -138,7 +139,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		// });
 		pDialog.setProgress(0);
 		mProgress = 0;
-        // 当要显示进度效果时，再给handler发送一个空消息
+		// 当要显示进度效果时，再给handler发送一个空消息
 		// mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
 	}
 
@@ -165,9 +166,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 			case R.id.payoff_btn: {
 				Set<Integer> sIds = cartAdapter.getSelectIds();
 				if (sIds != null && !sIds.isEmpty()) {
-					List<Integer> cartIds = new ArrayList<Integer>();
+					List<String> cartIds = new ArrayList<String>();
 					for (Integer cartId : sIds) {
-						cartIds.add(cartId);
+						cartIds.add(String.valueOf(cartId));
 					}
 					Intent intent = new Intent(this, OrderInformActivity.class);
 					intent.putExtra("cartIds", (Serializable) cartIds);
@@ -210,13 +211,13 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		setResult(RESULT_CANCELED, null);
 	}
 
-	                        /**
-     * 计算总额
-     */
+	/**
+	 * 计算总额
+	 */
 	private void calculateTotal() {
-        if (!cartAdapter.getSelectAll()) {
-            allChecked.setChecked(false);
-        }
+		if (!cartAdapter.getSelectAll()) {
+			allChecked.setChecked(false);
+		}
 
 		if (cartItemList == null || cartItemList.isEmpty()) {
 			payoffBtn.setVisibility(View.GONE);
@@ -236,7 +237,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 				}
 			}
 		}
-        total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.floatValue() + "元");
+		total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.doubleValue() + "元");
 		cartAdapter.notifyDataSetChanged();
 	}
 
@@ -282,7 +283,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																}
 															}
 														} else {
-                                                         Toast.makeText(context, "暂无数据",
+															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
 														}
 
@@ -321,7 +322,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																				item.setTotal(itemData.getTotal());
 																			}
 																		}
-                                                                     // 计算总金额
+																		// 计算总金额
 																		calculateTotal();
 																	}
 																}
@@ -338,18 +339,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														if (msg.obj != null) {
 															Integer itemId = (Integer) msg.obj;
 															if (itemId != null) {
-																if (cartItemList != null
-																		&& !cartItemList.isEmpty()) {
-																	for (CartItem item : cartItemList) {
-																		if (item.getId().equals(
-																				itemId)) {
-																			cartItemList.remove(item);
-																			break;
-																		}
-																	}
-                                                                 // 计算总金额
-																	calculateTotal();
-																}
+																alert(itemId);
 															}
 														} else {
 															Toast.makeText(context,
@@ -360,7 +350,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														break;
 													}
 													case WHAT_DID_SELECT_DATA: {
-                                                     // 计算总金额
+														// 计算总金额
 														calculateTotal();
 														break;
 													}
@@ -370,9 +360,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 															mProgress = 0;
 														} else {
 															mProgress++;
-                                                         // ProgressBar进度值加1
+															// ProgressBar进度值加1
 															pDialog.incrementProgressBy(1);
-                                                         // 延迟100毫秒后发送空消息
+															// 延迟100毫秒后发送空消息
 															mUIHandler.sendEmptyMessageDelayed(
 																	WHAT_PROGRESS_STATE, 100);
 														}
@@ -381,4 +371,44 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 												}
 											}
 										};
+
+	private void alert(final Integer itemId) {
+		new AlertDialog.Builder(this).setTitle("提示")
+										.setMessage("您确定要删除此商品吗？")
+										.setPositiveButton("确定",
+												new DialogInterface.OnClickListener() {
+													public void onClick(DialogInterface dialog,
+															int which) {
+
+														RtnValueDto rtnValue = MyApplication.getInstance()
+																							.getSubmitService()
+																							.removeCart(
+																									itemId);
+														if (rtnValue != null
+																&& rtnValue.getCode()
+																			.equals(200000)) {
+															cartAdapter.getSelectIds().remove(
+																	itemId);
+															if (cartItemList != null
+																	&& !cartItemList.isEmpty()) {
+																for (CartItem item : cartItemList) {
+																	if (item.getId().equals(itemId)) {
+																		cartItemList.remove(item);
+																		break;
+																	}
+																}
+																// 计算总金额
+																calculateTotal();
+															}
+															Toast.makeText(context, "删除成功！",
+																	Toast.LENGTH_SHORT).show();
+														} else {
+															Toast.makeText(context,
+																	Constants.MESSAGE_NET,
+																	Toast.LENGTH_SHORT).show();
+														}
+
+													}
+												}).setNegativeButton("取消", null).show();
+	}
 }

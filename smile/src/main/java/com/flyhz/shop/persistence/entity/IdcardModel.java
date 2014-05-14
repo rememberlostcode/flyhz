@@ -9,8 +9,8 @@ public class IdcardModel implements Serializable {
 	private static final long	serialVersionUID	= 1335899818035738020L;
 	private Integer				id;
 	private String				name;
-	private String				idcard;
-	private String				photo;
+	private String				number;
+	private String				url;
 	private Integer				userId;
 	private Date				gmtCreate;
 	private Date				gmtModify;
@@ -31,20 +31,20 @@ public class IdcardModel implements Serializable {
 		this.name = name;
 	}
 
-	public String getIdcard() {
-		return idcard;
+	public String getNumber() {
+		return number;
 	}
 
-	public void setIdcard(String idcard) {
-		this.idcard = idcard;
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
-	public String getPhoto() {
-		return photo;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setPhoto(String photo) {
-		this.photo = photo;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public Integer getUserId() {

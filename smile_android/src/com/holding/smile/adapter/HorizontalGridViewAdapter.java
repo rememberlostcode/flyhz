@@ -97,11 +97,16 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 			convertView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(context, GoodsDetailActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					intent.putExtra("gid", jGoods.getId());
-					intent.putExtra("bs", jGoods.getBs());
-					((Activity) context).startActivityForResult(intent, BaseActivity.SEARCH_CODE);
+					if (jGoods != null) {
+						Intent intent = new Intent(context, GoodsDetailActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						intent.putExtra("gid", jGoods.getId());
+						intent.putExtra("bs", jGoods.getBs());
+						((Activity) context).startActivityForResult(intent,
+								BaseActivity.SEARCH_CODE);
+					} else {
+						notifyDataSetChanged();// 从新更新一下
+					}
 				}
 			});
 		}

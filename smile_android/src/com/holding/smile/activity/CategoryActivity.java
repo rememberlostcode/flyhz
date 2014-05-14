@@ -89,13 +89,6 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.mainfooter_search: {
-				Intent intent = new Intent(this, SearchGoodsActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
-				finish();
-				break;
-			}
 			case R.id.btn_back: {
 				setResult(RESULT_CANCELED, null);
 				finish();
@@ -108,8 +101,6 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		cateList.clear();
-		cateList = null;
 		if (listView != null) {
 			listView.invalidate();
 			listView = null;
@@ -119,6 +110,8 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 			cateAdapter.notifyDataSetInvalidated();
 			cateAdapter = null;
 		}
+		cateList.clear();
+		cateList = null;
 	}
 
 	@SuppressLint("HandlerLeak")

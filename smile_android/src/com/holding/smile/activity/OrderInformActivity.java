@@ -3,7 +3,6 @@ package com.holding.smile.activity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -27,7 +26,6 @@ import com.holding.smile.dto.ProductDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.Constants;
-import com.holding.smile.tools.DateUtil;
 import com.holding.smile.tools.StrUtils;
 
 /**
@@ -52,10 +50,12 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private OrderDto				order						= null;
 	private List<OrderDetailDto>	orderDetails				= new ArrayList<OrderDetailDto>();
 	private Integer					gid							= null;							// 商品ID
-	private String					bs							= null;							// 款号
 	private Integer					addressId					= 1;								// 地址id
 	private Integer					qty							= 1;								// 购买数量，默认是1
-	private List<Integer>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
+	private List<String>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
+	private Integer					allQty						= 0;								// 结算总数量，默认是0
+	private BigDecimal				allTotal					= null;							// 结算总金额
+	private boolean					cartFlag					= false;							// 为true是指从购物车中结算的
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -72,7 +72,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			if (intent.getExtras().getSerializable("gid") != null) {
 				gid = (Integer) intent.getExtras().getSerializable("gid");
 			} else if (intent.getExtras().getSerializable("cartIds") != null) {
-				cartIds = (List<Integer>) intent.getExtras().getSerializable("cartIds");
+				cartIds = (List<String>) intent.getExtras().getSerializable("cartIds");
+				cartFlag = true;
 			}
 			startTask();
 		} catch (Exception e) {
@@ -90,17 +91,18 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		setContentLayout(R.layout.order_inform_view);
 		confirmBtn = (ImageButton) findViewById(R.id.confirm_btn);
 		confirmBtn.setOnClickListener(this);
-		total = (TextView) findViewById(R.id.total);
+		total = (TextView) findViewById(R.id.order_inform_total);
 
 		initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.order_list);
-		orderAdapter = new MyOrderInformAdapter(context, orderDetails, total, pDialog, mUIHandler);
+		orderAdapter = new MyOrderInformAdapter(context, orderDetails, pDialog, mUIHandler,
+				cartFlag);
 		listView.setAdapter(orderAdapter);
 
 	}
 
 	public void loadData() {
-		if (gid != null || (cartIds != null && cartIds.isEmpty())) {
+		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
 			String pidQty = "";
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
@@ -113,9 +115,11 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 				msg.sendToTarget();
 			} else {
 				Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+				finish();
 			}
 		} else {
 			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+			finish();
 		}
 	}
 
@@ -149,7 +153,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	 * 确认订单并生成订单信息
 	 */
 	private void confirmOrder() {
-		if (gid != null || (cartIds != null && cartIds.isEmpty())) {
+		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
 			pDialog.show();
 			mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
 
@@ -189,7 +193,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
+		if (requestCode == ORDER_CODE || resultCode == RESULT_CANCELED) {
 
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -208,6 +212,23 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		}
 		orderDetails.clear();
 		orderDetails = null;
+	}
+
+	/**
+	 * 计算总额
+	 */
+	private void calculateTotal() {
+		allQty = 0;
+		allTotal = new BigDecimal(0);
+		if (orderDetails != null && !orderDetails.isEmpty()) {
+			for (OrderDetailDto orderDetail : orderDetails) {
+				if (orderDetail != null) {
+					allQty += (int) orderDetail.getQty();
+					allTotal = allTotal.add(orderDetail.getTotal());
+				}
+			}
+		}
+		total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.doubleValue() + "元");
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -243,7 +264,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																	orderDetails = order.getDetails();
 																	if (orderDetails != null
 																			&& !orderDetails.isEmpty()) {
-																		initView();
+																		initView();// 初始化view
+																		calculateTotal();// 计算总额
 																	}
 																}
 															}
@@ -288,6 +310,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																				break;
 																			}
 																		}
+																		// 计算总额
+																		calculateTotal();
 																		orderAdapter.notifyDataSetChanged();
 																	}
 																}
@@ -297,7 +321,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																	Constants.MESSAGE_NET,
 																	Toast.LENGTH_SHORT).show();
 														}
-														pDialog.dismiss();
+														if (pDialog != null)
+															pDialog.dismiss();
 														break;
 													}
 													case WHAT_DID_CONFIRMORDER_DATA: {
@@ -323,17 +348,16 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																				.show();
 																	}
 																} else {
-																	orderDetails = order.getDetails();
-																	if (orderDetails != null
-																			&& !orderDetails.isEmpty()) {
+																	if (order.getNumber() != null
+																			&& order.getTime() != null
+																			&& order.getTotal() != null) {
 																		Intent intent = new Intent(
 																				context,
 																				OrderPayActivity.class);
 																		intent.putExtra("number",
 																				order.getNumber());
-																		intent.putExtra(
-																				"time",
-																				DateUtil.dateToStr(new Date()));
+																		intent.putExtra("time",
+																				order.getTime());
 																		intent.putExtra("amount",
 																				order.getTotal());
 																		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -341,20 +365,32 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 																		if (cartIds != null
 																				&& !cartIds.isEmpty()) {
-																			for (Integer cartId : cartIds) {
+																			for (String cartId : cartIds) {
 																				MyApplication.getInstance()
 																								.getSubmitService()
 																								.removeCart(
-																										cartId);
+																										Integer.valueOf(cartId));
+																			}
+
+																			if (cartFlag) {// 从购物车结算时要返回刷新
+																				setResult(
+																						RESULT_OK,
+																						null);
 																			}
 																		}
-																		setResult(RESULT_OK, null);
 																		finish();
+																	} else {
+																		Toast.makeText(
+																				context,
+																				Constants.MESSAGE_NET,
+																				Toast.LENGTH_SHORT)
+																				.show();
 																	}
 																}
 															}
 														}
-														pDialog.dismiss();
+														if (pDialog != null)
+															pDialog.dismiss();
 														break;
 													}
 													case WHAT_PROGRESS_STATE: {
@@ -373,5 +409,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 													}
 												}
 											}
+
 										};
 }

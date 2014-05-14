@@ -39,6 +39,8 @@ public class OrderDto implements Serializable {
 
 	private String					status;
 
+	private LogisticsDto			logisticsDto;
+
 	public String getStatus() {
 		return status;
 	}
@@ -117,5 +119,13 @@ public class OrderDto implements Serializable {
 
 	public void setQty(Integer qty) {
 		this.qty = qty;
+	}
+
+	public LogisticsDto getLogisticsDto() {
+		return logisticsDto;
+	}
+
+	public void setLogisticsDto(LogisticsDto logisticsDto) {
+		this.logisticsDto = logisticsDto;
 	}
 }

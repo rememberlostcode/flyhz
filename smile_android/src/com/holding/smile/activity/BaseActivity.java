@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -36,10 +35,6 @@ public class BaseActivity extends Activity {
 	public static final int	MORE_CODE			= 9;
 	public static final int	SEARCH_CODE			= 10;
 	public static final int	UPLOAD_IMAGE_CODE	= 11;
-	/**
-	 * 编辑收货人地址操作代码
-	 */
-	public static final int	ADDRESS_EDIT_CODE	= 12;
 	/**
 	 * 编辑邮箱操作代码
 	 */
@@ -214,40 +209,40 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.e("====", "start onStart~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onStart~~~");
 	}
 
 	// 当按HOME键时，然后再次启动应用时，我们要恢复先前状态
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		Log.e("====", "start onRestart~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onRestart~~~");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.e("====", "start onResume~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onResume~~~");
 	}
 
 	// 当我们按HOME键时
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.e("====", "start onPause~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onPause~~~");
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.e("====", "start onStop~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onStop~~~");
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		// MyApplication.getInstance().finishActivity(this);
-		Log.e("====", "start onDestroy~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onDestroy~~~");
 	}
 
 	long	waitTime	= 2000;
@@ -362,8 +357,14 @@ public class BaseActivity extends Activity {
 					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							Intent intent = new Intent(context, ShoppingCartActivity.class);
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							SUser user = MyApplication.getInstance().getCurrentUser();
+							Intent intent = new Intent();
+							if (user == null || MyApplication.getInstance().getSessionId() == null) {
+								intent.putExtra("class", ShoppingCartActivity.class);
+								intent.setClass(context, LoginActivity.class);
+							} else {
+								intent.setClass(context, ShoppingCartActivity.class);
+							}
 							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
@@ -373,14 +374,8 @@ public class BaseActivity extends Activity {
 					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							SUser user = MyApplication.getInstance().getCurrentUser();
 							Intent intent = new Intent();
-							if (user == null) {
-								intent.putExtra("class", MySmileActivity.class);
-								intent.setClass(context, LoginActivity.class);
-							} else {
-								intent.setClass(context, MySmileActivity.class);
-							}
+							intent.setClass(context, MySmileActivity.class);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							startActivity(intent);
 							overridePendingTransition(0, 0);

@@ -1,9 +1,9 @@
 
 package com.holding.smile.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -20,22 +19,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.activity.IdcardManagerActivity;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.activity.OrderDetailActivity;
+import com.holding.smile.activity.WebViewActivity;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.myview.MyListView;
+import com.holding.smile.tools.ClickUtil;
+import com.holding.smile.tools.Constants;
 
 public class MyOrdersAdapter extends BaseAdapter {
-	private Context					context;
-	private List<OrderDto>			orderList;
-	private MyListView				listView;
-	private MyOrderInformAdapter	orderAdapter;
+	private Context				context;
+	private List<OrderDto>		orderList;
+	private MyListView			listView;
+	private OrderDetailAdapter	orderAdapter;
+	private boolean				showDelete	= true;
 
 	// 自己定义的构造函数
 	public MyOrdersAdapter(Context context, List<OrderDto> orderList) {
 		this.orderList = orderList;
 		this.context = context;
+	}
+
+	public void setData(List<OrderDto> contacts) {
+		if (contacts == null) {
+			this.orderList = new ArrayList<OrderDto>();
+		} else {
+			this.orderList = contacts;
+		}
+		notifyDataSetChanged();
+	}
+
+	public void showEdit(boolean showDelete) {
+		this.showDelete = showDelete;
+		notifyDataSetChanged();
 	}
 
 	@Override
@@ -60,6 +77,8 @@ public class MyOrdersAdapter extends BaseAdapter {
 		TextView	totalnum;
 		ImageView	cover;
 		Button		statusButton;
+		TextView	total;
+		Button		deleteButton;
 	}
 
 	@Override
@@ -74,6 +93,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder.price = (TextView) convertView.findViewById(R.id.order_list_price_value);
 			holder.totalnum = (TextView) convertView.findViewById(R.id.order_list_totalnum_value);
 			holder.statusButton = (Button) convertView.findViewById(R.id.order_list_status);
+			holder.deleteButton = (Button) convertView.findViewById(R.id.order_list_delete);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -85,115 +105,64 @@ public class MyOrdersAdapter extends BaseAdapter {
 		holder.price.setText(String.valueOf(order.getTotal()));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 
-		holder.statusButton.setText(getTextByStatus(order.getStatus()));
+		holder.statusButton.setText(ClickUtil.getTextByStatus(order.getStatus()));
 		holder.statusButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(context, "点击了status", Toast.LENGTH_SHORT).show();
+				if (Constants.OrderStateCode.FOR_PAYMENT.code.equals(order.getStatus())) {
+					Intent intent = new Intent(context, WebViewActivity.class);
+					intent.putExtra("number", order.getNumber());
+					intent.putExtra("amount", order.getTotal());
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					context.startActivity(intent);
+				} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(order.getStatus())) {
+					Intent intent = new Intent();
+					intent.setClass(context, IdcardManagerActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					context.startActivity(intent);
+				}
 			}
 		});
-		convertView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(context, OrderDetailActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.putExtra("order", order);
-				((Activity) parent.getContext()).startActivity(intent);
-			}
-		});
-		convertView.setOnLongClickListener(new OnLongClickListener() {
 
-			@Override
-			public boolean onLongClick(View v) {
-				final String[] mItems = { "详情", "关闭" };
-				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				// builder.setTitle("订单操作");
-				builder.setItems(mItems, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						// 点击后弹出窗口选择了第几项
-						switch (which) {
-							case 0:
-								Intent intent = new Intent(context, OrderDetailActivity.class);
-								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								intent.putExtra("order", order);
-								((Activity) parent.getContext()).startActivity(intent);
-								break;
-							case 1:
-								RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
-																.closeOrder(order.getId());
-								if (200000 == rvd.getCode()) {
-									Toast.makeText(context, "订单已关闭", Toast.LENGTH_SHORT).show();
-									holder.statusButton.setText(getTextByStatus("50"));
-								}
-								break;
-						}
-					}
-				});
-				builder.create().show();
-				return false;
-			}
-		});
+		if (showDelete
+				&& (Constants.OrderStateCode.FOR_PAYMENT.code + "").equals(order.getStatus())) {
+			holder.deleteButton.setVisibility(View.VISIBLE);
+			holder.deleteButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					new AlertDialog.Builder(context).setTitle("取消提示框")
+													.setMessage("确定取消该订单吗？")
+													.setPositiveButton("确定",
+															new DialogInterface.OnClickListener() {
+																public void onClick(
+																		DialogInterface dialog,
+																		int which) {
+																	// 点击弹出层的关闭
+																	RtnValueDto rvd = MyApplication.getInstance()
+																									.getSubmitService()
+																									.closeOrder(
+																											order.getId());
+																	if (200000 == rvd.getCode()) {
+																		Toast.makeText(context,
+																				"订单已关闭",
+																				Toast.LENGTH_SHORT)
+																				.show();
+																		holder.statusButton.setText(ClickUtil.getTextByStatus(Constants.OrderStateCode.HAVE_BEEN_CLOSED.code));
+																	}
+																}
+															}).setNegativeButton("取消", null).show();
+
+				}
+			});
+		} else {
+			holder.deleteButton.setVisibility(View.GONE);
+		}
 
 		listView = (MyListView) convertView.findViewById(R.id.order_list_content);
-		orderAdapter = new MyOrderInformAdapter(context, order.getDetails(), new TextView(context),
-				null, null);
-		orderAdapter.setIsShowOrder(true);
+		orderAdapter = new OrderDetailAdapter(context, order);
 		orderAdapter.setActivityParent(parent);
 		listView.setAdapter(orderAdapter);
+
 		return convertView;
 	}
-
-	private String getTextByStatus(String status) {
-		// 10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；15发货中；20已发货；21国外清关；30国内清关；40国内物流；50已关闭；60已完成；70已删除；
-		String text = "待支付";
-		if (status == null) {
-			return text;
-		}
-		int ints = Integer.parseInt(status);
-		switch (ints) {
-			case 10:
-				text = "待支付";
-				break;
-			case 11:
-				text = "支付中";
-				break;
-			case 12:
-				text = "已支付";
-				break;
-			case 13:
-				text = "缺少身份证";
-				break;
-			case 14:
-				text = "已有身份证";
-				break;
-			case 15:
-				text = "发货中";
-				break;
-			case 20:
-				text = "已发货";
-				break;
-			case 21:
-				text = "国外清关";
-				break;
-			case 30:
-				text = "国内清关";
-				break;
-			case 40:
-				text = "国内物流";
-				break;
-			case 50:
-				text = "已关闭";
-				break;
-			case 60:
-				text = "已完成";
-				break;
-			case 70:
-				text = "已删除";
-				break;
-			default:
-				break;
-		}
-		return text;
-	}
-
 }

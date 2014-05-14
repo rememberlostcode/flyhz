@@ -17,6 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.dto.OrderDto;
+import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.tools.ClickUtil;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
 
@@ -34,9 +37,12 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	private ProgressDialog		pDialog;
 	private int					mProgress;
 	private Button				payBtn;
+	private TextView			payMsgText;
 	private TextView			numberText;
 	private TextView			amountText;
 	private TextView			timeText;
+	private String				number;					// 订单号
+	private BigDecimal			amount;					// 总额
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +56,20 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 		Intent intent = getIntent();
 		try {
 			initPDialog();// 初始化进度条
-			String number = intent.getExtras().getString("number");// 订单号
+			number = intent.getExtras().getString("number");// 订单号
 			String time = intent.getExtras().getString("time");// 订单生成时间
-			BigDecimal amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
+			amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
 			if (StrUtils.isNotEmpty(number) && StrUtils.isNotEmpty(time) && amount != null) {
 				setContentLayout(R.layout.order_pay_view);
 				payBtn = (Button) findViewById(R.id.taobao_pay_btn);
 				payBtn.setOnClickListener(this);
+				payMsgText = (TextView) findViewById(R.id.pay_message);
 				numberText = (TextView) findViewById(R.id.number);
 				timeText = (TextView) findViewById(R.id.time);
 				amountText = (TextView) findViewById(R.id.amount);
 				numberText.setText(number);
 				timeText.setText(time);
-				amountText.setText(amount + "");
+				amountText.setText("￥" + amount + "元");
 				mUIHandler.sendEmptyMessage(WHAT_DID_LOAD_DATA);
 			} else {
 				Toast.makeText(context, Constants.MESSAGE_EXCEPTION, Toast.LENGTH_SHORT).show();
@@ -107,10 +114,11 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.taobao_pay_btn: {
-				Toast.makeText(context, "您点了去淘宝支付", Toast.LENGTH_SHORT).show();
-				// Intent intent = new Intent(this, SearchGoodsActivity.class);
-				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				// startActivity(intent);
+				Intent intent = new Intent(this, WebViewActivity.class);
+				intent.putExtra("number", number);
+				intent.putExtra("amount", amount);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivityForResult(intent, ORDER_CODE);
 				// finish();
 				break;
 			}
@@ -120,8 +128,20 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
-
+		if (requestCode == ORDER_CODE && RESULT_CANCELED == resultCode) {
+			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
+												.getOrderStatus(number);
+			if (rtnValue != null) {
+				OrderDto order = rtnValue.getOrderData();
+				if (order != null) {
+					if (!"10".equals(order.getStatus())) {
+						payBtn.setVisibility(View.GONE);
+						String text = ClickUtil.getTextByStatus(order.getStatus());
+						payMsgText.setText(text);
+						payMsgText.setVisibility(View.VISIBLE);
+					}
+				}
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -129,10 +149,6 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (pDialog != null) {
-			pDialog.cancel();
-			pDialog = null;
-		}
 		payBtn = null;
 		numberText = null;
 		amountText = null;

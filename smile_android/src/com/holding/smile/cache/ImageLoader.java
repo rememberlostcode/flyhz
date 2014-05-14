@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.holding.smile.activity.MyApplication;
 import com.holding.smile.tools.StrUtils;
 
 public class ImageLoader {
@@ -106,7 +107,8 @@ public class ImageLoader {
 			bitmap = decodeFile(f);
 			return bitmap;
 		} catch (Exception ex) {
-			Log.e("", "getBitmap catch Exception...\nmessage = " + ex.getMessage());
+			Log.e(MyApplication.LOG_TAG,
+					"getBitmap catch Exception...\nmessage = " + ex.getMessage());
 			return null;
 		}
 	}
@@ -237,7 +239,7 @@ public class ImageLoader {
 				os.write(bytes, 0, count);
 			}
 		} catch (Exception ex) {
-			Log.e("", "CopyStream catch Exception...");
+			Log.e(MyApplication.LOG_TAG, "CopyStream catch Exception...");
 		}
 	}
 }

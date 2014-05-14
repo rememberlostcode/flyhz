@@ -42,6 +42,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private Button			btnToRegister;		// 注册登录按钮
 
 	private LinearLayout	loginBySelf;
+	private boolean			isClose	= false;
+	private Integer			gid;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			Intent intent = getIntent();
 			if (intent.getExtras() != null && intent.getExtras().getSerializable("class") != null) {
 				goingActivityClass = (Class) (intent.getExtras().getSerializable("class"));
-
+			}
+			if (intent.getExtras() != null && intent.getExtras().getBoolean("isClose")) {
+				isClose = intent.getExtras().getBoolean("isClose");
+			}
+			if (intent.getExtras() != null && intent.getExtras().getSerializable("gid") != null) {
+				gid = (Integer) (intent.getExtras().getSerializable("gid"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -148,18 +155,23 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																				Toast.LENGTH_SHORT)
 																				.show();
 																	} else {
-																		Intent intent = null;
-																		if (goingActivityClass != null) {
-																			intent = new Intent(
-																					context,
-																					goingActivityClass);
-																			goingActivityClass = null;
-																		} else {
-																			intent = new Intent(
-																					context,
-																					MainActivity.class);
+																		if (!isClose) {
+																			Intent intent = null;
+																			if (goingActivityClass != null) {
+																				intent = new Intent(
+																						context,
+																						goingActivityClass);
+																				intent.putExtra(
+																						"gid", gid);
+																				goingActivityClass = null;
+																				gid = null;
+																			} else {
+																				intent = new Intent(
+																						context,
+																						MainActivity.class);
+																			}
+																			startActivity(intent);
 																		}
-																		startActivity(intent);
 																		finish();
 																	}
 																}

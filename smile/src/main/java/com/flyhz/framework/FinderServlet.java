@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.flyhz.framework.auth.IAuth;
 import com.flyhz.framework.auth.WebUser;
 import com.flyhz.framework.lang.page.Pager;
 
@@ -39,9 +38,9 @@ public class FinderServlet extends DispatcherServlet {
 	protected void doService(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		HttpSession httpSession = request.getSession();
-		if (httpSession.getAttribute(IAuth.UID) == null) {
-			httpSession.setAttribute(IAuth.UID, 1);
-		}
+		// if (httpSession.getAttribute(IAuth.UID) == null) {
+		// httpSession.setAttribute(IAuth.UID, 1);
+		// }
 		super.doService(request, response);
 		WebUser.removeCurrentWebUser();
 		Pager.removeCurrentPager();

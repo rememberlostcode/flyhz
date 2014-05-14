@@ -6,7 +6,11 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.holding.smile.activity.MyApplication;
+
 public class MyViewPager extends ViewPager {
+
+	private int	cWidth	= (int) MyApplication.getInstance().getScreenWidth();
 
 	public MyViewPager(Context context) {
 		super(context);
@@ -24,8 +28,11 @@ public class MyViewPager extends ViewPager {
 			View child = getChildAt(i);
 			child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 			int h = child.getMeasuredHeight();
-			if (h > height)
-				height = h;
+			if (h > cWidth) {
+				height = cWidth;
+			} else {
+				height = cWidth;
+			}
 		}
 
 		heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
