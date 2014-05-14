@@ -64,14 +64,14 @@ public class MyShoppingCartAdapter extends BaseAdapter {
         } else {
             sIds.clear();
         }
-        mUIHandler.sendEmptyMessage(3);
+		mUIHandler.sendEmptyMessage(3);
     }
 
     public Boolean getSelectAll() {
         return selectAll;
     }
 
-    // 自己定义的构造函数
+	// 自己定义的构造函数
     public MyShoppingCartAdapter(Context context, List<CartItem> contacts, ProgressDialog pDialog,
             Handler mUIHandler) {
         this.cartItemList = contacts;
@@ -91,10 +91,10 @@ public class MyShoppingCartAdapter extends BaseAdapter {
     }
 
     /**
-     * 获取已选中的itemId
-     * 
-     * @return
-     */
+	 * 获取已选中的itemId
+	 * 
+	 * @return
+	 */
     public Set<Integer> getSelectIds() {
         return sIds;
     }
@@ -177,13 +177,13 @@ public class MyShoppingCartAdapter extends BaseAdapter {
                 holder.n.setText(jGoods.getName().trim());
             }
             if (StrUtils.isNotEmpty(jGoods.getBrandstyle())) {
-                holder.brandstyle.setText("款号：" + jGoods.getBrandstyle());
+				holder.brandstyle.setText("款号：" + jGoods.getBrandstyle());
             }
             if (StrUtils.isNotEmpty(jGoods.getColor())) {
-                holder.color.setText("颜色分类：" + jGoods.getColor());
+				holder.color.setText("颜色分类：" + jGoods.getColor());
             }
             if (jGoods.getPurchasingPrice() != null) {
-                holder.pp.setText("￥" + cartItem.getTotal());
+				holder.pp.setText("￥" + cartItem.getTotal());
             }
             holder.qty.setText(cartItem.getQty() + "");
             if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
@@ -217,7 +217,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
                 public void onClick(View arg0) {
                     if (cartItem.getQty() > 1) {
 
-                        // 先发送空信息显示进度条
+						// 先发送空信息显示进度条
                         showPDialog();
 
                         cartItem.setQty((short) (cartItem.getQty() - 1));
@@ -235,7 +235,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 
                 @Override
                 public void onClick(View arg0) {
-                    // 先发送空信息显示进度条
+					// 先发送空信息显示进度条
                     showPDialog();
 
                     cartItem.setQty((short) (cartItem.getQty() + 1));
@@ -292,7 +292,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
         return convertView;
     }
 
-    // 显示进度条
+	// 显示进度条
     private void showPDialog() {
         pDialog.show();
         mUIHandler.sendEmptyMessage(2);
