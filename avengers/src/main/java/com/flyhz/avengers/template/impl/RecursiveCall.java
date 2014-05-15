@@ -12,7 +12,6 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.RecursiveDemo;
 import com.flyhz.avengers.dto.RtnResult;
 import com.flyhz.avengers.framework.UrlFilter;
 import com.flyhz.avengers.framework.xml.Avengers;
@@ -77,14 +76,24 @@ public class RecursiveCall {
 						if (href.startsWith("http")) {
 							url = href;
 						} else {
-							url = baseUrl + href;
+							if (href.startsWith("/")) {
+								url = baseUrl + href;
+							} else {
+								if (!href.startsWith("javascript")) {
+									url = homeUrl.substring(0, homeUrl.lastIndexOf("/") + 1) + href;
+								}
+							}
 						}
-						urls.add(url);
-						if (deeps > layerNow) {
-							parserContent(baseUrl, url, urls, ++layerNow, deeps);
+
+						if (StringUtils.isNotBlank(url)) {
+							urls.add(url);
+							if (deeps > layerNow) {
+								parserContent(baseUrl, url, urls, layerNow, deeps);
+							}
 						}
 					}
 				}
+				++layerNow;
 			}
 			return urls;
 		} catch (Exception e) {
@@ -99,6 +108,7 @@ public class RecursiveCall {
 	}
 
 	public static void main(String[] args) {
+		RecursiveCall recursiveCall = new RecursiveCall();
 		UrlFilter urlFilter = new CoachUrlFilterImpl();
 		Avengers avengers = AvengersDataUtil.getDataByXmlFileName("avengers.xml");
 		List<Domain> domains = avengers.getDomain();
@@ -110,7 +120,7 @@ public class RecursiveCall {
 			String siteName = "coach";
 			String baseUrl = domain.getRoot();
 			String homeUrl = "http://www.coach.com/online/handbags/Home-10551-10051-en";
-			RtnResult result = new RecursiveDemo().parserContent(siteName, baseUrl, homeUrl, deeps);
+			RtnResult result = recursiveCall.parserContent(siteName, baseUrl, homeUrl, deeps);
 			if (result != null) {
 				waitFilterUrls = result.getList();
 			}

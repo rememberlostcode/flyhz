@@ -2,7 +2,7 @@
 <ave:avengers xmlns:ave="http://www.flyhz.com/avengrs"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.flyhz.com/avengrs avengers.xsd ">
-	<ave:domain root="http://wwww.cocah.com">
+	<ave:domain root="http://www.cocah.com">
 		<ave:blackList>
 			<ave:black>^http://www.coach.com/online/handbags/-newatcoach_allnewatcoach-us-us-5000000000000000002-en?</ave:black>
 			<ave:black>^http://www.coach.com/online/handbags/genWCM-10551-10051-en-/Coach_US/StaticPage/women_landing?</ave:black>
