@@ -1,0 +1,25 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"  
+xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	<bean id="sysPropertyConfigurer" 
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> 
+        <property name="ignoreResourceNotFound">
+        	<value>true</value>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" >
+        	<value>true</value>
+        </property>
+        <property name="locations">
+        	<array>
+       			<value>file:${HOME}/smile_work.properties</value>
+        		<value>file:${USERPROFILE}/smile_work.properties</value>
+        	</array>
+        </property> 
+    </bean>
+    <!-- <context:property-placeholder ignore-resource-not-found="true" location="${HOME}/iwork.properties" ignore-unresolvable="true"/>
+    <context:property-placeholder ignore-resource-not-found="true" location="${USERPROFILE}/iwork.properties" ignore-unresolvable="true"/> -->
+</beans>
