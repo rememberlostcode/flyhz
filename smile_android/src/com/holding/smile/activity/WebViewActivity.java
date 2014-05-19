@@ -75,10 +75,6 @@ public class WebViewActivity extends Activity implements OnClickListener {
 		webSettings.setDomStorageEnabled(true);
 		// 设置滚动条样式
 		webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-		// 加载服务器页面
-		// webView.loadUrl("http://h5.m.taobao.com/awp/core/detail.htm?id=37176776067&spm=0.0.0.0");
-		// 加载本地页面
-		// webView.loadUrl("file:///android_asset/www/index.html");
 		// 网页链接不以浏览器方式打开
 		webView.setWebViewClient(new WebViewClient() {
 			@Override
@@ -88,14 +84,42 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
 				// 设置隐藏返回按钮
 				view.loadUrl("javascript:document.getElementsByTagName('li')[1].style.display='none';");
-				// 给卖家留言设置为订单编号
-				// view.loadUrl("javascript:document.getElementsByTagName('input')[0].style.display='none';");
-				// 设置不显示返回按钮
+				// 给卖家留言设置订单编号和数量
+				if (url.indexOf("buyNow=true") >= 0) {
+					StringBuffer jsStringBuffer = new StringBuffer();
+					jsStringBuffer.append("javascript:window.onload = function(){");
+					// 立即购买:卖家留言设置订单编号
+					jsStringBuffer.append("document.getElementsByTagName('input')[1].setAttribute('value','");
+					jsStringBuffer.append(number);
+					jsStringBuffer.append("');");
+					// 设置卖家留言属性值为空
+					jsStringBuffer.append("document.getElementsByTagName('input')[1].setAttribute('placeholder','');");
+					// 立即购买:设置数量为订单总价
+					jsStringBuffer.append("document.getElementsByName('quantity')[0].setAttribute('value','");
+					jsStringBuffer.append(amount.intValue());
+					jsStringBuffer.append("');");
+					// 修改总价显示
+					jsStringBuffer.append("document.getElementsByTagName('section')[3].lastChild.lastChild.lastChild.innerHTML = '￥");
+					jsStringBuffer.append(amount.intValue());
+					jsStringBuffer.append(".00';");
+					// 合计修改价格数量
+					jsStringBuffer.append("document.getElementsByTagName('section')[7].lastChild.lastChild.innerHTML = '￥");
+					jsStringBuffer.append(amount.intValue());
+					jsStringBuffer.append(".00';");
+					// 实付款修改价格
+					jsStringBuffer.append("document.getElementById('final').innerHTML = '￥");
+					jsStringBuffer.append(amount.intValue());
+					jsStringBuffer.append(".00';");
+
+					jsStringBuffer.append("};");
+					view.loadUrl(jsStringBuffer.toString());
+				}
+				// 设置不显示提示信息
 				view.loadUrl("javascript:window.SmartbannerJSON.mainDetail='';");
 				view.loadUrl("javascript:window.SmartbannerJSON.addcart='';");
-				super.onPageFinished(view, url);
 			}
 
 			@Override
@@ -103,7 +127,6 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					String failingUrl) {
 				super.onReceivedError(view, errorCode, description, failingUrl);
 			}
-
 		});
 		String url = getApplicationContext().getString(R.string.taobaodian_url);
 		webView.loadUrl(url);
