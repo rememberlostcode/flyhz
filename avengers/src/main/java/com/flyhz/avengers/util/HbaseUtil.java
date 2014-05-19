@@ -32,6 +32,7 @@ public class HbaseUtil {
 	}
 
 	// 创建数据库表
+	@SuppressWarnings("resource")
 	public static void createTable(String tableName, String[] columnFamilys) throws Exception {
 		// 新建一个数据库管理员
 		HBaseAdmin hAdmin = new HBaseAdmin(conf);
@@ -129,6 +130,38 @@ public class HbaseUtil {
 				System.out.print("Row Name:  " + new String(cell.getQualifierArray()) + " ");
 				System.out.println("Value: " + new String(cell.getValueArray()) + " ");
 			}
+		}
+	}
+
+	public static void main(String[] args) {
+		try {
+			String tablename = "scores";
+			String[] familys = { "grade", "course" };
+			HbaseUtil.createTable(tablename, familys);
+
+			// add record zkb
+			HbaseUtil.addRow(tablename, "zkb", "grade", "", "5");
+			HbaseUtil.addRow(tablename, "zkb", "course", "", "90");
+			HbaseUtil.addRow(tablename, "zkb", "course", "math", "97");
+			HbaseUtil.addRow(tablename, "zkb", "course", "art", "87");
+			// add record baoniu
+			HbaseUtil.addRow(tablename, "baoniu", "grade", "", "4");
+			HbaseUtil.addRow(tablename, "baoniu", "course", "math", "89");
+
+			System.out.println("===========get one record========");
+			HbaseUtil.getRow(tablename, "zkb");
+
+			System.out.println("===========show all record========");
+			HbaseUtil.getAllRows(tablename);
+
+			System.out.println("===========del one record========");
+			HbaseUtil.delRow(tablename, "baoniu");
+			HbaseUtil.getAllRows(tablename);
+
+			System.out.println("===========show all record========");
+			HbaseUtil.getAllRows(tablename);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
