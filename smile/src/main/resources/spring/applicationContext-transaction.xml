@@ -52,7 +52,17 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 		    <tx:method name="list*" read-only="true"/>
 		    <tx:method name="*" propagation="REQUIRED" rollback-for="Throwable"/>
         </tx:attributes> 
-     </tx:advice>
+    </tx:advice>
+    
+    <!-- 配置exception初始化 --> 
+    <bean id="exceptionUtil" class="com.flyhz.framework.util.ExceptionUtil">  
+    	<property name="locations">
+            <list>
+                <!--要是有多个配置文件，只需在这里继续添加即可 -->
+                <value>classpath*:exception.properties</value>
+            </list>
+        </property>
+	</bean> 
 
 	<!-- session工厂  --> 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
