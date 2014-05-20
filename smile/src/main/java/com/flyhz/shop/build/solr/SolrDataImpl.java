@@ -10,18 +10,28 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.flyhz.framework.lang.CacheRepository;
+import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
+import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
+import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 
 @Service
@@ -36,6 +46,10 @@ public class SolrDataImpl implements SolrData {
 	private String					solr_url;
 	@Resource
 	private ProductFraction			productFraction;
+	@Resource
+	private CacheRepository			cacheRepository;
+	@Resource
+	private RedisRepository			redisRepository;
 	private static HttpSolrServer	productServer	= null;
 	private static HttpSolrServer	orderServer		= null;
 
@@ -83,32 +97,64 @@ public class SolrDataImpl implements SolrData {
 		ProductBuildDto product = null;
 		SolrInputDocument doc = null;
 
+		String[] pictures = null;
 		for (int i = 0; i < productList.size(); i++) {
 			product = productList.get(i);
 			doc = new SolrInputDocument();
 			doc.addField("id", product.getId());// ID
 			doc.addField("n", product.getN());// 名称
 			doc.addField("d", product.getD());// 说明
+			doc.addField("bs", product.getBs());// 款号
 			doc.addField("lp", product.getLp());// 本地价格
 			doc.addField("pp", product.getPp());// 代购价格
 
-			// 计算差价
+			// 计算差价（即折扣）
 			if (product.getLp() != null && product.getPp() != null) {
 				doc.addField("sp", product.getLp().subtract(product.getPp()));
 			} else {
 				doc.addField("sp", 0);
 			}
-			doc.addField("p", product.getP());// 封面
+
+			if (594 == product.getId()) {
+				System.out.println(product);
+			}
+			// 原图封面
+			if (product.getImgs() != null) {
+				pictures = product.getImgs().replace("[", "").replace("]", "").replace("\"", "")
+									.split(",");
+				for (int k = 0; k < pictures.length; k++) {
+					doc.addField("imgs", pictures[k]);
+				}
+			}
+			// 大图封面
+			if (product.getBp() != null) {
+				pictures = product.getBp().replace("[", "").replace("]", "").replace("\"", "")
+									.split(",");
+				for (int k = 0; k < pictures.length; k++) {
+					doc.addField("bp", pictures[k]);
+				}
+			}
+			// 小图封面
+			if (product.getP() != null) {
+				pictures = product.getP().replace("[", "").replace("]", "").replace("\"", "")
+									.split(",");
+				for (int k = 0; k < pictures.length; k++) {
+					doc.addField("p", pictures[k]);
+				}
+			}
+
 			doc.addField("t", DateUtil.strToDateLong(product.getT()));// 时间
 			doc.addField("bid", product.getBid());// 品牌ID
 			doc.addField("be", product.getBe());// 品牌名称
 			doc.addField("cid", product.getCid());// 分类ID
+			doc.addField("ce", product.getCe());// 分类名称
 
 			doc.addField("sf", productFraction.getProductFraction(product));// 分数
 			doc.addField("st", product.getSt());// 时间排序值
 			doc.addField("sd", product.getSd());// 折扣排序值
 			doc.addField("ss", product.getSs());// 销售量排序值
 			doc.addField("sn", product.getSn());// 销售量
+			doc.addField("zsn", product.getZsn());// 一周销售量
 			docs.add(doc);
 		}
 
@@ -128,7 +174,7 @@ public class SolrDataImpl implements SolrData {
 
 	public void submitOrder(Integer userId, Integer orderId, String status, Date gmtModify) {
 		if (StringUtil.isBlank(status)) {
-			status = "0";
+			status = Constants.OrderStateCode.FOR_PAYMENT.code;
 		}
 		if (gmtModify == null) {
 			gmtModify = new Date();
@@ -197,9 +243,56 @@ public class SolrDataImpl implements SolrData {
 		int index = str.indexOf("\"docs\":[");
 		String ssss = str.substring(index + 7, str.length() - 2).replace("\"[", "[")
 							.replace("]\"", "]").replace("\\", "");
-		// RProductDto[] sz = JSONUtil.getJson2Entity(ssss,
-		// RProductDto[].class);
-		// System.out.println(sz);
 		return ssss;
+	}
+
+	@SuppressWarnings("deprecation")
+	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId, String status) {
+		List<OrderSimpleDto> list = new ArrayList<OrderSimpleDto>();
+		HttpSolrServer solrServer = getServer(ORDER_URL);
+		SolrQuery sQuery = new SolrQuery();
+		String para = "";
+		if (userId != null) {
+			para = para + "user_id:" + userId;
+		}
+		if (StringUtils.isNotEmpty(status)) {
+			if (status.equals("finsh")) {
+				para = para + " AND status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 等于已完成的
+			} else {
+				para = para + " AND -status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 不等于已完成的
+			}
+		}
+
+		// 查询关键词，*:*代表所有属性、所有值，即所有index
+		if (!StringUtils.isNotEmpty(para)) {
+			para = "*:*";
+		}
+		sQuery.setQuery(para);
+		sQuery.setStart(0);
+		sQuery.setRows(10);
+		// 排序 如果按照blogId 排序，，那么将blogId desc(or asc) 改成 id desc(or asc)
+		sQuery.addSortField("gmt_modify", ORDER.desc);
+
+		try {
+			QueryResponse response = solrServer.query(sQuery);
+			SolrDocumentList doclist = response.getResults();
+			Integer orderId = null;
+			for (SolrDocument solrDocument : doclist) {
+				orderId = solrDocument.getFieldValue("id") != null ? Integer.valueOf(solrDocument.getFieldValue(
+						"id").toString())
+						: null;
+				status = solrDocument.getFieldValue("status") != null ? solrDocument.getFieldValue(
+						"status").toString() : null;
+				if (orderId != null) {
+					OrderSimpleDto or = new OrderSimpleDto();
+					or.setId(orderId);
+					or.setStatus(status);
+					list.add(or);
+				}
+			}
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

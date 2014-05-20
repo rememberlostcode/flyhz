@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyJGoodsAdapter;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
 import com.holding.smile.myview.MyLinearLayout;
@@ -50,19 +52,38 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentLayout(R.layout.activity_main);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
+		TextView cateBtn = displayHeaderRight();
+		cateBtn.setText(R.string.category);
+		cateBtn.setOnClickListener(this);
 
-		Intent intent = this.getIntent();
-		bid = (Integer) intent.getExtras().getSerializable("bid");
-		cid = (Integer) intent.getExtras().getSerializable("cid");
-		String bn = intent.getExtras().getString("bn");
+		try {
+			Intent intent = this.getIntent();
+			if (intent.getExtras().getSerializable("bid") != null)
+				bid = (Integer) intent.getExtras().getSerializable("bid");
 
-		TextView headerDescription = displayHeaderDescription();
-		headerDescription.setText(bn);
+			if (intent.getExtras().getSerializable("cid") != null)
+				cid = (Integer) intent.getExtras().getSerializable("cid");
+
+			String bn = intent.getExtras().getString("bn");
+			TextView headerDescription = displayHeaderDescription();
+			if (bn != null)
+				headerDescription.setText(bn);
+		} catch (Exception e) {
+			Log.e(MyApplication.LOG_TAG, "查看全部时报错：" + e.getMessage());
+		}
+
+		startTask();
+
+	}
+
+	/**
+	 * 初始化View
+	 */
+	private void initView() {
+		setContentLayout(R.layout.activity_main);
 		displayFooterMain(0);
-
 		setSortTypeLayout();// 设置排序标签
 
 		adapter = new MyJGoodsAdapter(context, mStrings);
@@ -72,9 +93,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		mListView.setOnScrollListener(mScrollListener);
 		mPullToRefreshView.setOnHeaderRefreshListener(this);
 		mPullToRefreshView.setOnFooterRefreshListener(this);
-
-		startTask();
-
 	}
 
 	/**
@@ -92,7 +110,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 				public void onClick(View v) {
 					sortTypeLayout.setBackgroundBtn(v.getId());
 					seqorderType = v.getTag().toString();
-					loadData();
+					onRefresh();
 				}
 			});
 		}
@@ -105,13 +123,25 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 				finish();
 				break;
 			}
+			case R.id.header_right: {
+				Intent intent = new Intent(this, CategoryActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivityForResult(intent, CATE_CODE);
+				break;
+			}
 		}
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SEARCH_CODE || resultCode == RESULT_CANCELED) {
-
+		if (requestCode == CATE_CODE && resultCode == RESULT_OK) {
+			if (data != null) {
+				Category cate = (Category) data.getExtras().getSerializable("cate");
+				if (cate != null) {
+					cid = cate.getId();
+					onRefresh();
+				}
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -246,6 +276,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 													progressBar.setVisibility(View.GONE);
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
+															initView();// 初始化View
 															if (msg.obj != null) {
 																mStrings.clear();
 																RtnValueDto obj = (RtnValueDto) msg.obj;
@@ -295,8 +326,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																			mStrings.remove(i);
 																		}
 																	}
-																	adapter.notifyDataSetChanged();
 																}
+																adapter.notifyDataSetChanged();
 															}
 															mPullToRefreshView.onHeaderRefreshComplete();
 															break;

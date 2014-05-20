@@ -38,10 +38,10 @@ public class LoginController {
 			UserDto user = userService.login(username, password, verifycode);
 			if (user != null) {
 				auth.mark(user.getId(), request, response);
-				protocol.setCode(0);
+				protocol.setCode(200000);
 				protocol.setData(user);
 			} else {
-				protocol.setCode(1);
+				protocol.setCode(101026);
 				protocol.setData("loginAuth fail");
 			}
 		} catch (ValidateException e) {
@@ -61,10 +61,10 @@ public class LoginController {
 			UserDto user = userService.loginAuto(username, token, verifycode);
 			if (user != null) {
 				auth.mark(user.getId(), request, response);
-				protocol.setCode(0);
+				protocol.setCode(200000);
 				protocol.setData(user);
 			} else {
-				protocol.setCode(1);
+				protocol.setCode(101026);
 				protocol.setData("loginAuto fail");
 			}
 		} catch (ValidateException e) {

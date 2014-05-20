@@ -9,9 +9,13 @@ public class ProductDto {
 
 	private String		name;
 
-	private String		imgs;
+	private String[]	imgs;
 
 	private BrandDto	brand;
+
+	private String		color;
+
+	private String		brandstyle;
 
 	private BigDecimal	purchasingPrice;
 
@@ -41,11 +45,11 @@ public class ProductDto {
 		this.brand = brand;
 	}
 
-	public String getImgs() {
+	public String[] getImgs() {
 		return imgs;
 	}
 
-	public void setImgs(String imgs) {
+	public void setImgs(String[] imgs) {
 		this.imgs = imgs;
 	}
 
@@ -63,6 +67,22 @@ public class ProductDto {
 
 	public void setQty(short qty) {
 		this.qty = qty;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getBrandstyle() {
+		return brandstyle;
+	}
+
+	public void setBrandstyle(String brandstyle) {
+		this.brandstyle = brandstyle;
 	}
 
 }

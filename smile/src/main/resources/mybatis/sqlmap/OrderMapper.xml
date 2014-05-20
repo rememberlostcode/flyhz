@@ -16,7 +16,13 @@
 	<select id="getOrderPay" parameterType="OrderPayDto" resultType="OrderPayDto">
 	    select id, number,gmt_create gmtCreate,gmt_modify gmtModify,status,total,user_id userId
 	    from `order`
-	    where id = #{id} and user_id = #{userId}
+	    where user_id = #{userId} 
+	    <if test="id!=null">
+	       and id = #{id}
+	    </if>
+	    <if test="number!=null and number !='' ">
+	       and number = #{number}
+	    </if>
 	</select>
 	<select id="getModel" parameterType="OrderModel" resultType="OrderModel">
 	    select id, number,gmt_create gmtCreate,gmt_modify gmtModify,detail,status,total,user_id userId
@@ -47,9 +53,16 @@
 	</update>
 	
 	<select id="getFinshedOrdersCount" resultType="Integer" parameterType="SolrPage">
-		select count(1) count from `order` t where t.status=1 <![CDATA[and t.gmt_modify >= #{startDate} and t.gmt_modify < #{endDate}]]>
+		select count(1) count from `order` where (status=60 or status=70) <![CDATA[and gmt_modify >= #{startDate} and gmt_modify < #{endDate}]]>
     </select>
-	<select id="findFinshedOrders" parameterType="SolrPage" resultType="String">
-		select t.detail count from `order` t where t.status=1 <![CDATA[and t.gmt_modify >= #{startDate} and t.gmt_modify < #{endDate} ]]> limit #{start},#{num}
+	<select id="findFinshedOrders" parameterType="SolrPage" resultType="OrderModel">
+		select id,detail from `order` where (status=60 or status=70) <![CDATA[and gmt_modify >= #{startDate} and gmt_modify < #{endDate} ]]> limit #{start},#{num}
+    </select>
+    
+    <select id="getAllOrdersCount" resultType="Integer" parameterType="SolrPage">
+		select count(1) count from `order`
+    </select>
+	<select id="findAllOrders" parameterType="SolrPage" resultType="OrderModel">
+		select id,detail from `order` limit #{start},#{num}
     </select>
 </mapper>

@@ -3,55 +3,56 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="#E8E8E8"
-    android:gravity="center" >
+    android:orientation="vertical" >
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:textSize="18sp" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_weight="1.0"
+            android:orientation="vertical"
+            android:textSize="18sp" >
+
+            <TextView
+                android:id="@+id/idcard_list_name"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:gravity="center_vertical"
+                android:text="姓名"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/idcard_list_idcard"
+                android:layout_width="fill_parent"
+                android:layout_height="20dp"
+                android:layout_marginBottom="6dip"
+                android:gravity="center_vertical"
+                android:text="身份证号"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:contentDescription="@string/user_info_right"
+            android:src="@drawable/nearby_bind_mobile_headerview_icon" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
         android:layout_margin="5dip"
-        android:layout_weight="1.0" >
-
-        <TextView
-            android:id="@+id/idcard_list_name"
-            android:layout_width="50dp"
-            android:layout_height="20dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:gravity="center_vertical"
-            android:text="姓名"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/idcard_list_idcard"
-            android:layout_width="fill_parent"
-            android:layout_height="20dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginBottom="6dip"
-            android:gravity="center_vertical"
-            android:text="身份证号"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1.0dip"
-            android:layout_alignBottom="@id/idcard_list_idcard"
-            android:layout_marginTop="5dip"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="-15dip"
-            android:background="@android:color/darker_gray" />
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="20dp"
-        android:layout_height="fill_parent"
-        android:layout_gravity="right"
-        android:layout_marginRight="10dip"
-        android:gravity="center_vertical"
-        android:text="@string/user_info_right"
-        android:textColor="@color/black"
-        android:textSize="18sp" />
+        android:background="@android:color/darker_gray" />
 
 </TableRow>

@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="prefix_url">http://211.149.175.138/smile</string>
-    <string name="jGoods_img_url">http://211.149.175.138/smile/static</string>
-    <string name="jGoods_index_url">/node/index</string>
-    <string name="jGoods_recommend_url">/node/recommend/brand</string>
-    <string name="jGoods_cate_url">/node/category</string>
-    <string name="jGoods_brand_url">/node/brand</string>
-    <string name="jGoods_brand_more_url">/node/brand/more</string>
-    <string name="jGoods_sorttype_url">/node/sorttype</string>
-    <string name="jGoods_detail_url">/node/goods/detail</string>
-    <string name="jGoods_sort_url">/node/sort</string>
-    <string name="jGoods_search_refresh_url">/node/search</string>
-    <string name="jGoods_search_more_url">/node/search/more</string>
-    
+	<string name="taobaodian_url">http://h5.m.taobao.com/awp/core/detail.htm?id=38752474914</string>
+    <string name="prefix_url">http://211.149.175.138</string>
     <string name="login_url">https://211.149.175.138:8443/smile/loginAuth.json</string>
     <string name="auto_login_url">https://211.149.175.138:8443/smile/loginAuto.json</string>
     
-    <string name="address_list">/user/consignees.json</string>
-    <string name="address_add">/consignee/add.json</string>
-    <string name="address_modify">/consignee/modify.json</string>
-    <string name="address_remove">/consignee/remove.json</string>
-    <string name="address_set">/consignee/setIdCard.json</string>
-    <string name="user_info">/user/getPInfo.json</string>
-    <string name="reset_password">/user/resetPwd.json</string>
-    <string name="releive_email">/user/releiveEmail.json</string>
-    <string name="set_suer_info">/user/setInfo.json</string>
-    <string name="idcard_list">/user/idcards.json</string>
+    <string name="img_static_url">/smile/static</string>
+    <string name="jGoods_index_url">/smile/node/index</string>
+    <string name="jGoods_recommend_url">/smile/node/recommend/brand</string>
+    <string name="jGoods_cate_url">/smile/node/category</string>
+    <string name="jGoods_brand_url">/smile/node/brand</string>
+    <string name="jGoods_brand_more_url">/smile/node/brand/more</string>
+    <string name="jGoods_sorttype_url">/smile/node/sorttype</string>
+    <string name="jGoods_detail_url">/smile/node/goods/detail</string>
+    <string name="jGoods_sort_url">/smile/node/sort</string>
+    <string name="jGoods_search_refresh_url">/smile/node/search</string>
+    <string name="jGoods_search_more_url">/smile/node/search/more</string>
+    
+    <string name="register_url">/smile/saveRegister.json</string>
+    <string name="user_info">/smile/user/getPInfo.json</string>
+    <string name="reset_password">/smile/user/resetPwd.json</string>
+    <string name="releive_email">/smile/user/releiveEmail.json</string>
+    <string name="set_suer_info">/smile/user/setInfo.json</string>
+    <string name="idcard_list">/smile/idcard/list.json</string>
+    <string name="idcard_save">/smile/idcard/save.json</string>
+    <string name="idcard_delete">/smile/idcard/delete.json</string>
+    
+    <string name="order_list_url">/smile/order/list.json</string>
+    <string name="order_inform_url">/smile/user/orderInform.json</string>
+    <string name="order_updateQty_url">/smile/user/updateQty.json</string>
+    <string name="order_updateCartQty_url">/smile/user/updateCartQty.json</string>
+    <string name="order_confirm_url">/smile/user/confirmOrder.json</string>
+    <string name="order_close_url">/smile/order/close.json</string>
+    <string name="order_status_url">/smile/order/status.json</string>
+    
+    <string name="cart_list_url">/smile/cart/list.json</string>
+    <string name="cart_add_url">/smile/cart/add.json</string>
+    <string name="cart_setQty_url">/smile/cart/setQty.json</string>
+    <string name="cart_remove_url">/smile/cart/remove.json</string>
     
 </resources>

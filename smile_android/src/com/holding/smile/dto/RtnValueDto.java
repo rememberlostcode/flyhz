@@ -3,6 +3,7 @@ package com.holding.smile.dto;
 
 import java.util.List;
 
+import com.holding.smile.entity.CartItem;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.Consignee;
 import com.holding.smile.entity.Idcard;
@@ -30,7 +31,12 @@ public class RtnValueDto {
 	private List<Consignee>		consigneeData;	// 返回收货人地址集合
 	private Consignee			consignee;		// 返回收货人地址
 	private SUser				userData;		// 返回用户数据
-	private List<Idcard>		idcardsData;	// 返身份证集合
+	private List<Idcard>		idcardsData;	// 身份证集合
+	private OrderDto			orderData;		// 订单数据
+	private ProductDto			productData;	// 更改商品时用
+	private List<OrderDto>		orderListData;	// 订单集合
+	private CartItem			cartData;		// 购物车数据
+	private List<CartItem>		cartListData;	// 购物车列表数据
 
 	public Integer getCode() {
 		return code;
@@ -135,4 +141,45 @@ public class RtnValueDto {
 	public void setIdcardsData(List<Idcard> idcardsData) {
 		this.idcardsData = idcardsData;
 	}
+
+	public OrderDto getOrderData() {
+		return orderData;
+	}
+
+	public void setOrderData(OrderDto orderData) {
+		this.orderData = orderData;
+	}
+
+	public ProductDto getProductData() {
+		return productData;
+	}
+
+	public void setProductData(ProductDto productData) {
+		this.productData = productData;
+	}
+
+	public List<OrderDto> getOrderListData() {
+		return orderListData;
+	}
+
+	public void setOrderListData(List<OrderDto> orderListData) {
+		this.orderListData = orderListData;
+	}
+
+	public CartItem getCartData() {
+		return cartData;
+	}
+
+	public void setCartData(CartItem cartData) {
+		this.cartData = cartData;
+	}
+
+	public List<CartItem> getCartListData() {
+		return cartListData;
+	}
+
+	public void setCartListData(List<CartItem> cartListData) {
+		this.cartListData = cartListData;
+	}
+
 }

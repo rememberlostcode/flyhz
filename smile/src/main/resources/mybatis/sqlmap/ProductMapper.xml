@@ -7,11 +7,10 @@
     </select>
     
     <select id="findAll" parameterType="SolrPage" resultType="ProductBuildDto">
-		select t.*,@rownum:=@rownum+1 ss from(select t.*,@rownum:=@rownum+1 sd from(select p.id,p.name n,p.brandstyle bs,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,p.cover_small p,p.cover,p.description d,p.purchasingprice pp,p.localprice lp,p.brand_id bid,b.name be,p.category_id cid,c.name ce,p.localprice-p.purchasingprice sp,@rownum:=@rownum+1 st,(select sum(s.totalnumber) from salesvolume s where s.product_id=p.id ) sn,(select sum(s.totalnumber) from salesvolume s where s.product_id=p.id and s.gmt_modify >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)) zsn from (select @rownum:=0) r, product p,brand b,category c where p.brand_id=b.id and p.category_id=c.id order by p.gmt_modify asc) t,(select @rownum:=0) r order by t.sp asc) t,(select @rownum:=0) r order by t.sn asc limit #{start},#{num}
+		select t.*,@rownum:=@rownum+1 ss from(select t.*,@rownum:=@rownum+1 sd from(select p.id,p.name n,p.brandstyle bs,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,p.imgs,p.cover_small p,p.cover bp,p.description d,p.purchasingprice pp,p.localprice lp,p.brand_id bid,b.name be,p.category_id cid,c.name ce,p.localprice-p.purchasingprice sp,@rownum:=@rownum+1 st,(select sum(s.totalnumber) from salesvolume s where s.product_id=p.id ) sn,(select sum(s.totalnumber) from salesvolume s where s.product_id=p.id and s.gmt_modify >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)) zsn from (select @rownum:=0) r, product p,brand b,category c where p.brand_id=b.id and p.category_id=c.id order by p.gmt_modify asc) t,(select @rownum:=0) r order by t.sp asc) t,(select @rownum:=0) r order by t.sn asc limit #{start},#{num}
     </select>
-    <!-- select p.id,p.name n,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,p.imgs p,p.description d,p.purchasingprice pp,p.localprice lp,p.brand_id bid,b.name be,p.category_id cid,c.name ce from product p,brand b,category c where p.category_id=c.id and p.brand_id=b.id order by p.gmt_modify asc limit #{start},#{num} -->
     <select id="getModelById" parameterType="Integer" resultType="ProductModel">
-		select p.id,p.name,p.brandstyle,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') gmtModify,p.imgs,p.description,p.purchasingprice,p.localprice,p.brand_id brandId,p.category_id categoryId
+		select p.id,p.name,p.brandstyle,date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') gmtModify,p.cover_small imgs,p.description,p.purchasingprice,p.localprice,p.brand_id brandId,p.category_id categoryId,p.color,p.colorimg
 		from product p
 		where p.id = #{id}
     </select>

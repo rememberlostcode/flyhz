@@ -1,5 +1,5 @@
 //var exec = require("child_process").exec;
-var solr_server_host = "211.149.175.138";
+var solr_server_host = "211.149.175.138";//211.149.175.138
 //var solr_server_host = "10.22.22.40";
 var solr_server_port = 8983;
 //var solr_server_port = 80;
@@ -110,6 +110,7 @@ function index(query,response) {
                 memberfilter[1] = "n";
                 memberfilter[2] = "p";
                 memberfilter[3] = "pp";
+                memberfilter[4] = "bs";
 
                 var recommendindex = JSON.parse(res);
                 result += '[';
@@ -118,7 +119,7 @@ function index(query,response) {
                         result += ',';
                     }
                     result += '{\"id\":';
-                    result += JSON.stringify(recommendindex[i].id);
+                    result += recommendindex[i].id;
                     result += ',\"n\":';
                     result += JSON.stringify(recommendindex[i].n);
                     result += ',\"gs\":';
@@ -161,6 +162,7 @@ function recommendbrand(query,response) {
             memberfilter[1] = "n";
             memberfilter[2] = "p";
             memberfilter[3] = "pp";
+            memberfilter[4] = "bs";
 
             var recommendindex = JSON.parse(res);
             result = '[';
@@ -169,7 +171,7 @@ function recommendbrand(query,response) {
                     result += ',';
                 }
                 result += '{\"id\":';
-                result += JSON.stringify(recommendindex[i].id);
+                result += recommendindex[i].id;
                 result += ',\"n\":';
                 result += JSON.stringify(recommendindex[i].n);
                 result += ',\"gs\":';
@@ -205,6 +207,7 @@ function getRecommendBrand(query) {
             memberfilter[1] = "n";
             memberfilter[2] = "p";
             memberfilter[3] = "pp";
+            memberfilter[4] = "bs";
 
             var recommendindex = JSON.parse(res);
             result = '[';
@@ -213,7 +216,7 @@ function getRecommendBrand(query) {
                     result += ',';
                 }
                 result += '{\"id\":';
-                result += JSON.stringify(recommendindex[i].id);
+                result += recommendindex[i].id;
                 result += ',\"n\":';
                 result += JSON.stringify(recommendindex[i].n);
                 result += ',\"gs\":';
@@ -256,7 +259,7 @@ function brand(query,response) {
             "Access-Control-Allow-Origin":"*",
             'Access-Control-Allow-Methods': 'GET',
             'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
-        response.write('Bid can not empty!');
+        response.write( '{"data":null,"code":120001}');
         response.end();
     } else {
         bcparam += 'q=bid%3A'+bid;
@@ -284,7 +287,7 @@ function brand(query,response) {
         }
     };
     var req = http.request(options, function(res) {
-        //console.log("res======== " + res);
+        console.log("res======== " + res);
         res.setEncoding('utf8');
         try{
             var tmp = '';
@@ -301,19 +304,13 @@ function brand(query,response) {
                             result += ',';
                         }
                         result += '{\"id\":';
-                        result += JSON.stringify(docs[i].id);
+                        result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += docs[i].p;
-//                        result += ',\"t\":';
-//                        result += JSON.stringify(docs[i].t).substring(0,17).replace('T',' ')+'\"';
-//                        result += ',\"d\":';
-//                        result += JSON.stringify(docs[i].d);
-//                        result += ',\"lp\":';
-//                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
-//                        result += ',\"sp\":';
-//                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
+                        result += JSON.stringify(docs[i].p);
 
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
@@ -445,20 +442,13 @@ function brandmore(query,response) {
                             result += ',';
                         }
                         result += '{\"id\":';
-                        result += JSON.stringify(docs[i].id);
+                        result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += docs[i].p;
-//                        result += ',\"t\":';
-//                        result += JSON.stringify(docs[i].t).substring(0,17).replace('T',' ')+'\"';
-//                        result += ',\"d\":';
-//                        result += JSON.stringify(docs[i].d);
-//                        result += ',\"lp\":';
-//                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
-//                        result += ',\"sp\":';
-//                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
-
+                        result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
@@ -538,12 +528,12 @@ function sort(query,response) {
     var result = '[';
 
     result += '{';
-    result += '"n":"折扣排行","u":"http://'+solr_server_host+'/smile/node/ranking/discount"';
+    result += '"n":"折扣排行","u":"/smile/node/ranking/discount"';
     result += '}';
 
     result += ',';
     result += '{';
-    result += '"n":"销量排行","u":"http://'+solr_server_host+'/smile/node/ranking/sales"';
+    result += '"n":"销量排行","u":"/smile/node/ranking/sales"';
     result += '}';
 
     result += ']';
@@ -590,21 +580,15 @@ function rankingdiscount(query,response) {
                             result += ',';
                         }
                         result += '{\"id\":';
-                        result += JSON.stringify(docs[i].id);
+                        result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += docs[i].p;
-//                        result += ',\"t\":';
-//                        result += JSON.stringify(docs[i].t).substring(0,17).replace('T',' ')+'\"';
-//                        result += ',\"d\":';
-//                        result += JSON.stringify(docs[i].d);
-//                        result += ',\"lp\":';
-//                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
+                        result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
-//                        result += ',\"sp\":';
-//                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
                         result += ',\"seq\":';
                         result += JSON.stringify(docs[i].sd);
                         result += '}';
@@ -672,23 +656,17 @@ function rankingsales(query,response) {
                             result += ',';
                         }
                         result += '{\"id\":';
-                        result += JSON.stringify(docs[i].id);
+                        result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += docs[i].p;
+                        result += JSON.stringify(docs[i].p);
                         result += ',\"sn\":';
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
-//                        result += ',\"t\":';
-//                        result += JSON.stringify(docs[i].t).substring(0,17).replace('T',' ')+'\"';
-//                        result += ',\"d\":';
-//                        result += JSON.stringify(docs[i].d);
-//                        result += ',\"lp\":';
-//                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
-//                        result += ',\"sp\":';
-//                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
                         result += ',\"seq\":';
                         result += JSON.stringify(docs[i].ss);
                         result += '}';
@@ -760,7 +738,7 @@ function search(query,response) {
         }
     };
     var req = http.request(options, function(res) {
-        console.log("res======== " + res);
+       // console.log("res======== " + res);
         res.setEncoding('utf8');
         try{
             var tmp = '';
@@ -778,19 +756,11 @@ function search(query,response) {
                             result += ',';
                         }
                         result += '{\"id\":';
-                        result += JSON.stringify(docs[i].id);
+                        result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
                         result += ',\"p\":';
-                        result += docs[i].p;
-//                        result += ',\"t\":';
-//                        result += JSON.stringify(docs[i].t).substring(0,17).replace('T',' ')+'\"';
-//                        result += ',\"d\":';
-//                        result += JSON.stringify(docs[i].d);
-//                        result += ',\"lp\":';
-//                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
-//                        result += ',\"sp\":';
-//                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
+                        result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
@@ -803,6 +773,8 @@ function search(query,response) {
                             result += ',\"sn\":';
                             result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         }
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
                         result += '}';
                     }
 
@@ -900,19 +872,11 @@ function searchmore(query,response) {
                             result += ',';
                         }
                         result += '{\"id\":';
-                        result += JSON.stringify(docs[i].id);
+                        result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
                         result += ',\"p\":';
-                        result += docs[i].p;
-//                        result += ',\"t\":';
-//                        result += JSON.stringify(docs[i].t).substring(0,17).replace('T',' ')+'\"';
-//                        result += ',\"d\":';
-//                        result += JSON.stringify(docs[i].d);
-//                        result += ',\"lp\":';
-//                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
-//                        result += ',\"sp\":';
-//                        result += JSON.stringify(docs[i].sp?docs[i].sp:null);
+                        result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
@@ -925,6 +889,8 @@ function searchmore(query,response) {
                             result += ',\"sn\":';
                             result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         }
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
                         result += '}';
                     }
 
@@ -964,6 +930,122 @@ function searchmore(query,response) {
  * @param response
  */
 function goodsdetail(query,response) {
+    var bs = query.bs;
+    if(bs==null || bs==''){
+        response.writeHead(200, {
+            "Content-Type": applicationJson,
+            "Access-Control-Allow-Origin":"*",
+            'Access-Control-Allow-Methods': 'GET',
+            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.write( '{"code":111112}');
+        response.end();
+    }
+    var urlPath = "/solr/smile_product/select?&sort=sf+desc&q=bs%3A"+encodeURIComponent(bs);
+
+    console.log("Got urlPath: " + urlPath);
+    var options = {
+        host: solr_server_host,
+        port: solr_server_port,
+        path: urlPath,
+        headers:{
+            "Content-Type": applicationJson,
+            "User-Agent": UserAgent
+        }
+    };
+    var req = http.request(options, function(res) {
+        //console.log("res======== " + res);
+        res.setEncoding('utf8');
+        try{
+            var tmp = '';
+            res.on('data', function (chunk) {
+                tmp += chunk;
+            });
+            //console.log("tmp======== " + tmp);
+            res.on('end',function() {
+                var resss = JSON.parse(tmp);
+                if(resss && resss.response && resss.response.docs){
+                    var docs = resss.response.docs;
+                    var result = '[';
+                    for(var i=0;i<docs.length;i++){
+                        if(i > 0){
+                            result += ',';
+                        }
+                        result += '{\"id\":';
+                        result += docs[i].id;
+                        result += ',\"n\":';
+                        result += JSON.stringify(docs[i].n);
+                        result += ',\"p\":';
+                        result += JSON.stringify(docs[i].bp);
+                        result += ',\"bp\":';
+                        result += JSON.stringify(docs[i].imgs);
+                        result += ',\"pp\":';
+                        result += JSON.stringify(docs[i].pp?docs[i].pp:0);
+                        /*result += ',\"lp\":';
+                        result += JSON.stringify(docs[i].lp?docs[i].lp:0);
+                        result += ',\"sp\":';
+                        result += JSON.stringify(docs[i].sp?docs[i].sp:0);*/
+                        result += ',\"be\":';
+                        result += JSON.stringify(docs[i].ce);
+
+                        if(i==0){
+                            result += ',\"c\":"黄色",\"ci\":"/color/00000.jpg"';
+                        } else if(i==1){
+                            result += ',\"c\":"黑色",\"ci\":"/color/00001.jpg"';
+                        } else if(i==2){
+                            result += ',\"c\":"中性粉色",\"ci\":"/color/00002.jpg"';
+                        } else if(i==3){
+                            result += ',\"c\":"大红色",\"ci\":"/color/00003.jpg"';
+                        } else if(i==4){
+                            result += ',\"c\":"黄褐色",\"ci\":"/color/00004.jpg"';
+                        } else if(i==5){
+                            result += ',\"c\":"米白色",\"ci\":"/color/00005.jpg"';
+                        } else if(i==6){
+                            result += ',\"c\":"矢车菊色",\"ci\":"/color/00006.jpg"';
+                        } else if(i==7){
+                            result += ',\"c\":"海军蓝",\"ci\":"/color/00007.jpg"';
+                        }
+
+                        /*result += ',\"c\":';
+                        result += JSON.stringify(docs[i].c?docs[i].c:'');
+                        result += ',\"ci\":';
+                        result += JSON.stringify(docs[i].ci?docs[i].ci:'');*/
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += ',\"sn\":';
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
+                        result += '}';
+                    }
+
+                    result += ']';
+                } else {
+                    result = "[]";
+                }
+                response.writeHead(200, {
+                    "Content-Type": applicationJson,
+                    "Access-Control-Allow-Origin":"*",
+                    'Access-Control-Allow-Methods': 'GET',
+                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.write(addData(result));
+                response.end();
+            });
+        } catch (ee){
+            console.log(ee.message);
+        }
+    });
+    req.on('error', function(e) {
+        console.log("Got error: " + e.message);
+        response.writeHead(404, {
+            "Content-Type": applicationJson,
+            "Access-Control-Allow-Origin":"*",
+            'Access-Control-Allow-Methods': 'GET',
+            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.write(e.message);
+        response.end();
+    });
+    req.end();
+    /*
     var id = query.id;
     if(id==null || id==''){
         response.writeHead(200, {
@@ -1006,11 +1088,7 @@ function goodsdetail(query,response) {
                 }
                 client.lrange(key,0,res1, function(err, res2) {
                     console.log('res2='+res2);
-                   // if(res2!=null && res2!=''){
                         result.ag = res2;
-                    /*} else {
-                        result.ag = '['+result.id+']';
-                    }*/
                     response.writeHead(200, {
                         "Content-Type": applicationJson,
                         "Access-Control-Allow-Origin":"*",
@@ -1029,7 +1107,7 @@ function goodsdetail(query,response) {
                 response.end();
             }
         });
-    });
+    });*/
 }
 
 exports.index = index;
@@ -1053,5 +1131,5 @@ function addData(tmp){
     if(tmp==''){
         tmp = null;
     }
-    return '{"data":'+tmp+'}';
+    return '{"data":'+tmp+',"code":"200000"}';
 }

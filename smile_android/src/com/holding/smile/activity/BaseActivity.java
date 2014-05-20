@@ -1,16 +1,12 @@
 
 package com.holding.smile.activity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -22,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.entity.SUser;
@@ -41,10 +36,6 @@ public class BaseActivity extends Activity {
 	public static final int	SEARCH_CODE			= 10;
 	public static final int	UPLOAD_IMAGE_CODE	= 11;
 	/**
-	 * 编辑收货人地址操作代码
-	 */
-	public static final int	ADDRESS_EDIT_CODE	= 12;
-	/**
 	 * 编辑邮箱操作代码
 	 */
 	public static final int	EMAIL_CODE			= 13;
@@ -60,6 +51,10 @@ public class BaseActivity extends Activity {
 	 * 选择身份证照片编辑身份证操作代码
 	 */
 	public static final int	IDCARD_EDIT_CODE	= 16;
+	/**
+	 * 订单代码
+	 */
+	public static final int	ORDER_CODE			= 17;
 
 	public Context			context;
 
@@ -85,7 +80,9 @@ public class BaseActivity extends Activity {
 				|| MyApplication.getInstance().getScreenHeight() == null
 				|| MyApplication.getInstance().getDensity() == null) {
 			Display display = getWindowManager().getDefaultDisplay();
+			@SuppressWarnings("deprecation")
 			int h = display.getHeight();
+			@SuppressWarnings("deprecation")
 			int w = display.getWidth();
 			MyApplication.getInstance().setScreenWidth(w);
 			MyApplication.getInstance().setScreenHeight(h);
@@ -117,45 +114,24 @@ public class BaseActivity extends Activity {
 		setVisible(R.id.foot);
 	}
 
+	/**
+	 * 显示头部标题
+	 * 
+	 * @return
+	 */
 	public TextView displayHeaderDescription() {
 		setHeadVisible();
 		int id = R.id.header_description;
 		TextView textView = (TextView) findViewById(id);
 		setVisible(id);
-		SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
-		if (user != null) {
-			Toast.makeText(context, "欢迎您," + user.getUsername(), Toast.LENGTH_SHORT).show();
-		}
 		return textView;
 	}
 
-	public View displayFooterSearch(int idNow) {
-		setFootVisible();
-		View view = null;
-		// int id = R.id.searchs;
-		// View view = (View) findViewById(id);
-		// setVisible(id);
-		//
-		// int searchGoodId = R.id.search_good;
-		// View searchGood = view.findViewById(searchGoodId);
-		// searchGood.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// Intent intent = new Intent();
-		// // intent.setClass(context, SearchGoodsActivity.class);
-		// intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-		// startActivity(intent);
-		// finish();
-		// overridePendingTransition(0, 0);
-		// }
-		// });
-		//
-		// if (idNow == searchGoodId) {
-		// searchGood.setSelected(true);
-		// }
-		return view;
-	}
-
+	/**
+	 * 显示头部回退键
+	 * 
+	 * @return
+	 */
 	public ImageView displayHeaderBack() {
 		setHeadVisible();
 		int id = R.id.btn_back;
@@ -164,20 +140,17 @@ public class BaseActivity extends Activity {
 		return button;
 	}
 
-	public TextView displayHeaderCate() {
+	/**
+	 * 显示头部右边部分
+	 * 
+	 * @return
+	 */
+	public TextView displayHeaderRight() {
 		setHeadVisible();
-		int id = R.id.btn_cate;
+		int id = R.id.header_right;
 		TextView textView = (TextView) findViewById(id);
 		setVisible(id);
 		return textView;
-	}
-
-	public ImageView displayHeaderSearch() {
-		setHeadVisible();
-		int id = R.id.mainfooter_search;
-		ImageView button = (ImageView) findViewById(id);
-		setVisible(id);
-		return button;
 	}
 
 	/***
@@ -194,18 +167,6 @@ public class BaseActivity extends Activity {
 		// contentView.setBackgroundDrawable(null);
 		if (null != ly_content) {
 			ly_content.addView(contentView);
-		}
-	}
-
-	/***
-	 * 设置内容区域
-	 * 
-	 * @param view
-	 *            View对象
-	 */
-	public void setContentLayout(View view) {
-		if (null != ly_content) {
-			ly_content.addView(view);
 		}
 	}
 
@@ -248,40 +209,40 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.e("====", "start onStart~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onStart~~~");
 	}
 
 	// 当按HOME键时，然后再次启动应用时，我们要恢复先前状态
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		Log.e("====", "start onRestart~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onRestart~~~");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.e("====", "start onResume~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onResume~~~");
 	}
 
 	// 当我们按HOME键时
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Log.e("====", "start onPause~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onPause~~~");
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.e("====", "start onStop~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onStop~~~");
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		// MyApplication.getInstance().finishActivity(this);
-		Log.e("====", "start onDestroy~~~");
+		// Log.e(MyApplication.LOG_TAG, "start onDestroy~~~");
 	}
 
 	long	waitTime	= 2000;
@@ -349,33 +310,17 @@ public class BaseActivity extends Activity {
 	public View displayFooterMain(int idNow) {
 		setFootVisible();
 		int id = R.id.mainfooter;
-		View view = (View) findViewById(id);
+		LinearLayout view = (LinearLayout) findViewById(id);
 		setVisible(id);
 
-		Map<Integer, View> footMap = new HashMap<Integer, View>();
-
-		int mainfooterOneId = R.id.mainfooter_one;
-		View mainfooterOne = view.findViewById(mainfooterOneId);
-		footMap.put(mainfooterOneId, mainfooterOne);
-
-		int mainfooterTwoId = R.id.mainfooter_two;
-		View mainfooterTwo = view.findViewById(mainfooterTwoId);
-		footMap.put(mainfooterTwoId, mainfooterTwo);
-
-		int mainfooterThreeId = R.id.mainfooter_three;
-		View mainfooterThree = view.findViewById(mainfooterThreeId);
-		footMap.put(mainfooterThreeId, mainfooterThree);
-
-		int mainfooterFourId = R.id.mainfooter_four;
-		View mainfooterFour = view.findViewById(mainfooterFourId);
-		footMap.put(mainfooterFourId, mainfooterFour);
-
-		for (Integer o : footMap.keySet()) {
+		int count = view.getChildCount();
+		for (int i = 0; i < count; i++) {
+			int o = view.getChildAt(i).getId();
 			if (o == idNow) {
-				footMap.get(o).setSelected(true);
+				view.getChildAt(i).setSelected(true);
 			} else {
-				if (o == mainfooterOneId) {
-					footMap.get(o).setOnClickListener(new OnClickListener() {
+				if (o == R.id.mainfooter_one) {// 首页
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent();
@@ -386,11 +331,10 @@ public class BaseActivity extends Activity {
 							overridePendingTransition(0, 0);
 						}
 					});
-				} else if (o == mainfooterTwoId) {
-					footMap.get(o).setOnClickListener(new OnClickListener() {
+				} else if (o == R.id.mainfooter_two) {// 排行榜
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							// 排行榜
 							Intent intent = new Intent();
 							intent.setClass(context, SortActivity.class);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -398,8 +342,8 @@ public class BaseActivity extends Activity {
 							overridePendingTransition(0, 0);
 						}
 					});
-				} else if (o == mainfooterThreeId) {
-					footMap.get(o).setOnClickListener(new OnClickListener() {
+				} else if (o == R.id.mainfooter_three) {// 搜索
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent();
@@ -409,12 +353,29 @@ public class BaseActivity extends Activity {
 							overridePendingTransition(0, 0);
 						}
 					});
-				} else if (o == mainfooterFourId) {
-					footMap.get(o).setOnClickListener(new OnClickListener() {
+				} else if (o == R.id.mainfooter_four) {// 购物车
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							SUser user = MyApplication.getInstance().getCurrentUser();
+							Intent intent = new Intent();
+							if (user == null || MyApplication.getInstance().getSessionId() == null) {
+								intent.putExtra("class", ShoppingCartActivity.class);
+								intent.setClass(context, LoginActivity.class);
+							} else {
+								intent.setClass(context, ShoppingCartActivity.class);
+							}
+							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							startActivity(intent);
+							overridePendingTransition(0, 0);
+						}
+					});
+				} else if (o == R.id.mainfooter_more) {// 更多
+					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent();
-							intent.setClass(context, PersonalSettingsActivity.class);
+							intent.setClass(context, MySmileActivity.class);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
@@ -429,6 +390,19 @@ public class BaseActivity extends Activity {
 	public View displayFooterMainBuyBtn() {
 		setFootVisible();
 		int id = R.id.mainfooter_buy;
+		View view = (View) findViewById(id);
+		setVisible(id);
+		return view;
+	}
+
+	/**
+	 * 进入购物车时显示
+	 * 
+	 * @return
+	 */
+	public View displayFooterMainTotal() {
+		setFootVisible();
+		int id = R.id.calculate_total;
 		View view = (View) findViewById(id);
 		setVisible(id);
 		return view;

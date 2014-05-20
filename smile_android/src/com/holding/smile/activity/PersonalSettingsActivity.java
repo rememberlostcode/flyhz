@@ -2,6 +2,8 @@
 package com.holding.smile.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,10 +86,10 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 				break;
 			}
 			case R.id.user_info_idcard_layout: {
-//				Intent intent = new Intent();
-//				intent.setClass(context, AddressManagerActivity.class);
-//				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//				startActivity(intent);
+				// Intent intent = new Intent();
+				// intent.setClass(context, AddressManagerActivity.class);
+				// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				// startActivity(intent);
 				Intent intent = new Intent();
 				intent.setClass(context, IdcardManagerActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -116,7 +118,36 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 				break;
 			}
 			case R.id.setting_logout_button: {
-				Toast.makeText(context, "注销", Toast.LENGTH_SHORT).show();
+				new AlertDialog.Builder(this).setTitle("提示框")
+												.setMessage("确定退出登录吗？")
+												.setPositiveButton("确定",
+														new DialogInterface.OnClickListener() {
+															public void onClick(
+																	DialogInterface dialog,
+																	int which) {
+																SUser user = MyApplication.getInstance()
+																							.getCurrentUser();
+																if (user != null
+																		&& user.getId() != null) {
+																	MyApplication.getInstance()
+																					.setCurrentUser(
+																							null);
+																	MyApplication.getInstance()
+																					.setSessionId(
+																							null);
+																	MyApplication.getInstance()
+																					.getSqliteService()
+																					.setCurrentUserEmpty(
+																							user.getId());
+																}
+																finish();
+																Intent intent = new Intent();
+																intent.setClass(context,
+																		LoginActivity.class);
+																intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+																startActivity(intent);
+															}
+														}).setNegativeButton("取消", null).show();
 				break;
 			}
 		}

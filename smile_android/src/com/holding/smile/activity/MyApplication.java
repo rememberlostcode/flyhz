@@ -57,7 +57,7 @@ public class MyApplication extends Application {
 	 */
 	private SUser					currentUser;
 
-	//JSESSIONID=6CCC2F179859F7D98D2F8E35CEBD5CF4
+	// JSESSIONID=6CCC2F179859F7D98D2F8E35CEBD5CF4
 	private String					sessionId;
 
 	@Override
@@ -72,7 +72,7 @@ public class MyApplication extends Application {
 		mImageLoader = new ImageLoader(context);
 		sqliteService = new SQLiteService(context);// 初始化本地DB
 
-		jgoods_img_url = getString(R.string.jGoods_img_url);
+		jgoods_img_url = getString(R.string.prefix_url) + getString(R.string.img_static_url);
 	}
 
 	public static ImageLoader getImageLoader() {

@@ -1,6 +1,8 @@
 
 package com.flyhz.shop.web.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.service.ShoppingCartService;
 
 /**
@@ -39,6 +42,20 @@ public class ShoppingCartController {
 		model.addAttribute("protocol", protocol);
 	}
 
+	// @RequestMapping(value = "/add", method = RequestMethod.POST)
+	@RequestMapping(value = "/list")
+	public void list(@Identify Integer userId, Model model) {
+		Protocol protocol = new Protocol();
+		try {
+			List<CartItemDto> cartItems = shoppingCartService.listItems(userId);
+			protocol.setCode(200000);
+			protocol.setData(cartItems);
+		} catch (ValidateException e) {
+			protocol.setCode(e.getCode());
+		}
+		model.addAttribute("protocol", protocol);
+	}
+
 	// @RequestMapping(value = "/remove", method = RequestMethod.POST)
 	@RequestMapping(value = "/remove")
 	public void removeCartItem(@Identify Integer userId,
@@ -60,7 +77,6 @@ public class ShoppingCartController {
 			Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			userId = 2;
 			protocol.setData(shoppingCartService.setQty(userId, itemId, qty));
 			protocol.setCode(200000);
 		} catch (ValidateException e) {

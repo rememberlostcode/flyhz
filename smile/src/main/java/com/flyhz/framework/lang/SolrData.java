@@ -4,6 +4,7 @@ package com.flyhz.framework.lang;
 import java.util.Date;
 import java.util.List;
 
+import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 
 /**
@@ -53,4 +54,15 @@ public interface SolrData {
 	 * @param gmtModify
 	 */
 	public void submitOrder(Integer userId, Integer orderId, String status, Date gmtModify);
+
+	/**
+	 * 查询指定用户的订单
+	 * 
+	 * @param userId
+	 *            用户ID
+	 * @param status
+	 *            状态
+	 * @return
+	 */
+	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId, String status);
 }

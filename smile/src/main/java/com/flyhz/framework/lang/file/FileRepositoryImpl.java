@@ -51,6 +51,12 @@ public class FileRepositoryImpl implements FileRepository {
 	public void saveToTemp(InputStream in, String fileName) throws IOException {
 		File file = getTempFile(fileName);
 		try {
+			File dic = new File(file.getPath().substring(0,
+					file.getPath().lastIndexOf(File.separator)));
+			if (!dic.exists()) {
+				dic.mkdirs();
+			}
+			file.getPath().substring(0, file.getPath().lastIndexOf(File.separator));
 			FileUtil.copy(in, new FileOutputStream(file));
 		} catch (IOException e) {
 			file.delete();

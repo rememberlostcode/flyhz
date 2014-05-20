@@ -22,6 +22,9 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.holding.smile.activity.MyApplication;
+import com.holding.smile.tools.StrUtils;
+
 public class ImageLoader {
 
 	private MemoryCache				memoryCache	= new MemoryCache();
@@ -37,6 +40,9 @@ public class ImageLoader {
 
 	// 最主要的方法
 	public void DisplayImage(String url, ImageView imageView, boolean isLoadOnlyFromCache) {
+		if (!StrUtils.isNotEmpty(url))
+			return;
+
 		imageViews.put(imageView, url);
 
 		// 先从内存缓存中查找
@@ -46,6 +52,27 @@ public class ImageLoader {
 		else if (!isLoadOnlyFromCache) {
 			// 若没有的话则开启新线程加载图片
 			queuePhoto(url, imageView);
+		}
+	}
+
+	/**
+	 * 先从缓存中获取图片，没有再去网络下载并加入缓存中
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public Bitmap getBitmapFromCache(String url) {
+		if (!StrUtils.isNotEmpty(url))
+			return null;
+		// 先从内存缓存中查找
+		Bitmap bitmap = memoryCache.get(url);
+		if (bitmap != null) {
+			return bitmap;
+		} else {
+			bitmap = getBitmap(url);
+			if (bitmap != null)
+				memoryCache.put(url, bitmap);
+			return bitmap;
 		}
 	}
 
@@ -80,7 +107,8 @@ public class ImageLoader {
 			bitmap = decodeFile(f);
 			return bitmap;
 		} catch (Exception ex) {
-			Log.e("", "getBitmap catch Exception...\nmessage = " + ex.getMessage());
+			Log.e(MyApplication.LOG_TAG,
+					"getBitmap catch Exception...\nmessage = " + ex.getMessage());
 			return null;
 		}
 	}
@@ -211,7 +239,7 @@ public class ImageLoader {
 				os.write(bytes, 0, count);
 			}
 		} catch (Exception ex) {
-			Log.e("", "CopyStream catch Exception...");
+			Log.e(MyApplication.LOG_TAG, "CopyStream catch Exception...");
 		}
 	}
 }

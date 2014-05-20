@@ -30,8 +30,7 @@
 		<property name="jobClass" value="com.flyhz.shop.build.solr.SolrTimer" />
 		<property name="jobDataAsMap">
 			<map>
-				<entry key="orderDao" value-ref="orderDao" />
-				<entry key="salesvolumeDao" value-ref="salesvolumeDao" />
+				<entry key="redisRepository" value-ref="redisRepository" />
 			</map>
 		</property>
 	</bean>

@@ -95,14 +95,17 @@ public class JGoods implements Serializable {
 
 	private String				_version_;
 
-	private Integer[]			ag;
+	/**
+	 * 原图数组
+	 */
+	private String[]			bp;
 
-	public Integer[] getAg() {
-		return ag;
+	public String[] getBp() {
+		return bp;
 	}
 
-	public void setAg(Integer[] ag) {
-		this.ag = ag;
+	public void setBp(String[] bp) {
+		this.bp = bp;
 	}
 
 	public Integer getId() {

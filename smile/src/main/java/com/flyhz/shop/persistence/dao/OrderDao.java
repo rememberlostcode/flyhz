@@ -14,8 +14,36 @@ public interface OrderDao extends GenericDao<OrderModel> {
 
 	public OrderPayDto getOrderPay(OrderPayDto orderPayDto);
 
+	/**
+	 * 已完成订单总数
+	 * 
+	 * @param page
+	 * @return
+	 */
 	public int getFinshedOrdersCount(SolrPage page);
 
-	public List<String> findFinshedOrders(SolrPage page);
+	/**
+	 * 已完成的订单集合
+	 * 
+	 * @param page
+	 * @return
+	 */
+	public List<OrderModel> findFinshedOrders(SolrPage page);
+
+	/**
+	 * 所有订单总数
+	 * 
+	 * @param page
+	 * @return
+	 */
+	public int getAllOrdersCount(SolrPage page);
+
+	/**
+	 * 所有的订单集合
+	 * 
+	 * @param page
+	 * @return
+	 */
+	public List<OrderModel> findAllOrders(SolrPage page);
 
 }

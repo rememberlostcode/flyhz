@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.holding.smile.activity.MyApplication;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -47,7 +49,7 @@ public class ImgUtil {
 				is.close();
 				fos.close();
 			} else {
-				Log.d("==============", "failed");
+				Log.d(MyApplication.LOG_TAG, "Get bitmap failed");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

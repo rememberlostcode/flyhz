@@ -24,6 +24,8 @@ public class ProductModel implements Serializable {
 	private String				name;
 	private BigDecimal			purchasingprice;
 	private String				style;
+	private String				color;
+	private String				colorimg;
 
 	public ProductModel() {
 	}
@@ -122,5 +124,21 @@ public class ProductModel implements Serializable {
 
 	public void setStyle(String style) {
 		this.style = style;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getColorimg() {
+		return colorimg;
+	}
+
+	public void setColorimg(String colorimg) {
+		this.colorimg = colorimg;
 	}
 }

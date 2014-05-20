@@ -15,6 +15,10 @@ public class MyGridView extends GridView {
 		super(context, attr);
 	}
 
+	public MyGridView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
+
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		// 注意这里,主要是把高度值改动了

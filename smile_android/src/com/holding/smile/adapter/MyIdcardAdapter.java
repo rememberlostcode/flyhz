@@ -65,7 +65,7 @@ public class MyIdcardAdapter extends BaseAdapter {
 		final Idcard idcard = (Idcard) getItem(position);
 		holder.name.setText(idcard.getName().trim());
 
-		holder.idcard.setText(idcard.getIdcard());
+		holder.idcard.setText(idcard.getNumber());
 
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
