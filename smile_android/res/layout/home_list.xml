@@ -41,6 +41,13 @@
 	            android:layout_height="wrap_content"
 	            android:textColor="#f50606"
 	            android:textSize="16sp" />
+            
+            <TextView
+	            android:id="@+id/lp"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textColor="#f50606"
+	            android:textSize="16sp" />
 	        
 	        <TextView
 	            android:id="@+id/sn"
