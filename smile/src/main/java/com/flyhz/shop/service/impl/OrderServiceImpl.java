@@ -62,13 +62,13 @@ public class OrderServiceImpl implements OrderService {
 	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds,
 			boolean flag) throws ValidateException {
 		if (userId == null)
-			throw new ValidateException("您没有登录！");
+			throw new ValidateException(101002);
 		if (productIds == null || productIds.length <= 0)
-			throw new ValidateException("产品ID为空！");
+			throw new ValidateException(101021);
 
 		UserDto user = userDao.getUserById(userId);
 		if (user == null)
-			throw new ValidateException("您还不是会员，请注册后再购买！");
+			throw new ValidateException(101002);
 
 		ConsigneeModel consignee = new ConsigneeModel();
 		consignee.setId(consigneeId);
@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		if (orderDetails.isEmpty())
-			throw new ValidateException("产品为空！");
+			throw new ValidateException(101021);
 
 		Date date = new Date();
 		OrderDto orderDto = new OrderDto();
