@@ -1,15 +1,29 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.flyhz.avengers;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +36,10 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -30,9 +48,11 @@ import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
+import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.api.ApplicationConstants.Environment;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.KillApplicationRequest;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
@@ -56,21 +76,65 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.DSConstants;
+/**
+ * Client for Distributed Shell application submission to YARN.
+ * 
+ * <p>
+ * The distributed shell client allows an application master to be launched that
+ * in turn would run the provided shell command on a set of containers.
+ * </p>
+ * 
+ * <p>
+ * This client is meant to act as an example on how to write yarn-based
+ * applications.
+ * </p>
+ * 
+ * <p>
+ * To submit an application, a client first needs to connect to the
+ * <code>ResourceManager</code> aka ApplicationsManager or ASM via the
+ * {@link ApplicationClientProtocol}. The {@link ApplicationClientProtocol}
+ * provides a way for the client to get access to cluster information and to
+ * request for a new {@link ApplicationId}.
+ * <p>
+ * 
+ * <p>
+ * For the actual job submission, the client first has to create an
+ * {@link ApplicationSubmissionContext}. The
+ * {@link ApplicationSubmissionContext} defines the application details such as
+ * {@link ApplicationId} and application name, the priority assigned to the
+ * application and the queue to which this application needs to be assigned. In
+ * addition to this, the {@link ApplicationSubmissionContext} also defines the
+ * {@link ContainerLaunchContext} which describes the <code>Container</code>
+ * with which the {@link ApplicationMaster} is launched.
+ * </p>
+ * 
+ * <p>
+ * The {@link ContainerLaunchContext} in this scenario defines the resources to
+ * be allocated for the {@link ApplicationMaster}'s container, the local
+ * resources (jars, configuration files) to be made available and the
+ * environment to be set for the {@link ApplicationMaster} and the commands to
+ * be executed to run the {@link ApplicationMaster}.
+ * <p>
+ * 
+ * <p>
+ * Using the {@link ApplicationSubmissionContext}, the client submits the
+ * application to the <code>ResourceManager</code> and then monitors the
+ * application by requesting the <code>ResourceManager</code> for an
+ * {@link ApplicationReport} at regular time intervals. In case of the
+ * application taking too long, the client kills the application by submitting a
+ * {@link KillApplicationRequest} to the <code>ResourceManager</code>.
+ * </p>
+ * 
+ */
+@InterfaceAudience.Public
+@InterfaceStability.Unstable
+public class Client {
 
-public class Avengers {
-	private static final Logger	LOG					= LoggerFactory.getLogger(Avengers.class);
+	private static final Log	LOG					= LogFactory.getLog(Client.class);
 
 	// Configuration
 	private Configuration		conf;
-	private final String		appMasterMainClass;
 	private YarnClient			yarnClient;
 	// Application master specific info to register a new Application with
 	// RM/ASM
@@ -84,6 +148,8 @@ public class Avengers {
 
 	// Application master jar file
 	private String				appMasterJar		= "";
+	// Main class to invoke application master
+	private final String		appMasterMainClass;
 
 	// Shell command to be executed
 	private String				shellCommand		= "";
@@ -113,25 +179,61 @@ public class Avengers {
 
 	// Debug flag
 	boolean						debugFlag			= false;
+
+	// Command line options
 	private Options				opts;
 
-	static {
+	/**
+	 * @param args
+	 *            Command line arguments
+	 */
+	public static void main(String[] args) {
 
+		System.setProperty("hadoop.home.dir", "/Users/huoding/Downloads/hadoop-2.2.0");
+		System.setProperty("yarn.resourcemanager.adress", "10.203.3.39");
+		System.setProperty("HADOOP_USER_NAME", "avengers");
+		LOG.info("HADOOP_CONF_DIR = " + System.getenv("HADOOP_CONF_DIR"));
+		try {
+			InetSocketAddress isa = new InetSocketAddress("10.22.23.63", 8032);
+			System.out.println(isa.getAddress().getCanonicalHostName());
+			LOG.info(InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		}
+		boolean result = false;
+		try {
+			Client client = new Client();
+			LOG.info("Initializing Client");
+			try {
+				boolean doRun = client.init(args);
+				if (!doRun) {
+					System.exit(0);
+				}
+			} catch (IllegalArgumentException e) {
+				System.err.println(e.getLocalizedMessage());
+				client.printUsage();
+				System.exit(-1);
+			}
+			result = client.run();
+		} catch (Throwable t) {
+			LOG.fatal("Error running CLient", t);
+			System.exit(1);
+		}
+		if (result) {
+			LOG.info("Application completed successfully");
+			System.exit(0);
+		}
+		LOG.error("Application failed to complete successfully");
+		System.exit(2);
 	}
 
-	static class Singletone {
-		private static Avengers	singletone	= new Avengers();
-	}
-
-	private Avengers() {
-		this(new YarnConfiguration());
-	}
-
-	private Avengers(Configuration conf) {
+	/**
+   */
+	public Client(Configuration conf) throws Exception {
 		this("com.flyhz.avengers.framework.AvengersAppMaster", conf);
 	}
 
-	private Avengers(String appMasterMainClass, Configuration conf) {
+	Client(String appMasterMainClass, Configuration conf) {
 		LOG.info("conf is " + conf);
 		this.conf = conf;
 		this.appMasterMainClass = appMasterMainClass;
@@ -140,6 +242,8 @@ public class Avengers {
 				+ conf.getClass().getClassLoader().getResource("yarn-site.xml").getPath());
 		conf.getSocketAddr(YarnConfiguration.RM_ADDRESS, YarnConfiguration.DEFAULT_RM_ADDRESS,
 				YarnConfiguration.DEFAULT_RM_PORT);
+		LOG.info(conf.isDeprecated(YarnConfiguration.RM_ADDRESS));
+
 		yarnClient.init(conf);
 
 		opts = new Options();
@@ -150,7 +254,8 @@ public class Avengers {
 		opts.addOption("master_memory", true,
 				"Amount of memory in MB to be requested to run the application master");
 		opts.addOption("jar", true, "Jar file containing the application master");
-
+		opts.addOption("shell_command", true,
+				"Shell command to be executed by the Application Master");
 		opts.addOption("shell_script", true, "Location of the shell script to be executed");
 		opts.addOption("shell_args", true, "Command line args for the shell script");
 		opts.addOption("shell_env", true,
@@ -161,31 +266,50 @@ public class Avengers {
 		opts.addOption("num_containers", true,
 				"No. of containers on which the shell command needs to be executed");
 		opts.addOption("log_properties", true, "log4j.properties file");
-		opts.addOption("all", false, "all:crawl、fetch、out");
-		opts.addOption("crawl", false, "crawl");
-		opts.addOption("fetch", false, "fetch");
-		opts.addOption("out", false, "out");
 		opts.addOption("debug", false, "Dump out debug information");
 		opts.addOption("help", false, "Print usage");
 	}
 
-	public static Avengers getInstance() {
-		return Singletone.singletone;
+	/**
+   */
+	public Client() throws Exception {
+		this(new YarnConfiguration());
 	}
 
-	boolean init(String[] args) throws ParseException {
+	/**
+	 * Helper function to print out usage
+	 */
+	private void printUsage() {
+		new HelpFormatter().printHelp("Client", opts);
+	}
+
+	/**
+	 * Parse command line options
+	 * 
+	 * @param args
+	 *            Parsed command line options
+	 * @return Whether the init was successful to run the client
+	 * @throws ParseException
+	 */
+	public boolean init(String[] args) throws ParseException {
+
 		CommandLine cliParser = new GnuParser().parse(opts, args);
+
 		if (args.length == 0) {
-			throw new IllegalArgumentException("No args specified for avengers to initialize");
+			throw new IllegalArgumentException("No args specified for client to initialize");
+		}
+
+		if (cliParser.hasOption("help")) {
+			printUsage();
+			return false;
 		}
 
 		if (cliParser.hasOption("debug")) {
-			LOG.info("debug = {}", cliParser.hasOption("debug"));
 			debugFlag = true;
+
 		}
 
 		appName = cliParser.getOptionValue("appname", "DistributedShell");
-		LOG.info("appName = {}", appName);
 		amPriority = Integer.parseInt(cliParser.getOptionValue("priority", "0"));
 		amQueue = cliParser.getOptionValue("queue", "default");
 		amMemory = Integer.parseInt(cliParser.getOptionValue("master_memory", "10"));
@@ -201,15 +325,12 @@ public class Avengers {
 		}
 
 		appMasterJar = cliParser.getOptionValue("jar");
-		if (cliParser.hasOption("all")) {
-			shellCommand = "all";
-		} else if (cliParser.hasOption("crawl")) {
-			shellCommand = "crawl";
-		} else if (cliParser.hasOption("fetch")) {
-			shellCommand = "fetch";
-		} else if (cliParser.hasOption("out")) {
-			shellCommand = "out";
+
+		if (!cliParser.hasOption("shell_command")) {
+			throw new IllegalArgumentException(
+					"No shell command specified to be executed by application master");
 		}
+		shellCommand = cliParser.getOptionValue("shell_command");
 
 		if (cliParser.hasOption("shell_script")) {
 			shellScriptPath = cliParser.getOptionValue("shell_script");
@@ -249,14 +370,19 @@ public class Avengers {
 		clientTimeout = Integer.parseInt(cliParser.getOptionValue("timeout", "600000"));
 
 		log4jPropFile = cliParser.getOptionValue("log_properties", "");
+
 		return true;
 	}
 
-	private void printUsage() {
-		new HelpFormatter().printHelp("Client", opts);
-	}
+	/**
+	 * Main run function for the client
+	 * 
+	 * @return true if application completed successfully
+	 * @throws IOException
+	 * @throws YarnException
+	 */
+	public boolean run() throws IOException, YarnException {
 
-	public boolean run() throws YarnException, IOException {
 		LOG.info("Running Client");
 		yarnClient.start();
 
@@ -324,14 +450,13 @@ public class Avengers {
 		LOG.info("Copy App Master jar from local filesystem and add to local environment");
 		// Copy the application master jar to the filesystem
 		// Create a local resource to point to the destination jar path
-		LOG.info("fs.hdfs.impl class = ", conf.getClass("fs.hdfs.impl", null));
 		ServiceLoader<FileSystem> serviceLoader = ServiceLoader.load(FileSystem.class);
 		for (FileSystem fs : serviceLoader) {
-			LOG.info("scheme:{},class{}", fs.getScheme(), fs.getClass());
+			LOG.info("scheme:" + fs.getScheme() + ",class:" + fs.getClass());
 		}
 		FileSystem fs = FileSystem.get(conf);
 		Path src = new Path(appMasterJar);
-		String pathSuffix = appName + "/" + appId.getId() + "/avengers-jar-with-dependencies.jar";
+		String pathSuffix = appName + "/" + appId.getId() + "/AppMaster.jar";
 
 		Path dst = new Path(fs.getHomeDirectory(), pathSuffix);
 		fs.copyFromLocalFile(false, true, src, dst);
@@ -354,7 +479,7 @@ public class Avengers {
 		// resource the client intended to use with the application
 		amJarRsrc.setTimestamp(destStatus.getModificationTime());
 		amJarRsrc.setSize(destStatus.getLen());
-		localResources.put("AvengersAppMaster.jar", amJarRsrc);
+		localResources.put("AppMaster.jar", amJarRsrc);
 
 		// Set the log4j properties if needed
 		if (!log4jPropFile.isEmpty()) {
@@ -407,12 +532,14 @@ public class Avengers {
 		// local resource for the
 		// eventual containers that will be launched to execute the shell
 		// scripts
-		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION, hdfsShellScriptLocation);
-		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP,
-				Long.toString(hdfsShellScriptTimestamp));
-		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN, Long.toString(hdfsShellScriptLen));
+		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION,
+		// hdfsShellScriptLocation);
+		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP,
+		// Long.toString(hdfsShellScriptTimestamp));
+		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN,
+		// Long.toString(hdfsShellScriptLen));
 
-		// Add AvengersAppMaster.jar location to classpath
+		// Add AppMaster.jar location to classpath
 		// At some point we should not be required to add
 		// the hadoop specific classpaths to the env.
 		// It should be provided out of the box.
@@ -464,8 +591,8 @@ public class Avengers {
 			vargs.add("--debug");
 		}
 
-		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AvengersAppMaster.stdout");
-		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AvengersAppMaster.stderr");
+		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
+		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
 
 		// Get final commmand
 		StringBuilder command = new StringBuilder();
@@ -537,8 +664,19 @@ public class Avengers {
 
 		// Monitor the application
 		return monitorApplication(appId);
+
 	}
 
+	/**
+	 * Monitor the submitted application for completion. Kill application if
+	 * time expires.
+	 * 
+	 * @param appId
+	 *            Application Key of application to be monitored
+	 * @return true if application completed successfully
+	 * @throws YarnException
+	 * @throws IOException
+	 */
 	private boolean monitorApplication(ApplicationId appId) throws YarnException, IOException {
 
 		while (true) {
@@ -609,93 +747,4 @@ public class Avengers {
 		yarnClient.killApplication(appId);
 	}
 
-	public static void main(String[] args) {
-		System.setProperty("hadoop.home.dir", "/Users/huoding/Downloads/hadoop-2.2.0");
-		System.setProperty("yarn.resourcemanager.adress", "10.203.3.39");
-		System.setProperty("HADOOP_USER_NAME", "avengers");
-		LOG.info("HADOOP_CONF_DIR = " + System.getenv("HADOOP_CONF_DIR"));
-		boolean result = false;
-		try {
-			Avengers client = Avengers.getInstance();
-			LOG.info("Initializing Client");
-			try {
-				boolean doRun = client.init(args);
-				if (!doRun) {
-					System.exit(0);
-				}
-			} catch (IllegalArgumentException e) {
-				System.err.println(e.getLocalizedMessage());
-				client.printUsage();
-				System.exit(-1);
-			}
-			result = client.run();
-		} catch (Throwable t) {
-			LOG.error("Error running CLient", t);
-			System.exit(1);
-		}
-		if (result) {
-			LOG.info("Application completed successfully");
-			System.exit(0);
-		}
-		LOG.error("Application failed to complete successfully");
-		System.exit(2);
-
-		URL url = null;
-		HttpURLConnection connection = null;
-		try {
-			url = new URL("http://science.nuaa.edu.cn/js-szdw.asp");
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("GET");
-			connection.setRequestProperty("accept", "*/*");
-			connection.setRequestProperty("connection", "Keep-Alive");
-			connection.setRequestProperty("user-agent",
-					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
-
-			connection.connect();
-
-			Map<String, List<String>> map = connection.getHeaderFields();
-
-			// 遍历所有的响应头字段
-
-			for (String key : map.keySet()) {
-
-				System.out.println(key + "--->" + map.get(key));
-
-			}
-
-			// 定义BufferedReader输入流来读取URL的响应
-			BufferedReader in;
-			in = new BufferedReader(new InputStreamReader(connection.getInputStream(),
-					Charset.forName("gb2312")));
-
-			StringBuffer sb = new StringBuffer();
-			String line;
-
-			while ((line = in.readLine()) != null) {
-				sb.append(line);
-			}
-			// System.out.println(sb.toString());
-			// URLCrawlEvent parser = URLCrawlEvent.createParser(sb.toString(),
-			// "gb2312");
-			// NodeFilter filter = new TagNameFilter("table");
-			// NodeList list = parser.parse(tableFilter);
-			Document doc = Jsoup.parse(sb.toString());
-			System.out.println(doc.html());
-			Elements tables = doc.getElementsByTag("table");
-			System.out.println(tables.size());
-			for (Element table : tables) {
-				// System.out.println(tr.child(0).text());
-			}
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-		}
-
-	}
 }

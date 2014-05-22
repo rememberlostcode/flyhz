@@ -16,11 +16,6 @@
 		<junit.version>4.8.2</junit.version>
 	</properties>
 	<dependencies>
-		<dependency>
-	        <groupId>org.springframework</groupId>
-	        <artifactId>spring-context</artifactId>
-	        <version>4.0.4.RELEASE</version>
-	    </dependency>
 		<!-- logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -59,6 +54,11 @@
 			<artifactId>hadoop-yarn-client</artifactId>
 			<version>2.2.0</version>
 		</dependency>
+		<dependency>  
+    		<groupId>org.apache.hadoop</groupId>  
+    		<artifactId>hadoop-hdfs</artifactId>  
+    		<version>2.2.0</version>
+    	</dependency> 
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-client</artifactId>
@@ -128,13 +128,30 @@
 		        <artifactId>maven-assembly-plugin</artifactId>
 		        <version>2.4</version>
 		        <configuration>
+		        	<archive>
+			            <manifest>
+			              <mainClass>com.flyhz.avengers.Avengers</mainClass>
+			            </manifest>
+		          	</archive>
 		        	<filters>
 		            	<filter>src/assemble/filter.properties</filter>
 		        	</filters>
 		        	<descriptors>
 		            	<descriptor>src/assemble/distribution.xml</descriptor>
 		        	</descriptors>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+					    <goals>
+					      <goal>single</goal>
+					    </goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

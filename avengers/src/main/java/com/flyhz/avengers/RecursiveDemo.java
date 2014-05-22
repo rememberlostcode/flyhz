@@ -1,3 +1,4 @@
+
 package com.flyhz.avengers;
 
 import java.util.ArrayList;
@@ -11,23 +12,26 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.dto.RtnResult;
-import com.flyhz.avengers.parser.CoachUrlParser;
-import com.flyhz.avengers.util.WebClientUtil;
+import com.flyhz.avengers.domains.coach.CoachUrlParser;
+import com.flyhz.avengers.domains.dto.RtnResult;
+import com.flyhz.avengers.framework.util.WebClientUtil;
 
 public class RecursiveDemo {
-	private Logger log = LoggerFactory.getLogger(CoachUrlParser.class);
+	private static final Logger	LOG	= LoggerFactory.getLogger(CoachUrlParser.class);
 
 	/**
 	 * 
-	 * @param siteName 站点名称
-	 * @param baseUrl 网站前缀
-	 * @param homeUrl 首页URL
-	 * @param deeps 深度
+	 * @param siteName
+	 *            站点名称
+	 * @param baseUrl
+	 *            网站前缀
+	 * @param homeUrl
+	 *            首页URL
+	 * @param deeps
+	 *            深度
 	 * @return
 	 */
-	public RtnResult parserContent(String siteName, String baseUrl,
-			String homeUrl, int deeps) {
+	public RtnResult parserContent(String siteName, String baseUrl, String homeUrl, int deeps) {
 		RtnResult result = new RtnResult();
 		List<String> urls = parserContent(baseUrl, homeUrl, null, 1, deeps);
 		if (urls != null && !urls.isEmpty()) {
@@ -39,8 +43,8 @@ public class RecursiveDemo {
 		return result;
 	}
 
-	private List<String> parserContent(String baseUrl, String homeUrl,
-			List<String> urls, int layerNow, int deeps) {
+	private List<String> parserContent(String baseUrl, String homeUrl, List<String> urls,
+			int layerNow, int deeps) {
 		try {
 			if (urls == null) {
 				urls = new ArrayList<String>();
@@ -48,7 +52,7 @@ public class RecursiveDemo {
 			long b = System.currentTimeMillis();
 			String html = WebClientUtil.getContent(homeUrl, false, true);
 			long e = System.currentTimeMillis();
-			log.debug("爬网页时，花费时间{}毫秒", new Object[] { (e - b) });
+			LOG.debug("爬网页时，花费时间{}毫秒", new Object[] { (e - b) });
 
 			if (StringUtils.isNotBlank(html)) {
 				Document doc = Jsoup.parse(html);
@@ -64,8 +68,7 @@ public class RecursiveDemo {
 						}
 						urls.add(url);
 						if (deeps > layerNow) {
-							parserContent(baseUrl, url, urls, ++layerNow,
-									deeps);
+							parserContent(baseUrl, url, urls, ++layerNow, deeps);
 						}
 					}
 				}
@@ -73,7 +76,7 @@ public class RecursiveDemo {
 			return urls;
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("采集时出错：", e.getMessage());
+			LOG.error("采集时出错：", e.getMessage());
 		}
 		return null;
 	}
@@ -87,8 +90,7 @@ public class RecursiveDemo {
 		String baseUrl = "http://rcms.zju.edu.cn/static/";
 		String homeUrl = "http://rcms.zju.edu.cn/static/index1.html";
 		int deeps = 3;
-		RtnResult result = new RecursiveDemo().parserContent(siteName, baseUrl,
-				homeUrl, deeps);
+		RtnResult result = new RecursiveDemo().parserContent(siteName, baseUrl, homeUrl, deeps);
 		System.out.println();
 	}
 
