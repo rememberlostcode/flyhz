@@ -54,6 +54,12 @@ public class IdcardServiceImpl implements IdcardService {
 				idcardModel.setUrl("/idcard/" + origName);
 			}
 
+		} catch (Exception e) {
+			// 文件保存失败
+			throw new ValidateException(122222);
+		}
+		
+		try {
 			Date date = new Date();
 			if (idcardModel != null && idcardModel.getId() != null) {
 				idcardModel.setGmtModify(date);
@@ -65,7 +71,7 @@ public class IdcardServiceImpl implements IdcardService {
 			}
 		} catch (Exception e) {
 			// 文件保存失败
-			throw new ValidateException(122222);
+			throw new ValidateException(122221);
 		}
 	}
 

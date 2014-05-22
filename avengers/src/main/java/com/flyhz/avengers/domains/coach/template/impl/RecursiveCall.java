@@ -85,12 +85,11 @@ public class RecursiveCall {
 						if (StringUtils.isNotBlank(url)) {
 							urls.add(url);
 							if (deeps > layerNow) {
-								parserContent(baseUrl, url, urls, layerNow, deeps);
+								parserContent(baseUrl, url, urls, ++layerNow, deeps);
 							}
 						}
 					}
 				}
-				++layerNow;
 			}
 			return urls;
 		} catch (Exception e) {
@@ -105,6 +104,10 @@ public class RecursiveCall {
 	}
 
 	public static void main(String[] args) {
+
+		System.out.println(System.getenv("classpath")
+				+ "===============begin======================");
+
 		RecursiveCall recursiveCall = new RecursiveCall();
 		// Filter filter = new CoachUrlFilterImpl();
 		Domains avengers = null;

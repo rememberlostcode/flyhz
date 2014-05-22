@@ -270,7 +270,6 @@ public class SolrDataImpl implements SolrData {
 		sQuery.setQuery(para);
 		sQuery.setStart(0);
 		sQuery.setRows(10);
-		// 排序 如果按照blogId 排序，，那么将blogId desc(or asc) 改成 id desc(or asc)
 		sQuery.addSortField("gmt_modify", ORDER.desc);
 
 		try {
