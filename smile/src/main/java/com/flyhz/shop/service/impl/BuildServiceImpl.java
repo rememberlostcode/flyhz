@@ -128,7 +128,8 @@ public class BuildServiceImpl implements BuildService {
 					if (brandProducts.length() > 1) {
 						brandProducts.append(",");
 					}
-					brandProducts.append("{\"id\":\"" + brandList.get(i).getId() + "\",");
+					brandProducts.append("{");
+					brandProducts.append("\"id\":\"" + brandList.get(i).getId() + "\",");
 					brandProducts.append("\"n\":\"" + brandList.get(i).getName() + "\",");
 					brandProducts.append("\"gs\":");
 					brandProducts.append(gs);
@@ -153,7 +154,8 @@ public class BuildServiceImpl implements BuildService {
 						if (brandCateProducts.length() > 1) {
 							brandCateProducts.append(",");
 						}
-						brandCateProducts.append("{\"id\":\"" + brandList.get(j).getId() + "\",");
+						brandCateProducts.append("{");
+						brandCateProducts.append("\"id\":\"" + brandList.get(j).getId() + "\",");
 						brandCateProducts.append("\"n\":\"" + brandList.get(j).getName() + "\",");
 						brandCateProducts.append("\"gs\":");
 						brandCateProducts.append(gs);

@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.flyhz.com/avengrs" xmlns:ave="http://www.flyhz.com/avengrs" elementFormDefault="qualified">
-	<element name="avengers">
+<schema 
+	xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.flyhz.com/avengrs" 
+	xmlns:ave="http://www.flyhz.com/avengrs"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  	jaxb:version="2.0"
+	elementFormDefault="qualified">
+	<annotation>
+		<appinfo>
+			<jaxb:schemaBindings>
+	      		<jaxb:package name="com.flyhz.avengers.framework.config.xml"/>
+	    	</jaxb:schemaBindings>
+		</appinfo>
+  	</annotation>
+	<element name="domains">
 		<complexType>
 			<sequence>
 				<element name="domain" type="ave:domain" minOccurs="1" maxOccurs="unbounded"/>
@@ -9,26 +22,44 @@
 	</element>
 	<complexType name="domain">
 		<all>
-			<element name="blackList" minOccurs="0">
+			<element name="urlFilterBeforeCrawl" type="ave:filter" minOccurs="0"/>
+			<element name="crawlEvents" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="black" type="token" minOccurs="0" maxOccurs="unbounded"/>
+						<element name="event" type="ave:event" minOccurs="0" maxOccurs="unbounded"/>
 					</sequence>
 				</complexType>
 			</element>
+			<element name="urlFilterAfterCrawl" type="ave:filter" minOccurs="0"/>
 			<element name="templates" minOccurs="0">
 				<complexType>
 					<sequence>
-						<element name="template" minOccurs="1" maxOccurs="unbounded">
-							<complexType>
-								<attribute name="url" type="token" use="required"/>
-								<attribute name="parser" type="token" use="required"/>
-							</complexType>
-						</element>
+						<element name="template" type="ave:template" minOccurs="0" maxOccurs="unbounded"/>
 					</sequence>
 				</complexType>
 			</element>
 		</all>
 		<attribute name="root" use="required"/>
+	</complexType>
+	<complexType name="filter">
+		<sequence>
+			<element name="value" type="token" minOccurs="0" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	<complexType name="template">
+		<all>
+			<element name="templateApplyEvents" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="event" type="ave:event" minOccurs="0" maxOccurs="unbounded"/>
+					</sequence>
+				</complexType>
+			</element>
+		</all>
+		<attribute name="url" type="token" use="required"/>
+		<attribute name="parser" type="token" use="required"/>
+	</complexType>
+	<complexType name="event">
+		<attribute name="class" type="token" use="required"/>
 	</complexType>
 </schema>

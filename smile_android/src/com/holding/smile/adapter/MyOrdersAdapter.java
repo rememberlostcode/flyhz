@@ -1,13 +1,17 @@
 
 package com.holding.smile.adapter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,10 +39,16 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private OrderDetailAdapter	orderAdapter;
 	private boolean				showDelete	= true;
 
+	private Set<String>			numbers		= new HashSet<String>();
+	private BigDecimal			total		= new BigDecimal(0);
+	private Boolean				selectAll	= false;
+	private Handler				mUIHandler;
+
 	// 自己定义的构造函数
-	public MyOrdersAdapter(Context context, List<OrderDto> orderList) {
+	public MyOrdersAdapter(Context context, List<OrderDto> orderList, Handler mUIHandler) {
 		this.orderList = orderList;
 		this.context = context;
+		this.mUIHandler = mUIHandler;
 	}
 
 	public void setData(List<OrderDto> contacts) {
@@ -78,7 +88,8 @@ public class MyOrdersAdapter extends BaseAdapter {
 		ImageView	cover;
 		Button		statusButton;
 		TextView	total;
-		Button		deleteButton;
+		ImageView	deleteButton;
+		ImageView	checkBoxImage;
 	}
 
 	@Override
@@ -93,7 +104,8 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder.price = (TextView) convertView.findViewById(R.id.order_list_price_value);
 			holder.totalnum = (TextView) convertView.findViewById(R.id.order_list_totalnum_value);
 			holder.statusButton = (Button) convertView.findViewById(R.id.order_list_status);
-			holder.deleteButton = (Button) convertView.findViewById(R.id.order_list_delete);
+			holder.deleteButton = (ImageView) convertView.findViewById(R.id.order_list_delete);
+			holder.checkBoxImage = (ImageView) convertView.findViewById(R.id.order_list_checkBox);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -105,6 +117,17 @@ public class MyOrdersAdapter extends BaseAdapter {
 		holder.price.setText(String.valueOf(order.getTotal()));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 
+		if (numbers.contains(order.getNumber())) {
+			holder.checkBoxImage.setBackgroundResource(R.drawable.icon_choice);
+		} else {
+			holder.checkBoxImage.setBackgroundResource(R.drawable.icon_no_choice);
+		}
+
+		if (order.getStatus().equals("10") && showDelete) {
+			holder.checkBoxImage.setVisibility(View.VISIBLE);
+		} else {
+			holder.checkBoxImage.setVisibility(View.INVISIBLE);
+		}
 		holder.statusButton.setText(ClickUtil.getTextByStatus(order.getStatus()));
 		holder.statusButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -121,6 +144,26 @@ public class MyOrdersAdapter extends BaseAdapter {
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 					context.startActivity(intent);
 				}
+			}
+		});
+
+		holder.checkBoxImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (numbers.contains(order.getNumber())) {
+					numbers.remove(order.getNumber());
+					v.setBackgroundResource(R.drawable.icon_no_choice);
+					total = total.subtract(order.getTotal());
+				} else {
+					numbers.add(order.getNumber());
+					v.setBackgroundResource(R.drawable.icon_choice);
+					total = total.add(order.getTotal());
+				}
+				if (numbers.isEmpty()) {
+					selectAll = false;
+				}
+				// mUIHandler.sendEmptyMessage(3);
 			}
 		});
 
@@ -165,4 +208,39 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 		return convertView;
 	}
+
+	public void setSelectAll(Boolean selectAll) {
+		this.selectAll = selectAll;
+		numbers.clear();
+		total = new BigDecimal(0);
+		if (selectAll) {
+			if (orderList != null && !orderList.isEmpty()) {
+				for (OrderDto item : orderList) {
+					if (item.getNumber() != null && item.getStatus().equals("10")) {
+						numbers.add(item.getNumber());
+						total = total.add(item.getTotal());
+					}
+				}
+			}
+		}
+		mUIHandler.sendEmptyMessage(3);
+	}
+
+	/**
+	 * 获取已选中的itemId
+	 * 
+	 * @return
+	 */
+	public Set<String> getSelectNumbers() {
+		return numbers;
+	}
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public Boolean getSelectAll() {
+		return selectAll;
+	}
+
 }

@@ -3,6 +3,11 @@ package com.flyhz.shop.build.solr;
 
 import java.util.Date;
 
+/**
+ * 分页对象，用于solr建立索引
+ * @author zfsoft_zb
+ *
+ */
 public class SolrPage {
 
 	private Integer	start;

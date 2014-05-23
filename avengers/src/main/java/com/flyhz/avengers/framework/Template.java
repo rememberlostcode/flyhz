@@ -1,7 +1,9 @@
 
 package com.flyhz.avengers.framework;
 
+import java.util.Map;
+
 public interface Template {
 
-	public Object process(String url);
+	void apply(Map<String, Object> context);
 }

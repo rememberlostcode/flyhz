@@ -14,5 +14,9 @@ import com.flyhz.shop.persistence.entity.CategoryModel;
  */
 public interface CategoryDao extends GenericDao<CategoryModel> {
 
+	/**
+	 * 获取所有分类
+	 * @return
+	 */
 	public List<CategoryBuildDto> getCategoryBuildDtoList();
 }

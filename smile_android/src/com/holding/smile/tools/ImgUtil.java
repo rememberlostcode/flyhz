@@ -126,7 +126,7 @@ public class ImgUtil {
 		return null;
 	}
 
-	private static Uri getImageURIFromLocal(String path, File cache) {
+	public static Uri getImageURIFromLocal(String path, File cache) {
 		try {
 			if (path == null || "".equals(path.trim())) {
 				return null;
@@ -149,7 +149,7 @@ public class ImgUtil {
 			if (dir == null || "".equals(dir.trim())) {
 				return null;
 			}
-			String name = MD5.getMD5(dir);
+//			String name = MD5.getMD5(dir);
 			File file = new File(dir);
 			// 如果图片存在本地缓存目录，则不去服务器下载
 			if (file.exists()) {
@@ -165,7 +165,7 @@ public class ImgUtil {
 	/*
 	 * 从网络上获取图片，如果图片在本地存在的话就直接拿，如果不存在再去服务器上下载图片 这里的path是图片的地址
 	 */
-	private static Uri getImageURI(String path, File cache) {
+	public static Uri getImageURI(String path, File cache) {
 		HttpURLConnection conn = null;
 		try {
 			String name = MD5.getMD5(path);

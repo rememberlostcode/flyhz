@@ -18,7 +18,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
@@ -129,7 +129,7 @@ public class FileHelper {
 			}
 
 			boolean ret1 = file.createNewFile();
-			if (!ret) {
+			if (!ret1) {
 				log.e("createNewFile fail filePath = " + filePath);
 				return false;
 			}
@@ -227,6 +227,8 @@ public class FileHelper {
 		return file.setLastModified(modifyTime);
 	}
 
+	@SuppressLint("DefaultLocale")
+	@SuppressWarnings("unused")
 	public static boolean copyFile(ContentResolver cr, String fromPath, String destUri) {
 		if (null == cr || null == fromPath || fromPath.length() < 1 || null == destUri
 				|| destUri.length() < 1) {
@@ -341,6 +343,7 @@ public class FileHelper {
 		return baos.toByteArray();
 	}
 
+	@SuppressLint("DefaultLocale")
 	public static byte[] readFile(Context ctx, Uri uri) {
 		if (null == ctx || null == uri) {
 			log.e("Invalid param. ctx: " + ctx + ", uri: " + uri);
@@ -452,8 +455,9 @@ public class FileHelper {
 	public static byte[] readGZipFile(String zipFileName) {
 		if (fileIsExist(zipFileName)) {
 			log.i("zipFileName: " + zipFileName);
+			FileInputStream fin = null;
 			try {
-				FileInputStream fin = new FileInputStream(zipFileName);
+				fin = new FileInputStream(zipFileName);
 				int size;
 				byte[] buffer = new byte[1024];
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -463,6 +467,14 @@ public class FileHelper {
 				return baos.toByteArray();
 			} catch (Exception ex) {
 				log.i("read zipRecorder file error");
+			} finally {
+				if(fin!=null){
+					try {
+						fin.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		return null;
@@ -546,6 +558,7 @@ public class FileHelper {
 				is.close();
 			}
 		}
+		zipfile.close();
 
 		return true;
 	}
