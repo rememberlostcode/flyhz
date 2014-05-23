@@ -1,7 +1,9 @@
 
 package com.holding.smile.activity;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +44,11 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	private Button			allButton;
 	private Button			finshButton;
 	private Button			unfinshButton;
-	
-	private CheckBox				allChecked;
+
+	private CheckBox		allChecked;
+	private ImageButton		allPayButton;
+
+	private View			footerView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +59,6 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 		TextView textView = displayHeaderDescription();
 		textView.setText("订单管理");
-		
-		displayFooterMainOrder();
 
 		editView = displayHeaderRight();
 		editView.setText("编辑");
@@ -62,16 +66,22 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onClick(View v) {
+				if (footerView == null) {
+					footerView = displayFooterMainOrder();
+				}
 				if ("编辑".equals(editView.getText().toString())) {
 					editView.setText("取消");
 					adapter.showEdit(true);
+					footerView.setVisibility(View.VISIBLE);
 				} else {
 					editView.setText("编辑");
 					adapter.showEdit(false);
+					footerView.setVisibility(View.INVISIBLE);
 				}
 			}
 		});
 
+		allPayButton = (ImageButton) findViewById(R.id.footer_my_orders_all_pay);
 		allChecked = (CheckBox) findViewById(R.id.footer_my_orders_all_checked);
 		allChecked.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -92,6 +102,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 		allButton.setOnClickListener(this);
 		finshButton.setOnClickListener(this);
 		unfinshButton.setOnClickListener(this);
+		allPayButton.setOnClickListener(this);
 
 		listView = (MyListView) findViewById(R.id.list_orders_list);
 		startTask();
@@ -128,6 +139,29 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				startTask();
 				break;
 			}
+			case R.id.footer_my_orders_all_pay: {
+				Set<String> numbers = adapter.getSelectNumbers();
+				BigDecimal total = adapter.getTotal();
+
+				if (numbers.isEmpty()) {
+					Toast.makeText(context, "请选择至少一个订单！", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				Intent intent = new Intent(context, WebViewActivity.class);
+				Object[] ss = numbers.toArray();
+				String numberString = "";
+				for (int i = 0; i < ss.length; i++) {
+					if (i != 0) {
+						numberString += ",";
+					}
+					numberString += ss[i].toString();
+				}
+				intent.putExtra("number", numberString);
+				intent.putExtra("amount", total);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(intent);
+				break;
+			}
 		}
 		super.onClick(v);
 	}
@@ -148,22 +182,6 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case 1: {
-														RtnValueDto rvd = (RtnValueDto) (msg.obj);
-														list = rvd.getOrderListData();
-
-														if (list == null || list.size() == 0) {
-															Toast.makeText(context, "暂无数据",
-																	Toast.LENGTH_SHORT).show();
-														}
-
-														if (adapter != null) {
-															adapter.setData(list);
-														} else {
-															adapter = new MyOrdersAdapter(
-																	MyOrdersActivity.this, list,mUIHandler);
-														}
-
-														listView.setAdapter(adapter);
 														if (status == null) {
 															allButton.setBackgroundResource(R.color.lightgreen);
 															finshButton.setBackgroundResource(R.color.orange);
@@ -177,15 +195,31 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 															finshButton.setBackgroundResource(R.color.orange);
 															unfinshButton.setBackgroundResource(R.color.lightgreen);
 														}
+														
+														RtnValueDto rvd = (RtnValueDto) (msg.obj);
+														list = rvd.getOrderListData();
+
+														if (list == null || list.size() == 0) {
+															Toast.makeText(context, "暂无数据",
+																	Toast.LENGTH_SHORT).show();
+														}
+
+														if (adapter != null) {
+															adapter.setData(list);
+														} else {
+															adapter = new MyOrdersAdapter(
+																	MyOrdersActivity.this, list,
+																	mUIHandler);
+														}
+
+														listView.setAdapter(adapter);
 														break;
 													}
 													case 3: {
-														if (!adapter.getSelectAll()) {
-															allChecked.setChecked(false);
-														}
+														adapter.notifyDataSetChanged();
 														break;
 													}
-													
+
 												}
 											}
 										};

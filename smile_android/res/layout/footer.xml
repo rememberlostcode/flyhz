@@ -7,15 +7,15 @@
     android:background="#36293f"
     android:gravity="bottom"
     android:orientation="vertical" >
-    
+
     <LinearLayout
         android:id="@+id/calculate_total"
         android:layout_width="fill_parent"
         android:layout_height="40dip"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" 
         android:background="#C9C9C9"
-        android:visibility="gone">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone" >
 
         <CheckBox
             android:id="@+id/all_checked"
@@ -23,14 +23,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical" />
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="40dip"
             android:gravity="center_vertical"
             android:text="@string/select_all"
-            android:textSize="14sp" 
-            android:textColor="#4A4A4A"/>
+            android:textColor="#4A4A4A"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/total"
@@ -44,21 +44,21 @@
             android:id="@+id/payoff_btn"
             android:layout_width="fill_parent"
             android:layout_height="40dip"
-            android:layout_marginRight="1dip"
-            android:contentDescription="@string/gu"
             android:layout_gravity="right"
+            android:layout_marginRight="1dip"
             android:background="#C9C9C9"
+            android:contentDescription="@string/gu"
             android:src="@drawable/payoff" />
     </LinearLayout>
-    
+
     <LinearLayout
         android:id="@+id/footer_my_orders"
         android:layout_width="fill_parent"
         android:layout_height="40dip"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" 
         android:background="#C9C9C9"
-        android:visibility="gone">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone" >
 
         <CheckBox
             android:id="@+id/footer_my_orders_all_checked"
@@ -66,21 +66,32 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical" />
-        
+
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="40dip"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/select_all"
-            android:textSize="14sp" 
-            android:textColor="#4A4A4A"/>
+            android:textColor="#4A4A4A"
+            android:textSize="14sp" />
 
+        <ImageButton
+            android:id="@+id/footer_my_orders_all_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="40dip"
+            android:layout_gravity="right"
+            android:layout_marginRight="1dip"
+            android:background="#C9C9C9"
+            android:contentDescription="@string/gu"
+            android:src="@drawable/payoff" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/mainfooter"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:visibility="gone" >
 
@@ -174,6 +185,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#e5e5e5"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:visibility="gone" >
 

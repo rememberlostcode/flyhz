@@ -38,14 +38,14 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private MyListView			listView;
 	private OrderDetailAdapter	orderAdapter;
 	private boolean				showDelete	= true;
-	
-	private Set<String>	numbers			= new HashSet<String>();
-	private BigDecimal	total = new BigDecimal(0);
-	private Boolean			selectAll		= false;
-	private Handler mUIHandler;
+
+	private Set<String>			numbers		= new HashSet<String>();
+	private BigDecimal			total		= new BigDecimal(0);
+	private Boolean				selectAll	= false;
+	private Handler				mUIHandler;
 
 	// 自己定义的构造函数
-	public MyOrdersAdapter(Context context, List<OrderDto> orderList,Handler mUIHandler) {
+	public MyOrdersAdapter(Context context, List<OrderDto> orderList, Handler mUIHandler) {
 		this.orderList = orderList;
 		this.context = context;
 		this.mUIHandler = mUIHandler;
@@ -88,7 +88,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		ImageView	cover;
 		Button		statusButton;
 		TextView	total;
-		Button		deleteButton;
+		ImageView	deleteButton;
 		ImageView	checkBoxImage;
 	}
 
@@ -104,7 +104,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder.price = (TextView) convertView.findViewById(R.id.order_list_price_value);
 			holder.totalnum = (TextView) convertView.findViewById(R.id.order_list_totalnum_value);
 			holder.statusButton = (Button) convertView.findViewById(R.id.order_list_status);
-			holder.deleteButton = (Button) convertView.findViewById(R.id.order_list_delete);
+			holder.deleteButton = (ImageView) convertView.findViewById(R.id.order_list_delete);
 			holder.checkBoxImage = (ImageView) convertView.findViewById(R.id.order_list_checkBox);
 			convertView.setTag(holder);
 		} else {
@@ -116,45 +116,26 @@ public class MyOrdersAdapter extends BaseAdapter {
 		holder.time.setText(order.getTime());
 		holder.price.setText(String.valueOf(order.getTotal()));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
-		
-		if (selectAll) {
-			holder.checkBoxImage.setBackgroundResource(R.drawable.icon_choice);
-			total = total.add(order.getTotal());
-		} else {
-			holder.checkBoxImage.setBackgroundResource(R.drawable.icon_no_choice);
-			total = total.subtract(order.getTotal());
-		}
+
 		if (numbers.contains(order.getNumber())) {
 			holder.checkBoxImage.setBackgroundResource(R.drawable.icon_choice);
-			total = total.add(order.getTotal());
 		} else {
 			holder.checkBoxImage.setBackgroundResource(R.drawable.icon_no_choice);
-			total = total.subtract(order.getTotal());
 		}
 
+		if (order.getStatus().equals("10") && showDelete) {
+			holder.checkBoxImage.setVisibility(View.VISIBLE);
+		} else {
+			holder.checkBoxImage.setVisibility(View.INVISIBLE);
+		}
 		holder.statusButton.setText(ClickUtil.getTextByStatus(order.getStatus()));
 		holder.statusButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (Constants.OrderStateCode.FOR_PAYMENT.code.equals(order.getStatus())) {
 					Intent intent = new Intent(context, WebViewActivity.class);
-					
-					if(numbers.isEmpty()){
-						intent.putExtra("number", order.getNumber());
-						intent.putExtra("amount", order.getTotal());
-					} else {
-						Object[] ss = numbers.toArray();
-						String numberString = "";
-						for(int i=0;i<ss.length;i++){
-							if(i!=0){
-								numberString += ",";
-							}
-							numberString += ss[i].toString();
-						}
-						intent.putExtra("number", numberString);
-						intent.putExtra("amount", order.getTotal());
-					}
-					
+					intent.putExtra("number", order.getNumber());
+					intent.putExtra("amount", order.getTotal());
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					context.startActivity(intent);
 				} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(order.getStatus())) {
@@ -165,25 +146,24 @@ public class MyOrdersAdapter extends BaseAdapter {
 				}
 			}
 		});
-		
+
 		holder.checkBoxImage.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				if (!numbers.contains(order.getNumber())) {
-					numbers.add(order.getNumber());
-					v.setBackgroundResource(R.drawable.icon_choice);
-					total = total.add(order.getTotal());
-				} else {
+				if (numbers.contains(order.getNumber())) {
 					numbers.remove(order.getNumber());
 					v.setBackgroundResource(R.drawable.icon_no_choice);
 					total = total.subtract(order.getTotal());
+				} else {
+					numbers.add(order.getNumber());
+					v.setBackgroundResource(R.drawable.icon_choice);
+					total = total.add(order.getTotal());
 				}
 				if (numbers.isEmpty()) {
 					selectAll = false;
 				}
-				mUIHandler.sendEmptyMessage(3);
-
+				// mUIHandler.sendEmptyMessage(3);
 			}
 		});
 
@@ -228,27 +208,23 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 		return convertView;
 	}
-	
+
 	public void setSelectAll(Boolean selectAll) {
 		this.selectAll = selectAll;
+		numbers.clear();
+		total = new BigDecimal(0);
 		if (selectAll) {
-			numbers.clear();
-			total = new BigDecimal(0);
 			if (orderList != null && !orderList.isEmpty()) {
 				for (OrderDto item : orderList) {
-					if (item.getNumber() != null){
+					if (item.getNumber() != null && item.getStatus().equals("10")) {
 						numbers.add(item.getNumber());
 						total = total.add(item.getTotal());
 					}
 				}
 			}
-		} else {
-			numbers.clear();
-			total = new BigDecimal(0);
 		}
 		mUIHandler.sendEmptyMessage(3);
 	}
-
 
 	/**
 	 * 获取已选中的itemId
@@ -259,8 +235,12 @@ public class MyOrdersAdapter extends BaseAdapter {
 		return numbers;
 	}
 
+	public BigDecimal getTotal() {
+		return total;
+	}
+
 	public Boolean getSelectAll() {
 		return selectAll;
 	}
-	
+
 }

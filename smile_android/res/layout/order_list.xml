@@ -17,7 +17,8 @@
             android:layout_height="40dip"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical" 
-            android:contentDescription="@string/gu"/>
+            android:contentDescription="@string/gu"
+            android:visibility="invisible"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,15 +53,14 @@
             android:textColor="@color/number_color"
             android:textSize="15sp" />
 
-        <Button
+        <ImageView
             android:id="@+id/order_list_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginRight="1dp"
-            android:background="@color/red"
+			android:contentDescription="@string/gu"
             android:gravity="center"
-            android:text="@string/guanbi"
-            android:textSize="18sp"
+            android:background="@drawable/icon_delete"
             android:visibility="gone" />
     </LinearLayout>
 
