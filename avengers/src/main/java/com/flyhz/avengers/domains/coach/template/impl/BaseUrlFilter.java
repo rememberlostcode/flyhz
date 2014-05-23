@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.flyhz.avengers.framework.config.xml.Template;
+import com.flyhz.avengers.framework.config.xml.XTemplate;
 
 /**
  * URL过滤器基本方法
@@ -40,12 +40,12 @@ public class BaseUrlFilter {
 	 * @param waitFilterUrls
 	 * @return Set<String>
 	 */
-	public Set<String> checkWhiteUrls(List<Template> templates, Set<String> waitFilterUrls) {
+	public Set<String> checkWhiteUrls(List<XTemplate> templates, Set<String> waitFilterUrls) {
 		if (waitFilterUrls != null && !waitFilterUrls.isEmpty() && templates != null
 				&& !templates.isEmpty()) {
 			Set<String> validUrls = new HashSet<String>();
 			for (String waitFilterUrl : waitFilterUrls) {
-				for (Template template : templates) {
+				for (XTemplate template : templates) {
 					String whiteRegex = template.getUrl();
 					if (StringUtils.isNotBlank(whiteRegex)) {
 						boolean result = Pattern.compile(whiteRegex).matcher(waitFilterUrl).find();

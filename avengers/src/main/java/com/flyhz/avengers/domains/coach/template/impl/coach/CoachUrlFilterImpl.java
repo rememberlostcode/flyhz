@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Set;
 
 import com.flyhz.avengers.domains.coach.template.impl.BaseUrlFilter;
-import com.flyhz.avengers.framework.config.xml.Domain;
-import com.flyhz.avengers.framework.config.xml.Template;
+import com.flyhz.avengers.framework.config.xml.XDomain;
+import com.flyhz.avengers.framework.config.xml.XTemplate;
 
 public class CoachUrlFilterImpl extends BaseUrlFilter {
-	public List<String> filterValidUrl(Domain domain, List<String> waitFilterUrls) {
+	public List<String> filterValidUrl(XDomain domain, List<String> waitFilterUrls) {
 		if (waitFilterUrls != null && !waitFilterUrls.isEmpty()) {
 			// URL去重
 			Set<String> filterUrlsSet = rmDuplicate(waitFilterUrls);
 			// URL过滤
 			if (domain != null) {
 				if (domain.getTemplates() != null) {
-					List<Template> templates = domain.getTemplates().getTemplate();
+					List<XTemplate> templates = domain.getTemplates().getTemplate();
 					filterUrlsSet = checkWhiteUrls(templates, filterUrlsSet);
 				}
 				// if (domain.getBlackList() != null) {
@@ -36,15 +36,15 @@ public class CoachUrlFilterImpl extends BaseUrlFilter {
 	}
 
 	public static void main(String[] args) {
-		Template template = new Template();
+		XTemplate template = new XTemplate();
 		template.setUrl("^http://www.coach.com/online/handbags/-handbags_features_newarrivals_1-us-us-5000000000000015027-en?");
-		Template template1 = new Template();
+		XTemplate template1 = new XTemplate();
 		template1.setUrl("^http://www.coach.com/online/handbags/-handbags_feature_madison-us-us-5000000000000049554-en?");
-		Template template2 = new Template();
+		XTemplate template2 = new XTemplate();
 		template2.setUrl("^http://www.coach.com/online/handbags/Product-");
-		Template template3 = new Template();
+		XTemplate template3 = new XTemplate();
 		template3.setUrl("^http://s7d2.scene7.com/is/image/Coach/");
-		List<Template> templates = new ArrayList<Template>();
+		List<XTemplate> templates = new ArrayList<XTemplate>();
 		templates.add(template);
 		templates.add(template1);
 		templates.add(template2);

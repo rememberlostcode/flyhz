@@ -15,9 +15,9 @@ import org.slf4j.Logger;
 
 public abstract class AvengersExecutor implements Runnable {
 
-	protected final List<Event>			events	= new ArrayList<Event>();
+	private final List<Event>			events	= new ArrayList<Event>();
 
-	protected final Map<String, Object>	context	= new HashMap<String, Object>();
+	private final Map<String, Object>	context	= new HashMap<String, Object>();
 
 	protected final Options				opts	= new Options();
 
@@ -27,21 +27,25 @@ public abstract class AvengersExecutor implements Runnable {
 
 	abstract Logger getLog();
 
-	abstract void initAvengersContext();
-
-	abstract void initAvengersEvents();
-
-	public void execute(String[] args) {
+	void initAvengersContext(String[] args) {
 		opts.addOption("debug", false, "Dump out debug information");
 		opts.addOption("help", false, "Print usage");
-		initArgs(args);
-		initAvengersEvents();
-		initAvengersContext();
+		Map<String, Object> customerContext = initArgs(args);
+		if (customerContext != null && !customerContext.isEmpty()) {
+			context.putAll(customerContext);
+		}
+	}
+
+	abstract List<Event> initAvengersEvents(Map<String, Object> context);
+
+	public void execute(String[] args) {
+		initAvengersContext(args);
+		initAvengersEvents(context);
 
 		new Thread(this).start();
 	}
 
-	abstract void initArgs(String[] args);
+	abstract Map<String, Object> initArgs(String[] args);
 
 	@Override
 	public void run() {

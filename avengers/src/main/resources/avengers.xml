@@ -14,11 +14,11 @@
 		</ave:crawlEvents>
 		<ave:templates>
 			<ave:template url="^http://www.coach.com/online/handbags/Product-"
-				parser="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
+				pattern="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
 				<ave:templateApplyEvents>
 					
 				</ave:templateApplyEvents>
-				</ave:template>
+			</ave:template>
 		</ave:templates>
 	</ave:domain>
 </ave:domains>
