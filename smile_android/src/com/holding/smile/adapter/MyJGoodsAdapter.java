@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +55,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 
 	static class ViewHolder {
 		TextView	n;
+		TextView	lp;
 		TextView	pp;
 		ImageView	p;
 		TextView	sn;
@@ -68,6 +70,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			holder.n = (TextView) convertView.findViewById(R.id.n);
 			// holder.n.setWidth((int) (sWidth - 190 *
 			// MyApplication.getInstance().getDensity()));
+			holder.lp = (TextView) convertView.findViewById(R.id.lp);
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 			holder.sn = (TextView) convertView.findViewById(R.id.sn);
@@ -84,6 +87,10 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			}
 			if (jGoods.getPp() != null) {
 				holder.pp.setText("￥" + jGoods.getPp());
+			}
+			if (jGoods.getLp() != null) {
+				holder.lp.setText("￥" + jGoods.getLp());
+				holder.lp.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 			}
 			if (jGoods.getSn() != null) {
 				holder.sn.setText("已售 " + jGoods.getSn() + " 件");

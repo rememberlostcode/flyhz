@@ -165,7 +165,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 						// 转换后获取商品购买数量
 						orderDto = JSONUtil.getJson2Entity(detailList.get(i).getDetail(),
 								OrderDto.class);
-						if (orderDto != null) {
+					if (orderDto != null && orderDto.getUser()!=null) {
 							orderDto.setId(detailList.get(i).getId());
 							String userId = String.valueOf(orderDto.getUser().getId());
 							cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
