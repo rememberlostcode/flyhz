@@ -46,17 +46,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto register(UserDetailDto userDetail) throws ValidateException {
 		if (userDetail == null)
-			throw new ValidateException("用户名与密码不能为空");
+			throw new ValidateException(101029);
 		if (StringUtils.isBlank(userDetail.getUsername()))
-			throw new ValidateException("用户名为空");
+			throw new ValidateException(101030);
 		if (StringUtil.stringLength(userDetail.getUsername()) > 32)
-			throw new ValidateException("用户名长度不能大于32个字节");
+			throw new ValidateException(101031);
 		UserModel user = userDao.getUserByName(userDetail.getUsername());
 		if (user != null)
-			throw new ValidateException("用户名已存在");
+			throw new ValidateException(101032);
 
 		if (StringUtils.isBlank(userDetail.getPassword()))
-			throw new ValidateException("密码为空");
+			throw new ValidateException(101033);
 
 		UserModel userModel = new UserModel();
 		userModel.setUsername(userDetail.getUsername());
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 			if (RegexUtils.checkEmail(userDetail.getEmail())) {
 				userModel.setEmail(userDetail.getEmail());
 			} else {
-				throw new ValidateException("电子邮箱输入不正确");
+				throw new ValidateException(101017);
 			}
 		}
 		userModel.setGmtCreate(new Date());
@@ -83,10 +83,10 @@ public class UserServiceImpl implements UserService {
 	public UserDto login(String username, String password, String verifycode)
 			throws ValidateException {
 		if (StringUtils.isBlank(username)) {
-			throw new ValidateException("");// 用户名不能为空
+			throw new ValidateException(101030);// 用户名不能为空
 		}
 		if (StringUtils.isBlank(password)) {
-			throw new ValidateException("");// 密码不能为空
+			throw new ValidateException(101033);// 密码不能为空
 		}
 		UserModel userTemp = new UserModel();
 		userTemp.setUsername(username);
@@ -110,10 +110,10 @@ public class UserServiceImpl implements UserService {
 	public UserDto loginAuto(String username, String token, String verifycode)
 			throws ValidateException {
 		if (username == null) {
-			throw new ValidateException("");// 用户名不能为空
+			throw new ValidateException(101002);// 用户名不能为空
 		}
 		if (StringUtils.isBlank(token)) {
-			throw new ValidateException("");// 用户TOKEN不能为空
+			throw new ValidateException(101034);// 用户TOKEN不能为空
 		}
 		UserModel userTemp = new UserModel();
 		userTemp.setUsername(username);
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
 	public UserDto logout(String username, String token, String verifycode)
 			throws ValidateException {
 		if (username == null) {
-			throw new ValidateException("");// 用户ID不能为空
+			throw new ValidateException(101002);// 用户ID不能为空
 		}
 		UserModel userTemp = new UserModel();
 		userTemp.setUsername(username);

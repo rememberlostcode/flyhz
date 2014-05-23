@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		if (orderDetails.isEmpty())
-			throw new ValidateException(101021);
+			throw new ValidateException(201001);
 
 		Date date = new Date();
 		OrderDto orderDto = new OrderDto();
@@ -198,14 +198,14 @@ public class OrderServiceImpl implements OrderService {
 		if (userId == null)
 			throw new ValidateException(101002);
 		if (StringUtils.isBlank(number))
-			throw new ValidateException(111111);
+			throw new ValidateException(201002);
 		boolean flag = false;
 		OrderModel orderModel = new OrderModel();
 		orderModel.setNumber(number);
 		orderModel.setUserId(userId);
 		orderModel = orderDao.getModel(orderModel);
 		if (orderModel != null && orderModel.getStatus() != null
-				&& "12".equals(orderModel.getStatus())) {// 表示已付款
+				&& Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 表示已付款
 			flag = true;
 			redisRepository.reBuildOrderToRedis(userId, orderModel.getId(),
 					Constants.OrderStateCode.HAVE_BEEN_PAID.code);
@@ -217,7 +217,7 @@ public class OrderServiceImpl implements OrderService {
 		if (userId == null)
 			throw new ValidateException(101002);
 		if (id == null)
-			throw new ValidateException(111111);
+			throw new ValidateException(201003);
 		String status = Constants.OrderStateCode.HAVE_BEEN_CLOSED.code;
 		OrderModel orderModel = new OrderModel();
 		orderModel.setId(id);
@@ -228,7 +228,7 @@ public class OrderServiceImpl implements OrderService {
 		if (num == 1) {
 			redisRepository.reBuildOrderToRedis(userId, orderModel.getId(), status);
 		} else {
-			throw new ValidateException(130001);
+			throw new ValidateException(201004);
 		}
 	}
 
