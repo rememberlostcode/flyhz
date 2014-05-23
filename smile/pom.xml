@@ -140,19 +140,14 @@
 			<artifactId>validation-api</artifactId>
 			<scope>compile</scope>
 		</dependency>
-
-		<!-- DB Dependencies -->
-
-		<!-- 测试中文乱码 -->
-
-		<!-- Test Dependencies -->
-
-		<!-- 用户认证 -->
-
 		<!-- logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>

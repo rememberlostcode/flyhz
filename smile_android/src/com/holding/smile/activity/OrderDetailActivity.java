@@ -108,6 +108,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 							if (Constants.OrderStateCode.FOR_PAYMENT.code.equals(order.getStatus())) {
 								Intent intent = new Intent(context, WebViewActivity.class);
 								intent.putExtra("number", order.getNumber());
+								intent.putExtra("amount", order.getTotal());
 								intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 								context.startActivity(intent);
 							} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(order.getStatus())) {
