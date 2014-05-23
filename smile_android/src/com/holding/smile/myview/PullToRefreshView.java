@@ -271,6 +271,7 @@ public class PullToRefreshView extends LinearLayout {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void measureView(View child) {
 		ViewGroup.LayoutParams p = child.getLayoutParams();
 		if (p == null) {

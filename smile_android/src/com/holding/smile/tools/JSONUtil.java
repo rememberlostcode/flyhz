@@ -121,6 +121,7 @@ public class JSONUtil {
 	 * 
 	 * @param <E>
 	 */
+	@SuppressWarnings("unchecked")
 	public static <E> List<E> getJson2EntityList(String json, Class<?> collectionClass,
 			Class<?>... elementClasses) {
 		Object obj = null;

@@ -157,7 +157,6 @@ public class MyLinearLayout extends LinearLayout {
 
 		int j = 0;
 
-		View lastview = null;
 		for (int i = 0; i < mCount; i++) {
 			final View child = getChildAt(i);
 
