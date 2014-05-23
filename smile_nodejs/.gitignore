@@ -1,1 +1,9 @@
 .idea
+.classpath
+.project
+/smile_android/bin
+/smile/.settings
+/smile/target
+.gitignore
+/*/.gitignore
+/*/project.properties

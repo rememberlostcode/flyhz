@@ -6,7 +6,8 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.flyhz.avengers.dto.RtnResult;
+import com.flyhz.avengers.domains.dto.RtnResult;
+import com.flyhz.avengers.domains.nuaa.NuaaParser;
 
 public class NuaaParserTest extends TestCase {
 	private String	tempUrl	= "http://science.nuaa.edu.cn/news_more.asp?lm2=110";

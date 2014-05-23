@@ -8,7 +8,8 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.flyhz.avengers.dto.RtnResult;
+import com.flyhz.avengers.domains.coach.CoachUrlParser;
+import com.flyhz.avengers.domains.dto.RtnResult;
 
 public class CoachUrlParserTest extends TestCase {
 	private String	testUrl	= "http://www.coach.com/online/handbags/-handbags_features_newarrivals_1-us-us-5000000000000015027-en?navCatId=62&LOC=HN2";

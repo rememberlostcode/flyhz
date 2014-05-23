@@ -6,13 +6,12 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.flyhz.avengers.framework.ResultFilter;
-import com.flyhz.avengers.framework.UrlFilter;
-import com.flyhz.avengers.framework.xml.Domain;
-import com.flyhz.avengers.template.impl.coach.CoachUrlFilterImpl;
-import com.flyhz.avengers.template.impl.coach.ResultFilterImpl;
-import com.flyhz.avengers.util.AvengersDataUtil;
-import com.flyhz.avengers.util.image.Image;
+import com.flyhz.avengers.domains.ResultFilter;
+import com.flyhz.avengers.domains.coach.template.impl.coach.ResultFilterImpl;
+import com.flyhz.avengers.framework.config.xml.Domain;
+import com.flyhz.avengers.framework.config.xml.Domains;
+import com.flyhz.avengers.framework.util.AvengersDataUtil;
+import com.flyhz.avengers.framework.util.image.Image;
 
 public class TestAll {
 
@@ -20,11 +19,12 @@ public class TestAll {
 	public static List<String>	newList		= null;
 	public static List<String>	productList	= new ArrayList<String>();
 	public static ResultFilter	rf			= new ResultFilterImpl();
-	public static UrlFilter		urlFilter	= new CoachUrlFilterImpl();
+
+	// public static Filter filter = new CoachUrlFilterImpl();
 
 	public static void main(String[] args) {
 
-		com.flyhz.avengers.framework.xml.Avengers avengers = AvengersDataUtil.getDataByXmlFileName("avengers.xml");
+		Domains avengers = AvengersDataUtil.getDataByXmlFileName("avengers.xml");
 		List<Domain> domains = avengers.getDomain();
 
 		for (int k = 0; k < domains.size(); k++) {
@@ -50,23 +50,24 @@ public class TestAll {
 			waitFilterUrls.add("http://s7d2.scene7.com/is/image/Coach/31623_m2?$pd_vertical$");
 			waitFilterUrls.add("http://s7d2.scene7.com/is/image/Coach/31623_m1?$pd_vertical$");
 
-			newList = urlFilter.filterValidUrl(domain, waitFilterUrls);
+			// newList = filter.filterValidUrl(domain, waitFilterUrls);
 
-			com.flyhz.avengers.framework.Template coachTemplate = null;
+			// com.flyhz.avengers.framework.Pattern coachTemplate = null;
 			for (int i = 0; i < newList.size(); i++) {
 				String className = AvengersDataUtil.getUrlParserName(newList.get(i), domain);
 				if (StringUtils.isNotBlank(className)) {
-					try {
-						coachTemplate = (com.flyhz.avengers.framework.Template) Class.forName(
-								className).newInstance();
-						coachTemplate.process(newList.get(i));
-					} catch (InstantiationException e) {
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
+					// try {
+					// coachTemplate =
+					// (com.flyhz.avengers.framework.Pattern) Class.forName(
+					// className).newInstance();
+					// coachTemplate.doPattern(newList.get(i));
+					// } catch (InstantiationException e) {
+					// e.printStackTrace();
+					// } catch (IllegalAccessException e) {
+					// e.printStackTrace();
+					// } catch (ClassNotFoundException e) {
+					// e.printStackTrace();
+					// }
 					break;
 				}
 			}

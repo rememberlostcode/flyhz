@@ -6,7 +6,8 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.flyhz.avengers.dto.RtnResult;
+import com.flyhz.avengers.domains.coach.CoachParser;
+import com.flyhz.avengers.domains.dto.RtnResult;
 
 public class CoachParserTest extends TestCase {
 	private String	testUrl	= "http://www.coach.com/online/handbags/-newatcoach_allnewatcoach-us-us-5000000000000000002-en?t1Id=5000000000000258802&t2Id=5000000000000000002&LOC=SN1";

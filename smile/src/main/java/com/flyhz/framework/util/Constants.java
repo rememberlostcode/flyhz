@@ -4,15 +4,6 @@ package com.flyhz.framework.util;
 public class Constants {
 	/***************************** solr start *************************/
 	/**
-	 * 静态图片路径前缀，拼接时前面加上服务器地址，后门加上数据库中的字段，
-	 * 结果如：http://10.22.22.40/smile/static/cacoh/images/tmp.jpg
-	 */
-	public static final String	IMAGES_URL						= "/static";
-	/**
-	 * solr搜索结果的需要返回的物品属性
-	 */
-	public static final String	PARAM_STRING					= "id%2Cname";
-	/**
 	 * 刷新的条数
 	 */
 	public static final int		INIT_NUM						= 10;
