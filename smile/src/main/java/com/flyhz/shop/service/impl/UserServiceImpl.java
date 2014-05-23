@@ -46,17 +46,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDto register(UserDetailDto userDetail) throws ValidateException {
 		if (userDetail == null)
-			throw new ValidateException(140001);//用户名与密码不能为空
+			throw new ValidateException(140001);// 用户名与密码不能为空
 		if (StringUtils.isBlank(userDetail.getUsername()))
-			throw new ValidateException(140002);//用户名为空
+			throw new ValidateException(140002);// 用户名为空
 		if (StringUtil.stringLength(userDetail.getUsername()) > 32)
-			throw new ValidateException(140003);//用户名长度不能大于32个字符
+			throw new ValidateException(140003);// 用户名长度不能大于32个字符
 		UserModel user = userDao.getUserByName(userDetail.getUsername());
 		if (user != null)
-			throw new ValidateException(140004);//用户名已存在
+			throw new ValidateException(140004);// 用户名已存在
 
 		if (StringUtils.isBlank(userDetail.getPassword()))
-			throw new ValidateException(140005);//密码为空
+			throw new ValidateException(140005);// 密码为空
 
 		UserModel userModel = new UserModel();
 		userModel.setUsername(userDetail.getUsername());
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 			if (RegexUtils.checkEmail(userDetail.getEmail())) {
 				userModel.setEmail(userDetail.getEmail());
 			} else {
-				throw new ValidateException(140006);//电子邮箱输入不正确
+				throw new ValidateException(140006);// 电子邮箱输入不正确
 			}
 		}
 		userModel.setGmtCreate(new Date());

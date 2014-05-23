@@ -72,14 +72,14 @@ public class UserController {
 				try {
 					user = userService.register(userDetail);
 				} catch (ValidateException e) {
-					code = 400000;
+					code = e.getCode();
 					log.error("=======在注册时报=========" + e.getMessage());
 				}
 			} else {
-				code = 300000;// 用户名或者密码错误
+				code = 101029;// 用户名或者密码错误
 			}
 		} else {
-			code = 500000;
+			code = 101029;
 		}
 		protocol.setCode(code);
 		if (user != null) {
@@ -100,7 +100,7 @@ public class UserController {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
-			code = 100000;
+			code = 101002;
 		List<ConsigneeDetailDto> consigneeDtoList = null;
 		try {
 			if (code.equals(200000)) {
@@ -130,9 +130,9 @@ public class UserController {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
-			code = 100000;
+			code = 101002;
 		if (pid == null)
-			code = 500000;
+			code = 101021;
 		ProductDto product = null;
 		try {
 			if (code.equals(200000)) {
@@ -144,7 +144,7 @@ public class UserController {
 					product.setPurchasingPrice(product.getPurchasingPrice().multiply(
 							BigDecimal.valueOf(qty)));
 				} else {
-					code = 300000;// 商品不存在
+					code = 101021;// 产品不存在
 				}
 			}
 		} catch (Exception e) {
@@ -170,9 +170,9 @@ public class UserController {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
-			code = 100000;
+			code = 101002;
 		if (id == null)
-			code = 500000;
+			code = 101021;
 		CartItemDto cartItemDto = null;
 		try {
 			if (code.equals(200000)) {
@@ -181,8 +181,8 @@ public class UserController {
 				cartItemDto = shoppingCartService.setQty(userId, Integer.valueOf(id),
 						qty.byteValue());
 			}
-		} catch (Exception e) {
-			code = 400000;
+		} catch (ValidateException e) {
+			code = e.getCode();
 			log.error("=======在修改购买数量时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
@@ -204,11 +204,11 @@ public class UserController {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
-			code = 100000;
+			code = 101002;
 		OrderDto orderDto = null;
 		try {
 			if ((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0))
-				code = 500000;
+				code = 101021;
 
 			if (code.equals(200000)) {
 				if (cartIds != null && cartIds.length > 0) {
@@ -220,7 +220,7 @@ public class UserController {
 				orderDto = orderService.generateOrder(userId, cid, pids, false);
 			}
 		} catch (ValidateException e) {
-			code = 400000;
+			code = e.getCode();
 			log.error("=======在生成订单时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
@@ -242,10 +242,10 @@ public class UserController {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
-			code = 100000;
+			code = 101002;
 		try {
 			if (((pids == null || pids.length == 0) && (cartIds == null || cartIds.length == 0)))
-				code = 500000;
+				code = 101021;
 
 			if (code.equals(200000)) {
 				if (cartIds != null && cartIds.length > 0) {
@@ -273,7 +273,7 @@ public class UserController {
 				}
 			}
 		} catch (ValidateException e) {
-			code = 400000;
+			code = e.getCode();
 			log.error("=======在生成订单时=========" + e.getMessage());
 		}
 		protocol.setCode(code);
@@ -293,9 +293,9 @@ public class UserController {
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		if (userId == null)
-			code = 100000;
+			code = 101002;
 		if (StringUtil.isBlank(num))
-			code = 500000;
+			code = 201001;
 
 		try {
 			// true代表已付款，false代表未付款
