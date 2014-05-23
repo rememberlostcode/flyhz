@@ -1,14 +1,14 @@
 //var exec = require("child_process").exec;
-//var solr_server_host = "211.149.175.138";//211.149.175.138
-var solr_server_host = "10.22.22.40";
+var solr_server_host = "211.149.175.138";//211.149.175.138
+//var solr_server_host = "10.22.22.40";
 var solr_server_port = 8983;
 //var solr_server_port = 80;
 var applicationJson = "application/json; charset=utf-8";
 var UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36";
 var http = require("http");
 var redis = require("redis");
-//var client = redis.createClient(6379,'211.149.175.138');
-var client = redis.createClient(6379,'10.22.23.63');
+var client = redis.createClient(6379,'211.149.175.138');
+//var client = redis.createClient(6379,'10.22.23.63');
 client.on('error', function (err) {
     console.log('Error ' + err);
 });
@@ -26,7 +26,7 @@ function category(query,response) {
         for (i in res) {
             items.push(JSON.parse(res[i]));
         }
-        console.log(items);
+        //console.log(items);
         response.writeHead(200, {
             "Content-Type": applicationJson,
             "Access-Control-Allow-Origin":"*",
@@ -984,9 +984,9 @@ function goodsdetail(query,response) {
                         result += JSON.stringify(docs[i].imgs);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:0);
-                        /*result += ',\"lp\":';
+                        result += ',\"lp\":';
                         result += JSON.stringify(docs[i].lp?docs[i].lp:0);
-                        result += ',\"sp\":';
+                        /*result += ',\"sp\":';
                         result += JSON.stringify(docs[i].sp?docs[i].sp:0);*/
                         result += ',\"be\":';
                         result += JSON.stringify(docs[i].ce);
@@ -1049,69 +1049,6 @@ function goodsdetail(query,response) {
         response.end();
     });
     req.end();
-    /*
-    var id = query.id;
-    if(id==null || id==''){
-        response.writeHead(200, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
-        response.write('非法操作');
-        response.end();
-    }
-    var key ='smile@products';
-    client.hget(key,id, function(err, res) {
-        console.log(res);
-        var good = JSON.parse(res);
-        var result = JSON.parse('{"id":null}');
-        result.id = good.id;
-        result.n = good.n;
-        result.d = good.d;
-        result.p = good.cover;
-        result.lp = good.lp;
-        result.pp = good.pp;
-        result.sp = good.sp;
-        result.bid = good.bid;
-        result.be = good.be;
-        result.cid = good.cid;
-        result.ce = good.ce;
-        result.ci = good.ci;
-        result.c = good.c;
-        result.zsn = good.zsn;
-        result.sn = good.sn;
-        result.bs = good.bs;
-		
-		key = 'smile@product&cn@'+good.bs;
-        console.log('key='+key);
-        client.llen(key,function(err, res1) {
-            console.log('res1='+res1);
-            try{
-                if(res1==0){
-                    res1 = 1;
-                }
-                client.lrange(key,0,res1, function(err, res2) {
-                    console.log('res2='+res2);
-                        result.ag = res2;
-                    response.writeHead(200, {
-                        "Content-Type": applicationJson,
-                        "Access-Control-Allow-Origin":"*",
-                        'Access-Control-Allow-Methods': 'GET',
-                        'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
-                    response.write(addData(JSON.stringify(result)));
-                    response.end();
-                });
-            } catch (e){
-                response.writeHead(200, {
-                    "Content-Type": applicationJson,
-                    "Access-Control-Allow-Origin":"*",
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
-                response.write(addData(JSON.stringify(result)));
-                response.end();
-            }
-        });
-    });*/
 }
 
 exports.index = index;
@@ -1129,9 +1066,6 @@ exports.searchmore = searchmore;
 exports.goodsdetail = goodsdetail;
 
 function addData(tmp){
-    /*var res = JSON.parse('{"data":null}');
-    res.data = tmp;
-    return JSON.stringify(res);*/
     if(tmp==''){
         tmp = null;
     }

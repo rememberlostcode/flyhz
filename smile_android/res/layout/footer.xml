@@ -25,7 +25,6 @@
             android:gravity="center_vertical" />
         
         <TextView
-            android:id="@+id/all_select"
             android:layout_width="wrap_content"
             android:layout_height="40dip"
             android:gravity="center_vertical"
@@ -50,6 +49,32 @@
             android:layout_gravity="right"
             android:background="#C9C9C9"
             android:src="@drawable/payoff" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/footer_my_orders"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" 
+        android:background="#C9C9C9"
+        android:visibility="gone">
+
+        <CheckBox
+            android:id="@+id/footer_my_orders_all_checked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical" />
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dip"
+            android:gravity="center_vertical"
+            android:text="@string/select_all"
+            android:textSize="14sp" 
+            android:textColor="#4A4A4A"/>
+
     </LinearLayout>
 
     <LinearLayout

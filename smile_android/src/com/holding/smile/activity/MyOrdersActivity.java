@@ -11,9 +11,12 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyOrdersAdapter;
@@ -38,6 +41,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	private Button			allButton;
 	private Button			finshButton;
 	private Button			unfinshButton;
+	
+	private CheckBox				allChecked;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 		TextView textView = displayHeaderDescription();
 		textView.setText("订单管理");
+		
+		displayFooterMainOrder();
 
 		editView = displayHeaderRight();
 		editView.setText("编辑");
@@ -65,6 +72,19 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 			}
 		});
 
+		allChecked = (CheckBox) findViewById(R.id.footer_my_orders_all_checked);
+		allChecked.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					adapter.setSelectAll(true);
+				} else {
+					adapter.setSelectAll(false);
+				}
+
+			}
+		});
 		allButton = (Button) findViewById(R.id.list_orders_button_all);
 		finshButton = (Button) findViewById(R.id.list_orders_button_finsh);
 		unfinshButton = (Button) findViewById(R.id.list_orders_button_unfinsh);
@@ -140,7 +160,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 															adapter.setData(list);
 														} else {
 															adapter = new MyOrdersAdapter(
-																	MyOrdersActivity.this, list);
+																	MyOrdersActivity.this, list,mUIHandler);
 														}
 
 														listView.setAdapter(adapter);
@@ -159,6 +179,13 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 														}
 														break;
 													}
+													case 3: {
+														if (!adapter.getSelectAll()) {
+															allChecked.setChecked(false);
+														}
+														break;
+													}
+													
 												}
 											}
 										};

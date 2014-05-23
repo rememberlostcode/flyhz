@@ -14,5 +14,9 @@ import com.flyhz.shop.persistence.entity.BrandModel;
  */
 public interface BrandDao extends GenericDao<BrandModel> {
 
+	/**
+	 * 获取所有品牌
+	 * @return
+	 */
 	public List<BrandBuildDto> getBrandBuildDtoList();
 }

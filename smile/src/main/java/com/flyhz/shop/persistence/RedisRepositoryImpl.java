@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.CacheRepository;
@@ -30,8 +29,6 @@ import com.flyhz.shop.persistence.entity.ProductModel;
 @Service
 public class RedisRepositoryImpl implements RedisRepository {
 	private Logger			log	= LoggerFactory.getLogger(RedisRepositoryImpl.class);
-	@Value(value = "${smile.solr.url}")
-	private String			server_url;
 	@Resource
 	private CacheRepository	cacheRepository;
 	@Resource
@@ -43,7 +40,6 @@ public class RedisRepositoryImpl implements RedisRepository {
 
 	@Override
 	public ProductDto getProductFromRedis(String productId) throws ValidateException {
-		// TODO Auto-generated method stub
 		if (StringUtil.isBlank(productId)) {
 			throw new ValidateException(111111);
 		}
@@ -73,7 +69,8 @@ public class RedisRepositoryImpl implements RedisRepository {
 				productDto.setBrand(brand);
 			}
 		} else {
-			log.warn("ID为" + productId + "的商品在redis和数据库中都不存在！");
+			solrData.removeProduct(productId);
+			log.warn("ID为" + productId + "的商品在数据库中都不存在，将商品从solr中删除！");
 			return null;
 		}
 		return productDto;
@@ -92,12 +89,11 @@ public class RedisRepositoryImpl implements RedisRepository {
 
 	@Override
 	public String getOrderFromRedis(Integer userId, Integer orderId) throws ValidateException {
-		// TODO Auto-generated method stub
 		if (userId == null) {
-			throw new ValidateException("用户ID不能为空！");
+			throw new ValidateException(130002);
 		}
 		if (orderId == null) {
-			throw new ValidateException("订单ID不能为空！");
+			throw new ValidateException(130003);
 		}
 		String orderJson = cacheRepository.hget(Constants.PREFIX_ORDERS_USER + userId,
 				String.valueOf(orderId));
@@ -118,15 +114,14 @@ public class RedisRepositoryImpl implements RedisRepository {
 	@Override
 	public void buildOrderToRedis(Integer userId, Integer orderId, String orderDetal)
 			throws ValidateException {
-		// TODO Auto-generated method stub
 		if (userId == null) {
-			throw new ValidateException("用户ID不能为空！");
+			throw new ValidateException(130002);
 		}
 		if (orderId == null) {
-			throw new ValidateException("订单ID不能为空！");
+			throw new ValidateException(130003);
 		}
 		if (StringUtil.isBlank(orderDetal)) {
-			throw new ValidateException("订单内容不能为空！");
+			throw new ValidateException(130004);
 		}
 		// build到redis
 		cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId, String.valueOf(orderId),
@@ -138,19 +133,17 @@ public class RedisRepositoryImpl implements RedisRepository {
 	@Override
 	public void reBuildOrderToRedis(Integer userId, Integer orderId, String status)
 			throws ValidateException {
-		// TODO Auto-generated method stub
 		if (userId == null) {
-			throw new ValidateException("用户ID不能为空！");
+			throw new ValidateException(130002);
 		}
 		if (orderId == null) {
-			throw new ValidateException("订单ID不能为空！");
+			throw new ValidateException(130003);
 		}
 		// solr修改订单索引
 		solrData.submitOrder(userId, orderId, status, null);
 	}
 
 	public void chacheOrders() {
-		// TODO Auto-generated method stub
 		int mysqlSize = 500;// 每次取500条
 		SolrPage solrPage = new SolrPage();
 		// 500条数据查询一次并插入数据库

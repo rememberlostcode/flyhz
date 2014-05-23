@@ -11,10 +11,13 @@
         android:layout_margin="5dp"
         android:gravity="fill_horizontal" >
 
-        <CheckBox
-            android:id="@+id/order_list_time_checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/order_list_checkBox"
+            android:layout_width="35dip"
+            android:layout_height="40dip"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical" 
+            android:contentDescription="@string/gu"/>
 
         <TextView
             android:layout_width="wrap_content"
