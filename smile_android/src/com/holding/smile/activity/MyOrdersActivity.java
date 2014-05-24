@@ -59,6 +59,11 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 		TextView textView = displayHeaderDescription();
 		textView.setText("订单管理");
+		
+		if (footerView == null) {
+			footerView = displayFooterMainOrder();
+		}
+		footerView.setVisibility(View.VISIBLE);
 
 		editView = displayHeaderRight();
 		editView.setText("编辑");
@@ -66,9 +71,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onClick(View v) {
-				if (footerView == null) {
-					footerView = displayFooterMainOrder();
-				}
+				
 				if ("编辑".equals(editView.getText().toString())) {
 					editView.setText("取消");
 					adapter.showEdit(true);

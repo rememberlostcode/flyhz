@@ -57,7 +57,8 @@
         android:layout_height="40dip"
         android:background="#C9C9C9"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <CheckBox
             android:id="@+id/footer_my_orders_all_checked"
