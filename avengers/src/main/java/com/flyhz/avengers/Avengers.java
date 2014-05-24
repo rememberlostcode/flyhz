@@ -68,7 +68,7 @@ import com.flyhz.avengers.framework.DSConstants;
 public class Avengers {
 	private static final Logger	LOG					= LoggerFactory.getLogger(Avengers.class);
 
-	// Configuration
+	// XConfiguration
 	private Configuration		conf;
 	private final String		appMasterMainClass;
 	private YarnClient			yarnClient;

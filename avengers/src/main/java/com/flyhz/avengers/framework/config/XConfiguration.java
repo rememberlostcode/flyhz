@@ -28,9 +28,9 @@ import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
 import com.flyhz.avengers.framework.util.StringUtil;
 import com.flyhz.avengers.framework.util.XmlUtil;
 
-public class Configuration {
+public class XConfiguration {
 
-	private static final Logger			LOG						= LoggerFactory.getLogger(Configuration.class);
+	private static final Logger			LOG						= LoggerFactory.getLogger(XConfiguration.class);
 
 	private final Map<String, Object>	avengersConfiguration			= new HashMap<String, Object>();
 
@@ -42,8 +42,8 @@ public class Configuration {
 	public static final String			URLFILTER_BEFORE_CRAWL	= "crawl.before.filter";
 	public static final String			URLFILTER_AFTER_CRAWL	= "crawl.after.filter";
 
-	private Configuration() {
-		ClassLoader classLoader = Configuration.class.getClassLoader();
+	private XConfiguration() {
+		ClassLoader classLoader = XConfiguration.class.getClassLoader();
 		URL avengersXml = classLoader.getResource("avengers.xml");
 		URL avengersSchema = classLoader.getResource("avengers.xsd");
 		URL avengersProperties = classLoader.getResource("avengers.properties");
@@ -148,7 +148,7 @@ public class Configuration {
 	}
 
 	private static class Singleton {
-		private static final Configuration	singleton	= new Configuration();
+		private static final XConfiguration	singleton	= new XConfiguration();
 	}
 
 	public static Map<String, Object> getAvengersContext() {

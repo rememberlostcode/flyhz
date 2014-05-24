@@ -133,7 +133,7 @@ public class Client {
 
 	private static final Log	LOG					= LogFactory.getLog(Client.class);
 
-	// Configuration
+	// XConfiguration
 	private Configuration		conf;
 	private YarnClient			yarnClient;
 	// Application master specific info to register a new Application with

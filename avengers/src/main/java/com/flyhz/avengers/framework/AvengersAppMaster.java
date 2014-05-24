@@ -83,7 +83,7 @@ import org.apache.hadoop.yarn.security.AMRMTokenIdentifier;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 
-import com.flyhz.avengers.framework.config.Configuration;
+import com.flyhz.avengers.framework.config.XConfiguration;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
@@ -155,7 +155,7 @@ public class AvengersAppMaster {
 
 	private static final Log		LOG							= LogFactory.getLog(AvengersAppMaster.class);
 
-	// Configuration
+	// XConfiguration
 	private Configuration			conf;
 
 	// Handle to communicate with the Resource Manager
@@ -365,9 +365,9 @@ public class AvengersAppMaster {
 					"No shell command specified to be executed by application master");
 		}
 		if (cliParser.hasOption("crawl")) {
-			Map<String, Object> context = Configuration.getAvengersContext();
+			Map<String, Object> context = XConfiguration.getAvengersContext();
 			@SuppressWarnings("unchecked")
-			Map<String, Object> domainsMap = (Map<String, Object>) context.get(Configuration.AVENGERS_DOMAINS);
+			Map<String, Object> domainsMap = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 			numTotalContainers = domainsMap.size();
 		} else if (cliParser.hasOption("fetch")) {
 			LOG.info("AvengersAppMaster run fetch");
