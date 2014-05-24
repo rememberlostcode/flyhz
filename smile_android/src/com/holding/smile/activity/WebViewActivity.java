@@ -164,11 +164,11 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		if (webView != null) {
 			webView.removeAllViews();
 			webView.destroy();
 			webView = null;
 		}
+		super.onDestroy();
 	}
 }

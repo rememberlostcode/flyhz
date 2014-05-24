@@ -76,7 +76,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				} else {
 					editView.setText("编辑");
 					adapter.showEdit(false);
-					footerView.setVisibility(View.INVISIBLE);
+					footerView.setVisibility(View.GONE);
 				}
 			}
 		});

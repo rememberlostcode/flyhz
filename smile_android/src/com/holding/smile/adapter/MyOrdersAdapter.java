@@ -37,7 +37,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private List<OrderDto>		orderList;
 	private MyListView			listView;
 	private OrderDetailAdapter	orderAdapter;
-	private boolean				showDelete	= true;
+	private boolean				showDelete	= false;
 
 	private Set<String>			numbers		= new HashSet<String>();
 	private BigDecimal			total		= new BigDecimal(0);
@@ -117,16 +117,15 @@ public class MyOrdersAdapter extends BaseAdapter {
 		holder.price.setText(String.valueOf(order.getTotal()));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 
-		if (numbers.contains(order.getNumber())) {
-			holder.checkBoxImage.setBackgroundResource(R.drawable.icon_choice);
-		} else {
-			holder.checkBoxImage.setBackgroundResource(R.drawable.icon_no_choice);
-		}
-
-		if (order.getStatus().equals("10") && showDelete) {
+		if (showDelete && order.getStatus().equals(Constants.OrderStateCode.FOR_PAYMENT.code + "")) {
+			if (numbers.contains(order.getNumber())) {
+				holder.checkBoxImage.setBackgroundResource(R.drawable.icon_choice);
+			} else {
+				holder.checkBoxImage.setBackgroundResource(R.drawable.icon_no_choice);
+			}
 			holder.checkBoxImage.setVisibility(View.VISIBLE);
 		} else {
-			holder.checkBoxImage.setVisibility(View.INVISIBLE);
+			holder.checkBoxImage.setVisibility(View.GONE);
 		}
 		holder.statusButton.setText(ClickUtil.getTextByStatus(order.getStatus()));
 		holder.statusButton.setOnClickListener(new OnClickListener() {
