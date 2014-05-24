@@ -117,7 +117,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		holder.price.setText(String.valueOf(order.getTotal()));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 
-		if (showDelete && order.getStatus().equals(Constants.OrderStateCode.FOR_PAYMENT.code + "")) {
+		if (order.getStatus().equals(Constants.OrderStateCode.FOR_PAYMENT.code + "")) {
 			if (numbers.contains(order.getNumber())) {
 				holder.checkBoxImage.setBackgroundResource(R.drawable.icon_choice);
 			} else {
