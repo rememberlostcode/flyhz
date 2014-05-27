@@ -1,22 +1,18 @@
 
 package com.holding.smile.activity;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.ImageView;
 
 import com.holding.smile.R;
-import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.tools.StrUtils;
 
 /**
  * 类说明：为活动页面设计，实现html5与android的交互
@@ -33,10 +29,21 @@ public class HtmlUIActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.htmlui_view);
+		ImageView backView = (ImageView) findViewById(R.id.btn_back);
+		backView.setOnClickListener(this);
+
 		webView = (WebView) findViewById(R.id.htmlui);
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.addJavascriptInterface(new JsPlugin(), "jsPlugin");
-		webView.loadUrl("file:///android_asset/index.html");
+		webView.addJavascriptInterface(new JsObject(), "jsObj");
+
+		String url = "file:///android_asset/index.html";
+
+		Intent intent = this.getIntent();
+		String pathUrl = intent.getExtras().getString("url");
+		if (StrUtils.isNotEmpty(pathUrl))
+			url = pathUrl;
+
+		webView.loadUrl(url);
 	}
 
 	/**
@@ -46,29 +53,7 @@ public class HtmlUIActivity extends Activity implements OnClickListener {
 	 * 也是被划分到视图层的。它和JSP页面共同完成准备数据和页面跳转的工作。 因此，这里我们也不应该让 HTML 中的 JS
 	 * 直接与业务层耦合。实现表现层和业务层的解耦
 	 */
-	private class JsPlugin {
-		/**
-		 * 此方法将执行 JS 代码，调用 JS 函数：show() 实现，将活动产品列表信息展示到 HTML 页面上
-		 */
-		@SuppressWarnings("unused")
-		public void getGoodsList() {
-			RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getIndexJGoods(1);
-			try {
-				JSONArray array = new JSONArray();
-				// for (JGoods contact : contacts) {
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("id", 1);
-				jsonObject.put("gid", 12);
-				jsonObject.put("name", "coach");
-				array.put(jsonObject);
-				// }
-				String json = array.toString();
-				webView.loadUrl("javascript:show('" + json + "')");
-			} catch (JSONException e) {
-				Log.i(TAG, e.toString());
-			}
-		}
-
+	private class JsObject {
 		/**
 		 * 调用详情页
 		 */
@@ -76,7 +61,7 @@ public class HtmlUIActivity extends Activity implements OnClickListener {
 		public void call(String gid, String bs) {
 			Intent intent = new Intent(HtmlUIActivity.this, GoodsDetailActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			intent.putExtra("gid", gid);
+			intent.putExtra("gid", Integer.valueOf(gid));
 			intent.putExtra("bs", bs);
 			startActivity(intent);
 		}
