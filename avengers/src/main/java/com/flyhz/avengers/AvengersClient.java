@@ -77,8 +77,11 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 
+import com.flyhz.avengers.framework.DSConstants;
+import com.flyhz.avengers.framework.config.XConfiguration;
+
 /**
- * Client for Distributed Shell application submission to YARN.
+ * AvengersClient for Distributed Shell application submission to YARN.
  * 
  * <p>
  * The distributed shell client allows an application master to be launched that
@@ -129,11 +132,11 @@ import org.apache.hadoop.yarn.util.Records;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Unstable
-public class Client {
+public class AvengersClient {
 
-	private static final Log	LOG					= LogFactory.getLog(Client.class);
+	private static final Log	LOG					= LogFactory.getLog(AvengersClient.class);
 
-	// XConfiguration
+	// Configuration
 	private Configuration		conf;
 	private YarnClient			yarnClient;
 	// Application master specific info to register a new Application with
@@ -202,19 +205,19 @@ public class Client {
 		}
 		boolean result = false;
 		try {
-			Client client = new Client();
-			LOG.info("Initializing Client");
+			AvengersClient avengersClient = new AvengersClient();
+			LOG.info("Initializing AvengersClient");
 			try {
-				boolean doRun = client.init(args);
+				boolean doRun = avengersClient.init(args);
 				if (!doRun) {
 					System.exit(0);
 				}
 			} catch (IllegalArgumentException e) {
 				System.err.println(e.getLocalizedMessage());
-				client.printUsage();
+				avengersClient.printUsage();
 				System.exit(-1);
 			}
-			result = client.run();
+			result = avengersClient.run();
 		} catch (Throwable t) {
 			LOG.fatal("Error running CLient", t);
 			System.exit(1);
@@ -229,11 +232,11 @@ public class Client {
 
 	/**
    */
-	public Client(Configuration conf) throws Exception {
+	public AvengersClient(Configuration conf) throws Exception {
 		this("com.flyhz.avengers.framework.AvengersAppMaster", conf);
 	}
 
-	Client(String appMasterMainClass, Configuration conf) {
+	AvengersClient(String appMasterMainClass, Configuration conf) {
 		LOG.info("conf is " + conf);
 		this.conf = conf;
 		this.appMasterMainClass = appMasterMainClass;
@@ -272,7 +275,7 @@ public class Client {
 
 	/**
    */
-	public Client() throws Exception {
+	public AvengersClient() throws Exception {
 		this(new YarnConfiguration());
 	}
 
@@ -280,7 +283,7 @@ public class Client {
 	 * Helper function to print out usage
 	 */
 	private void printUsage() {
-		new HelpFormatter().printHelp("Client", opts);
+		new HelpFormatter().printHelp("AvengersClient", opts);
 	}
 
 	/**
@@ -359,7 +362,10 @@ public class Client {
 
 		containerMemory = Integer.parseInt(cliParser.getOptionValue("container_memory", "10"));
 		numContainers = Integer.parseInt(cliParser.getOptionValue("num_containers", "1"));
-
+		Map<String, Object> domainsMap = (Map<String, Object>) XConfiguration.getAvengersContext()
+																				.get(XConfiguration.AVENGERS_DOMAINS);
+		numContainers = domainsMap.size();
+		LOG.info("numContainers -- >" + numContainers);
 		if (containerMemory < 0 || numContainers < 1) {
 			throw new IllegalArgumentException(
 					"Invalid no. of containers or container memory specified, exiting."
@@ -383,7 +389,7 @@ public class Client {
 	 */
 	public boolean run() throws IOException, YarnException {
 
-		LOG.info("Running Client");
+		LOG.info("Running AvengersClient");
 		yarnClient.start();
 
 		YarnClusterMetrics clusterMetrics = yarnClient.getYarnClusterMetrics();
@@ -456,7 +462,7 @@ public class Client {
 		}
 		FileSystem fs = FileSystem.get(conf);
 		Path src = new Path(appMasterJar);
-		String pathSuffix = appName + "/" + appId.getId() + "/AppMaster.jar";
+		String pathSuffix = appName + "/" + appId.getId() + "/avengers-bin.jar";
 
 		Path dst = new Path(fs.getHomeDirectory(), pathSuffix);
 		fs.copyFromLocalFile(false, true, src, dst);
@@ -479,7 +485,7 @@ public class Client {
 		// resource the client intended to use with the application
 		amJarRsrc.setTimestamp(destStatus.getModificationTime());
 		amJarRsrc.setSize(destStatus.getLen());
-		localResources.put("AppMaster.jar", amJarRsrc);
+		localResources.put("avengers-bin.jar", amJarRsrc);
 
 		// Set the log4j properties if needed
 		if (!log4jPropFile.isEmpty()) {
@@ -532,12 +538,10 @@ public class Client {
 		// local resource for the
 		// eventual containers that will be launched to execute the shell
 		// scripts
-		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION,
-		// hdfsShellScriptLocation);
-		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP,
-		// Long.toString(hdfsShellScriptTimestamp));
-		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN,
-		// Long.toString(hdfsShellScriptLen));
+		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION, hdfsShellScriptLocation);
+		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP,
+				Long.toString(hdfsShellScriptTimestamp));
+		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN, Long.toString(hdfsShellScriptLen));
 
 		// Add AppMaster.jar location to classpath
 		// At some point we should not be required to add
@@ -672,7 +676,7 @@ public class Client {
 	 * time expires.
 	 * 
 	 * @param appId
-	 *            Application Key of application to be monitored
+	 *            Application Id of application to be monitored
 	 * @return true if application completed successfully
 	 * @throws YarnException
 	 * @throws IOException
@@ -732,7 +736,7 @@ public class Client {
 	 * Kill a submitted application by sending a call to the ASM
 	 * 
 	 * @param appId
-	 *            Application Key to be killed.
+	 *            Application Id to be killed.
 	 * @throws YarnException
 	 * @throws IOException
 	 */

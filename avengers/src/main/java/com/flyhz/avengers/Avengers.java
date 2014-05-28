@@ -207,8 +207,8 @@ public class Avengers {
 			shellCommand = "crawl";
 		} else if (cliParser.hasOption("fetch")) {
 			shellCommand = "fetch";
-		} else if (cliParser.hasOption("out")) {
-			shellCommand = "out";
+		} else if (cliParser.hasOption("analyze")) {
+			shellCommand = "analyze";
 		}
 
 		if (cliParser.hasOption("shell_script")) {
@@ -253,11 +253,11 @@ public class Avengers {
 	}
 
 	private void printUsage() {
-		new HelpFormatter().printHelp("Client", opts);
+		new HelpFormatter().printHelp("AvengersClient", opts);
 	}
 
 	public boolean run() throws YarnException, IOException {
-		LOG.info("Running Client");
+		LOG.info("Running AvengersClient");
 		yarnClient.start();
 
 		YarnClusterMetrics clusterMetrics = yarnClient.getYarnClusterMetrics();
@@ -331,7 +331,7 @@ public class Avengers {
 		}
 		FileSystem fs = FileSystem.get(conf);
 		Path src = new Path(appMasterJar);
-		String pathSuffix = appName + "/" + appId.getId() + "/avengers-jar-with-dependencies.jar";
+		String pathSuffix = appName + "/" + appId.getId() + "/avengers-bin.jar";
 
 		Path dst = new Path(fs.getHomeDirectory(), pathSuffix);
 		fs.copyFromLocalFile(false, true, src, dst);
@@ -617,7 +617,7 @@ public class Avengers {
 		boolean result = false;
 		try {
 			Avengers client = Avengers.getInstance();
-			LOG.info("Initializing Client");
+			LOG.info("Initializing AvengersClient");
 			try {
 				boolean doRun = client.init(args);
 				if (!doRun) {
