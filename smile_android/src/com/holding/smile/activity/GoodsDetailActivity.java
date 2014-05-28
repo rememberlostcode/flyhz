@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,8 +68,12 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		headerDesc.setText(R.string.good_detail);
 
 		Intent intent = getIntent();
-		bs = intent.getExtras().getString("bs");
-		gid = (Integer) intent.getExtras().getSerializable("gid");
+		try {
+			bs = intent.getExtras().getString("bs");
+			gid = (Integer) intent.getExtras().getSerializable("gid");
+		} catch (Exception e) {
+			Log.e("参数转换异常：", e.getMessage());
+		}
 		if (StrUtils.isNotEmpty(bs)) {
 			startTask();
 		} else {
