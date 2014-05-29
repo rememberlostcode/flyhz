@@ -1,6 +1,7 @@
 
 package com.flyhz.avengers.framework;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.event.URLCrawlEvent;
 import com.flyhz.avengers.framework.util.StringUtil;
 
 public class Crawl extends AvengersExecutor {
@@ -21,6 +24,7 @@ public class Crawl extends AvengersExecutor {
 
 	public static void main(String[] args) {
 		try {
+			LOG.info("crawl begin..............");
 			AvengersExecutor crawl = new Crawl();
 			crawl.execute(args);
 		} catch (Throwable th) {
@@ -66,9 +70,17 @@ public class Crawl extends AvengersExecutor {
 		return context;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	List<Event> initAvengersEvents(Map<String, Object> context) {
-		return null;
+		Map<String, Object> map = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
+		List<Event> list = (List<Event>) map.get(XConfiguration.CRAWL_EVENTS);
+		if (list == null) {
+			list = new ArrayList<Event>();
+			list.add(new URLCrawlEvent());
+		}
+		return list;
+
 	}
 
 	@Override

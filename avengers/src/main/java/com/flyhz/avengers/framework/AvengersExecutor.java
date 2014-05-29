@@ -41,7 +41,6 @@ public abstract class AvengersExecutor implements Runnable {
 	public void execute(String[] args) {
 		initAvengersContext(args);
 		initAvengersEvents(context);
-
 		new Thread(this).start();
 	}
 

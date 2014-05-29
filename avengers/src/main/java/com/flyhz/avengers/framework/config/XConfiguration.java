@@ -32,7 +32,7 @@ public class XConfiguration {
 
 	private static final Logger			LOG						= LoggerFactory.getLogger(XConfiguration.class);
 
-	private final Map<String, Object>	avengersConfiguration			= new HashMap<String, Object>();
+	private final Map<String, Object>	avengersConfiguration	= new HashMap<String, Object>();
 
 	public static final String			AVENGERS_DOMAINS		= "avengers.domains";
 	public static final String			CRAWL_EVENTS			= "crawl.events";

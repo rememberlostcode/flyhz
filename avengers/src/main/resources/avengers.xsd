@@ -4,8 +4,7 @@
 	targetNamespace="http://www.flyhz.com/avengrs" 
 	xmlns:ave="http://www.flyhz.com/avengrs"
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-  	jaxb:version="2.0"
-	elementFormDefault="qualified">
+  	jaxb:version="2.0">
 	<annotation>
 		<appinfo>
 			<jaxb:schemaBindings>
@@ -13,12 +12,13 @@
 	    	</jaxb:schemaBindings>
 		</appinfo>
   	</annotation>
-	<element name="domains" type="ave:xDomains"/>
-	<complexType name="xDomains">
-		<sequence>
-			<element name="domain" type="ave:xDomain" minOccurs="1" maxOccurs="unbounded"/>
-		</sequence>
+	<element name="xDomains">
+		<complexType>
+			<sequence>
+				<element name="domain" type="ave:xDomain" minOccurs="1" maxOccurs="unbounded"/>
+			</sequence>
 	</complexType>
+	</element>
 	<complexType name="xDomain">
 		<all>
 			<element name="urlFilterBeforeCrawl" type="ave:xFilter" minOccurs="0"/>

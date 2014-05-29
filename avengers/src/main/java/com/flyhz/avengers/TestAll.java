@@ -28,7 +28,6 @@ public class TestAll {
 
 		for (int k = 0; k < domains.size(); k++) {
 			XDomain domain = domains.get(k);
-
 			List<String> waitFilterUrls = new ArrayList<String>();
 			waitFilterUrls.add("http://www.coach.com/online/handbags/Home-10551-10051-en/");
 			waitFilterUrls.add("http://www.coach.com/online/handbags/-newatcoach_allnewatcoach-us-us-5000000000000000002-en?t1Id=5000000000000000001&t2Id=5000000000000000002&navCatId=7100000000000000568&LOC=HN1");

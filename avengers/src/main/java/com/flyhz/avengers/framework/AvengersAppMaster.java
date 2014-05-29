@@ -360,15 +360,52 @@ public class AvengersAppMaster {
 				+ appAttemptID.getApplicationId().getClusterTimestamp() + ", attemptId="
 				+ appAttemptID.getAttemptId());
 
-		if (!cliParser.hasOption("shell_command")) {
-			throw new IllegalArgumentException(
-					"No shell command specified to be executed by application master");
-		}
 		if (cliParser.hasOption("crawl")) {
 			Map<String, Object> context = XConfiguration.getAvengersContext();
 			@SuppressWarnings("unchecked")
 			Map<String, Object> domainsMap = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 			numTotalContainers = domainsMap.size();
+			Vector<CharSequence> vargs = new Vector<CharSequence>(30);
+
+			// Set java executable command
+			LOG.info("Setting up app master command");
+			vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+			// Set Xmx based on am memory size
+			vargs.add("-Xmx" + containerMemory + "m");
+			// Set class name
+			vargs.add(Crawl.class.getName());
+			// Set params for Application Master
+			// vargs.add("--container_memory " +
+			// String.valueOf(containerMemory));
+			// vargs.add("--num_containers " + String.valueOf(numContainers));
+			// vargs.add("--priority " + String.valueOf(shellCmdPriority));
+			if (!shellCommand.isEmpty()) {
+				vargs.add("--shell_command " + shellCommand + "");
+			}
+			if (!shellArgs.isEmpty()) {
+				vargs.add("--shell_args " + shellArgs + "");
+			}
+			for (Map.Entry<String, String> entry : shellEnv.entrySet()) {
+				vargs.add("--shell_env " + entry.getKey() + "=" + entry.getValue());
+			}
+			// if (debugFlag) {
+			// vargs.add("--debug");
+			// }
+
+			vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
+			vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
+
+			// Get final commmand
+			StringBuilder command = new StringBuilder();
+			for (CharSequence str : vargs) {
+				command.append(str).append(" ");
+			}
+
+			LOG.info("Completed setting up app master command " + command.toString());
+			shellCommand = command.toString();
+			// List<String> commands = new ArrayList<String>();
+			// commands.add(command.toString());
+
 		} else if (cliParser.hasOption("fetch")) {
 			LOG.info("AvengersAppMaster run fetch");
 		} else if (cliParser.hasOption("out")) {
@@ -784,14 +821,7 @@ public class AvengersAppMaster {
 					shellRsrc.setResource(ConverterUtils.getYarnUrlFromURI(new URI(shellScriptPath)));
 				} catch (URISyntaxException e) {
 					LOG.error("Error when trying to use shell script path specified"
-							+ " in env, path=" + shellScriptPath);
-					e.printStackTrace();
-
-					// A failure scenario on bad input such as invalid shell
-					// script path
-					// We know we cannot continue launching the container
-					// so we should release it.
-					// TODO
+							+ " in env, path=" + shellScriptPath, e);
 					numCompletedContainers.incrementAndGet();
 					numFailedContainers.incrementAndGet();
 					return;
