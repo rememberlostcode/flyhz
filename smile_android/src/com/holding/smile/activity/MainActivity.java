@@ -35,6 +35,7 @@ import com.holding.smile.myview.MyListView;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 import com.holding.smile.service.LoginService;
+import com.holding.smile.tools.StrUtils;
 
 public class MainActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener {
 
@@ -217,9 +218,15 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 						Intent intent = new Intent(context, HtmlUIActivity.class);
 						if (jAct.getId().equals(2)) {
-							intent.putExtra("url", "file:///android_asset/index2.html");
+							if (!StrUtils.isNotEmpty(jAct.getUrl())) {
+								jAct.setUrl("file:///android_asset/index2.html");
+							}
+							intent.putExtra("url", jAct.getUrl());
 						} else {
-							intent.putExtra("url", "file:///android_asset/index.html");
+							if (!StrUtils.isNotEmpty(jAct.getUrl())) {
+								jAct.setUrl("file:///android_asset/index.html");
+							}
+							intent.putExtra("url", jAct.getUrl());
 						}
 						startActivity(intent);
 

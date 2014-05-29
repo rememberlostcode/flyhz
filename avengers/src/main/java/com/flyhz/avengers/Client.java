@@ -188,6 +188,7 @@ public class Client {
 	 *            Command line arguments
 	 */
 	public static void main(String[] args) {
+		System.out.println(System.getenv("HADOOP_HOME"));
 
 		System.setProperty("hadoop.home.dir", "/Users/huoding/Downloads/hadoop-2.2.0");
 		System.setProperty("yarn.resourcemanager.adress", "10.203.3.39");
