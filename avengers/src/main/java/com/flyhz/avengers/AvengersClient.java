@@ -78,10 +78,9 @@ import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 
 import com.flyhz.avengers.framework.DSConstants;
-import com.flyhz.avengers.framework.config.XConfiguration;
 
 /**
- * AvengersClient for Distributed Shell application submission to YARN.
+ * Client for Distributed Shell application submission to YARN.
  * 
  * <p>
  * The distributed shell client allows an application master to be launched that
@@ -205,19 +204,19 @@ public class AvengersClient {
 		}
 		boolean result = false;
 		try {
-			AvengersClient avengersClient = new AvengersClient();
-			LOG.info("Initializing AvengersClient");
+			AvengersClient client = new AvengersClient();
+			LOG.info("Initializing Client");
 			try {
-				boolean doRun = avengersClient.init(args);
+				boolean doRun = client.init(args);
 				if (!doRun) {
 					System.exit(0);
 				}
 			} catch (IllegalArgumentException e) {
 				System.err.println(e.getLocalizedMessage());
-				avengersClient.printUsage();
+				client.printUsage();
 				System.exit(-1);
 			}
-			result = avengersClient.run();
+			result = client.run();
 		} catch (Throwable t) {
 			LOG.fatal("Error running CLient", t);
 			System.exit(1);
@@ -233,7 +232,7 @@ public class AvengersClient {
 	/**
    */
 	public AvengersClient(Configuration conf) throws Exception {
-		this("com.flyhz.avengers.framework.AvengersAppMaster", conf);
+		this("org.apache.hadoop.yarn.applications.distributedshell.ApplicationMaster", conf);
 	}
 
 	AvengersClient(String appMasterMainClass, Configuration conf) {
@@ -283,7 +282,7 @@ public class AvengersClient {
 	 * Helper function to print out usage
 	 */
 	private void printUsage() {
-		new HelpFormatter().printHelp("AvengersClient", opts);
+		new HelpFormatter().printHelp("Client", opts);
 	}
 
 	/**
@@ -362,10 +361,7 @@ public class AvengersClient {
 
 		containerMemory = Integer.parseInt(cliParser.getOptionValue("container_memory", "10"));
 		numContainers = Integer.parseInt(cliParser.getOptionValue("num_containers", "1"));
-		Map<String, Object> domainsMap = (Map<String, Object>) XConfiguration.getAvengersContext()
-																				.get(XConfiguration.AVENGERS_DOMAINS);
-		numContainers = domainsMap.size();
-		LOG.info("numContainers -- >" + numContainers);
+
 		if (containerMemory < 0 || numContainers < 1) {
 			throw new IllegalArgumentException(
 					"Invalid no. of containers or container memory specified, exiting."
@@ -389,7 +385,7 @@ public class AvengersClient {
 	 */
 	public boolean run() throws IOException, YarnException {
 
-		LOG.info("Running AvengersClient");
+		LOG.info("Running Client");
 		yarnClient.start();
 
 		YarnClusterMetrics clusterMetrics = yarnClient.getYarnClusterMetrics();
@@ -462,7 +458,7 @@ public class AvengersClient {
 		}
 		FileSystem fs = FileSystem.get(conf);
 		Path src = new Path(appMasterJar);
-		String pathSuffix = appName + "/" + appId.getId() + "/avengers-bin.jar";
+		String pathSuffix = appName + "/" + appId.getId() + "/AppMaster.jar";
 
 		Path dst = new Path(fs.getHomeDirectory(), pathSuffix);
 		fs.copyFromLocalFile(false, true, src, dst);
@@ -485,7 +481,7 @@ public class AvengersClient {
 		// resource the client intended to use with the application
 		amJarRsrc.setTimestamp(destStatus.getModificationTime());
 		amJarRsrc.setSize(destStatus.getLen());
-		localResources.put("avengers-bin.jar", amJarRsrc);
+		localResources.put("AppMaster.jar", amJarRsrc);
 
 		// Set the log4j properties if needed
 		if (!log4jPropFile.isEmpty()) {
