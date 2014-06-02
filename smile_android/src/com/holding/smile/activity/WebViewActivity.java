@@ -31,7 +31,7 @@ import com.holding.smile.tools.StrUtils;
  */
 public class WebViewActivity extends Activity implements OnClickListener {
 
-	private WebView		webView;
+	private static WebView		webView;
 	private String		number;	// 订单号
 	private BigDecimal	amount;	// 总额
 
