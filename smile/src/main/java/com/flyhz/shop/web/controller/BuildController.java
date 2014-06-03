@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,9 @@ public class BuildController {
 	private BuildService	buildService;
 	@Resource
 	private RedisRepository	redisRepository;
+	@Resource
+	@Value(value = "${smile.taobao.url}")
+	private String smile_taobao_url;
 
 	@RequestMapping(value = "/all")
 	public String all(Model model) {
@@ -53,15 +57,6 @@ public class BuildController {
 			String orderJson = redisRepository.getOrderFromRedis(1, 18);
 			System.out.println(orderJson);
 
-			// redisRepository.buildOrderToRedis(1, 1001,
-			// "测试订单buildOrderToRedis");
-			// orderJson = redisRepository.getOrderFromRedis(1001, 1);
-			// System.out.println(orderJson);
-
-			// redisRepository.reBuildOrderToRedis(1, 1);
-
-			// buildService.getDollarExchangeRate();
-
 		} catch (ValidateException e) {
 			e.printStackTrace();
 		}
@@ -76,7 +71,7 @@ public class BuildController {
 			response.reset();
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html");
-			writer.println("http://h5.m.taobao.com/awp/core/detail.htm?id=38752474914");
+			writer.println(smile_taobao_url);
 			return;
 		} catch (IOException e) {
 			e.printStackTrace();
