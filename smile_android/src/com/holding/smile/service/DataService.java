@@ -1,10 +1,6 @@
 
 package com.holding.smile.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,25 +70,6 @@ public class DataService {
 		order_list_url = context.getString(R.string.order_list_url);
 		cart_list_url = context.getString(R.string.cart_list_url);
 		order_status_url = context.getString(R.string.order_status_url);
-	}
-
-	private String setJson(String fileName) {
-		String result = "";
-		try {
-			InputStream is = DataService.class.getClassLoader().getResourceAsStream(
-					"testdata/" + fileName);
-			InputStreamReader read = new InputStreamReader(is);
-			BufferedReader reader = new BufferedReader(read);
-			StringBuffer sb = new StringBuffer();
-			String eachLine = null;
-			while ((eachLine = reader.readLine()) != null) {
-				sb.append(eachLine);
-			}
-			result = sb.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return result;
 	}
 
 	/**

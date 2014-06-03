@@ -407,5 +407,18 @@ public class BaseActivity extends Activity {
 		setVisible(id);
 		return view;
 	}
+	
+	/**
+	 * 进入我的订单时显示
+	 * 
+	 * @return
+	 */
+	public View displayFooterMainOrder() {
+		setFootVisible();
+		int id = R.id.footer_my_orders;
+		View view = (View) findViewById(id);
+		setVisible(id);
+		return view;
+	}
 
 }

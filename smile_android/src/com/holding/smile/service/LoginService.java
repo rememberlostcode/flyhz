@@ -155,16 +155,16 @@ public class LoginService {
 				}
 			}
 
-			long a = System.currentTimeMillis();
+//			long a = System.currentTimeMillis();
 			String key = "222222";
 			char[] keys = key.toCharArray();
 			KeyStore keyStore = KeyStore.getInstance("BKS");
 			InputStream ins = context.getResources().openRawResource(R.raw.client1);
-			long b = System.currentTimeMillis();
+//			long b = System.currentTimeMillis();
 			keyStore.load(ins, keys);
-			long c = System.currentTimeMillis();
+//			long c = System.currentTimeMillis();
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");
-			long d = System.currentTimeMillis();
+//			long d = System.currentTimeMillis();
 			kmf.init(keyStore, keys);
 			KeyManager[] keyManagers = kmf.getKeyManagers();
 			SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -206,12 +206,12 @@ public class LoginService {
 					urlConnection.disconnect();
 				}
 			}
-			long e = System.currentTimeMillis();
-			long b_a = b - a;// 2
-			long c_b = c - b;// 196
-			long d_c = d - c;// 0
-			long e_d = e - d;// 4525
-			long e_a = e - a;// 4723
+//			long e = System.currentTimeMillis();
+//			long b_a = b - a;// 2
+//			long c_b = c - b;// 196
+//			long d_c = d - c;// 0
+//			long e_d = e - d;// 4525
+//			long e_a = e - a;// 4723
 			System.out.println("");
 		} catch (Exception e) {
 			e.printStackTrace();

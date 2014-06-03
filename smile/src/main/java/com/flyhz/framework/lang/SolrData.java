@@ -1,4 +1,3 @@
-
 package com.flyhz.framework.lang;
 
 import java.util.Date;
@@ -39,6 +38,13 @@ public interface SolrData {
 	public void submitProduct(ProductBuildDto productBuildDto);
 
 	/**
+	 * 删除单个商品索引
+	 * 
+	 * @param productId
+	 */
+	public void removeProduct(String productId);
+
+	/**
 	 * 建立商品索引
 	 * 
 	 * @param productList
@@ -53,7 +59,8 @@ public interface SolrData {
 	 * @param status
 	 * @param gmtModify
 	 */
-	public void submitOrder(Integer userId, Integer orderId, String status, Date gmtModify);
+	public void submitOrder(Integer userId, Integer orderId, String status,
+			Date gmtModify);
 
 	/**
 	 * 查询指定用户的订单
@@ -64,5 +71,6 @@ public interface SolrData {
 	 *            状态
 	 * @return
 	 */
-	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId, String status);
+	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId,
+			String status);
 }

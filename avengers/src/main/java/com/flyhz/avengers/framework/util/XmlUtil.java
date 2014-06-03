@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -30,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+import com.flyhz.avengers.framework.config.xml.XDomains;
 
 public class XmlUtil {
 
@@ -169,4 +172,9 @@ public class XmlUtil {
 		return null;
 	}
 
+	public static void main(String[] args) throws MalformedURLException {
+		XmlUtil.convertXmlToObject(XDomains.class, new URL(
+				"file:///Users/huoding/flyhz/avengers/src/main/resources/avengers.xml"), new URL(
+				"file:///Users/huoding/flyhz/avengers/src/main/resources/avengers.xsd"));
+	}
 }

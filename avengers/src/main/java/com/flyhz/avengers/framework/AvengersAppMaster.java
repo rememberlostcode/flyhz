@@ -83,14 +83,12 @@ import org.apache.hadoop.yarn.security.AMRMTokenIdentifier;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 
-import com.flyhz.avengers.framework.config.AvengersConfiguration;
-import com.flyhz.avengers.framework.config.xml.Domain;
-import com.flyhz.avengers.framework.config.xml.Domains;
+import com.flyhz.avengers.framework.config.XConfiguration;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
- * An AvengersAppMaster for executing shell commands on a set of launched containers
- * using the YARN framework.
+ * An AvengersAppMaster for executing shell commands on a set of launched
+ * containers using the YARN framework.
  * 
  * <p>
  * This class is meant to act as an example on how to write yarn-based
@@ -98,14 +96,15 @@ import com.google.common.annotations.VisibleForTesting;
  * </p>
  * 
  * <p>
- * The AvengersAppMaster is started on a container by the <code>ResourceManager</code>'s
- * launcher. The first thing that the <code>AvengersAppMaster</code> needs to do is to
- * connect and register itself with the <code>ResourceManager</code>. The
- * registration sets up information within the <code>ResourceManager</code>
- * regarding what host:port the AvengersAppMaster is listening on to provide any form of
- * functionality to a client as well as a tracking url that a client can use to
- * keep track of status/job history if needed. However, in the distributedshell,
- * trackingurl and appMasterHost:appMasterRpcPort are not supported.
+ * The AvengersAppMaster is started on a container by the
+ * <code>ResourceManager</code>'s launcher. The first thing that the
+ * <code>AvengersAppMaster</code> needs to do is to connect and register itself
+ * with the <code>ResourceManager</code>. The registration sets up information
+ * within the <code>ResourceManager</code> regarding what host:port the
+ * AvengersAppMaster is listening on to provide any form of functionality to a
+ * client as well as a tracking url that a client can use to keep track of
+ * status/job history if needed. However, in the distributedshell, trackingurl
+ * and appMasterHost:appMasterRpcPort are not supported.
  * </p>
  * 
  * <p>
@@ -113,24 +112,24 @@ import com.google.common.annotations.VisibleForTesting;
  * <code>ResourceManager</code> at regular intervals to inform the
  * <code>ResourceManager</code> that it is up and alive. The
  * {@link ApplicationMasterProtocol#allocate} to the
- * <code>ResourceManager</code> from the <code>AvengersAppMaster</code> acts as a
- * heartbeat.
+ * <code>ResourceManager</code> from the <code>AvengersAppMaster</code> acts as
+ * a heartbeat.
  * 
  * <p>
- * For the actual handling of the job, the <code>AvengersAppMaster</code> has to request
- * the <code>ResourceManager</code> via {@link AllocateRequest} for the required
- * no. of containers using {@link ResourceRequest} with the necessary resource
- * specifications such as node location, computational (memory/disk/cpu)
- * resource requirements. The <code>ResourceManager</code> responds with an
- * {@link AllocateResponse} that informs the <code>AvengersAppMaster</code> of the set
- * of newly allocated containers, completed containers as well as current state
- * of available resources.
+ * For the actual handling of the job, the <code>AvengersAppMaster</code> has to
+ * request the <code>ResourceManager</code> via {@link AllocateRequest} for the
+ * required no. of containers using {@link ResourceRequest} with the necessary
+ * resource specifications such as node location, computational
+ * (memory/disk/cpu) resource requirements. The <code>ResourceManager</code>
+ * responds with an {@link AllocateResponse} that informs the
+ * <code>AvengersAppMaster</code> of the set of newly allocated containers,
+ * completed containers as well as current state of available resources.
  * </p>
  * 
  * <p>
- * For each allocated container, the <code>AvengersAppMaster</code> can then set up the
- * necessary launch context via {@link ContainerLaunchContext} to specify the
- * allocated container id, local resources required by the executable, the
+ * For each allocated container, the <code>AvengersAppMaster</code> can then set
+ * up the necessary launch context via {@link ContainerLaunchContext} to specify
+ * the allocated container id, local resources required by the executable, the
  * environment to be setup for the executable, commands to execute, etc. and
  * submit a {@link StartContainerRequest} to the
  * {@link ContainerManagementProtocol} to launch and execute the defined
@@ -138,16 +137,17 @@ import com.google.common.annotations.VisibleForTesting;
  * </p>
  * 
  * <p>
- * The <code>AvengersAppMaster</code> can monitor the launched container by either
- * querying the <code>ResourceManager</code> using
+ * The <code>AvengersAppMaster</code> can monitor the launched container by
+ * either querying the <code>ResourceManager</code> using
  * {@link ApplicationMasterProtocol#allocate} to get updates on completed
  * containers or via the {@link ContainerManagementProtocol} by querying for the
  * status of the allocated container's {@link ContainerId}.
  * 
  * <p>
- * After the job has been completed, the <code>AvengersAppMaster</code> has to send a
- * {@link FinishApplicationMasterRequest} to the <code>ResourceManager</code> to
- * inform it that the <code>AvengersAppMaster</code> has been completed.
+ * After the job has been completed, the <code>AvengersAppMaster</code> has to
+ * send a {@link FinishApplicationMasterRequest} to the
+ * <code>ResourceManager</code> to inform it that the
+ * <code>AvengersAppMaster</code> has been completed.
  */
 @InterfaceAudience.Public
 @InterfaceStability.Unstable
@@ -155,7 +155,7 @@ public class AvengersAppMaster {
 
 	private static final Log		LOG							= LogFactory.getLog(AvengersAppMaster.class);
 
-	// Configuration
+	// XConfiguration
 	private Configuration			conf;
 
 	// Handle to communicate with the Resource Manager
@@ -360,14 +360,52 @@ public class AvengersAppMaster {
 				+ appAttemptID.getApplicationId().getClusterTimestamp() + ", attemptId="
 				+ appAttemptID.getAttemptId());
 
-		if (!cliParser.hasOption("shell_command")) {
-			throw new IllegalArgumentException(
-					"No shell command specified to be executed by application master");
-		}
 		if (cliParser.hasOption("crawl")) {
-			Domains domainsConfig = AvengersConfiguration.getDomainsConfig();
-			List<Domain> list = domainsConfig.getDomain();
-			numTotalContainers = list.size();
+			Map<String, Object> context = XConfiguration.getAvengersContext();
+			@SuppressWarnings("unchecked")
+			Map<String, Object> domainsMap = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
+			numTotalContainers = domainsMap.size();
+			Vector<CharSequence> vargs = new Vector<CharSequence>(30);
+
+			// Set java executable command
+			LOG.info("Setting up app master command");
+			vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+			// Set Xmx based on am memory size
+			vargs.add("-Xmx" + containerMemory + "m");
+			// Set class name
+			vargs.add(Crawl.class.getName());
+			// Set params for Application Master
+			// vargs.add("--container_memory " +
+			// String.valueOf(containerMemory));
+			// vargs.add("--num_containers " + String.valueOf(numContainers));
+			// vargs.add("--priority " + String.valueOf(shellCmdPriority));
+			if (!shellCommand.isEmpty()) {
+				vargs.add("--shell_command " + shellCommand + "");
+			}
+			if (!shellArgs.isEmpty()) {
+				vargs.add("--shell_args " + shellArgs + "");
+			}
+			for (Map.Entry<String, String> entry : shellEnv.entrySet()) {
+				vargs.add("--shell_env " + entry.getKey() + "=" + entry.getValue());
+			}
+			// if (debugFlag) {
+			// vargs.add("--debug");
+			// }
+
+			vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
+			vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
+
+			// Get final commmand
+			StringBuilder command = new StringBuilder();
+			for (CharSequence str : vargs) {
+				command.append(str).append(" ");
+			}
+
+			LOG.info("Completed setting up app master command " + command.toString());
+			shellCommand = command.toString();
+			// List<String> commands = new ArrayList<String>();
+			// commands.add(command.toString());
+
 		} else if (cliParser.hasOption("fetch")) {
 			LOG.info("AvengersAppMaster run fetch");
 		} else if (cliParser.hasOption("out")) {
@@ -673,7 +711,7 @@ public class AvengersAppMaster {
 	static class NMCallbackHandler implements NMClientAsync.CallbackHandler {
 
 		private ConcurrentMap<ContainerId, Container>	containers	= new ConcurrentHashMap<ContainerId, Container>();
-		private final AvengersAppMaster							avengersAppMaster;
+		private final AvengersAppMaster					avengersAppMaster;
 
 		public NMCallbackHandler(AvengersAppMaster avengersAppMaster) {
 			this.avengersAppMaster = avengersAppMaster;
@@ -707,7 +745,8 @@ public class AvengersAppMaster {
 			}
 			Container container = containers.get(containerId);
 			if (container != null) {
-				avengersAppMaster.nmClientAsync.getContainerStatusAsync(containerId, container.getNodeId());
+				avengersAppMaster.nmClientAsync.getContainerStatusAsync(containerId,
+						container.getNodeId());
 			}
 		}
 
@@ -782,14 +821,7 @@ public class AvengersAppMaster {
 					shellRsrc.setResource(ConverterUtils.getYarnUrlFromURI(new URI(shellScriptPath)));
 				} catch (URISyntaxException e) {
 					LOG.error("Error when trying to use shell script path specified"
-							+ " in env, path=" + shellScriptPath);
-					e.printStackTrace();
-
-					// A failure scenario on bad input such as invalid shell
-					// script path
-					// We know we cannot continue launching the container
-					// so we should release it.
-					// TODO
+							+ " in env, path=" + shellScriptPath, e);
 					numCompletedContainers.incrementAndGet();
 					numFailedContainers.incrementAndGet();
 					return;

@@ -22,6 +22,11 @@ public class JActivity implements Serializable {
 	 */
 	private String				p;
 
+	/**
+	 * 活动页面url
+	 */
+	private String				url;
+
 	public Integer getId() {
 		return id;
 	}
@@ -36,6 +41,14 @@ public class JActivity implements Serializable {
 
 	public void setP(String p) {
 		this.p = p;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }

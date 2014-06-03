@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.domains.dto.RtnResult;
-import com.flyhz.avengers.framework.config.xml.Domain;
-import com.flyhz.avengers.framework.config.xml.Domains;
+import com.flyhz.avengers.framework.config.xml.XDomain;
+import com.flyhz.avengers.framework.config.xml.XDomains;
 import com.flyhz.avengers.framework.util.WebClientUtil;
 
 /**
@@ -110,12 +110,12 @@ public class RecursiveCall {
 
 		RecursiveCall recursiveCall = new RecursiveCall();
 		// Filter filter = new CoachUrlFilterImpl();
-		Domains avengers = null;
-		List<Domain> domains = avengers.getDomain();
+		XDomains avengers = null;
+		List<XDomain> domains = avengers.getDomain();
 		int deeps = 3;
 
 		for (int k = 0; k < domains.size(); k++) {
-			Domain domain = domains.get(k);
+			XDomain domain = domains.get(k);
 			List<String> waitFilterUrls = null;
 			String siteName = "coach";
 			String baseUrl = domain.getRoot();

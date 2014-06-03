@@ -77,6 +77,8 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 
+import com.flyhz.avengers.framework.DSConstants;
+
 /**
  * Client for Distributed Shell application submission to YARN.
  * 
@@ -129,9 +131,9 @@ import org.apache.hadoop.yarn.util.Records;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Unstable
-public class Client {
+public class AvengersClient {
 
-	private static final Log	LOG					= LogFactory.getLog(Client.class);
+	private static final Log	LOG					= LogFactory.getLog(AvengersClient.class);
 
 	// Configuration
 	private Configuration		conf;
@@ -202,7 +204,7 @@ public class Client {
 		}
 		boolean result = false;
 		try {
-			Client client = new Client();
+			AvengersClient client = new AvengersClient();
 			LOG.info("Initializing Client");
 			try {
 				boolean doRun = client.init(args);
@@ -229,11 +231,11 @@ public class Client {
 
 	/**
    */
-	public Client(Configuration conf) throws Exception {
-		this("com.flyhz.avengers.framework.AvengersAppMaster", conf);
+	public AvengersClient(Configuration conf) throws Exception {
+		this("org.apache.hadoop.yarn.applications.distributedshell.ApplicationMaster", conf);
 	}
 
-	Client(String appMasterMainClass, Configuration conf) {
+	AvengersClient(String appMasterMainClass, Configuration conf) {
 		LOG.info("conf is " + conf);
 		this.conf = conf;
 		this.appMasterMainClass = appMasterMainClass;
@@ -272,7 +274,7 @@ public class Client {
 
 	/**
    */
-	public Client() throws Exception {
+	public AvengersClient() throws Exception {
 		this(new YarnConfiguration());
 	}
 
@@ -532,12 +534,10 @@ public class Client {
 		// local resource for the
 		// eventual containers that will be launched to execute the shell
 		// scripts
-		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION,
-		// hdfsShellScriptLocation);
-		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP,
-		// Long.toString(hdfsShellScriptTimestamp));
-		// env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN,
-		// Long.toString(hdfsShellScriptLen));
+		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION, hdfsShellScriptLocation);
+		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP,
+				Long.toString(hdfsShellScriptTimestamp));
+		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN, Long.toString(hdfsShellScriptLen));
 
 		// Add AppMaster.jar location to classpath
 		// At some point we should not be required to add
@@ -672,7 +672,7 @@ public class Client {
 	 * time expires.
 	 * 
 	 * @param appId
-	 *            Application Key of application to be monitored
+	 *            Application Id of application to be monitored
 	 * @return true if application completed successfully
 	 * @throws YarnException
 	 * @throws IOException
@@ -732,7 +732,7 @@ public class Client {
 	 * Kill a submitted application by sending a call to the ASM
 	 * 
 	 * @param appId
-	 *            Application Key to be killed.
+	 *            Application Id to be killed.
 	 * @throws YarnException
 	 * @throws IOException
 	 */

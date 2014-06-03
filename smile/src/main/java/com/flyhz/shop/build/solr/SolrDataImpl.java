@@ -2,6 +2,7 @@
 package com.flyhz.shop.build.solr;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -105,19 +106,21 @@ public class SolrDataImpl implements SolrData {
 			doc.addField("n", product.getN());// 名称
 			doc.addField("d", product.getD());// 说明
 			doc.addField("bs", product.getBs());// 款号
-			doc.addField("lp", product.getLp());// 本地价格
-			doc.addField("pp", product.getPp());// 代购价格
-
-			// 计算差价（即折扣）
+			
+			// 调整本地价格及计算差价（即折扣）
 			if (product.getLp() != null && product.getPp() != null) {
 				doc.addField("sp", product.getLp().subtract(product.getPp()));
 			} else {
-				doc.addField("sp", 0);
+				if (product.getPp() == null) {
+					continue;
+				} else {
+					product.setLp(BigDecimal.valueOf(product.getPp().doubleValue() * 2 + 1000));
+					doc.addField("sp", product.getLp().subtract(product.getPp()));
+				}
 			}
+			doc.addField("lp", product.getLp());// 本地价格
+			doc.addField("pp", product.getPp());// 代购价格
 
-			if (594 == product.getId()) {
-				System.out.println(product);
-			}
 			// 原图封面
 			if (product.getImgs() != null) {
 				pictures = product.getImgs().replace("[", "").replace("]", "").replace("\"", "")
@@ -162,6 +165,21 @@ public class SolrDataImpl implements SolrData {
 		HttpSolrServer solrServer = getServer(PRODUCT_URL);
 		try {
 			solrServer.add(docs);
+			solrServer.commit();
+		} catch (SolrServerException e) {
+			log.error(e.getMessage());
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		} finally {
+			// solrServer.shutdown();
+		}
+	}
+	
+	public void removeProduct(String productId) {
+		// 提交到solr
+		HttpSolrServer solrServer = getServer(PRODUCT_URL);
+		try {
+			solrServer.deleteById(productId);
 			solrServer.commit();
 		} catch (SolrServerException e) {
 			log.error(e.getMessage());
@@ -290,7 +308,7 @@ public class SolrDataImpl implements SolrData {
 				}
 			}
 		} catch (SolrServerException e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return list;
 	}

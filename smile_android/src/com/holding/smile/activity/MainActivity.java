@@ -211,8 +211,18 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 					@Override
 					public void onClick(View arg0) {
-						Toast.makeText(context, "您点击了活动区域" + jAct.getId() + "!", Toast.LENGTH_SHORT)
-								.show();
+						// Toast.makeText(context, "您点击了活动区域" + jAct.getId() +
+						// "!", Toast.LENGTH_SHORT)
+						// .show();
+
+//						Intent intent = new Intent(context, HtmlUIActivity.class);
+//						if (jAct.getId().equals(2)) {
+//							intent.putExtra("url", "file:///android_asset/index2.html");
+//						} else {
+//							intent.putExtra("url", "file:///android_asset/index.html");
+//						}
+//						startActivity(intent);
+
 					}
 				});
 				viewList.add(view);

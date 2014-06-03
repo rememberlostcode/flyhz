@@ -22,7 +22,7 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 
 /**
- * Constants used in both Client and Application Master
+ * Constants used in both AvengersClient and Application Master
  */
 @InterfaceAudience.Public
 @InterfaceStability.Unstable

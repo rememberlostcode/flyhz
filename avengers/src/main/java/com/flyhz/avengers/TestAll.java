@@ -4,13 +4,10 @@ package com.flyhz.avengers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.flyhz.avengers.domains.ResultFilter;
 import com.flyhz.avengers.domains.coach.template.impl.coach.ResultFilterImpl;
-import com.flyhz.avengers.framework.config.xml.Domain;
-import com.flyhz.avengers.framework.config.xml.Domains;
-import com.flyhz.avengers.framework.util.AvengersDataUtil;
+import com.flyhz.avengers.framework.config.xml.XDomain;
+import com.flyhz.avengers.framework.config.xml.XDomains;
 import com.flyhz.avengers.framework.util.image.Image;
 
 public class TestAll {
@@ -24,12 +21,13 @@ public class TestAll {
 
 	public static void main(String[] args) {
 
-		Domains avengers = AvengersDataUtil.getDataByXmlFileName("avengers.xml");
-		List<Domain> domains = avengers.getDomain();
+		// XDomains avengers =
+		// AvengersDataUtil.getDataByXmlFileName("avengers.xml");
+		XDomains avengers = null;
+		List<XDomain> domains = avengers.getDomain();
 
 		for (int k = 0; k < domains.size(); k++) {
-			Domain domain = domains.get(k);
-
+			XDomain domain = domains.get(k);
 			List<String> waitFilterUrls = new ArrayList<String>();
 			waitFilterUrls.add("http://www.coach.com/online/handbags/Home-10551-10051-en/");
 			waitFilterUrls.add("http://www.coach.com/online/handbags/-newatcoach_allnewatcoach-us-us-5000000000000000002-en?t1Id=5000000000000000001&t2Id=5000000000000000002&navCatId=7100000000000000568&LOC=HN1");
@@ -54,22 +52,23 @@ public class TestAll {
 
 			// com.flyhz.avengers.framework.Pattern coachTemplate = null;
 			for (int i = 0; i < newList.size(); i++) {
-				String className = AvengersDataUtil.getUrlParserName(newList.get(i), domain);
-				if (StringUtils.isNotBlank(className)) {
-					// try {
-					// coachTemplate =
-					// (com.flyhz.avengers.framework.Pattern) Class.forName(
-					// className).newInstance();
-					// coachTemplate.doPattern(newList.get(i));
-					// } catch (InstantiationException e) {
-					// e.printStackTrace();
-					// } catch (IllegalAccessException e) {
-					// e.printStackTrace();
-					// } catch (ClassNotFoundException e) {
-					// e.printStackTrace();
-					// }
-					break;
-				}
+				// String className =
+				// AvengersDataUtil.getUrlParserName(newList.get(i), domain);
+				// if (StringUtils.isNotBlank(className)) {
+				// try {
+				// coachTemplate =
+				// (com.flyhz.avengers.framework.Pattern) Class.forName(
+				// className).newInstance();
+				// coachTemplate.doPattern(newList.get(i));
+				// } catch (InstantiationException e) {
+				// e.printStackTrace();
+				// } catch (IllegalAccessException e) {
+				// e.printStackTrace();
+				// } catch (ClassNotFoundException e) {
+				// e.printStackTrace();
+				// }
+				// break;
+				// }
 			}
 
 			rf.startDownloadThread();

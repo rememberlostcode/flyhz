@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ave:domains xmlns:ave="http://www.flyhz.com/avengrs"
+<ave:xDomains  xmlns:ave="http://www.flyhz.com/avengrs"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.flyhz.com/avengrs avengers.xsd ">
-	<ave:domain root="http://www.cocah.com">
-		<ave:urlFilterBeforeCrawl>
-			<ave:value>^http://www.coach.com/online/handbags/prodyuct</ave:value>
-		</ave:urlFilterBeforeCrawl>
-		<ave:urlFilterAfterCrawl>
-			<ave:value></ave:value>
-		</ave:urlFilterAfterCrawl>
-		<ave:crawlEvents>
-			<ave:event class=""/>
-		</ave:crawlEvents>
-		<ave:templates>
-			<ave:template url="^http://www.coach.com/online/handbags/Product-"
-				parser="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
-				<ave:templateApplyEvents>
+	<domain root="http://www.cocah.com">
+		<urlFilterBeforeCrawl>
+			<value>^http://www.coach.com/online/handbags/prodyuct</value>
+		</urlFilterBeforeCrawl>
+		<templates>
+			<template url="^http://www.coach.com/online/handbags/Product-"
+				pattern="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
+				<templateApplyEvents>
 					
-				</ave:templateApplyEvents>
-				</ave:template>
-		</ave:templates>
-	</ave:domain>
-</ave:domains>
+				</templateApplyEvents>
+			</template>
+		</templates>
+	</domain>
+</ave:xDomains>

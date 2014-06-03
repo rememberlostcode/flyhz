@@ -61,5 +61,11 @@
     <string name="user_info_phone">手机</string>
     <string name="user_info_email_content">输入邮件地址</string>
     <string name="user_info_phone_content">输入手机号码</string>
+    
+    <string name="dingdanhao">订单：</string>
+    <string name="shijian">时间：</string>
+    <string name="guanbi">关闭</string>
+    <string name="zongjia">总价</string>
+    <string name="zongliang">总量</string>
 
 </resources>
