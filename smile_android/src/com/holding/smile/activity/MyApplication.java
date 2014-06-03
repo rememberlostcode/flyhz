@@ -51,6 +51,7 @@ public class MyApplication extends Application {
 	private LoginService			loginService;
 
 	public static String			jgoods_img_url;
+	private static String			tb_url;
 
 	/**
 	 * 当前登录用户
@@ -141,6 +142,14 @@ public class MyApplication extends Application {
 
 	public void setSqliteService(SQLiteService sqliteService) {
 		this.sqliteService = sqliteService;
+	}
+
+	public static String getTb_url() {
+		return tb_url;
+	}
+
+	public static void setTb_url(String tb_url) {
+		MyApplication.tb_url = tb_url;
 	}
 
 	/**

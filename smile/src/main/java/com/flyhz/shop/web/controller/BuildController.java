@@ -1,11 +1,17 @@
 
 package com.flyhz.shop.web.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
@@ -60,5 +66,20 @@ public class BuildController {
 			e.printStackTrace();
 		}
 		return "build";
+	}
+	
+	@RequestMapping(value = "/url", method = RequestMethod.POST)
+	public void url(Model model,HttpServletRequest request,
+			HttpServletResponse response) {
+		try {
+			PrintWriter writer = response.getWriter();
+			response.reset();
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html");
+			writer.println("http://h5.m.taobao.com/awp/core/detail.htm?id=38752474914");
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
