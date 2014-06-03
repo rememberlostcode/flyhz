@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
@@ -63,7 +62,7 @@ public class BuildController {
 		return "build";
 	}
 	
-	@RequestMapping(value = "/url", method = RequestMethod.POST)
+	@RequestMapping(value = "/url")
 	public void url(Model model,HttpServletRequest request,
 			HttpServletResponse response) {
 		try {
