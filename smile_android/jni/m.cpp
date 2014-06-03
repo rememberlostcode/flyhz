@@ -459,9 +459,9 @@ JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_cshTb(JNIEnv *env,
 		jclass cls) {
 	LOGE("p cshTb start...\n");
 	jfieldID fid = NULL;
+	jfieldID tbFid = NULL;
 	jobject webView = NULL;
 	jstring jstr = NULL;
-	jfieldID tbFid = NULL;
 	jclass webClazz = NULL;
 	jclass tbClazz = NULL;
 
@@ -493,13 +493,12 @@ JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_cshTb(JNIEnv *env,
 			//LOGE("p cshTb 88888...\n");
 			env->CallVoidMethod(webView, mid, stoJstring(env, tbd_url.c_str()));
 			//LOGE("p cshTb 99999...\n");
-			env->DeleteLocalRef(webView);
-			env->DeleteLocalRef(jstr);
-			env->DeleteLocalRef(webClazz);
-			env->DeleteLocalRef(tbClazz);
 		}
 	}
-
+	env->DeleteLocalRef(webView);
+	env->DeleteLocalRef(jstr);
+	env->DeleteLocalRef(webClazz);
+	env->DeleteLocalRef(tbClazz);
 	LOGE("p cshTb end...\n");
 }
 
