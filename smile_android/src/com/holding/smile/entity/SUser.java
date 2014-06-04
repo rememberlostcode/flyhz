@@ -23,6 +23,7 @@ public class SUser implements Serializable {
 	private String				weibo;
 	private String				weixin;
 	private String				token;
+	private String 			url;
 	
 	/**
 	 * 当前登录人标识
@@ -142,5 +143,13 @@ public class SUser implements Serializable {
 
 	public void setFlag(String flag) {
 		this.flag = flag;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }

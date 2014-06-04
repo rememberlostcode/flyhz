@@ -215,13 +215,13 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 						// "!", Toast.LENGTH_SHORT)
 						// .show();
 
-						Intent intent = new Intent(context, HtmlUIActivity.class);
-						if (jAct.getId().equals(2)) {
-							intent.putExtra("url", "file:///android_asset/index2.html");
-						} else {
-							intent.putExtra("url", "file:///android_asset/index.html");
-						}
-						startActivity(intent);
+//						Intent intent = new Intent(context, HtmlUIActivity.class);
+//						if (jAct.getId().equals(2)) {
+//							intent.putExtra("url", "file:///android_asset/index2.html");
+//						} else {
+//							intent.putExtra("url", "file:///android_asset/index.html");
+//						}
+//						startActivity(intent);
 
 					}
 				});

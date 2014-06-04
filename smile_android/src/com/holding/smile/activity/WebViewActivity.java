@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.TbUtil;
 
 /**
  * 
@@ -31,7 +32,6 @@ import com.holding.smile.tools.StrUtils;
  */
 public class WebViewActivity extends Activity implements OnClickListener {
 
-	private WebView		webView;
 	private String		number;	// 订单号
 	private BigDecimal	amount;	// 总额
 
@@ -56,8 +56,10 @@ public class WebViewActivity extends Activity implements OnClickListener {
 				headerAmount.setText(amount.doubleValue() + "");
 
 				// 获取webView控件
-				webView = (WebView) findViewById(R.id.webView);
-				WebSettings webSettings = webView.getSettings();
+				if (TbUtil.getWebView() == null) {
+					TbUtil.setWebView((WebView) findViewById(R.id.webView));
+				}
+				WebSettings webSettings = TbUtil.getWebView().getSettings();
 				// 允许使用JavaScript
 				webSettings.setJavaScriptEnabled(true);
 				// 设置支持缩放
@@ -71,9 +73,9 @@ public class WebViewActivity extends Activity implements OnClickListener {
 				// 设置DOM树是否能更新(缓存页面是否能更新)
 				webSettings.setDomStorageEnabled(true);
 				// 设置滚动条样式
-				webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+				TbUtil.getWebView().setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 				// 网页链接不以浏览器方式打开
-				webView.setWebViewClient(new WebViewClient() {
+				TbUtil.getWebView().setWebViewClient(new WebViewClient() {
 					@Override
 					public void onPageStarted(WebView view, String url, Bitmap favicon) {
 						super.onPageStarted(view, url, favicon);
@@ -126,8 +128,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					}
 
 				});
-				String url = getApplicationContext().getString(R.string.taobaodian_url);
-				webView.loadUrl(url);
+				TbUtil.cshTb();
 			} else {
 				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
 				setResult(RESULT_CANCELED, null);
@@ -155,8 +156,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
-			webView.goBack();
+		if ((keyCode == KeyEvent.KEYCODE_BACK) && TbUtil.getWebView().canGoBack()) {
+			TbUtil.getWebView().goBack();
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -164,10 +165,10 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onDestroy() {
-		if (webView != null) {
-			webView.removeAllViews();
-			webView.destroy();
-			webView = null;
+		if (TbUtil.getWebView() != null) {
+			TbUtil.getWebView().removeAllViews();
+			TbUtil.getWebView().destroy();
+			TbUtil.setWebView(null);
 		}
 		super.onDestroy();
 	}
