@@ -4,8 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:paddingBottom="10dip"
-    android:paddingTop="10dip" >
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp" >
 
     <LinearLayout
         android:id="@+id/pull_to_load_center"

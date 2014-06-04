@@ -2,10 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ffffff"
-    android:paddingLeft="4dip"
-    android:paddingRight="4dip"
-    android:paddingTop="5dip"
+    android:background="@drawable/baise"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="5dp"
     android:scrollbars="none" >
     
     <com.holding.smile.myview.MyListView

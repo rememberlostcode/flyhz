@@ -19,9 +19,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="10dip"
-            android:layout_marginBottom="10dip"
-            android:background="#e5e5e5" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/qianhuise" />
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -41,7 +41,7 @@
                     android:id="@+id/b"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#010101"
+                    android:textColor="@drawable/shenhuise"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -49,7 +49,7 @@
                     android:id="@+id/n"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#010101"
+                    android:textColor="@drawable/shenhuise"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -65,9 +65,9 @@
                     android:id="@+id/pp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
-            		android:layout_marginBottom="10dip"
-                    android:textColor="#f50606"
+                    android:layout_marginTop="10dp"
+            		android:layout_marginBottom="10dp"
+                    android:textColor="@drawable/dahong"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -76,7 +76,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="#e5e5e5" />
+            android:background="@drawable/qianhuise" />
         
         <LinearLayout 
             android:orientation="horizontal"
@@ -89,20 +89,20 @@
 	            android:id="@+id/choose_color"
 	            android:layout_width="wrap_content"
 	            android:layout_height="fill_parent"
-	            android:layout_marginTop="10dip"
+	            android:layout_marginTop="10dp"
 	            android:layout_gravity="left|top"
 	            android:gravity="left"
 	            android:text="@string/choose_color"
-	            android:textColor="#000"
+	            android:textColor="@drawable/shenhuise"
 	            android:textSize="18sp" />
 	        <TextView
 	            android:id="@+id/select_color"
 	            android:layout_width="wrap_content"
 	            android:layout_height="fill_parent"
-	            android:layout_marginTop="10dip"
+	            android:layout_marginTop="10dp"
 	            android:layout_gravity="left|top"
 	            android:gravity="left"
-	            android:textColor="#000"
+	            android:textColor="@drawable/shenhuise"
 	            android:textSize="18sp" />
         </LinearLayout>
 
@@ -112,38 +112,38 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:paddingLeft="4dip"
+            android:paddingLeft="4dp"
             android:gravity="center_horizontal"
            />
             
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="#e5e5e5" />
+            android:background="@drawable/qianhuise" />
         
         <TextView
            android:id="@+id/desc"
            android:layout_width="wrap_content"
            android:layout_height="fill_parent"
-           android:layout_marginTop="10dip"
-           android:layout_marginBottom="10dip"
+           android:layout_marginTop="10dp"
+           android:layout_marginBottom="10dp"
            android:layout_gravity="left|top"
            android:gravity="left"
-           android:textColor="#000"
+           android:textColor="@drawable/shenhuise"
            android:text="@string/good_desc"
            android:textSize="20sp" />
             
          <View
 	          android:layout_width="fill_parent"
 	          android:layout_height="1dp"
-	          android:background="#e5e5e5" />
+	          android:background="@drawable/qianhuise" />
         
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="10dp"
             >
             
 	        <TextView
@@ -151,9 +151,9 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="fill_parent"
 	            android:layout_gravity="left|top"
-	            android:layout_marginTop="5dip"
+	            android:layout_marginTop="5dp"
 	            android:gravity="left"
-	            android:textColor="#e5e5e5"
+	            android:textColor="@drawable/qianhuise"
 	            android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>

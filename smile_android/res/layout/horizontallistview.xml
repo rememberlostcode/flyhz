@@ -4,38 +4,43 @@
     android:layout_height="fill_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical" >
+    
+    <View android:layout_height="1px" android:background="@drawable/qianhuise" android:layout_width="fill_parent"></View>
+    
     <RelativeLayout
         android:id="@+id/brand_head"
         android:layout_width="fill_parent"
-	    android:layout_height="30dip"
-	    android:gravity="center_vertical"
+	    android:layout_height="30dp"
+	    android:gravity="bottom"
 	    android:orientation="horizontal"
-	    android:background="@android:color/darker_gray">
+	    android:background="@android:color/transparent">
         <TextView 
             android:id="@+id/list_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:text=""
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
+            android:textSize="26sp"
+            android:textColor="@drawable/shenhuise"
             />
         
          <TextView
             android:id="@+id/list_more"
             android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:text="查看全部&gt;"
+            android:text="查看全部 &gt;"
             android:textSize="16sp"
-            android:textColor="@android:color/black"
+            android:textColor="@drawable/shenhuise"
             />
     </RelativeLayout>
      <HorizontalScrollView
         android:id="@+id/app_grid"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF" 
+        android:background="@android:color/transparent" 
         android:scrollbars="none">
  
         <LinearLayout

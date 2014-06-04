@@ -52,8 +52,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 			if (StrUtils.isNotEmpty(number) && amount != null) {
 
-				headerNum.setText("订单号：" + number);
-				headerAmount.setText("合计：￥" + amount.doubleValue() + "元");
+				headerNum.setText(number + "");
+				headerAmount.setText(amount.doubleValue() + "");
 
 				// 获取webView控件
 				webView = (WebView) findViewById(R.id.webView);

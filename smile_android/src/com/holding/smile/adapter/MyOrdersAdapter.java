@@ -86,7 +86,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		TextView	price;
 		TextView	totalnum;
 		ImageView	cover;
-		Button		statusButton;
+		TextView	statusButton;
 		TextView	total;
 		ImageView	deleteButton;
 		ImageView	checkBoxImage;
@@ -103,7 +103,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder.time = (TextView) convertView.findViewById(R.id.order_list_time);
 			holder.price = (TextView) convertView.findViewById(R.id.order_list_price_value);
 			holder.totalnum = (TextView) convertView.findViewById(R.id.order_list_totalnum_value);
-			holder.statusButton = (Button) convertView.findViewById(R.id.order_list_status);
+			holder.statusButton = (TextView) convertView.findViewById(R.id.order_list_status);
 			holder.deleteButton = (ImageView) convertView.findViewById(R.id.order_list_delete);
 			holder.checkBoxImage = (ImageView) convertView.findViewById(R.id.order_list_checkBox);
 			convertView.setTag(holder);
@@ -127,7 +127,9 @@ public class MyOrdersAdapter extends BaseAdapter {
 		} else {
 			holder.checkBoxImage.setVisibility(View.GONE);
 		}
-		holder.statusButton.setText(ClickUtil.getTextByStatus(order.getStatus()));
+		String status = order.getStatus();
+		holder.statusButton.setText(ClickUtil.getTextByStatus(status));
+		holder.statusButton.setBackgroundColor(ClickUtil.getBackgroundColorByStatus(status));
 		holder.statusButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -189,7 +191,9 @@ public class MyOrdersAdapter extends BaseAdapter {
 																				"订单已关闭",
 																				Toast.LENGTH_SHORT)
 																				.show();
-																		holder.statusButton.setText(ClickUtil.getTextByStatus(Constants.OrderStateCode.HAVE_BEEN_CLOSED.code));
+																		String status = Constants.OrderStateCode.HAVE_BEEN_CLOSED.code;
+																		holder.statusButton.setText(ClickUtil.getTextByStatus(status));
+																		holder.statusButton.setBackgroundColor(ClickUtil.getBackgroundColorByStatus(status));
 																	}
 																}
 															}).setNegativeButton("取消", null).show();
