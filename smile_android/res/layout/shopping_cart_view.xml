@@ -3,9 +3,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/baise"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp"
-    android:paddingTop="5dp"
     android:scrollbars="none" >
     
     <com.holding.smile.myview.MyListView

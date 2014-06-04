@@ -66,6 +66,11 @@
          
     </LinearLayout>
     
-    <View android:layout_height="1px" android:background="@drawable/qianhuise" android:layout_width="fill_parent" android:layout_alignParentBottom="true"></View>
-
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/qianhuise" >
+    </View>
+    
 </RelativeLayout>

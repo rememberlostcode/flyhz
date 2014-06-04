@@ -9,6 +9,9 @@
         android:id="@+id/product"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="5dp"
         android:gravity="top" >
 
         <LinearLayout
@@ -132,6 +135,7 @@
             android:id="@+id/del_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/icon_delete"
             android:visibility="gone" />
@@ -140,8 +144,6 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
         android:background="@drawable/qianhuise" />
 
 </LinearLayout>
