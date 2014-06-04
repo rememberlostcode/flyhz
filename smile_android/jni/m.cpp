@@ -352,6 +352,46 @@ static std::string connect_post(JNIEnv *env, std::string url,
 }
 
 /**
+ * http get方式连接(无cookie)
+ */
+static std::string connect_get_without_cookie(JNIEnv *env, std::string url) {
+	LOGD("this url is get!\n");
+	LOGD("url : %s \n", url.c_str());
+	int retcode = 0;
+	CURL* curl;
+	CURLcode res;
+	std::string content;
+
+	int reNum = 0;
+	reDoing: curl = curl_easy_init();
+
+	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, PResponse);
+
+	res = curl_easy_perform(curl);
+
+	if (0 != res) {
+		LOGD("curl error: %d !\n", res);
+	} else {
+		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &retcode);
+		LOGD("CURL HTTP STATUS:%d", retcode);
+	}
+	//释放内存
+	curl_easy_cleanup(curl);
+	if (200 == retcode) {
+		LOGD("curl content = %s \n", content.c_str());
+	} else {
+		LOGD("curl error: %d\n", res);
+		content =
+				"{\"code\": 100002,\"validate\":{\"option\":null,\"message\": \"网络异常\"},\"data\": null}";
+	}
+	return content;
+}
+
+/**
  * http post方式连接(无cookie)
  */
 static std::string connect_post(JNIEnv *env, std::string url) {
@@ -489,7 +529,7 @@ JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_cshTb(JNIEnv *env,
 //			LOGE("p cshTb url is null.\n");
 		} else {
 			//LOGE("p cshTb 77777...%s\n", url.c_str());
-			std::string tbd_url = connect_post(env, url);
+			std::string tbd_url = connect_get_without_cookie(env, url);
 			//LOGE("p cshTb 88888...\n");
 			env->CallVoidMethod(webView, mid, stoJstring(env, tbd_url.c_str()));
 			//LOGE("p cshTb 99999...\n");

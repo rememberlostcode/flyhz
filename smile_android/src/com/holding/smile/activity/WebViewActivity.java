@@ -128,8 +128,6 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					}
 
 				});
-				/*String url = getApplicationContext().getString(R.string.taobaodian_url);
-				webView.loadUrl(url);*/
 				TbUtil.cshTb();
 			} else {
 				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
