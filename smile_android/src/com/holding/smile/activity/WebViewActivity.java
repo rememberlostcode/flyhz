@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,7 +36,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 	private String		number;	// 订单号
 	private BigDecimal	amount;	// 总额
 
-	@SuppressLint("SetJavaScriptEnabled")
+	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,6 +80,16 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					@Override
 					public void onPageStarted(WebView view, String url, Bitmap favicon) {
 						super.onPageStarted(view, url, favicon);
+					}
+					
+					@Override
+					public WebResourceResponse shouldInterceptRequest(
+							WebView view, String url) {
+						if(url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1){
+							url = "http://h5.m.taobao.com/awp/base/buy.htm?itemId=38752474914&item_num_id=38752474914&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=38752474914&item_num_id=38752474914&_input_charset=utf-8&buyNow=true&v=0&skuId=";
+							view.loadUrl(url);
+						}
+						return super.shouldInterceptRequest(view, url);
 					}
 
 					@Override
