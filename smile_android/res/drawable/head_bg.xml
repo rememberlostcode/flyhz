@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+
+    <!-- android:angle 是指从哪个角度开始变  -->
+    <gradient
+        android:angle="270"
+        android:centerColor="@drawable/rouse2"
+        android:endColor="@drawable/rouse3"
+        android:startColor="@drawable/rouse1" />
+
+    <corners android:radius="0dip" />
+
+</shape>

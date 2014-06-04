@@ -11,7 +11,7 @@
         android:layout_height="fill_parent"
         android:cacheColorHint="@android:color/transparent"
         android:listSelector="@android:color/transparent"
-        android:divider="@drawable/qianhuise"
+        android:divider="@android:color/transparent"
         android:dividerHeight="1sp" />
 
 </LinearLayout>

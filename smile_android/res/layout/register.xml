@@ -31,7 +31,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/qianhuise"
+            android:background="@drawable/rouse2"
             android:gravity="center" >
 
             <!-- 账号 -->
@@ -39,6 +39,7 @@
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:text="用户名："
                 android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
@@ -59,7 +60,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/qianhuise"
+            android:background="@drawable/rouse2"
             android:gravity="center" >
 
             <!-- 密码 -->
@@ -67,6 +68,7 @@
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:text="密码："
                 android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
@@ -87,7 +89,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/qianhuise"
+            android:background="@drawable/rouse2"
             android:gravity="center" >
 
             <!-- 密码确认 -->
@@ -95,6 +97,7 @@
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:text="密码确认："
                 android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
