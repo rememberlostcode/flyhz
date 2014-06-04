@@ -1,0 +1,127 @@
+<script type="text/javascript">
+   $(document).ready(function(){
+       var locaUrl = decodeURIComponent(location.href);
+       var message = "";
+       if(locaUrl.indexOf("message=") > -1){
+          message = locaUrl.substring(locaUrl.indexOf("message=")+8);
+    	  showMessage(message);
+       }
+   });
+   
+   function searchNextPage(){
+      var url="$path_name/product/list";
+	  var values = jQuery("#currentPage").val();
+	  GetWindowsUrl(url,"currentPage",values);		
+   }
+   
+   function delProduct(productId){
+   	  if(confirm("确定要删除该产品吗?")){
+	  	 $("#productId").val(productId);
+		 $("#delProduct").submit();
+	  }
+   }
+   
+   function batchdel(){
+   	  var productIds = getAllCheckboxIdsNew();
+	  if(productIds == null || productIds == ''){
+		  showMessage('请选择至少一个产品!');
+		  return false;
+	  }else{
+	      var productIdsArray = productIds.split(",");
+		  var confirmStr = "确定要删除以下" + productIdsArray.length + "个产品吗?"
+		  if(confirm(confirmStr)){
+	  	      $("#productIds").val(productIds);
+		      $("#batchdel").submit();
+		  }
+	  }
+   }
+   
+   function showProduct(productId){
+   	  var url =  "$path_name/product/show?productId=" + productId;
+      jQuery.dialog({
+    	  id:'editProduct',
+    	  title:'产品数据维护',
+    	  width: 650, 
+    	  height: 500,
+    	  max: false,
+    	  min: false,
+    	  lock: true,
+    	  content: "url:" + url
+      });
+   }
+   
+   function addProductPage(){
+   	  var url =  "$path_name/product/addpage";
+      jQuery.dialog({
+    	  id:'addProductPage',
+    	  title:'新增产品',
+    	  width: 650, 
+    	  height: 500,
+    	  max: false,
+    	  min: false,
+    	  lock: true,
+  		  //ok: true,
+		  //cancel: true,
+    	  content: "url:" + url
+      });
+   }
+   
+   function ok(){
+   	  
+   }
+</script>
+
+<!--删除商品-->
+<form action="$path_name/product/delete" method="post" id="delProduct">
+	<input type="hidden" name="productId" id="productId" value=""/>
+</form>
+<!--批量删除商品-->
+<form action="$path_name/product/batchdel" method="post" id="batchdel">
+	<input type="hidden" name="productIds" id="productIds" value=""/>
+</form>
+
+<input type="hidden"  id="selected" onclick="searchNextPage();"/>
+<div class="searchbox">
+    <button onclick="addProductPage();" type="button" style="float:left;margin-top:3px;">添加产品</button>
+	<button onclick="batchdel();" type="button" style="float:left;margin-top:3px;">批量删除</button>
+</div>
+<div class="formbox">
+    <table summary="" class="dateline" style="width:99%;margin-top: 5px;" id="en_table">
+		<thead>
+            <th><input type="checkbox" onclick="allCheck(this);"/></th>
+			<th>名称</th>
+			<th>品牌</th>
+			<th>分类</th>
+			<th>款号</th>
+			<!--<th>描述</th>-->
+			<th>颜色</th>
+			<th>代购价格</th>
+            <th>操作</th>
+        </thead>
+		<tbody>
+	        #if($!page.totalRowsAmount > 0) 
+    			#foreach($product in $!products)
+                   <tr id="tr_$!product.id">
+						<td><input type="checkbox" id="checkbox" name="checkbox" value="$!product.id"/></td>
+						<td>$!product.name</td>
+						<td>$!product.brandName</td>
+						<td>$!product.cateName</td>
+						<td>$!product.brandstyle</td>
+						<!--<td>$!product.description</td>-->
+						<td>$!product.color</td>
+						<td>$!product.purchasingprice</td>
+                		<td>
+							<button onclick="showProduct('$!product.id')" type="button">编辑</button>
+							<button onclick="delProduct('$!product.id')" type="button">删除</button>
+						</td>
+        		   </tr>
+        		#end
+			#else
+    			<tr>
+    				<td colspan="4" class="nothing">未查询到相关记录！</td>
+    			</tr>
+			#end
+		</tbody>
+	</table>
+	<div id="page">#parse('page.vm')</div>
+</div>
