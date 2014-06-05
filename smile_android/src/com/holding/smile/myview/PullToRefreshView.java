@@ -37,6 +37,10 @@ public class PullToRefreshView extends LinearLayout {
 	 */
 	private int						mLastMotionY;
 	/**
+	 * last x
+	 */
+	private int						mLastMotionX;
+	/**
 	 * lock
 	 */
 	private boolean					mLock;
@@ -293,18 +297,23 @@ public class PullToRefreshView extends LinearLayout {
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent e) {
 		int y = (int) e.getRawY();
+		int x = (int) e.getRawX();
 		switch (e.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				// 首先拦截down事件,记录y坐标
+				// 首先拦截down事件,记录x,y坐标
 				mLastMotionY = y;
+				mLastMotionX = x;
 				break;
 			case MotionEvent.ACTION_MOVE:
 				// deltaY > 0 是向下运动,< 0是向上运动
 				int deltaY = y - mLastMotionY;
-				if (isRefreshViewScroll(deltaY)) {
+				int deltaX = x - mLastMotionX;// 水平滑动的距离
+				int distance = Math.abs(deltaX) - Math.abs(deltaY);
+				if (distance < -10 && isRefreshViewScroll(deltaY)) {
 					return true;
+				} else {
+					return false;
 				}
-				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
 				break;
@@ -322,24 +331,34 @@ public class PullToRefreshView extends LinearLayout {
 			return true;
 		}
 		int y = (int) event.getRawY();
+		int x = (int) event.getRawX();
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				// onInterceptTouchEvent已经记录
 				// mLastMotionY = y;
+				// mLastMotionX = x;
 				break;
 			case MotionEvent.ACTION_MOVE:
 				int deltaY = y - mLastMotionY;
-				if (mPullState == PULL_DOWN_STATE) {
-					// PullToRefreshView执行下拉
-					Log.i(MyApplication.LOG_TAG, "PullToRefreshView pull down!parent view move!");
-					headerPrepareToRefresh(deltaY);
-					// setHeaderPadding(-mHeaderViewHeight);
-				} else if (mPullState == PULL_UP_STATE) {
-					// PullToRefreshView执行上拉
-					Log.i(MyApplication.LOG_TAG, "PullToRefreshView pull up!parent view move!");
-					footerPrepareToRefresh(deltaY);
-				}
+				int deltaX = x - mLastMotionX;// 水平滑动的距离
+				int distance = Math.abs(deltaX) - Math.abs(deltaY);
 				mLastMotionY = y;
+				mLastMotionX = x;
+				if (distance < -10) {
+					if (mPullState == PULL_DOWN_STATE) {
+						// PullToRefreshView执行下拉
+						Log.i(MyApplication.LOG_TAG,
+								"PullToRefreshView pull down!parent view move!");
+						headerPrepareToRefresh(deltaY);
+						// setHeaderPadding(-mHeaderViewHeight);
+					} else if (mPullState == PULL_UP_STATE) {
+						// PullToRefreshView执行上拉
+						Log.i(MyApplication.LOG_TAG, "PullToRefreshView pull up!parent view move!");
+						footerPrepareToRefresh(deltaY);
+					}
+				} else {
+					return false;
+				}
 				break;
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_CANCEL:
