@@ -161,27 +161,31 @@ public class NuaaParser implements BaseParser {
 		log.debug("爬网页时，花费时间{}毫秒", new Object[] { (e - b) });
 
 		if (StringUtils.isNotBlank(html)) {
-			Document doc = Jsoup.parse(html);
-			Elements mainEls = doc.select(template.getMainEls());
-			if (mainEls != null) {
-				Elements typeEls = mainEls.eq(0).select(template.getType());
-				String type = typeEls != null ? typeEls.eq(0).text() : null;
-				System.out.println("========" + type);
+			try {
+				Document doc = Jsoup.parse(html);
+				Elements mainEls = doc.select(template.getMainEls());
+				if (mainEls != null) {
+					Elements typeEls = mainEls.eq(0).select(template.getType());
+					String type = typeEls != null ? typeEls.eq(0).text() : null;
+					System.out.println("========" + type);
 
-				Elements tdEls = mainEls.eq(0).select(template.getTdEls());
-				if (tdEls != null) {
-					for (Element td : tdEls) {
-						Elements linksElements = td.select(template.getLinkEls());
-						for (Element ele : linksElements) {
-							String href = ele.attr(template.getLinkAttr());
-							if (StringUtils.isNotBlank(href) && !href.contains("http:")) {
-								urls.add(nuaaUrl + href);
-							} else {
-								urls.add(href);
+					Elements tdEls = mainEls.eq(0).select(template.getTdEls());
+					if (tdEls != null) {
+						for (Element td : tdEls) {
+							Elements linksElements = td.select(template.getLinkEls());
+							for (Element ele : linksElements) {
+								String href = ele.attr(template.getLinkAttr());
+								if (StringUtils.isNotBlank(href) && !href.contains("http:")) {
+									urls.add(nuaaUrl + href);
+								} else {
+									urls.add(href);
+								}
 							}
 						}
 					}
 				}
+			} catch (Exception e1) {
+				log.error("解析NUAA异常：", e1.getMessage());
 			}
 		}
 		return urls;

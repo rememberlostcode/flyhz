@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.ProductDao">
+    <select id="getCountOfAll" resultType="Integer">
+		select count(1) count from product t
+    </select>
+    
+    <select id="findAll" parameterType="SolrPage" resultType="ProductBuildDto">
+		select t.*, @rownum := @rownum + 1 ss
+		  from (select t.*, @rownum := @rownum + 1 sd
+		          from (select p.id,
+		                       p.name n,
+		                       p.brandstyle bs,
+		                       date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,
+		                       p.imgs,
+		                       p.cover_small p,
+		                       p.cover bp,
+		                       p.description d,
+		                       p.purchasingprice pp,
+		                       p.localprice lp,
+		                       p.brand_id bid,
+		                       b.name be,
+		                       p.category_id cid,
+		                       c.name ce,
+		                       p.localprice - p.purchasingprice sp,
+		                       @rownum := @rownum + 1 st,
+		                       (select sum(s.totalnumber)
+		                          from salesvolume s
+		                         where s.product_id = p.id) sn,
+		                       (select sum(s.totalnumber)
+		                          from salesvolume s
+		                         where s.product_id = p.id
+		                           and s.gmt_modify >=
+		                               DATE_SUB(CURDATE(), INTERVAL 1 WEEK)) zsn
+		                  from (select @rownum := 0) r,
+		                       product p,
+		                       brand b,
+		                       category c
+		                 where p.brand_id = b.id
+		                   and p.category_id = c.id
+		                 order by p.gmt_modify asc) t,
+		               (select @rownum := 0) r
+		         order by t.sp asc) t,
+		       (select @rownum := 0) r
+		 order by t.sn asc limit #{start}, #{num}
+    </select>
+    
+    <select id="getModelById" parameterType="Integer" resultType="ProductModel">
+		select p.id,
+		       p.name,
+		       p.gmt_create gmtCreate,
+		       p.gmt_modify gmtModify,
+		       p.imgs,
+		       p.description,
+		       p.purchasingprice,
+		       p.style,
+		       p.color,
+		       p.colorimg,
+		       p.category_id categoryId,
+		       p.brand_id brandId,
+		       p.localprice,
+		       p.brandstyle,
+		       p.cover,
+		       p.cover_small coverSmall
+		  from product p where p.id=#{id}
+    </select>
+    <select id="getPagedProducts" resultType="ProductModel">
+    	select p.id,
+		       p.name,
+		       p.gmt_create gmtCreate,
+		       p.gmt_modify gmtModify,
+		       p.imgs,
+		       p.description,
+		       p.purchasingprice,
+		       p.style,
+		       p.color,
+		       p.colorimg,
+		       p.category_id categoryId,
+		       p.brand_id brandId,
+		       p.localprice,
+		       p.brandstyle,
+		       p.cover,
+		       p.cover_small coverSmall
+		  from product p order by p.id
+    </select>
+    <select id="getPageProductCmsDtos" resultType="ProductCmsDto">
+    	select p.id,
+		       p.name,
+		       p.description,
+		       p.purchasingprice,
+		       p.color,
+		       c.name cateName,
+		       b.name brandName,
+		       p.brandstyle
+		  from product p,brand b,category c 
+		  where p.brand_id = b.id and p.category_id = c.id 
+		  order by p.id
+    </select>
+    <select id="getMaxStyle" resultType="Integer">
+    	select max(style) style from product
+    </select>
+    <delete id="deleteProduct" parameterType="Integer">
+    	delete from product where id = #{productId}
+    </delete>
+    <insert id="addProduct" parameterType="ProductModel">
+    	insert into product(name,brand_id,category_id,brandstyle,gmt_create,gmt_modify
+    	<if test="imgs != null">
+    		,imgs
+    	</if>
+    	<if test="description != null">
+    		,description
+    	</if>
+    	<if test="purchasingprice != null">
+    		,purchasingprice
+    	</if>
+    	<if test="style != null">
+    		,style
+    	</if>
+    	<if test="color != null">
+    		,color
+    	</if>
+    	<if test="colorimg != null">
+    		,colorimg
+    	</if>
+    	<if test="localprice != null">
+    		,localprice
+    	</if>
+    	<if test="cover != null">
+    		,cover
+    	</if>
+    	<if test="coverSmall != null">
+    		,cover_small
+    	</if>
+    	) values(#{name},#{brandId},#{categoryId},#{brandstyle},#{gmtCreate},#{gmtModify}
+    	<if test="imgs != null">
+    		,#{imgs}
+    	</if>
+    	<if test="description != null">
+    		,#{description}
+    	</if>
+    	<if test="purchasingprice != null">
+    		,#{purchasingprice}
+    	</if>
+    	<if test="style != null">
+    		,#{style}
+    	</if>
+    	<if test="color != null">
+    		,#{color}
+    	</if>
+    	<if test="colorimg != null">
+    		,#{colorimg}
+    	</if>
+    	<if test="localprice != null">
+    		,#{localprice}
+    	</if>
+    	<if test="cover != null">
+    		,#{cover}
+    	</if>
+    	<if test="coverSmall != null">
+    		,#{coverSmall}
+    	</if>
+    	)
+    </insert>
+    <update id="editProduct" parameterType="ProductModel">
+    	update product set name=#{name},gmt_create=#{gmtCreate},gmt_modify=#{gmtModify},imgs=#{imgs},description=#{description},
+    	purchasingprice=#{purchasingprice},style=#{style},color=#{color},colorimg=#{colorimg},category_id=#{categoryId},
+    	brand_id=#{brandId},localprice=#{localprice},brandstyle=#{brandstyle},cover=#{cover},cover=#{cover} where id=#{id}
+    </update>
+</mapper>
