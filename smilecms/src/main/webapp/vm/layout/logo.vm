@@ -1,0 +1,66 @@
+<style type="text/css">
+.code{
+	background-color:#CCC;
+	font-family:Arial,宋体;
+	font-style:italic;
+	color:green;
+	border:0;
+	padding:2px 3px;
+	letter-spacing:3px;
+	font-weight:bolder;
+	line-height:24px;
+	height:24px;
+}
+.unchanged {
+	border:0;
+}
+</style>
+<div class="mainbody type_mainbody">
+	<div class="topframe">
+		<div class="head">
+			<div class="logo" style="padding-top: 0px;">
+				<h2 class="floatleft">
+					<!--<img src="$server_name/css/$!picpath/$!logo01path" />-->
+				</h2>
+				<h3 class="floatleft">
+					<!--<img src="$server_name/css/$!picpath/$!logo02path" />-->
+				</h3>
+			</div>
+			<div class="info">
+				<div class="welcome" style="font-size:12px;">
+					<div class="tool">
+						<ul>
+							<li class="LoginInfo" id="liLoginInfo">
+								<span>
+									#if($!u)
+										$!loginName
+									#else
+										<a href="#" onclick="javascript:fnShowLogin();">登录</a>
+									#end
+								</span>
+							</li>
+						</ul>
+					</div>
+					<span>
+						#if($!u)
+							您好！
+						#end
+					</span>
+					#if($!u)
+						<a href="#" onclick="javascript:fnLoginOut('$!loginName');" ><img src="$server_name/static/css/logo/logout.gif"/></a>
+					#end
+				</div>
+			</div>
+		</div>
+		<div class="menu">
+			<div class="nav">
+				<ul>
+					<li #if($!current == "0") class="current" #end><a href="$path_name/index">首页</a></li>
+					#if($!u)
+						<li #if($!current == "1") class="current" #end><a href="$path_name/product/list">产品列表</a></li>
+					#end
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

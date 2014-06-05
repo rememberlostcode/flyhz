@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.IdcardDao">
+	<insert id="insertIdcard" parameterType="IdcardModel">
+		insert into idcard (name,number,url,user_id,gmt_create,gmt_modify)
+		values (#{name},#{number},#{url},#{userId},#{gmtCreate},#{gmtModify})
+		<selectKey resultType="int" keyProperty="id">
+            <![CDATA[SELECT LAST_INSERT_ID() AS id ]]>
+        </selectKey>
+	</insert>
+	<select id="getModel" parameterType="IdcardModel" resultType="IdcardModel">
+	    select id,name,number,url,user_id,gmt_create,gmt_modify,user_id
+	    from idcard
+	    where id = #{id} and user_id = #{userId}
+	</select>
+	<select id="getModelList" parameterType="IdcardModel" resultType="IdcardModel">
+	    select id,name,number,url,user_id,gmt_create,gmt_modify,user_id
+	    from idcard
+	    where user_id = #{userId} and is_del = '0'
+	</select>
+	<select id="getModelByName" parameterType="IdcardModel" resultType="IdcardModel">
+	    select id,name,number,url,user_id,gmt_create,gmt_modify,user_id
+	    from idcard
+	    where name = #{name} and user_id = #{userId}
+	</select>
+	
+	<update id="update" parameterType="IdcardModel">
+	    update idcard set gmt_modify = #{gmtModify}
+	    <if test="name != null and name != ''">
+	        , name = #{name}
+	    </if>
+	    <if test="number != null and number != ''">
+	        , number = #{number}
+	    </if>
+	    <if test="url != null and url != ''">
+	        , url = #{url}
+	    </if>
+	    where user_id = #{userId} and id = #{id}
+	</update>
+	<update id="delete" parameterType="IdcardModel">
+	    update idcard set is_del = '1'
+	    where user_id = #{userId} and id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,198 @@
+<style type="text/css">
+	.addpage{
+		width:350px;
+	}
+	.filetxtweidth{
+		width:240px;
+	}
+	.filetxtweidth1{
+		width:286px;
+	}
+	.divImgs{
+		margin:5px 0;
+	}
+</style>
+<script type="text/javascript">
+    /*
+	var api = frameElement.api, W = api.opener;
+    api.button({
+        id:'valueOk',
+    	name:'保存',
+    	callback:productSave
+    });
+    api.button({
+    	name:'取消',
+    	callback:true
+    });
+	*/
+
+	function productSave(){
+		var name = $("#name").val();
+		var brandstyle = $("#brandstyle").val();
+		if(checkStr('name',name,128) & checkStr('brandstyle',brandstyle,16)){
+			$("#addProduct").submit();
+		}
+	}
+	
+	function checkStr(type,str,len){
+		var message = '';
+		if(str.replace(/^\s*/, '') == ''){
+			if(type == 'name'){
+				message = '产品名称不能为空!';
+			}else if(type == 'brandstyle'){
+				message = '产品款号不能为空!';
+			}
+		}
+		//校验字符串是否过长
+		if(str.replace(/^\s*/, '').length > len){
+			if(type == 'name'){
+				message = '产品名称最长为128个字符!';
+			}else if(type == 'brandstyle'){
+				message = '产品款号最长为16个字符!';
+			}
+		}
+		//设置提示信息
+		if(message != ''){
+			if(type == 'name'){
+				$("#nameMessage").html(message);
+			}else if(type == 'brandstyle'){
+				$("#brandstyleMessage").html(message);
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	function chooseImg(fileId,filetxtId){
+		$('input[id=' + fileId + ']').click();
+		$('input[id=' + fileId + ']').change(function() {
+           $('#'+ filetxtId).val($(this).val());
+        })
+	};
+	
+	function addImgsUpload(tdId){
+		var imgsLength = $('div[id^=div_imgs]').length + 1;
+		var addHtml = '<div id="div_imgs' + imgsLength + '" class="divImgs">';
+		addHtml += '<input id="imgs' + imgsLength + '" name="imgs" type="file" style="display:none">';
+		addHtml += '<input id="imgs' + imgsLength + 'Cover" type="text" class="filetxtweidth">';
+		addHtml += '&nbsp;';
+		addHtml += '<input type="button" onclick="javascript:chooseImg(\'imgs' + imgsLength + '\',\'imgs' + imgsLength + 'Cover\');" value="选择图片"/>';
+		addHtml += '&nbsp;';
+		addHtml += '<input type="button" onclick="javascript:delImgsUpload(\'div_imgs' + imgsLength + '\');" value="删  除"/>';
+		addHtml += '</div>';
+		$("#" + tdId).append(addHtml);
+	}
+	
+	function delImgsUpload(divId){
+		$("#" + divId).remove();
+	}
+	
+	function closeAddPage(){
+		var api = frameElement.api, W = api.opener; 
+		api.close();
+	}
+</script>
+<form action="$path_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
+    <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
+		<input type="hidden" id="id" name="id" value="$!product.id"/>
+		<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.oldColorimg"/>
+		<input type="hidden" id="oldImgs" name="oldImgs" value="$!product.oldImgs"/>
+        <table class="dateline" style="width:99%;margin-top: 5px;">
+            <tr>
+                <td><font color="red">*</font>产品名称:</td>
+				<td>
+					<input type="text" id="name" name="name" value="$!product.name" class="addpage" onblur="javascript:checkStr('name',this.value,128);"/>
+					<font id="nameMessage" color="red" size="2"></font>
+				</td>
+			</tr>
+			<tr>
+                <td><font color="red">*</font>产品品牌:</td>
+				<td>
+					<select id="brandId" name="brandId" class="addpage">
+            			#if($!brands && $!brands.size() > 0)
+            				#foreach($brand in $!brands)
+            					<option value ="$!brand.id" #if($!product.brandId == $!brand.id) selected=true #end>$!brand.name</option>
+            				#end
+            			#end
+            		</select>
+				</td>
+			</tr>
+			<tr>
+                <td><font color="red">*</font>产品分类:</td>
+                <td>
+					<select id="categoryId" name="categoryId" class="addpage">
+            			#if($!cates && $!cates.size() > 0)
+            				#foreach($cate in $!cates)
+            					<option value ="$!cate.id" #if($!product.categoryId == $!cate.id) selected=true #end>$!cate.name</option>
+            				#end
+            			#end
+            		</select>
+				</td>
+            </tr>
+			<tr>
+                <td><font color="red">*</font>产品款号:</td>
+				<td>
+					<input type="text" id="brandstyle" name="brandstyle" value="$!product.brandstyle" class="addpage" onblur="javascript:checkStr('brandstyle',this.value,16);"/>
+					<font id="brandstyleMessage" color="red"  size="2"></font>
+				</td>
+			</tr>
+			<tr>
+                <td>产品描述:</td>
+				<td>
+                    <textarea id="description" name="description" class="addpage" rows="5" onKeyDown="if(this.value.length>=512){alert('长度过长，请少于512个字符！');this.value=this.value.substr(0,512);return false;}">$!product.description</textarea>
+				</td>
+			</tr>
+			<tr>
+                <td>国内价格:</td>
+				<td>
+					<input type="text" id="localprice" name="localprice" value="$!product.localprice" class="addpage"/>
+				</td>
+			</tr>
+			<tr>
+                <td>代购价格:</td>
+				<td>
+					<input type="text" id="purchasingprice" name="purchasingprice" value="$!product.purchasingprice" class="addpage"/>
+				</td>
+			</tr>
+			<tr>
+                <td>产品颜色:</td>
+				<td>
+					<input type="text" id="color" name="color" value="$!product.color" class="addpage"/>
+				</td>
+			</tr>
+			<tr>
+                <td>颜色图片:</td>
+				<td>
+					<input id="colorimg" name="colorimg" type="file" style="display:none">
+                    <div>
+                       <input id="colorimgCover" type="text" class="filetxtweidth1">
+					   <input type="button" onclick="javascript:chooseImg('colorimg','colorimgCover');" value="选择图片"/>
+                    </div>
+				</td>
+			</tr>
+			<tr>
+                <td>产品图片:</td>
+				<td id="productImgs">
+                    <div id="div_imgs1" class="divImgs">
+					   <input id="imgs1" name="imgs" type="file" style="display:none">
+                       <input id="imgs1Cover" type="text" class="filetxtweidth">
+					   <input type="button" onclick="javascript:chooseImg('imgs1','imgs1Cover');" value="选择图片"/>
+					   <input type="button" onclick="javascript:addImgsUpload('div_imgs1');" value="添  加"/>
+                    </div>
+				</td>
+			</tr>
+			<tr>
+                <td>注意事项:</td>
+                <td>
+                    <font color="red">1、*代表必填项.</font>
+				</td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+					<button onclick="javascript:productSave();" type="button">确定</button>
+					<button onclick="javascript:closeAddPage();" type="button">取消</button>
+				</td>
+			</tr>
+		</table>
+    </div>
+</form>
