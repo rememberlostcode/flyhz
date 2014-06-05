@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="10dip"
+        android:layout_margin="10dp"
         android:orientation="vertical" >
 
         <EditText
@@ -30,19 +30,20 @@
 
         <Button
             android:id="@+id/email_save"
-            android:layout_width="80dp"
+            android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_margin="10.0dip"
-            android:background="@color/orange"
+            android:layout_margin="10.0dp"
+            android:background="@drawable/juhuang"
             android:text="绑定"
             android:textSize="18sp" />
 
         <Button
             android:id="@+id/email_canle"
-            android:layout_width="80dp"
+            android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_margin="10.0dip"
-            android:background="@color/orange"
+            android:layout_margin="10.0dp"
+            android:background="@drawable/lvse"
+            android:textColor="@drawable/baise"
             android:text="解除"
             android:textSize="18sp" />
     </LinearLayout>

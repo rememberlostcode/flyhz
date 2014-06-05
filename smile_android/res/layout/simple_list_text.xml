@@ -3,5 +3,5 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:textColor="@color/number_color"
+    android:textColor="@drawable/shenhuise"
     android:textSize="15sp" />

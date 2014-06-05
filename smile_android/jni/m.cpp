@@ -352,9 +352,96 @@ static std::string connect_post(JNIEnv *env, std::string url,
 }
 
 /**
+ * http get方式连接(无cookie)
+ */
+static std::string connect_get_without_cookie(JNIEnv *env, std::string url) {
+	LOGD("this url is get!\n");
+	LOGD("url : %s \n", url.c_str());
+	int retcode = 0;
+	CURL* curl;
+	CURLcode res;
+	std::string content;
+
+	int reNum = 0;
+	reDoing: curl = curl_easy_init();
+
+	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, PResponse);
+
+	res = curl_easy_perform(curl);
+
+	if (0 != res) {
+		LOGD("curl error: %d !\n", res);
+	} else {
+		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &retcode);
+		LOGD("CURL HTTP STATUS:%d", retcode);
+	}
+	//释放内存
+	curl_easy_cleanup(curl);
+	if (200 == retcode) {
+		LOGD("curl content = %s \n", content.c_str());
+	} else {
+		LOGD("curl error: %d\n", res);
+		content =
+				"{\"code\": 100002,\"validate\":{\"option\":null,\"message\": \"网络异常\"},\"data\": null}";
+	}
+	return content;
+}
+
+/**
+ * http post方式连接(无cookie)
+ */
+static std::string connect_post(JNIEnv *env, std::string url) {
+	LOGD("this url is post!");
+	LOGD("url : %s \n", url.c_str());
+	int retcode = 0;
+	CURL* curl;
+	CURLcode res;
+	std::string header;
+	std::string content;
+	struct WriteThis pooh;
+
+	curl = curl_easy_init();
+	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+	curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &header);
+	curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, PResponse);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &content);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, PResponse);
+
+	curl_easy_setopt(curl, CURLOPT_POST, 1L);
+	curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
+	curl_easy_setopt(curl, CURLOPT_READDATA, &pooh);
+	curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, pooh.sizeleft);
+
+	res = curl_easy_perform(curl);
+
+	if (0 != res) {
+		LOGD("curl error: %d !\n", res);
+	} else {
+		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &retcode);
+		LOGD("CURL HTTP STATUS:%d", retcode);
+	}
+	//释放内存
+	curl_easy_cleanup(curl);
+	if (200 == retcode) {
+		LOGD("curl content = %s", content.c_str());
+	} else {
+		LOGD("curl error: %d\n", res);
+		content =
+				"{\"code\": 100002,\"validate\":{\"option\":null,\"message\": \"网络异常\"},\"data\": null}";
+	}
+
+	return content;
+}
+
+/**
  * 初始化
  */
-JNIEXPORT void JNICALL Java_com_example_begining_tools_ProtocolUtil_init__(
+JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_init__(
 		JNIEnv *env, jclass jc) {
 	if (!isInit) {
 		LOGE("p init start...\n");
@@ -369,7 +456,7 @@ JNIEXPORT void JNICALL Java_com_example_begining_tools_ProtocolUtil_init__(
 /**
  * 初始化
  */
-JNIEXPORT void JNICALL Java_com_example_begining_tools_ProtocolUtil_init__Ljava_lang_String_2(
+JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_init__Ljava_lang_String_2(
 		JNIEnv *env, jclass jc, jstring url) {
 	if (!isInit) {
 		LOGE("p init start...\n");
@@ -388,13 +475,13 @@ JNIEXPORT void JNICALL Java_com_example_begining_tools_ProtocolUtil_init__Ljava_
 /*
  * 销毁
  */
-JNIEXPORT void JNICALL Java_com_example_begining_tools_ProtocolUtil_cleanup(
+JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_cleanup(
 		JNIEnv *env, jclass jc) {
 	curl_global_cleanup();
 }
 
 jstring stoJstring(JNIEnv* env, const char* pat) {
-	jclass strClass = env->FindClass("Ljava/lang/String;");
+	jclass strClass = env->FindClass("java/lang/String");
 	jmethodID ctorID = env->GetMethodID(strClass, "<init>",
 			"([BLjava/lang/String;)V");
 	jbyteArray bytes = env->NewByteArray(strlen(pat));
@@ -402,22 +489,56 @@ jstring stoJstring(JNIEnv* env, const char* pat) {
 	jstring encoding = env->NewStringUTF("utf-8");
 	return (jstring) env->NewObject(strClass, ctorID, bytes, encoding);
 }
+
 /*
  * Class:     com_holding_smile_tools_TbUtil
  * Method:    cshTb
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_cshTb(JNIEnv *env,
-		jclass jc) {
+		jclass cls) {
+	LOGE("p cshTb start...\n");
+	jfieldID fid = NULL;
+	jfieldID tbFid = NULL;
+	jobject webView = NULL;
 	jstring jstr = NULL;
+	jclass webClazz = NULL;
+	jclass tbClazz = NULL;
 
-	jstr = stoJstring(env,"http://h5.m.taobao.com/awp/core/detail.htm?id=38752474914");
 
-	jclass cls = env->FindClass("android/webkit/WebView");
-	jmethodID mid = env->GetMethodID(cls, "loadUrl", "(Ljava/lang/String;)");
-	env->CallVoidMethod(cls, mid, jstr);
+	fid = env->GetStaticFieldID(cls, "webView", "Landroid/webkit/WebView;");
+	//LOGE("p cshTb 11111...\n");
+	webView = env->GetStaticObjectField(cls,fid);
+	//LOGE("p cshTb 22222...\n");
+	webClazz = env->FindClass("android/webkit/WebView");
+	//LOGE("p cshTb 33333...\n");
+	jmethodID mid = env->GetMethodID(webClazz, "loadUrl", "(Ljava/lang/String;)V");
+	//LOGE("p cshTb 44444...\n");
 
+	//获取淘宝店铺地址的url的url
+	tbClazz = env->FindClass("com/holding/smile/activity/MyApplication");
+	//LOGE("p cshTb 55555...\n");
+	tbFid = env->GetStaticFieldID(tbClazz, "tb_url", "Ljava/lang/String;");
+	//LOGE("p cshTb 66666...\n");
+	jstr = (jstring)(env->GetStaticObjectField(tbClazz,tbFid));
+	if(jstr == NULL){
+//		LOGE("p cshTb tb_url is null.\n");
+	} else {
+		std::string url = JstringToString(env, jstr);
+		if (url.size() == 0) {
+//			LOGE("p cshTb url is null.\n");
+		} else {
+			//LOGE("p cshTb 77777...%s\n", url.c_str());
+			std::string tbd_url = connect_get_without_cookie(env, url);
+			//LOGE("p cshTb 88888...\n");
+			env->CallVoidMethod(webView, mid, stoJstring(env, tbd_url.c_str()));
+			//LOGE("p cshTb 99999...\n");
+		}
+	}
+	env->DeleteLocalRef(webView);
 	env->DeleteLocalRef(jstr);
-	env->DeleteLocalRef(cls);
+	env->DeleteLocalRef(webClazz);
+	env->DeleteLocalRef(tbClazz);
+	LOGE("p cshTb end...\n");
 }
 

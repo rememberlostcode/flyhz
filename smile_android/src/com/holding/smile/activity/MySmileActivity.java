@@ -37,7 +37,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 		backBtn.setOnClickListener(this);
 
 		TextView textView = displayHeaderDescription();
-		textView.setText("我的SMILE");
+		textView.setText(R.string.more);
 
 		displayFooterMain(R.id.mainfooter_more);
 

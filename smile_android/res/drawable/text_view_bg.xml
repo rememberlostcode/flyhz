@@ -2,8 +2,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <!-- 背景色 -->  
-    <solid android:color="#fffef9"/>
+    <solid android:color="@drawable/baise"/>
     <!-- 边框色 -->  
-    <stroke android:width="2dip" android:color="#e5e5e5" />
+    <stroke android:width="1dip" android:color="@drawable/qianhuise" />
     
 </shape>

@@ -1,0 +1,22 @@
+<script type="text/javascript">
+   /*
+   $(document).ready(function(){
+       var locaUrl = decodeURIComponent(location.href);
+       var message = "";
+       if(locaUrl.indexOf("message=") > -1){
+          message = locaUrl.substring(locaUrl.indexOf("message=")+8);
+    	  showMessage(message);
+       }
+   });
+   */
+</script>
+<div class="text_intro">
+    <div class="con">
+		<ul class="help" style="width:820px;">
+            <li>您好！欢迎使用海狗后台管理系统。</li>
+			<li>本系统功能如下：首页、产品列表、编辑产品、修改产品等等。</li>
+			<li>如您需要相应的权限，请联系管理员。</li>
+			<li>$!message</li>
+        </ul>
+    </div>
+</div>

@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="45dp"
         android:layout_gravity="center_vertical"
-        android:background="#3f3f3f"
+        android:background="@drawable/shenhuise"
         android:orientation="horizontal" >
 
         <ImageView
@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
-            android:contentDescription="@string/gu"
+            
             android:src="@drawable/btn_back_bg" />
     </LinearLayout>
 

@@ -1,6 +1,8 @@
 
 package com.flyhz.shop.dto;
 
+import com.flyhz.framework.util.Constants;
+
 public class UserDto {
 
 	private Integer	id;
@@ -8,6 +10,8 @@ public class UserDto {
 	private String	username;
 
 	private String	token;
+	
+	private String url = Constants.TB_URL;
 
 	public String getUsername() {
 		return username;
@@ -31,6 +35,14 @@ public class UserDto {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }

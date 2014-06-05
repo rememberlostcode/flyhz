@@ -1,0 +1,158 @@
+.LoginNavT {
+	BACKGROUND: url(logo/LoginNavBg.gif) no-repeat left top;
+	OVERFLOW: hidden;
+	WIDTH: 259px;
+	HEIGHT: 6px;display:none;
+}
+
+.LoginNavD {
+	BACKGROUND: url(logo/LoginNavBg.gif) no-repeat left bottom;
+	WIDTH: 259px;
+	height:178px;
+	POSITION: relative;
+	TEXT-ALIGN: left；
+}
+
+.LoginNavD H3 {
+	PADDING-RIGHT: 0px;
+	PADDING-LEFT: 0px;
+	BACKGROUND: url(logo/LoginH3Til.gif) no-repeat left 5px;
+	PADDING-BOTTOM: 0px;
+	MARGIN: 0px 0px 5px;
+	TEXT-INDENT: -9000px;
+	PADDING-TOP: 0px;
+	HEIGHT: 21px;
+}
+
+.LoginNavD TABLE {
+	WIDTH: 230px;
+	margin:0 auto;
+	
+}
+
+.LoginNavD TABLE TR TH {
+	PADDING-RIGHT: 3px;
+	PADDING-LEFT: 3px;
+	PADDING-BOTTOM: 0px;
+	LINE-HEIGHT: 25px;
+	PADDING-TOP: 0px;
+}
+
+.LoginNavD TABLE TR TD {
+	PADDING-RIGHT: 3px;
+	PADDING-LEFT: 3px;
+	PADDING-BOTTOM: 0px;
+	LINE-HEIGHT: 25px;
+	PADDING-TOP: 0px
+}
+
+.LoginNavD TABLE TR TH {
+	FONT-WEIGHT: normal;
+	WIDTH: 70px;
+	TEXT-ALIGN: right;
+	font-weight:bold;
+}
+
+.LoginNavD TABLE TR TD SPAN {
+	FLOAT: left;
+	MARGIN-RIGHT: 3px
+}
+
+.ThisStyle {
+	BORDER-RIGHT: #84a5ce 1px solid;
+	BORDER-TOP: #0075b0 1px solid;
+	BORDER-LEFT: #0075b0 1px solid;
+	BORDER-BOTTOM: #84a5ce 1px solid;
+	BACKGROUND-COLOR: #dfebf7
+}
+
+.LoginClew {
+	BORDER-RIGHT: #e3e197 1px solid;
+	PADDING-RIGHT: 24px;
+	BORDER-TOP: #e3e197 1px solid;
+	PADDING-LEFT: 42px;
+	BACKGROUND: url(logo/ClewIco1.gif) #ffffdd no-repeat 24px 4px;
+	PADDING-BOTTOM: 5px;
+	BORDER-LEFT: #e3e197 1px solid;
+	COLOR: #c30;
+	PADDING-TOP: 5px;
+	BORDER-BOTTOM: #e3e197 1px solid
+}
+#loginTable{position:absolute;top:24px;left:8px;}
+
+
+/*====================登录样式==================*/
+.login_bg{
+	font-family:Verdana, Tahoma, Arial, Helvetica, sans-serif;
+	font-size:12;
+	font-weight:normal;
+	background: #fff url(logo/login_bg.jpg) repeat-x left top!important;
+}
+.login_main {
+	width: 891px;
+	margin:0 auto;
+}
+.login_logo{
+	width:891px;
+	/*background: url(images/login_zf.jpg) no-repeat right top;************老师让去掉这个图标，刘永杰去掉的****************/
+	margin-top:22px;
+	text-align:left;
+	min-height:80px;
+	_height:80px;
+}
+.login_logo .logo{
+	margin-top:30px;
+}
+
+.login_left{
+	float:left;
+	height:340px;
+	width:426px;
+	background: url(logo/login_left.jpg) no-repeat;
+}
+.login_left .login_pic{
+	margin:29px 0 0 0;
+}
+.login_right{
+	float:left;
+	height:340px;
+	width:462px;
+	background: url(logo/login_right.jpg) no-repeat;
+	text-align:left;
+}
+.login_right dl{
+	margin:92px 0 0 105px;
+}
+.login_copyright{
+	color:#859CBD;
+}
+
+.login_right .btn_dl,.login_right .btn_cz{
+	height: 20px;
+	width:58px;
+	margin:0 4px;
+}
+.login_right .uesr{
+	background:  url(logo/login_ico.gif) no-repeat left 0;
+	text-indent:1.5em;
+}
+.login_right .passw{
+	background:  url(logo/login_ico.gif) no-repeat left -28px;
+	text-indent:1.5em;
+}
+.login_right .yzm{
+	background:  url(logo/login_ico.gif) no-repeat left -58px;
+	text-indent:1.5em;
+}
+.login_right .btn_dl{
+	background:  url(logo/login_in.gif) no-repeat;
+}
+.login_right .btn_dl:hover{
+	background:  url(logo/login_in.gif) no-repeat;
+}
+.login_right .btn_cz{
+	background:  url(logo/login_res.gif) no-repeat;
+}
+.login_right .btn_cz:hover{
+	background:  url(logo/login_res.gif) no-repeat;
+}

@@ -76,6 +76,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 			jSortList = rtnValue.getSortData();
 		}
 		jSortLayout.setJSortList(context, jSortList);
+		jSortLayout.setBackgroundBtn(0);
 		int childCount = jSortLayout.getChildCount();
 		// 排行不为空，则设置默认每一个排行
 		if (childCount != 0) {

@@ -28,6 +28,8 @@
             android:id="@+id/searchlistview"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:divider="@drawable/qianhuise"
+            android:dividerHeight="1sp"
             android:scrollbars="none"
             />
     </com.holding.smile.myview.PullToRefreshView>

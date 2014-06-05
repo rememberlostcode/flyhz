@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="@drawable/baise"
     android:orientation="vertical" >
-    
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
+        android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -17,19 +17,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/order_number"
-            android:textColor="#010101"
+            android:textColor="@drawable/shenhuise"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#010101"
+            android:textColor="@drawable/shenhuise"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
     </LinearLayout>
-    
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -41,26 +41,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/order_time"
-            android:textColor="#010101"
+            android:textColor="@drawable/shenhuise"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#010101"
+            android:textColor="@drawable/shenhuise"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
     </LinearLayout>
-    
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_marginBottom="5dip"
-        android:layout_marginTop="5dip"
-        android:background="#e5e5e5" />
-    
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/qianhuise" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -72,48 +72,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/order_amount"
-            android:textColor="#010101"
+            android:textColor="@drawable/shenhuise"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
 
         <TextView
             android:id="@+id/amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#f50606"
+            android:textColor="@drawable/dahong"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
     </LinearLayout>
-    
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="5dip"
-        android:layout_marginTop="5dip"
-        android:background="#e5e5e5" />
-    
-    <Button 
+
+    <ImageView
         android:id="@+id/taobao_pay_btn"
         android:layout_width="fill_parent"
-        android:layout_height="40dip"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="@string/taobao_pay_btn"
-        android:textColor="#f50606"
+        android:textColor="@drawable/baise"
         android:textSize="16sp"
-        android:layout_marginBottom="5dip"
-        />
-    
-    <TextView 
+        android:src="@drawable/confirm_bg" />
+
+    <TextView
         android:id="@+id/pay_message"
         android:layout_width="fill_parent"
-        android:layout_height="40dip"
+        android:layout_height="40dp"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:text="@string/taobao_pay_btn"
-        android:textColor="#f50606"
+        android:textColor="@drawable/dahong"
         android:textSize="16sp"
-        android:layout_marginBottom="5dip"
-        android:visibility="gone"
-        />
-    
+        android:visibility="gone" />
 
 </LinearLayout>
