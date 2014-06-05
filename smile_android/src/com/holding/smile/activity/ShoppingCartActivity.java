@@ -52,9 +52,10 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	private TextView				editBtn;
 	private MyListView				listView;
 	private MyShoppingCartAdapter	cartAdapter;
-	private ImageButton				payoffBtn;
-	private TextView				total;
-	private CheckBox				allChecked;
+	private TextView				payoffBtn;
+	private TextView				totalNumber;
+	private TextView				totalMoney;
+	private ImageView				allChecked;
 	private List<CartItem>			cartItemList			= new ArrayList<CartItem>();
 	private Integer					allQty					= 0;							// 结算总数量，默认是0
 	private BigDecimal				allTotal				= new BigDecimal(0);			// 结算总金额,默认是0
@@ -79,30 +80,34 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	 * 初始化View
 	 */
 	private void initView() {
-		displayFooterMain(R.id.mainfooter_four);
+		//displayFooterMain(R.id.mainfooter_four);
 		displayFooterMainTotal();
 
 		setContentLayout(R.layout.shopping_cart_view);
-		payoffBtn = (ImageButton) findViewById(R.id.payoff_btn);
+		payoffBtn = (TextView) findViewById(R.id.payoff_btn);
 		payoffBtn.setOnClickListener(this);
-		total = (TextView) findViewById(R.id.total);
-		allChecked = (CheckBox) findViewById(R.id.all_checked);
-		allChecked.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+		totalNumber = (TextView) findViewById(R.id.totalnumber);
+		totalMoney = (TextView) findViewById(R.id.totalmoney);
+		allChecked = (ImageView) findViewById(R.id.all_checked);
+		
+		allChecked.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					cartAdapter.setSelectAll(true);
-				} else {
+			public void onClick(View v) {
+				boolean selected = allChecked.isSelected();
+				if(selected){
+					allChecked.setSelected(false);
 					cartAdapter.setSelectAll(false);
+				}else{
+					allChecked.setSelected(true);
+					cartAdapter.setSelectAll(true);
 				}
-
 			}
-		});
+		});	
 
 		allQty = 0;
 		allTotal = new BigDecimal(0);
-		total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.doubleValue() + "元");
+		totalNumber.setText(allQty+"");
+		totalMoney.setText(allTotal.doubleValue()+"");
 
 		initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.cart_list);
@@ -216,7 +221,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	 */
 	private void calculateTotal() {
 		if (!cartAdapter.getSelectAll()) {
-			allChecked.setChecked(false);
+			allChecked.setSelected(false);
 		}
 
 		if (cartItemList == null || cartItemList.isEmpty()) {
@@ -237,7 +242,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 				}
 			}
 		}
-		total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.doubleValue() + "元");
+		totalNumber.setText(allQty+"");
+		totalMoney.setText(allTotal.doubleValue()+"");
 		cartAdapter.notifyDataSetChanged();
 	}
 

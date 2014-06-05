@@ -26,8 +26,10 @@
         android:layout_height="fill_parent"
         android:layout_above="@id/foot"
         android:layout_below="@id/head"
-        android:background="#e5e5e5"
+        android:background="@drawable/baise"
         android:gravity="center|top"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
         android:orientation="vertical" >
     </LinearLayout>
 

@@ -36,7 +36,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	private static final int	WHAT_PROGRESS_STATE	= 2;
 	private ProgressDialog		pDialog;
 	private int					mProgress;
-	private Button				payBtn;
+	private ImageView			payBtn;
 	private TextView			payMsgText;
 	private TextView			numberText;
 	private TextView			amountText;
@@ -61,7 +61,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 			amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
 			if (StrUtils.isNotEmpty(number) && StrUtils.isNotEmpty(time) && amount != null) {
 				setContentLayout(R.layout.order_pay_view);
-				payBtn = (Button) findViewById(R.id.taobao_pay_btn);
+				payBtn = (ImageView) findViewById(R.id.taobao_pay_btn);
 				payBtn.setOnClickListener(this);
 				payMsgText = (TextView) findViewById(R.id.pay_message);
 				numberText = (TextView) findViewById(R.id.number);

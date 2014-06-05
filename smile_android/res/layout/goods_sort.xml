@@ -3,24 +3,25 @@
     android:id="@+id/sort_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
-    
+    android:orientation="vertical" >
+
     <com.holding.smile.myview.MyLinearLayout
         android:id="@+id/sort_type"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="3dp"
-    	android:layout_marginTop="3dp"
-        android:gravity="center"
         android:orientation="horizontal"
-        />
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/shenhuise" />
 
     <ListView
         android:id="@+id/goods_list_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:scrollbars="none"
-       />
+        android:divider="@drawable/qianhuise"
+        android:dividerHeight="1sp" />
 
 </LinearLayout>

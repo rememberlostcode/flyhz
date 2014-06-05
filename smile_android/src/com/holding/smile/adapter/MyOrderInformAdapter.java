@@ -77,7 +77,6 @@ public class MyOrderInformAdapter extends BaseAdapter {
 		ImageView	p;
 		TextView	color;
 		TextView	brandstyle;
-		TextView	buyQtyText;
 		TextView	qty;
 		ImageView	subBtn;
 		ImageView	addBtn;
@@ -96,7 +95,6 @@ public class MyOrderInformAdapter extends BaseAdapter {
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 			holder.brandstyle = (TextView) convertView.findViewById(R.id.brand_style);
 			holder.color = (TextView) convertView.findViewById(R.id.color_cate);
-			holder.buyQtyText = (TextView) convertView.findViewById(R.id.buyqtytext);
 			holder.qty = (TextView) convertView.findViewById(R.id.qty);
 			holder.subBtn = (ImageView) convertView.findViewById(R.id.sub_qty);
 			holder.addBtn = (ImageView) convertView.findViewById(R.id.add_qty);

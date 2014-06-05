@@ -41,12 +41,12 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	private String			status;
 
 	private TextView		editView;
-	private Button			allButton;
-	private Button			finshButton;
-	private Button			unfinshButton;
+	private TextView		allButton;
+	private TextView		finshButton;
+	private TextView		unfinshButton;
 
-	private CheckBox		allChecked;
-	private ImageButton		allPayButton;
+	private ImageView		allChecked;
+	private TextView		allPayButton;
 
 	private View			footerView;
 
@@ -84,23 +84,26 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 			}
 		});
 
-		allPayButton = (ImageButton) findViewById(R.id.footer_my_orders_all_pay);
-		allChecked = (CheckBox) findViewById(R.id.footer_my_orders_all_checked);
-		allChecked.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+		allPayButton = (TextView) findViewById(R.id.footer_my_orders_all_pay);
+		allChecked = (ImageView) findViewById(R.id.footer_my_orders_all_checked);
+		
+		allChecked.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					adapter.setSelectAll(true);
-				} else {
+			public void onClick(View v) {
+				boolean selected = allChecked.isSelected();
+				if(selected){
+					allChecked.setSelected(false);
 					adapter.setSelectAll(false);
+				}else{
+					allChecked.setSelected(true);
+					adapter.setSelectAll(true);
 				}
-
 			}
-		});
-		allButton = (Button) findViewById(R.id.list_orders_button_all);
-		finshButton = (Button) findViewById(R.id.list_orders_button_finsh);
-		unfinshButton = (Button) findViewById(R.id.list_orders_button_unfinsh);
+		});		
+		
+		allButton = (TextView) findViewById(R.id.list_orders_button_all);
+		finshButton = (TextView) findViewById(R.id.list_orders_button_finsh);
+		unfinshButton = (TextView) findViewById(R.id.list_orders_button_unfinsh);
 
 		allButton.setOnClickListener(this);
 		finshButton.setOnClickListener(this);
@@ -128,16 +131,25 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.list_orders_button_all: {
+				allButton.setSelected(true);
+				finshButton.setSelected(false);
+				unfinshButton.setSelected(false);
 				status = null;
 				startTask();
 				break;
 			}
 			case R.id.list_orders_button_finsh: {
+				allButton.setSelected(false);
+				finshButton.setSelected(true);
+				unfinshButton.setSelected(false);
 				status = "finsh";
 				startTask();
 				break;
 			}
 			case R.id.list_orders_button_unfinsh: {
+				allButton.setSelected(false);
+				finshButton.setSelected(false);
+				unfinshButton.setSelected(true);
 				status = "unfinsh";
 				startTask();
 				break;
@@ -186,17 +198,11 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 												switch (msg.what) {
 													case 1: {
 														if (status == null) {
-															allButton.setBackgroundResource(R.color.lightgreen);
-															finshButton.setBackgroundResource(R.color.orange);
-															unfinshButton.setBackgroundResource(R.color.orange);
+															allButton.setSelected(true);
 														} else if ("finsh".equals(status)) {
-															allButton.setBackgroundResource(R.color.orange);
-															finshButton.setBackgroundResource(R.color.lightgreen);
-															unfinshButton.setBackgroundResource(R.color.orange);
+															finshButton.setSelected(true);
 														} else {
-															allButton.setBackgroundResource(R.color.orange);
-															finshButton.setBackgroundResource(R.color.orange);
-															unfinshButton.setBackgroundResource(R.color.lightgreen);
+															unfinshButton.setSelected(true);
 														}
 														
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);

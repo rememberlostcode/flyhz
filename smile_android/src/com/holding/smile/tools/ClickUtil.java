@@ -1,6 +1,11 @@
 
 package com.holding.smile.tools;
 
+import android.R;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+
 public class ClickUtil {
 
 	// /**
@@ -123,5 +128,58 @@ public class ClickUtil {
 				break;
 		}
 		return text;
+	}
+	
+	public static int getBackgroundColorByStatus(String status) {
+		int colorId = Color.parseColor("#cfcfcf");
+		if (status == null) {
+			return colorId;
+		}
+		int ints = Integer.parseInt(status);
+		switch (ints) {
+			case 10:
+				//"去支付";
+				colorId = Color.parseColor("#46cf99");
+				break;
+			case 11:
+				//"支付中";
+				break;
+			case 12:
+				//已支付";
+				break;
+			case 13:
+				//上传身份证";
+				break;
+			case 14:
+				//已有身份证";
+				break;
+			case 15:
+				//发货中";
+				break;
+			case 20:
+				//已发货";
+				break;
+			case 21:
+				//国外清关";
+				break;
+			case 30:
+				//国内清关";
+				break;
+			case 40:
+				//国内物流";
+				break;
+			case 50:
+				//已关闭";
+				break;
+			case 60:
+				//已完成";
+				break;
+			case 70:
+				//已删除";
+				break;
+			default:
+				break;
+		}
+		return colorId;
 	}
 }

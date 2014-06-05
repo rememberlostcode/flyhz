@@ -66,4 +66,6 @@ public class Constants {
 			this.code = code;
 		}
 	}
+	
+	public static final String TB_URL = "http://211.149.175.138/smile/build/url";
 }

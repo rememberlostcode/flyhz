@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
-            android:textColor="#333333"
+            android:textColor="@drawable/shenhuise"
             android:textSize="22sp" />
 
         <TextView
@@ -35,6 +35,6 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="#c8c8c8" />
+        android:background="@drawable/qianhuise" />
 
 </LinearLayout>

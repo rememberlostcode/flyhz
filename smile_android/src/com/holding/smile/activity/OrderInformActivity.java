@@ -45,8 +45,9 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private int						mProgress;
 	private MyListView				listView;
 	private MyOrderInformAdapter	orderAdapter;
-	private ImageButton				confirmBtn;
-	private TextView				total;
+	private TextView				confirmBtn;
+	private TextView				totalNumber;
+	private TextView				totalMoney;
 	private OrderDto				order						= null;
 	private List<OrderDetailDto>	orderDetails				= new ArrayList<OrderDetailDto>();
 	private Integer					gid							= null;							// 商品ID
@@ -89,9 +90,10 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		if (order == null)
 			return;
 		setContentLayout(R.layout.order_inform_view);
-		confirmBtn = (ImageButton) findViewById(R.id.confirm_btn);
+		confirmBtn = (TextView) findViewById(R.id.confirm_btn);
 		confirmBtn.setOnClickListener(this);
-		total = (TextView) findViewById(R.id.order_inform_total);
+		totalNumber = (TextView) findViewById(R.id.order_inform_total_number);
+		totalMoney = (TextView) findViewById(R.id.order_inform_total_money);
 
 		initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.order_list);
@@ -228,7 +230,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 				}
 			}
 		}
-		total.setText("已选商品" + allQty + "件,合计:￥" + allTotal.doubleValue() + "元");
+		totalNumber.setText(allQty + "");
+		totalMoney.setText(allTotal.doubleValue() + "");
 	}
 
 	@SuppressLint("HandlerLeak")

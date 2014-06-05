@@ -124,6 +124,9 @@ public class LoginService {
 	private static void setLoginUser(SUser user) {
 		// 把返回的用户设置成当前用户
 		MyApplication.getInstance().setCurrentUser(user);
+		if(MyApplication.getTb_url() == null || "".equals(MyApplication.getTb_url())){
+			MyApplication.setTb_url(user.getUrl());
+		}
 	}
 
 	private String https_get(String path, HashMap<String, String> param) {

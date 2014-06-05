@@ -4,88 +4,144 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:background="#36293f"
+    android:background="@drawable/rouse2"
     android:gravity="bottom"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="@drawable/qianhuise" >
+    </View>
+
+    <RelativeLayout
         android:id="@+id/calculate_total"
         android:layout_width="fill_parent"
-        android:layout_height="40dip"
-        android:background="#C9C9C9"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rouse1"
+        android:padding="6dp"
         android:visibility="gone" >
 
-        <CheckBox
-            android:id="@+id/all_checked"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical" />
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:orientation="horizontal" >
 
-        <TextView
+            <ImageView
+                android:id="@+id/all_checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/checkbox_bg"
+                android:gravity="center_vertical" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="40dip"
-            android:gravity="center_vertical"
-            android:text="@string/select_all"
-            android:textColor="#4A4A4A"
-            android:textSize="14sp" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/total"
-            android:layout_width="wrap_content"
-            android:layout_height="40dip"
-            android:gravity="center_vertical"
-            android:textColor="#f50606"
-            android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal" >
 
-        <ImageButton
-            android:id="@+id/payoff_btn"
-            android:layout_width="fill_parent"
-            android:layout_height="40dip"
-            android:layout_gravity="right"
-            android:layout_marginRight="1dip"
-            android:background="#C9C9C9"
-            android:contentDescription="@string/gu"
-            android:src="@drawable/payoff" />
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="小计（"
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="14sp" />
 
-    <LinearLayout
+                <TextView
+                    android:id="@+id/totalnumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="个商品）："
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="￥"
+                    android:textColor="@drawable/dahong"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/totalmoney"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textColor="@drawable/dahong"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/payoff_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_gravity="right"
+                android:gravity="center"
+                android:background="@drawable/nowbuy_bg"
+                android:paddingBottom="4dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="4dp"
+                android:text="结算"
+                android:textColor="@drawable/baise" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/footer_my_orders"
         android:layout_width="fill_parent"
-        android:layout_height="40dip"
-        android:background="#C9C9C9"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rouse1"
+        android:padding="6dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="gone" >
 
-        <CheckBox
+        <ImageView
             android:id="@+id/footer_my_orders_all_checked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_gravity="center_vertical"
+            android:background="@drawable/checkbox_bg"
             android:gravity="center_vertical" />
-
+        
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dip"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/select_all"
-            android:textColor="#4A4A4A"
-            android:textSize="14sp" />
-
-        <ImageButton
             android:id="@+id/footer_my_orders_all_pay"
-            android:layout_width="wrap_content"
-            android:layout_height="40dip"
-            android:layout_gravity="right"
-            android:layout_marginRight="1dip"
-            android:background="#C9C9C9"
-            android:contentDescription="@string/gu"
-            android:src="@drawable/payoff" />
-    </LinearLayout>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:background="@drawable/nowbuy_bg"
+                android:paddingBottom="4dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="4dp"
+                android:text="结算"
+                android:textColor="@drawable/baise" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/mainfooter"
@@ -103,13 +159,17 @@
             android:gravity="center"
             android:orientation="vertical" >
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mainfooter_one_bg" />
+
             <TextView
                 android:id="@+id/mainfooter_jptj"
-                android:layout_width="fill_parent"
-                android:layout_height="50dip"
-                android:layout_marginLeft="5dip"
-                android:background="@android:color/transparent"
-                android:hint="@string/recommend_goods" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recommend_goods"
+                android:textColor="@drawable/mainfooter_itemcolor" />
         </LinearLayout>
 
         <LinearLayout
@@ -120,13 +180,17 @@
             android:gravity="center"
             android:orientation="vertical" >
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mainfooter_two_bg" />
+
             <TextView
                 android:id="@+id/mainfooter_phb"
-                android:layout_width="fill_parent"
-                android:layout_height="50dip"
-                android:layout_marginLeft="5dip"
-                android:background="@android:color/transparent"
-                android:hint="@string/the_charts" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/the_charts"
+                android:textColor="@drawable/mainfooter_itemcolor" />
         </LinearLayout>
 
         <LinearLayout
@@ -137,13 +201,17 @@
             android:gravity="center"
             android:orientation="vertical" >
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mainfooter_three_bg" />
+
             <TextView
                 android:id="@+id/mainfooter_search"
-                android:layout_width="fill_parent"
-                android:layout_height="50dip"
-                android:layout_marginLeft="5dip"
-                android:background="@android:color/transparent"
-                android:hint="@string/search" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search"
+                android:textColor="@drawable/mainfooter_itemcolor" />
         </LinearLayout>
 
         <LinearLayout
@@ -154,13 +222,17 @@
             android:gravity="center"
             android:orientation="vertical" >
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mainfooter_four_bg" />
+
             <TextView
                 android:id="@+id/mainfooter_grsz"
-                android:layout_width="fill_parent"
-                android:layout_height="50dip"
-                android:layout_marginLeft="5dip"
-                android:background="@android:color/transparent"
-                android:hint="@string/shopping_cart" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shopping_cart"
+                android:textColor="@drawable/mainfooter_itemcolor" />
         </LinearLayout>
 
         <LinearLayout
@@ -171,12 +243,16 @@
             android:gravity="center"
             android:orientation="vertical" >
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mainfooter_five_bg" />
+
             <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="50dip"
-                android:layout_marginLeft="5dip"
-                android:background="@android:color/transparent"
-                android:hint="@string/more" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/more"
+                android:textColor="@drawable/mainfooter_itemcolor" />
         </LinearLayout>
     </LinearLayout>
 
@@ -184,9 +260,11 @@
         android:id="@+id/mainfooter_buy"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#e5e5e5"
+        android:background="@drawable/qianhuise"
         android:baselineAligned="false"
         android:orientation="horizontal"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
         android:visibility="gone" >
 
         <LinearLayout
@@ -197,12 +275,16 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/now_buy"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="45dip"
-                android:contentDescription="@string/gu"
-                android:src="@drawable/now_buy_btn" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/nowbuy_bg"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp"
+                android:text="立即购买"
+                android:textColor="@drawable/baise" />
         </LinearLayout>
 
         <LinearLayout
@@ -213,12 +295,16 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/add_cart"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="45dip"
-                android:contentDescription="@string/gu"
-                android:src="@drawable/add_cart_btn" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/addcart_bg"
+                android:paddingBottom="4dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="4dp"
+                android:text="加入购物车"
+                android:textColor="@drawable/baise" />
         </LinearLayout>
     </LinearLayout>
 

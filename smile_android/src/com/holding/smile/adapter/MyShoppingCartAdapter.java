@@ -120,12 +120,11 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 		ImageView	p;
 		TextView	color;
 		TextView	brandstyle;
-		TextView	buyQtyText;
 		TextView	qty;
 		ImageView	subBtn;
 		ImageView	addBtn;
 		ImageView	checkBox;
-		Button		delBtn;
+		ImageView	delBtn;
 	}
 
 	@Override
@@ -140,12 +139,11 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 			holder.brandstyle = (TextView) convertView.findViewById(R.id.brand_style);
 			holder.color = (TextView) convertView.findViewById(R.id.color_cate);
-			holder.buyQtyText = (TextView) convertView.findViewById(R.id.buyqtytext);
 			holder.qty = (TextView) convertView.findViewById(R.id.qty);
 			holder.subBtn = (ImageView) convertView.findViewById(R.id.sub_qty);
 			holder.addBtn = (ImageView) convertView.findViewById(R.id.add_qty);
 			holder.checkBox = (ImageView) convertView.findViewById(R.id.check_box);
-			holder.delBtn = (Button) convertView.findViewById(R.id.del_btn);
+			holder.delBtn = (ImageView) convertView.findViewById(R.id.del_btn);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -162,14 +160,14 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 		if (cartItem != null && cartItem.getProduct() != null) {
 
 			if (selectAll) {
-				holder.checkBox.setBackgroundResource(R.drawable.icon_choice);
+				holder.checkBox.setSelected(true);
 			} else {
-				holder.checkBox.setBackgroundResource(R.drawable.icon_no_choice);
+				holder.checkBox.setSelected(false);
 			}
 			if (sIds.contains(cartItem.getId())) {
-				holder.checkBox.setBackgroundResource(R.drawable.icon_choice);
+				holder.checkBox.setSelected(true);
 			} else {
-				holder.checkBox.setBackgroundResource(R.drawable.icon_no_choice);
+				holder.checkBox.setSelected(false);
 			}
 
 			final ProductDto jGoods = cartItem.getProduct();
@@ -255,16 +253,15 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 				public void onClick(View v) {
 					if (!sIds.contains(cartItem.getId())) {
 						sIds.add(cartItem.getId());
-						v.setBackgroundResource(R.drawable.icon_choice);
+						v.setSelected(true);
 					} else {
 						sIds.remove(cartItem.getId());
-						v.setBackgroundResource(R.drawable.icon_no_choice);
+						v.setSelected(false);
 					}
 					if (sIds.isEmpty()) {
 						selectAll = false;
 					}
 					mUIHandler.sendEmptyMessage(3);
-
 				}
 			});
 

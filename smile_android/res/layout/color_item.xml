@@ -9,10 +9,10 @@
 
     <ImageView
         android:id="@+id/good_color"
-        android:layout_width="65dip"
-        android:layout_height="30dip"
+        android:layout_width="65dp"
+        android:layout_height="30dp"
         android:scaleType="fitXY"
-        android:contentDescription="@string/gu"
+        
         />
         
 </RelativeLayout>

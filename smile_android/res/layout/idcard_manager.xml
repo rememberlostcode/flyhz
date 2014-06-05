@@ -22,8 +22,9 @@
             android:id="@+id/list_idcards_add"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_margin="10.0dip"
-            android:background="@color/orange"
+            android:layout_margin="10.0dp"
+            android:background="@drawable/lvse"
+            android:textColor="@drawable/baise"
             android:text="新增身份证信息"
             android:textSize="18sp" />
     </LinearLayout>

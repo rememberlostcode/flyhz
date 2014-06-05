@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#E8E8E8"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -14,7 +13,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1.0"
             android:orientation="vertical"
             android:textSize="18sp" >
@@ -25,17 +24,17 @@
                 android:layout_height="20dp"
                 android:gravity="center_vertical"
                 android:text="姓名"
-                android:textColor="@color/black"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/idcard_list_idcard"
                 android:layout_width="fill_parent"
                 android:layout_height="20dp"
-                android:layout_marginBottom="6dip"
+                android:layout_marginBottom="6dp"
                 android:gravity="center_vertical"
                 android:text="身份证号"
-                android:textColor="@color/black"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -43,16 +42,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dip"
-            android:layout_marginRight="10dip"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:contentDescription="@string/user_info_right"
             android:src="@drawable/nearby_bind_mobile_headerview_icon" />
     </LinearLayout>
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="1.0dip"
-        android:layout_margin="5dip"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="1.0dp"
+        android:background="@drawable/qianhuise" />
 
-</TableRow>
+</LinearLayout>

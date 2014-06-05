@@ -6,34 +6,37 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dip"
+        android:layout_height="40dp"
+        android:background="@drawable/shenhuise"
         android:gravity="center_vertical" >
 
-        <Button
+        <TextView
             android:id="@+id/list_orders_button_all"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_margin="10.0dip"
-            android:background="@color/orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@drawable/navigation_textcolor"
             android:text="全部"
             android:textSize="18sp" />
 
-        <Button
+        <TextView
             android:id="@+id/list_orders_button_finsh"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_margin="10.0dip"
-            android:background="@color/orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@drawable/navigation_textcolor"
             android:text="已完成"
             android:textSize="18sp" />
 
-        <Button
+        <TextView
             android:id="@+id/list_orders_button_unfinsh"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:layout_margin="10.0dip"
-            android:background="@color/orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@drawable/navigation_textcolor"
             android:text="未完成"
             android:textSize="18sp" />
     </LinearLayout>

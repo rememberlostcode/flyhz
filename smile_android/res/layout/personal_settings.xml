@@ -8,7 +8,7 @@
         android:id="@+id/user_info_accout_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10.0dip"
+        android:layout_margin="0dp"
         android:orientation="vertical" >
 
         <!-- 我的身份证 -->
@@ -17,7 +17,7 @@
             android:id="@+id/user_info_idcard_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5.0dip"
+            android:layout_margin="5.0dp"
             android:gravity="center_vertical"
             android:orientation="horizontal" >
 
@@ -28,23 +28,21 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/my_idcards"
-                android:textColor="@color/black"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
         </LinearLayout>
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="1.0dip"
-            android:layout_marginLeft="5.0dip"
-            android:layout_marginRight="5.0dip"
-            android:background="@android:color/darker_gray" />
+            android:layout_height="1.0dp"
+            android:background="@drawable/qianhuise" />
         <!-- 邮箱 -->
 
         <LinearLayout
             android:id="@+id/user_info_email_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5.0dip"
+            android:layout_margin="5.0dp"
             android:gravity="fill_horizontal"
             android:orientation="horizontal" >
 
@@ -54,7 +52,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/user_info_email"
-                android:textColor="@color/black"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
 
             <TextView
@@ -68,17 +66,15 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="1.0dip"
-            android:layout_marginLeft="5.0dip"
-            android:layout_marginRight="5.0dip"
-            android:background="@android:color/darker_gray" />
+            android:layout_height="1.0dp"
+            android:background="@drawable/qianhuise" />
         <!-- 手机 -->
 
         <LinearLayout
             android:id="@+id/user_info_phone_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5.0dip"
+            android:layout_margin="5.0dp"
             android:gravity="fill_horizontal"
             android:orientation="horizontal" >
 
@@ -88,7 +84,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/user_info_phone"
-                android:textColor="@color/black"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
 
             <TextView
@@ -102,17 +98,15 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="1.0dip"
-            android:layout_marginLeft="5.0dip"
-            android:layout_marginRight="5.0dip"
-            android:background="@android:color/darker_gray" />
+            android:layout_height="1.0dp"
+            android:background="@drawable/qianhuise" />
         <!-- 修改密码 -->
 
         <LinearLayout
             android:id="@+id/user_info_pwd_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5.0dip"
+            android:layout_margin="5.0dp"
             android:gravity="fill_horizontal"
             android:orientation="horizontal" >
 
@@ -123,15 +117,13 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/user_info_pwd_reset"
-                android:textColor="@color/black"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
         </LinearLayout>
         <View
             android:layout_width="fill_parent"
-            android:layout_height="1.0dip"
-            android:layout_marginLeft="5.0dip"
-            android:layout_marginRight="5.0dip"
-            android:background="@android:color/darker_gray" />
+            android:layout_height="1.0dp"
+            android:background="@drawable/qianhuise" />
     </LinearLayout>
 
     <LinearLayout
@@ -144,8 +136,9 @@
             android:id="@+id/setting_logout_button"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_margin="10.0dip"
-            android:background="@color/red"
+            android:layout_margin="10.0dp"
+            android:background="@drawable/dahong"
+            android:textColor="@drawable/baise"
             android:text="@string/setting_logout"
             android:textSize="18sp" />
     </LinearLayout>

@@ -36,7 +36,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 	private EditText	idcardName;
 	private EditText	idcardNumber;
-	private Button		idcardPhotoButton;
+	private ImageView		idcardPhotoButton;
 	private Button		idcardSave;
 	private Button		idcardDelete;
 	private ImageView	imageView;
@@ -55,7 +55,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 		idcardName = (EditText) findViewById(R.id.idcard_name);
 		idcardNumber = (EditText) findViewById(R.id.idcard_number);
-		idcardPhotoButton = (Button) findViewById(R.id.idcard_photo_button);
+		idcardPhotoButton = (ImageView) findViewById(R.id.idcard_photo_button);
 		idcardSave = (Button) findViewById(R.id.idcard_add_save);
 		idcardDelete = (Button) findViewById(R.id.idcard_delete);
 		imageView = (ImageView) findViewById(R.id.idcard_idcard_img);

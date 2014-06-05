@@ -2,28 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/btn_text_color"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
         android:orientation="horizontal" >
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_horizontal" >
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="0dp"
+            android:layout_weight="1" >
 
             <ImageView
                 android:id="@+id/order_list_checkBox"
-                android:layout_width="35dip"
-                android:layout_height="40dip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="@string/gu"
-                android:gravity="center_vertical"
+                android:layout_marginRight="4dp"
                 android:visibility="gone" />
 
             <TextView
@@ -31,7 +33,7 @@
                 android:layout_height="20dp"
                 android:gravity="center_vertical"
                 android:text="@string/dingdanhao"
-                android:textColor="@color/black"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="15sp" />
 
             <TextView
@@ -39,16 +41,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/number_color"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="15sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="16dp"
                 android:gravity="center_vertical"
                 android:text="@string/shijian"
-                android:textColor="@color/black"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="15sp" />
 
             <TextView
@@ -56,16 +58,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/number_color"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="15sp" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/order_list_delete"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@drawable/icon_delete"
-            android:contentDescription="@string/gu"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:src="@drawable/icon_delete"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -73,6 +74,7 @@
         android:id="@+id/order_list_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
         android:background="@android:color/transparent"
         android:divider="@android:color/transparent"
         android:dividerHeight="1sp" />
@@ -80,77 +82,77 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal" >
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="6dp"
+        android:gravity="right"
+        android:orientation="vertical" >
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/order_list_pricetotal"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1" >
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
             <TextView
-                android:layout_width="50dp"
-                android:layout_height="20dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:gravity="center_vertical"
-                android:text="@string/zongjia"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/order_list_price_value"
-                android:layout_width="50dp"
-                android:layout_height="20dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="20dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:gravity="center_vertical"
-                android:text="@string/zongliang"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="小计（"
+                android:textColor="@drawable/shenhuise"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/order_list_totalnum_value"
-                android:layout_width="50dp"
-                android:layout_height="20dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@drawable/shenhuise"
                 android:textSize="15sp" />
-        </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="个商品）："
+                android:textColor="@drawable/shenhuise"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="￥"
+                android:textColor="@drawable/dahong"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/order_list_price_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@drawable/dahong"
+                android:textSize="15sp" />
+        </LinearLayout>
 
         <LinearLayout
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center_vertical" >
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            <Button
+            <TextView
                 android:id="@+id/order_list_status"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:background="@color/zhifu_color"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="4dp"
+                android:textColor="@drawable/baise"
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="1.0dip"
-        android:layout_marginLeft="5.0dip"
-        android:layout_marginRight="5.0dip"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="1.0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:background="@drawable/qianhuise" />
 
 </LinearLayout>

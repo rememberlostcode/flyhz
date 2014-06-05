@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.holding.smile.R;
@@ -57,17 +56,6 @@ public class MyLinearLayout extends LinearLayout {
 				tv.setText(sorttype.getN());
 				v.setId(i);
 				v.setTag(sorttype.getV());
-				if (size == 1) {
-					tv.setBackgroundResource(R.drawable.btn_green_pressed);
-					v.setBackgroundResource(R.drawable.corners_bg);
-				} else {
-					if (i == 0) {
-						tv.setBackgroundResource(R.drawable.btn_green_pressed);
-						v.setBackgroundResource(R.drawable.left_corners_bg);
-					} else if (i == (size - 1)) {
-						v.setBackgroundResource(R.drawable.right_corners_bg);
-					}
-				}
 				this.addView(v);
 			}
 		}
@@ -85,17 +73,6 @@ public class MyLinearLayout extends LinearLayout {
 				tv.setText(sort.getN());
 				v.setId(i);
 				v.setTag(sort.getU());
-				if (size == 1) {
-					tv.setBackgroundResource(R.drawable.btn_green_pressed);
-					v.setBackgroundResource(R.drawable.corners_bg);
-				} else {
-					if (i == 0) {
-						tv.setBackgroundResource(R.drawable.btn_green_pressed);
-						v.setBackgroundResource(R.drawable.left_corners_bg);
-					} else if (i == (size - 1)) {
-						v.setBackgroundResource(R.drawable.right_corners_bg);
-					}
-				}
 				this.addView(v);
 			}
 		}
@@ -133,12 +110,12 @@ public class MyLinearLayout extends LinearLayout {
 	public void setBackgroundBtn(int postion) {
 		int childCount = getChildCount();
 		for (int i = 0; i < childCount; i++) {
-			RelativeLayout layout = (RelativeLayout) getChildAt(i);
+			LinearLayout layout = (LinearLayout) getChildAt(i);
 			View v = layout.getChildAt(0);
 			if (i == postion) {
-				v.setBackgroundResource(R.drawable.btn_green_pressed);
-			} else {
-				v.setBackgroundResource(R.drawable.btn_white_normal);
+				v.setSelected(true);
+			}else{
+				v.setSelected(false);
 			}
 		}
 	}
