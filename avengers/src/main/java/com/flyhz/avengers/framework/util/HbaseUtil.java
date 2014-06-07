@@ -137,6 +137,7 @@ public class HbaseUtil {
 		try {
 			String tablename = "scores";
 			String[] familys = { "grade", "course" };
+			HbaseUtil.deleteTable(tablename);
 			HbaseUtil.createTable(tablename, familys);
 
 			// add record zkb

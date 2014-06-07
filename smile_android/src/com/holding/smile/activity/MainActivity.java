@@ -35,6 +35,7 @@ import com.holding.smile.myview.MyListView;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 import com.holding.smile.service.LoginService;
+import com.holding.smile.tools.StrUtils;
 
 public class MainActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener {
 
@@ -215,13 +216,17 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 						// "!", Toast.LENGTH_SHORT)
 						// .show();
 
-//						Intent intent = new Intent(context, HtmlUIActivity.class);
-//						if (jAct.getId().equals(2)) {
-//							intent.putExtra("url", "file:///android_asset/index2.html");
-//						} else {
-//							intent.putExtra("url", "file:///android_asset/index.html");
-//						}
-//						startActivity(intent);
+						Intent intent = new Intent(context, HtmlUIActivity.class);
+						if (StrUtils.isNotEmpty(jAct.getUrl())) {
+							intent.putExtra("url", jAct.getUrl());
+						} else {
+							if (jAct.getId().equals(2)) {
+								intent.putExtra("url", "file:///android_asset/index2.html");
+							} else {
+								intent.putExtra("url", "file:///android_asset/index.html");
+							}
+						}
+						startActivity(intent);
 
 					}
 				});
@@ -306,6 +311,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																int jSize = strings.size();
 																for (int i = 0; i < jSize; i++) {
 																	JActivity each = strings.get(i);
+																	each.setUrl("");
 																	recActList.add(each);
 																}
 
