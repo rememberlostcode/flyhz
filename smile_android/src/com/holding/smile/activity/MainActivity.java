@@ -221,9 +221,11 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 							intent.putExtra("url", jAct.getUrl());
 						} else {
 							if (jAct.getId().equals(2)) {
-								intent.putExtra("url", "file:///android_asset/index2.html");
+								intent.putExtra("url", MyApplication.jgoods_img_url
+										+ "/activity/index2.html");
 							} else {
-								intent.putExtra("url", "file:///android_asset/index.html");
+								intent.putExtra("url", MyApplication.jgoods_img_url
+										+ "/activity/index.html");
 							}
 						}
 						startActivity(intent);
