@@ -671,7 +671,6 @@ public class AvengersAppMaster {
 						+ allocatedContainer.getResource().getMemory());
 				// + ", containerToken"
 				// +allocatedContainer.getContainerToken().getIdentifier().toString());
-
 				LaunchContainerRunnable runnableLaunchContainer = new LaunchContainerRunnable(
 						allocatedContainer, containerListener);
 				Thread launchThread = new Thread(runnableLaunchContainer);

@@ -77,6 +77,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 
+import com.flyhz.avengers.framework.AvengersAppMaster;
 import com.flyhz.avengers.framework.DSConstants;
 
 /**
@@ -232,7 +233,9 @@ public class AvengersClient {
 	/**
    */
 	public AvengersClient(Configuration conf) throws Exception {
-		this("org.apache.hadoop.yarn.applications.distributedshell.ApplicationMaster", conf);
+		// this("org.apache.hadoop.yarn.applications.distributedshell.ApplicationMaster",
+		// conf);
+		this(AvengersAppMaster.class.getName(), conf);
 	}
 
 	AvengersClient(String appMasterMainClass, Configuration conf) {
@@ -559,7 +562,7 @@ public class AvengersClient {
 			classPathEnv.append(':');
 			classPathEnv.append(System.getProperty("java.class.path"));
 		}
-
+		LOG.info("CLASSPATH -> " + classPathEnv);
 		env.put("CLASSPATH", classPathEnv.toString());
 
 		amContainer.setEnvironment(env);
