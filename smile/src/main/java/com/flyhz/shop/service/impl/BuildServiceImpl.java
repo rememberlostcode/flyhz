@@ -21,9 +21,11 @@ import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.dto.BrandBuildDto;
 import com.flyhz.shop.dto.CategoryBuildDto;
 import com.flyhz.shop.dto.ProductBuildDto;
+import com.flyhz.shop.persistence.dao.ActivityDao;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.CategoryDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
+import com.flyhz.shop.persistence.entity.ActivityModel;
 import com.flyhz.shop.service.BuildService;
 
 @Service
@@ -43,6 +45,8 @@ public class BuildServiceImpl implements BuildService {
 	private SolrData		solrData;
 	@Resource
 	private RedisRepository	redisRepository;
+	@Resource
+	private ActivityDao 	activityDao;
 	/**
 	 * 500条数据查询一次并插入数据库
 	 */
@@ -90,7 +94,7 @@ public class BuildServiceImpl implements BuildService {
 
 		/******** build首页推荐商品 start *******/
 		cacheRepository.setString(Constants.REDIS_KEY_RECOMMEND_INDEX,
-				solrData.getProductsString(null, null));
+				JSONUtil.getEntity2Json(activityDao.getModelList(new ActivityModel())));
 		/******** build首页推荐商品 end *******/
 
 		/******** build商品品牌分类 start *******/
