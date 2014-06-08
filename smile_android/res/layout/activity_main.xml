@@ -13,7 +13,8 @@
         android:layout_marginBottom="3dp"
         android:layout_marginTop="3dp"
         android:gravity="center"
-        android:orientation="horizontal" />
+        android:orientation="horizontal" 
+        android:background="@drawable/shenhuise"/>
 
     <ListView
         android:id="@+id/goods_list_view"

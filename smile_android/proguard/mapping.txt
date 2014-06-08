@@ -1942,7 +1942,7 @@ com.holding.smile.activity.IdcardEditActivity -> com.holding.smile.activity.Idca
     java.lang.String picturePath -> picturePath
     android.widget.EditText idcardName -> idcardName
     android.widget.EditText idcardNumber -> idcardNumber
-    android.widget.ImageView idcardPhotoButton -> idcardPhotoButton
+    android.widget.TextView idcardPhotoButton -> idcardPhotoButton
     android.widget.Button idcardSave -> idcardSave
     android.widget.Button idcardDelete -> idcardDelete
     android.widget.ImageView imageView -> imageView
@@ -2055,6 +2055,7 @@ com.holding.smile.activity.MainActivity$3 -> com.holding.smile.activity.MainActi
     void run() -> run
 com.holding.smile.activity.MainActivity$4 -> com.holding.smile.activity.MainActivity$4:
     com.holding.smile.activity.MainActivity this$0 -> this$0
+    com.holding.smile.entity.JActivity val$jAct -> val$jAct
     void onClick(android.view.View) -> onClick
 com.holding.smile.activity.MainActivity$5 -> com.holding.smile.activity.MainActivity$5:
     com.holding.smile.activity.MainActivity this$0 -> this$0
@@ -2270,7 +2271,7 @@ com.holding.smile.activity.OrderPayActivity -> com.holding.smile.activity.OrderP
     int WHAT_PROGRESS_STATE -> WHAT_PROGRESS_STATE
     android.app.ProgressDialog pDialog -> pDialog
     int mProgress -> mProgress
-    android.widget.ImageView payBtn -> payBtn
+    android.widget.Button payBtn -> payBtn
     android.widget.TextView payMsgText -> payMsgText
     android.widget.TextView numberText -> numberText
     android.widget.TextView amountText -> amountText

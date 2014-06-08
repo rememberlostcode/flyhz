@@ -641,7 +641,7 @@ com.holding.smile.activity.IdcardEditActivity: com.holding.smile.entity.Idcard i
 com.holding.smile.activity.IdcardEditActivity: java.lang.String picturePath
 com.holding.smile.activity.IdcardEditActivity: android.widget.EditText idcardName
 com.holding.smile.activity.IdcardEditActivity: android.widget.EditText idcardNumber
-com.holding.smile.activity.IdcardEditActivity: android.widget.ImageView idcardPhotoButton
+com.holding.smile.activity.IdcardEditActivity: android.widget.TextView idcardPhotoButton
 com.holding.smile.activity.IdcardEditActivity: android.widget.Button idcardSave
 com.holding.smile.activity.IdcardEditActivity: android.widget.Button idcardDelete
 com.holding.smile.activity.IdcardEditActivity: android.widget.ImageView imageView
@@ -765,7 +765,8 @@ com.holding.smile.activity.MainActivity$3: MainActivity$3(com.holding.smile.acti
 com.holding.smile.activity.MainActivity$3: void run()
 com.holding.smile.activity.MainActivity$4
 com.holding.smile.activity.MainActivity$4: com.holding.smile.activity.MainActivity this$0
-com.holding.smile.activity.MainActivity$4: MainActivity$4(com.holding.smile.activity.MainActivity)
+com.holding.smile.activity.MainActivity$4: com.holding.smile.entity.JActivity val$jAct
+com.holding.smile.activity.MainActivity$4: MainActivity$4(com.holding.smile.activity.MainActivity,com.holding.smile.entity.JActivity)
 com.holding.smile.activity.MainActivity$4: void onClick(android.view.View)
 com.holding.smile.activity.MainActivity$5
 com.holding.smile.activity.MainActivity$5: com.holding.smile.activity.MainActivity this$0
@@ -999,7 +1000,7 @@ com.holding.smile.activity.OrderPayActivity: int WHAT_DID_LOAD_DATA
 com.holding.smile.activity.OrderPayActivity: int WHAT_PROGRESS_STATE
 com.holding.smile.activity.OrderPayActivity: android.app.ProgressDialog pDialog
 com.holding.smile.activity.OrderPayActivity: int mProgress
-com.holding.smile.activity.OrderPayActivity: android.widget.ImageView payBtn
+com.holding.smile.activity.OrderPayActivity: android.widget.Button payBtn
 com.holding.smile.activity.OrderPayActivity: android.widget.TextView payMsgText
 com.holding.smile.activity.OrderPayActivity: android.widget.TextView numberText
 com.holding.smile.activity.OrderPayActivity: android.widget.TextView amountText
