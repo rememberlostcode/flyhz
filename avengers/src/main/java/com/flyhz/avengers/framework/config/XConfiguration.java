@@ -37,7 +37,7 @@ public class XConfiguration {
 	public static final String			AVENGERS_DOMAINS		= "avengers.domains";
 	public static final String			CRAWL_EVENTS			= "crawl.events";
 	public static final String			FETCH_EVENTS			= "fetch.events";
-	public static final String			TEMPLATE_EVENTS			= "fetch.events";
+	public static final String			TEMPLATE_EVENTS			= "template.events";
 	public static final String			ANALYZE_EVENTS			= "analyze.events";
 	public static final String			URLFILTER_BEFORE_CRAWL	= "crawl.before.filter";
 	public static final String			URLFILTER_AFTER_CRAWL	= "crawl.after.filter";

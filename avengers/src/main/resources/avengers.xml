@@ -6,6 +6,9 @@
 		<urlFilterBeforeCrawl>
 			<value>^http://www.coach.com/online/handbags/prodyuct</value>
 		</urlFilterBeforeCrawl>
+		<fetchEvents>
+			<event class=""/>
+		</fetchEvents>
 		<templates>
 			<template url="^http://www.coach.com/online/handbags/Product-"
 				pattern="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
