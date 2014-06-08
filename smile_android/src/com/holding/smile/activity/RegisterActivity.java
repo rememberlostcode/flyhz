@@ -64,13 +64,25 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.self_register: {
-				Toast.makeText(context, "点击了注册", Toast.LENGTH_SHORT).show();
 				String username = userAccount.getText().toString();// 获取用户输入的账号
 				String password = userPwd.getText().toString();// 获取用户输入的密码
 				String password2 = userPwd2.getText().toString();// 获取用户输入的密码
 
+				if (username == null || "".equals(username.trim())) {
+					Toast.makeText(context, "用户名不能为空！", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if (username.length() < 6 || username.length() >12) {
+					Toast.makeText(context, "用户名只能6到12个字符！", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				if (password == null || "".equals(password.trim())) {
 					Toast.makeText(context, "密码不能为空！", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if (password.length() < 6 || password.length() >12) {
+					Toast.makeText(context, "密码只能6到12个字符！", Toast.LENGTH_SHORT).show();
 					return;
 				}
 				if (!password.equals(password2.trim())) {
@@ -109,8 +121,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																												user);
 
 																		if (rvd == null
-																				|| rvd.getCode() == null
-																				|| rvd.getUserData() == null) {
+																				|| rvd.getCode() == null) {
 																			loginViewInit();
 																			Toast.makeText(
 																					context,
@@ -118,16 +129,57 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																					Toast.LENGTH_SHORT)
 																					.show();
 																		} else {
-																			Toast.makeText(
-																					context,
-																					"注册成功！",
-																					Toast.LENGTH_SHORT)
-																					.show();
-																			Intent intent = new Intent(
-																					context,
-																					LoginActivity.class);
-																			startActivity(intent);
-																			finish();
+																			if("200000".equals(rvd.getCode())){
+																				Toast.makeText(
+																						context,
+																						"注册成功！",
+																						Toast.LENGTH_SHORT)
+																						.show();
+																				Intent intent = new Intent(
+																						context,
+																						LoginActivity.class);
+																				startActivity(intent);
+																				finish();
+																			} else {
+																				if(rvd.getCode().equals(140001)){
+																					Toast.makeText(
+																							context,
+																							"用户名与密码不能为空！",
+																							Toast.LENGTH_SHORT)
+																							.show();
+																				} else if(rvd.getCode().equals(140002)){
+																					Toast.makeText(
+																							context,
+																							"用户名为空！",
+																							Toast.LENGTH_SHORT)
+																							.show();
+																				} else if(rvd.getCode().equals(140003)){
+																					Toast.makeText(
+																							context,
+																							"用户名长度不能大于32个字符！",
+																							Toast.LENGTH_SHORT)
+																							.show();
+																				}  else if(rvd.getCode().equals(140004)){
+																					Toast.makeText(
+																							context,
+																							"用户名已存在！",
+																							Toast.LENGTH_SHORT)
+																							.show();
+																				}  else if(rvd.getCode().equals(140005)){
+																					Toast.makeText(
+																							context,
+																							"密码为空！",
+																							Toast.LENGTH_SHORT)
+																							.show();
+																				} else {
+																					Toast.makeText(
+																							context,
+																							"注册失败！",
+																							Toast.LENGTH_SHORT)
+																							.show();
+																				}
+																				loginViewInit();
+																			}
 																		}
 																	}
 																	break;

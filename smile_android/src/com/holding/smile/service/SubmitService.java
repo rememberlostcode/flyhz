@@ -239,10 +239,12 @@ public class SubmitService {
 			String rvdString = URLUtil.getStringByGet(prefix_url + register_url, param);
 			if (rvdString != null) {
 				PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
+				rvd = new RtnValueDto();
 				if (user != null && user.getData() != null && user.getCode() == 200000) {
-					rvd = new RtnValueDto();
 					rvd.setUserData(user.getData());
 					rvd.setCode(200000);
+				} else {
+					rvd.setCode(user.getCode());
 				}
 			}
 		}

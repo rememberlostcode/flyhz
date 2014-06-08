@@ -77,7 +77,7 @@
             android:background="@drawable/login_input_bg"
             android:padding="5dp"
             android:inputType="text"
-            android:text="admin"
+            android:hint="请输入用户名"
             android:textColor="@drawable/shenhuise" />
         <!-- 密码 -->
 
@@ -94,8 +94,8 @@
             android:background="@drawable/login_input_bg"
             android:inputType="textPassword"
             android:padding="5dp"
-            android:textColor="@drawable/shenhuise"
-            android:text="123456" />
+            android:hint="请输入密码"
+            android:textColor="@drawable/shenhuise" />
         <!-- 登陆按钮 -->
 
         <Button
