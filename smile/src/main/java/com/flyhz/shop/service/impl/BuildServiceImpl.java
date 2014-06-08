@@ -93,6 +93,8 @@ public class BuildServiceImpl implements BuildService {
 		log.info("buildRedis开始...");
 
 		/******** build首页推荐商品 start *******/
+//		cacheRepository.setString("smile@recommend@index@products",
+//				solrData.getProductsString(null, null));
 		cacheRepository.setString(Constants.REDIS_KEY_RECOMMEND_INDEX,
 				JSONUtil.getEntity2Json(activityDao.getModelList(new ActivityModel())));
 		/******** build首页推荐商品 end *******/
@@ -143,6 +145,7 @@ public class BuildServiceImpl implements BuildService {
 		}
 		brandProducts.append("]");
 		cacheRepository.setString(Constants.REDIS_KEY_BRANDS_RECOMMEND, brandProducts.toString());
+		cacheRepository.setString("smile@recommend@index@products", brandProducts.toString());
 
 		// build各品牌各分类推荐商品（前10个）（首页选分类时）
 		StringBuilder brandCateProducts = new StringBuilder(100);
