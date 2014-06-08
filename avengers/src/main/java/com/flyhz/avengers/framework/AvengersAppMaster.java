@@ -301,29 +301,20 @@ public class AvengersAppMaster {
 	 * @throws IOException
 	 */
 	public boolean init(String[] args) throws ParseException, IOException {
-
+		StringBuffer sb = new StringBuffer();
+		sb.append("huoding cmd ->");
+		for (String arg : args) {
+			sb.append(arg).append(" ");
+		}
+		LOG.info(sb.toString());
 		Options opts = new Options();
-		opts.addOption("all", false, "all:crawl、fetch、out");
-		opts.addOption("crawl", false, "crawl");
-		opts.addOption("fetch", false, "fetch");
-		opts.addOption("out", false, "out");
-		opts.addOption("debug", false, "Dump out debug information");
-		opts.addOption("help", false, "Print usage");
+		opts.addOption("shell_command", true, "all,crawl,fetch,out");
 		CommandLine cliParser = new GnuParser().parse(opts, args);
 
 		if (args.length == 0) {
 			printUsage(opts);
 			throw new IllegalArgumentException(
 					"No args specified for application master to initialize");
-		}
-
-		if (cliParser.hasOption("help")) {
-			printUsage(opts);
-			return false;
-		}
-
-		if (cliParser.hasOption("debug")) {
-			dumpOutDebugInfo();
 		}
 
 		Map<String, String> envs = System.getenv();
@@ -360,7 +351,8 @@ public class AvengersAppMaster {
 				+ appAttemptID.getApplicationId().getClusterTimestamp() + ", attemptId="
 				+ appAttemptID.getAttemptId());
 
-		if (cliParser.hasOption("crawl")) {
+		if ("crawl".equals(cliParser.getOptionValue("shell_command"))) {
+			LOG.info("App run crawl");
 			Map<String, Object> context = XConfiguration.getAvengersContext();
 			@SuppressWarnings("unchecked")
 			Map<String, Object> domainsMap = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
@@ -369,28 +361,12 @@ public class AvengersAppMaster {
 
 			// Set java executable command
 			LOG.info("Setting up app master command");
+
 			vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
 			// Set Xmx based on am memory size
 			vargs.add("-Xmx" + containerMemory + "m");
 			// Set class name
 			vargs.add(Crawl.class.getName());
-			// Set params for Application Master
-			// vargs.add("--container_memory " +
-			// String.valueOf(containerMemory));
-			// vargs.add("--num_containers " + String.valueOf(numContainers));
-			// vargs.add("--priority " + String.valueOf(shellCmdPriority));
-			if (!shellCommand.isEmpty()) {
-				vargs.add("--shell_command " + shellCommand + "");
-			}
-			if (!shellArgs.isEmpty()) {
-				vargs.add("--shell_args " + shellArgs + "");
-			}
-			for (Map.Entry<String, String> entry : shellEnv.entrySet()) {
-				vargs.add("--shell_env " + entry.getKey() + "=" + entry.getValue());
-			}
-			// if (debugFlag) {
-			// vargs.add("--debug");
-			// }
 
 			vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
 			vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
@@ -410,25 +386,6 @@ public class AvengersAppMaster {
 			LOG.info("AvengersAppMaster run fetch");
 		} else if (cliParser.hasOption("out")) {
 			LOG.info("AvengersAppMaster run out");
-		}
-		// shellCommand = cliParser.getOptionValue("shell_command");
-
-		if (cliParser.hasOption("shell_env")) {
-			String shellEnvs[] = cliParser.getOptionValues("shell_env");
-			for (String env : shellEnvs) {
-				env = env.trim();
-				int index = env.indexOf('=');
-				if (index == -1) {
-					shellEnv.put(env, "");
-					continue;
-				}
-				String key = env.substring(0, index);
-				String val = "";
-				if (index < (env.length() - 1)) {
-					val = env.substring(index + 1);
-				}
-				shellEnv.put(key, val);
-			}
 		}
 
 		if (envs.containsKey(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION)) {

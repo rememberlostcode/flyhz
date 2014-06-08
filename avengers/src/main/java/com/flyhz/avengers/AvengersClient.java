@@ -262,16 +262,19 @@ public class AvengersClient {
 		opts.addOption("jar", true, "Jar file containing the application master");
 		opts.addOption("shell_command", true,
 				"Shell command to be executed by the Application Master");
-		opts.addOption("shell_script", true, "Location of the shell script to be executed");
-		opts.addOption("shell_args", true, "Command line args for the shell script");
-		opts.addOption("shell_env", true,
-				"Environment for shell script. Specified as env_key=env_val pairs");
-		opts.addOption("shell_cmd_priority", true, "Priority for the shell command containers");
-		opts.addOption("container_memory", true,
-				"Amount of memory in MB to be requested to run the shell command");
-		opts.addOption("num_containers", true,
-				"No. of containers on which the shell command needs to be executed");
-		opts.addOption("log_properties", true, "log4j.properties file");
+		// opts.addOption("shell_script", true,
+		// "Location of the shell script to be executed");
+		// opts.addOption("shell_args", true,
+		// "Command line args for the shell script");
+		// opts.addOption("shell_env", true,
+		// "Environment for shell script. Specified as env_key=env_val pairs");
+		// opts.addOption("shell_cmd_priority", true,
+		// "Priority for the shell command containers");
+		// opts.addOption("container_memory", true,
+		// "Amount of memory in MB to be requested to run the shell command");
+		// opts.addOption("num_containers", true,
+		// "No. of containers on which the shell command needs to be executed");
+		// opts.addOption("log_properties", true, "log4j.properties file");
 		opts.addOption("debug", false, "Dump out debug information");
 		opts.addOption("help", false, "Print usage");
 	}
@@ -579,21 +582,21 @@ public class AvengersClient {
 		// Set class name
 		vargs.add(appMasterMainClass);
 		// Set params for Application Master
-		vargs.add("--container_memory " + String.valueOf(containerMemory));
-		vargs.add("--num_containers " + String.valueOf(numContainers));
-		vargs.add("--priority " + String.valueOf(shellCmdPriority));
+		// vargs.add("--container_memory " + String.valueOf(containerMemory));
+		// vargs.add("--num_containers " + String.valueOf(numContainers));
+		// vargs.add("--priority " + String.valueOf(shellCmdPriority));
 		if (!shellCommand.isEmpty()) {
 			vargs.add("--shell_command " + shellCommand + "");
 		}
-		if (!shellArgs.isEmpty()) {
-			vargs.add("--shell_args " + shellArgs + "");
-		}
-		for (Map.Entry<String, String> entry : shellEnv.entrySet()) {
-			vargs.add("--shell_env " + entry.getKey() + "=" + entry.getValue());
-		}
-		if (debugFlag) {
-			vargs.add("--debug");
-		}
+		// if (!shellArgs.isEmpty()) {
+		// vargs.add("--shell_args " + shellArgs + "");
+		// }
+		// for (Map.Entry<String, String> entry : shellEnv.entrySet()) {
+		// vargs.add("--shell_env " + entry.getKey() + "=" + entry.getValue());
+		// }
+		// if (debugFlag) {
+		// vargs.add("debug");
+		// }
 
 		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
 		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
