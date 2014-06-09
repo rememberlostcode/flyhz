@@ -17,10 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +63,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		backBtn.setOnClickListener(this);
 		TextView headerDesc = displayHeaderDescription();
 		headerDesc.setText(R.string.my_shopping_cart);
+		
+		displayFooterMain(R.id.mainfooter_four);
+		
 		editBtn = displayHeaderRight();
 		editBtn.setText(R.string.edit);
 		editBtn.setTag("edit");

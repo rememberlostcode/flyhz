@@ -103,6 +103,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.self_login: {
+				String username = userAccount.getText().toString();// 获取用户输入的账号
+				String password = userPwd.getText().toString();// 获取用户输入的密码
+				if (username == null || "".equals(username.trim())) {
+					Toast.makeText(context, "用户名不能为空！", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if (password == null || "".equals(password.trim())) {
+					Toast.makeText(context, "密码不能为空！", Toast.LENGTH_SHORT).show();
+					return;
+				}
 				startTask();
 				break;
 			}
@@ -154,6 +164,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																				"登录失败！",
 																				Toast.LENGTH_SHORT)
 																				.show();
+																		progressBar.setVisibility(View.INVISIBLE);
 																	} else {
 																		if (!isClose) {
 																			Intent intent = null;

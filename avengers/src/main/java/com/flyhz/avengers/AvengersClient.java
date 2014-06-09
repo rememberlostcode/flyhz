@@ -77,6 +77,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 
+import com.flyhz.avengers.framework.AvengersAppMaster;
 import com.flyhz.avengers.framework.DSConstants;
 
 /**
@@ -190,9 +191,10 @@ public class AvengersClient {
 	 *            Command line arguments
 	 */
 	public static void main(String[] args) {
-		System.out.println(System.getenv("HADOOP_HOME"));
+		// System.out.println(System.getenv("HADOOP_HOME"));
 
-		System.setProperty("hadoop.home.dir", "/Users/huoding/Downloads/hadoop-2.2.0");
+		// System.setProperty("hadoop.home.dir",
+		// "/Users/huoding/Downloads/hadoop-2.2.0");
 		System.setProperty("yarn.resourcemanager.adress", "10.203.3.39");
 		System.setProperty("HADOOP_USER_NAME", "avengers");
 		LOG.info("HADOOP_CONF_DIR = " + System.getenv("HADOOP_CONF_DIR"));
@@ -233,7 +235,9 @@ public class AvengersClient {
 	/**
    */
 	public AvengersClient(Configuration conf) throws Exception {
-		this("org.apache.hadoop.yarn.applications.distributedshell.ApplicationMaster", conf);
+		// this("org.apache.hadoop.yarn.applications.distributedshell.ApplicationMaster",
+		// conf);
+		this(AvengersAppMaster.class.getName(), conf);
 	}
 
 	AvengersClient(String appMasterMainClass, Configuration conf) {
@@ -259,16 +263,19 @@ public class AvengersClient {
 		opts.addOption("jar", true, "Jar file containing the application master");
 		opts.addOption("shell_command", true,
 				"Shell command to be executed by the Application Master");
-		opts.addOption("shell_script", true, "Location of the shell script to be executed");
-		opts.addOption("shell_args", true, "Command line args for the shell script");
-		opts.addOption("shell_env", true,
-				"Environment for shell script. Specified as env_key=env_val pairs");
-		opts.addOption("shell_cmd_priority", true, "Priority for the shell command containers");
-		opts.addOption("container_memory", true,
-				"Amount of memory in MB to be requested to run the shell command");
-		opts.addOption("num_containers", true,
-				"No. of containers on which the shell command needs to be executed");
-		opts.addOption("log_properties", true, "log4j.properties file");
+		// opts.addOption("shell_script", true,
+		// "Location of the shell script to be executed");
+		// opts.addOption("shell_args", true,
+		// "Command line args for the shell script");
+		// opts.addOption("shell_env", true,
+		// "Environment for shell script. Specified as env_key=env_val pairs");
+		// opts.addOption("shell_cmd_priority", true,
+		// "Priority for the shell command containers");
+		// opts.addOption("container_memory", true,
+		// "Amount of memory in MB to be requested to run the shell command");
+		// opts.addOption("num_containers", true,
+		// "No. of containers on which the shell command needs to be executed");
+		// opts.addOption("log_properties", true, "log4j.properties file");
 		opts.addOption("debug", false, "Dump out debug information");
 		opts.addOption("help", false, "Print usage");
 	}
@@ -560,7 +567,7 @@ public class AvengersClient {
 			classPathEnv.append(':');
 			classPathEnv.append(System.getProperty("java.class.path"));
 		}
-
+		LOG.info("CLASSPATH -> " + classPathEnv);
 		env.put("CLASSPATH", classPathEnv.toString());
 
 		amContainer.setEnvironment(env);
@@ -576,21 +583,21 @@ public class AvengersClient {
 		// Set class name
 		vargs.add(appMasterMainClass);
 		// Set params for Application Master
-		vargs.add("--container_memory " + String.valueOf(containerMemory));
-		vargs.add("--num_containers " + String.valueOf(numContainers));
-		vargs.add("--priority " + String.valueOf(shellCmdPriority));
+		// vargs.add("--container_memory " + String.valueOf(containerMemory));
+		// vargs.add("--num_containers " + String.valueOf(numContainers));
+		// vargs.add("--priority " + String.valueOf(shellCmdPriority));
 		if (!shellCommand.isEmpty()) {
 			vargs.add("--shell_command " + shellCommand + "");
 		}
-		if (!shellArgs.isEmpty()) {
-			vargs.add("--shell_args " + shellArgs + "");
-		}
-		for (Map.Entry<String, String> entry : shellEnv.entrySet()) {
-			vargs.add("--shell_env " + entry.getKey() + "=" + entry.getValue());
-		}
-		if (debugFlag) {
-			vargs.add("--debug");
-		}
+		// if (!shellArgs.isEmpty()) {
+		// vargs.add("--shell_args " + shellArgs + "");
+		// }
+		// for (Map.Entry<String, String> entry : shellEnv.entrySet()) {
+		// vargs.add("--shell_env " + entry.getKey() + "=" + entry.getValue());
+		// }
+		// if (debugFlag) {
+		// vargs.add("debug");
+		// }
 
 		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
 		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
