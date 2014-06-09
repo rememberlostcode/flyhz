@@ -22,6 +22,10 @@ public abstract class AbstractFileCache {
 
 	public File getFile(String url) {
 		File f = new File(getSavePath(url));
+		if (f == null || !f.exists()) {
+			FileHelper.createDirectory(dirString);
+			f = new File(getSavePath(url));
+		}
 		return f;
 	}
 
