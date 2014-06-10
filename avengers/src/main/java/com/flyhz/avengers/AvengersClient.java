@@ -254,30 +254,10 @@ public class AvengersClient {
 		yarnClient.init(conf);
 
 		opts = new Options();
-		opts.addOption("appname", true, "Application Name. Default value - DistributedShell");
-		opts.addOption("priority", true, "Application Priority. Default 0");
-		opts.addOption("queue", true, "RM Queue in which this application is to be submitted");
-		opts.addOption("timeout", true, "Application timeout in milliseconds");
-		opts.addOption("master_memory", true,
-				"Amount of memory in MB to be requested to run the application master");
+		opts.addOption("appname", true, "Application Name. Default value - avengers");
 		opts.addOption("jar", true, "Jar file containing the application master");
 		opts.addOption("shell_command", true,
 				"Shell command to be executed by the Application Master");
-		// opts.addOption("shell_script", true,
-		// "Location of the shell script to be executed");
-		// opts.addOption("shell_args", true,
-		// "Command line args for the shell script");
-		// opts.addOption("shell_env", true,
-		// "Environment for shell script. Specified as env_key=env_val pairs");
-		// opts.addOption("shell_cmd_priority", true,
-		// "Priority for the shell command containers");
-		// opts.addOption("container_memory", true,
-		// "Amount of memory in MB to be requested to run the shell command");
-		// opts.addOption("num_containers", true,
-		// "No. of containers on which the shell command needs to be executed");
-		// opts.addOption("log_properties", true, "log4j.properties file");
-		opts.addOption("debug", false, "Dump out debug information");
-		opts.addOption("help", false, "Print usage");
 	}
 
 	/**
@@ -309,17 +289,7 @@ public class AvengersClient {
 			throw new IllegalArgumentException("No args specified for client to initialize");
 		}
 
-		if (cliParser.hasOption("help")) {
-			printUsage();
-			return false;
-		}
-
-		if (cliParser.hasOption("debug")) {
-			debugFlag = true;
-
-		}
-
-		appName = cliParser.getOptionValue("appname", "DistributedShell");
+		appName = cliParser.getOptionValue("appname", "Avengers");
 		amPriority = Integer.parseInt(cliParser.getOptionValue("priority", "0"));
 		amQueue = cliParser.getOptionValue("queue", "default");
 		amMemory = Integer.parseInt(cliParser.getOptionValue("master_memory", "10"));
@@ -342,30 +312,7 @@ public class AvengersClient {
 		}
 		shellCommand = cliParser.getOptionValue("shell_command");
 
-		if (cliParser.hasOption("shell_script")) {
-			shellScriptPath = cliParser.getOptionValue("shell_script");
-		}
-		if (cliParser.hasOption("shell_args")) {
-			shellArgs = cliParser.getOptionValue("shell_args");
-		}
-		if (cliParser.hasOption("shell_env")) {
-			String envs[] = cliParser.getOptionValues("shell_env");
-			for (String env : envs) {
-				env = env.trim();
-				int index = env.indexOf('=');
-				if (index == -1) {
-					shellEnv.put(env, "");
-					continue;
-				}
-				String key = env.substring(0, index);
-				String val = "";
-				if (index < (env.length() - 1)) {
-					val = env.substring(index + 1);
-				}
-				shellEnv.put(key, val);
-			}
-		}
-		shellCmdPriority = Integer.parseInt(cliParser.getOptionValue("shell_cmd_priority", "0"));
+		shellCmdPriority = Integer.parseInt("0");
 
 		containerMemory = Integer.parseInt(cliParser.getOptionValue("container_memory", "10"));
 		numContainers = Integer.parseInt(cliParser.getOptionValue("num_containers", "1"));
@@ -426,7 +373,6 @@ public class AvengersClient {
 		// Get a new application id
 		YarnClientApplication app = yarnClient.createApplication();
 		GetNewApplicationResponse appResponse = app.getNewApplicationResponse();
-		// TODO get min/max resource capabilities from RM and change memory ask
 		// if needed
 		// If we do not have min/max, we may not be able to correctly request
 		// the required resources from the RM for the app master
@@ -649,7 +595,6 @@ public class AvengersClient {
 
 		// Set the priority for the application master
 		Priority pri = Records.newRecord(Priority.class);
-		// TODO - what is the range for priority? how to decide?
 		pri.setPriority(amPriority);
 		appContext.setPriority(pri);
 
@@ -666,7 +611,6 @@ public class AvengersClient {
 
 		yarnClient.submitApplication(appContext);
 
-		// TODO
 		// Try submitting the same request again
 		// app submission failure?
 
@@ -745,7 +689,6 @@ public class AvengersClient {
 	 * @throws IOException
 	 */
 	private void forceKillApplication(ApplicationId appId) throws YarnException, IOException {
-		// TODO clarify whether multiple jobs with the same app id can be
 		// submitted and be running at
 		// the same time.
 		// If yes, can we kill a particular attempt only?

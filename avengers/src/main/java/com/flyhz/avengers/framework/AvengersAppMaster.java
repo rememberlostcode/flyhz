@@ -170,7 +170,6 @@ public class AvengersAppMaster {
 	// Application Attempt Key ( combination of attemptId and fail count )
 	private ApplicationAttemptId	appAttemptID;
 
-	// TODO
 	// For status update for clients - yet to be implemented
 	// Hostname of the container
 	private String					appMasterHostname			= "";
@@ -461,9 +460,7 @@ public class AvengersAppMaster {
 
 		// Setup local RPC Server to accept status requests directly from
 		// clients
-		// TODO need to setup a protocol for client to be able to communicate to
 		// the RPC server
-		// TODO use the rpc port info to register with the RM for the client to
 		// send requests to this app master
 
 		// Register self with ResourceManager
