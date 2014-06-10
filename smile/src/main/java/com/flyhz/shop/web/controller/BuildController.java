@@ -3,6 +3,7 @@ package com.flyhz.shop.web.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
+import com.flyhz.shop.persistence.dao.ActivityDao;
+import com.flyhz.shop.persistence.entity.ActivityModel;
 import com.flyhz.shop.service.BuildService;
 
 @Controller
@@ -29,6 +32,8 @@ public class BuildController {
 	@Resource
 	@Value(value = "${smile.taobao.url}")
 	private String smile_taobao_url;
+	@Resource
+	private ActivityDao 	activityDao;
 
 	@RequestMapping(value = "/all")
 	public String all(Model model) {
@@ -51,6 +56,8 @@ public class BuildController {
 	@RequestMapping(value = "/test")
 	public String test(Model model) {
 		try {
+			List<ActivityModel> list = activityDao.getModelList();
+			System.out.println(JSONUtil.getEntity2Json(list));
 			model.addAttribute("result",
 					JSONUtil.getEntity2Json(redisRepository.getProductFromRedis("50")));
 			String orderJson = redisRepository.getOrderFromRedis(1, 18);

@@ -67,5 +67,6 @@
 -keep class com.holding.smile.entity.** { *;}
 -keep class com.holding.smile.protocol.** { *;}
 -keep class com.holding.smile.dto.** { *;}
+-keep class com.holding.smile.tools.TbUtil{ *;}
 
 

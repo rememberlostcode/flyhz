@@ -36,7 +36,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 	private EditText	idcardName;
 	private EditText	idcardNumber;
-	private ImageView		idcardPhotoButton;
+	private TextView		idcardPhotoButton;
 	private Button		idcardSave;
 	private Button		idcardDelete;
 	private ImageView	imageView;
@@ -55,7 +55,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 		idcardName = (EditText) findViewById(R.id.idcard_name);
 		idcardNumber = (EditText) findViewById(R.id.idcard_number);
-		idcardPhotoButton = (ImageView) findViewById(R.id.idcard_photo_button);
+		idcardPhotoButton = (TextView) findViewById(R.id.idcard_photo_button);
 		idcardSave = (Button) findViewById(R.id.idcard_add_save);
 		idcardDelete = (Button) findViewById(R.id.idcard_delete);
 		imageView = (ImageView) findViewById(R.id.idcard_idcard_img);
@@ -127,17 +127,24 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				break;
 			}
 			case R.id.idcard_add_save: {
-				if ("".equals(idcardName.getText().toString())) {
+				String xm = idcardName.getText().toString();
+				if ("".equals(xm) || "".equals(xm.trim())) {
 					Toast.makeText(context, "姓名不能为空", Toast.LENGTH_SHORT).show();
 					break;
 				}
-				idcard.setName(idcardName.getText().toString());
+				idcard.setName(xm.trim());
 
-				if ("".equals(idcardNumber.getText().toString())) {
-					Toast.makeText(context, "联系电话不能为空", Toast.LENGTH_SHORT).show();
+				String sfzh = idcardNumber.getText().toString();
+				if ("".equals(sfzh) || "".equals(sfzh.trim())) {
+					Toast.makeText(context, "身份证号不能为空", Toast.LENGTH_SHORT).show();
 					break;
 				}
-				idcard.setNumber(idcardNumber.getText().toString());
+				idcard.setNumber(sfzh.trim());
+				
+				if(idcard.getId()==null && (picturePath==null || "".equals(picturePath.trim()))){
+					Toast.makeText(context, "必须上传身份证", Toast.LENGTH_SHORT).show();
+					break;
+				}
 
 				optNum = OPT_CODE_SAVE;
 				startTask();

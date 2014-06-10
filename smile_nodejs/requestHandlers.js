@@ -47,25 +47,22 @@ function recommendactivity(query,response) {
         // console.log(res);
         var recommendindex = JSON.parse(res);
         if(recommendindex){
-            var result = '[{"id":"1","p":"/activity/1.jpg"},' +
+            var result = '['; /*'[{"id":"1","p":"/activity/1.jpg"},' +
                 '{"id":"2","p":"/activity/2.jpg"},' +
-                '{"id":"3","p":"/activity/3.jpg"},' +
-                '{"id":"4","p":"/activity/4.jpg"},' +
-                '{"id":"5","p":"/activity/5.jpg"},' +
-                '{"id":"6","p":"/activity/6.jpg"}]';
-            /*for(var i=0;i<recommendindex.length;i++){
-             if(i > 0){
-             result += ',';
-             }
-             result += '{\"id\":';
-             result += JSON.stringify(recommendindex[i].id);
-             result += ',\"n\":';
-             result += JSON.stringify(recommendindex[i].n);
-             result += ',\"p\":';
-             result += JSON.stringify(recommendindex[i].p);
-             result += '}';
-             }
-             result += ']';*/
+                '{"id":"3","p":"/activity/3.jpg"}]';*/
+            for(var i=0;i<recommendindex.length;i++){
+                if(i > 0){
+                    result += ',';
+                }
+                result += '{\"id\":';
+                result += JSON.stringify(recommendindex[i].id);
+                result += ',\"p\":';
+                result += JSON.stringify(recommendindex[i].p);
+                result += ',\"url\":';
+                result += JSON.stringify(recommendindex[i].url);
+                result += '}';
+            }
+            result += ']';
             response.writeHead(200, {
                 "Content-Type": applicationJson,
                 "Access-Control-Allow-Origin":"*",
@@ -85,13 +82,23 @@ function recommendactivity(query,response) {
 function index(query,response) {
     var key ='smile@recommend@index';
     client.get(key, function(err, res) {
-        var result2 = '[{"id":"1","p":"/activity/1.jpg"},' +
-            '{"id":"2","p":"/activity/2.jpg"},' +
-            '{"id":"3","p":"/activity/3.jpg"},' +
-            '{"id":"4","p":"/activity/4.jpg"},' +
-            '{"id":"5","p":"/activity/5.jpg"},' +
-            '{"id":"6","p":"/activity/6.jpg"}]';
-
+        var result2 = '[';
+        var recommendindex = JSON.parse(res);
+        if(recommendindex){
+            for(var i=0;i<recommendindex.length;i++){
+                if(i > 0){
+                    result2 += ',';
+                }
+                result2 += '{\"id\":';
+                result2 += JSON.stringify(recommendindex[i].id);
+                result2 += ',\"p\":';
+                result2 += JSON.stringify(recommendindex[i].p);
+                result2 += ',\"url\":';
+                result2 += JSON.stringify(recommendindex[i].url);
+                result2 += '}';
+            }
+        }
+        result2 += ']';
 
         var result = '{"activity":'+result2+'';
         result += ',"brand":';
@@ -111,6 +118,7 @@ function index(query,response) {
                 memberfilter[2] = "p";
                 memberfilter[3] = "pp";
                 memberfilter[4] = "bs";
+				memberfilter[5] = "d";
 
                 var recommendindex = JSON.parse(res);
                 result += '[';
@@ -163,6 +171,7 @@ function recommendbrand(query,response) {
             memberfilter[2] = "p";
             memberfilter[3] = "pp";
             memberfilter[4] = "bs";
+			memberfilter[5] = "d";
 
             var recommendindex = JSON.parse(res);
             result = '[';
@@ -208,6 +217,7 @@ function getRecommendBrand(query) {
             memberfilter[2] = "p";
             memberfilter[3] = "pp";
             memberfilter[4] = "bs";
+			memberfilter[5] = "d";
 
             var recommendindex = JSON.parse(res);
             result = '[';
@@ -307,11 +317,12 @@ function brand(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].p);
-
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
@@ -445,6 +456,8 @@ function brandmore(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
@@ -583,6 +596,8 @@ function rankingdiscount(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
@@ -659,6 +674,8 @@ function rankingsales(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
@@ -759,6 +776,8 @@ function search(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
@@ -877,6 +896,8 @@ function searchmore(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
@@ -978,6 +999,8 @@ function goodsdetail(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].bp);
                         result += ',\"bp\":';
