@@ -92,7 +92,7 @@
 		api.close();
 	}
 </script>
-<form action="$path_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
+<form action="$server_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
     <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
 		<input type="hidden" id="id" name="id" value="$!product.id"/>
 		<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.oldColorimg"/>
@@ -163,22 +163,34 @@
 			<tr>
                 <td>颜色图片:</td>
 				<td>
-					<input id="colorimg" name="colorimg" type="file" style="display:none">
-                    <div>
-                       <input id="colorimgCover" type="text" class="filetxtweidth1">
-					   <input type="button" onclick="javascript:chooseImg('colorimg','colorimgCover');" value="选择图片"/>
-                    </div>
+					#if($!product.colorimg)
+						<img src="$!server_name/static/css/images/test$!product.colorimg" alt="$!product.color" style="height:30px;width:80px"/>
+					#else
+    					<input id="colorimg" name="colorimg" type="file" style="display:none">
+                        <div>
+                           <input id="colorimgCover" type="text" class="filetxtweidth1">
+    					   <input type="button" onclick="javascript:chooseImg('colorimg','colorimgCover');" value="选择图片"/>
+                        </div>
+					#end
 				</td>
 			</tr>
 			<tr>
                 <td>产品图片:</td>
 				<td id="productImgs">
-                    <div id="div_imgs1" class="divImgs">
-					   <input id="imgs1" name="imgs" type="file" style="display:none">
-                       <input id="imgs1Cover" type="text" class="filetxtweidth">
-					   <input type="button" onclick="javascript:chooseImg('imgs1','imgs1Cover');" value="选择图片"/>
-					   <input type="button" onclick="javascript:addImgsUpload('div_imgs1');" value="添  加"/>
-                    </div>
+					#if($!product.productImgs)
+						#foreach($productImg in $!product.productImgs)
+							<div>
+								<img src="$!server_name/static/css/images/test$!productImg" alt=""/>
+							</div>
+						#end
+					#else
+                        <div id="div_imgs1" class="divImgs">
+    					   <input id="imgs1" name="imgs" type="file" style="display:none">
+                           <input id="imgs1Cover" type="text" class="filetxtweidth">
+    					   <input type="button" onclick="javascript:chooseImg('imgs1','imgs1Cover');" value="选择图片"/>
+    					   <input type="button" onclick="javascript:addImgsUpload('div_imgs1');" value="添  加"/>
+                        </div>
+					#end
 				</td>
 			</tr>
 			<tr>

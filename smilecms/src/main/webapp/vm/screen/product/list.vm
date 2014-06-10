@@ -9,7 +9,7 @@
    });
    
    function searchNextPage(){
-      var url="$path_name/product/list";
+      var url="$server_name/product/list";
 	  var values = jQuery("#currentPage").val();
 	  GetWindowsUrl(url,"currentPage",values);		
    }
@@ -37,7 +37,7 @@
    }
    
    function showProduct(productId){
-   	  var url =  "$path_name/product/show?productId=" + productId;
+   	  var url =  "$server_name/product/show?productId=" + productId;
       jQuery.dialog({
     	  id:'editProduct',
     	  title:'产品数据维护',
@@ -51,7 +51,7 @@
    }
    
    function addProductPage(){
-   	  var url =  "$path_name/product/addpage";
+   	  var url =  "$server_name/product/addpage";
       jQuery.dialog({
     	  id:'addProductPage',
     	  title:'新增产品',
@@ -72,11 +72,11 @@
 </script>
 
 <!--删除商品-->
-<form action="$path_name/product/delete" method="post" id="delProduct">
+<form action="$server_name/product/delete" method="post" id="delProduct">
 	<input type="hidden" name="productId" id="productId" value=""/>
 </form>
 <!--批量删除商品-->
-<form action="$path_name/product/batchdel" method="post" id="batchdel">
+<form action="$server_name/product/batchdel" method="post" id="batchdel">
 	<input type="hidden" name="productIds" id="productIds" value=""/>
 </form>
 

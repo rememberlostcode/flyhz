@@ -1,11 +1,14 @@
 
 package com.flyhz.shop.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +19,10 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.page.Pager;
 import com.flyhz.framework.lang.page.Pagination;
+import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.shop.dto.ProductCmsDto;
 import com.flyhz.shop.dto.ProductParamDto;
+import com.flyhz.shop.dto.ProductShowDto;
 import com.flyhz.shop.persistence.entity.ProductModel;
 import com.flyhz.shop.service.BrandService;
 import com.flyhz.shop.service.CategoryService;
@@ -74,7 +79,14 @@ public class ProductController {
 	@RequestMapping(value = "/show", method = RequestMethod.GET)
 	public String showProduct(@RequestParam(value = "productId") Integer productId, Model model) {
 		ProductModel productModel = productService.getProductById(productId);
-		model.addAttribute("product", productModel);
+		ProductShowDto productShowDto = new ProductShowDto();
+		BeanUtils.copyProperties(productModel, productShowDto);
+		if (StringUtils.isNotBlank(productShowDto.getCover())) {
+			List<String> productImgs = JSONUtil.getJson2EntityList(productShowDto.getCover(),
+					ArrayList.class, String.class);
+			productShowDto.setProductImgs(productImgs);
+		}
+		model.addAttribute("product", productShowDto);
 		// 查询品牌列表
 		model.addAttribute("brands", brandService.getAllBrandBuildDtos());
 		// 查询分类列表

@@ -55,9 +55,9 @@
 		<div class="menu">
 			<div class="nav">
 				<ul>
-					<li #if($!current == "0") class="current" #end><a href="$path_name/index">首页</a></li>
+					<li #if($!current == "0") class="current" #end><a href="$server_name/index">首页</a></li>
 					#if($!u)
-						<li #if($!current == "1") class="current" #end><a href="$path_name/product/list">产品列表</a></li>
+						<li #if($!current == "1") class="current" #end><a href="$server_name/product/list">产品列表</a></li>
 					#end
 				</ul>
 			</div>

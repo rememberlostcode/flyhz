@@ -24,8 +24,8 @@
   	<data type="boolean" key="xhtml" value="true"/>
     <data type="boolean" key="isSimple" value="true"/>
     <data type="number" key="version" value="2.0"/>
-    <data type="string" key="server_name" value="http://haigou.app.com:8080/smilecms"></data>
-    <data type="string" key="path_name" value="http://haigou.app.com:8080/smilecms"></data>
+    <data type="string" key="server_name" value="http://tiantianhaigou.com:8080/smilecms"></data>
+    <data type="string" key="static_name" value="http://tiantianhaigou.com/static/smile"></data>
   	<tool>
 		<key>math</key>
   		<scope>application</scope>

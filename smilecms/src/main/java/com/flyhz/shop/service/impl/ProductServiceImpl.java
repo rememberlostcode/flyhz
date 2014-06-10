@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Resource;
 
@@ -40,9 +39,6 @@ public class ProductServiceImpl implements ProductService {
 	public void setPathFileUpload(String pathFileUpload) {
 		this.pathFileUpload = pathFileUpload;
 	}
-
-	private AtomicInteger	colorimgCount	= new AtomicInteger(1);
-	private AtomicInteger	imgsCount		= new AtomicInteger(1);
 
 	@Override
 	public List<ProductModel> getProductsByPage(Pager pager) {
@@ -189,7 +185,7 @@ public class ProductServiceImpl implements ProductService {
 			if (StringUtils.isNotBlank(origName)) {
 				StringBuffer newFileName = new StringBuffer();
 				newFileName.append("color").append(File.separatorChar)
-							.append(colorimgCount.getAndIncrement())
+							.append(productModel.getStyle())
 							.append(origName.substring(origName.lastIndexOf(".")));
 				// 保存颜色图到指定文件路径里
 				try {
@@ -208,12 +204,13 @@ public class ProductServiceImpl implements ProductService {
 			List<String> bigImgUrls = new ArrayList<String>();
 			List<String> litImgUrls = new ArrayList<String>();
 			try {
+				int count = 0;
 				for (MultipartFile multipartFile : files) {
 					String origName = multipartFile.getOriginalFilename();
 					if (StringUtils.isNotBlank(origName)) {
 						StringBuffer newFileName = new StringBuffer();
 						newFileName.append("coach").append(File.separatorChar)
-									.append(imgsCount.getAndIncrement())
+									.append(productModel.getStyle()).append("_").append(count)
 									.append(origName.substring(origName.lastIndexOf(".")));
 						// 处理物品大图
 						String bigPath = fileRepository.saveToTarget(
@@ -229,6 +226,7 @@ public class ProductServiceImpl implements ProductService {
 									+ litPath);
 						}
 					}
+					count++;
 				}
 				productModel.setImgs(JSONUtil.getEntity2Json(bigImgUrls));
 				productModel.setCover(JSONUtil.getEntity2Json(litImgUrls));

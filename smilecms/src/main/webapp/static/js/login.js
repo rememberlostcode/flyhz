@@ -108,7 +108,7 @@ function fnLoginOut(username){
 		var sLoginUrl = baseUrl + "/logout";
 		var indexUrl = baseUrl + "/index";
 		jQuery.post(sLoginUrl,{"username":username},function(data){
-			window.location.reload();
+			window.location.href = indexUrl;
     	});
 	}
 }

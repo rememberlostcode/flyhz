@@ -92,7 +92,7 @@
 		api.close();
 	}
 </script>
-<form action="$path_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
+<form action="$server_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
     <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>
