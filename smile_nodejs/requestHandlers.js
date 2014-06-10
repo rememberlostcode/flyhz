@@ -118,6 +118,7 @@ function index(query,response) {
                 memberfilter[2] = "p";
                 memberfilter[3] = "pp";
                 memberfilter[4] = "bs";
+				memberfilter[5] = "d";
 
                 var recommendindex = JSON.parse(res);
                 result += '[';
@@ -170,6 +171,7 @@ function recommendbrand(query,response) {
             memberfilter[2] = "p";
             memberfilter[3] = "pp";
             memberfilter[4] = "bs";
+			memberfilter[5] = "d";
 
             var recommendindex = JSON.parse(res);
             result = '[';
@@ -215,6 +217,7 @@ function getRecommendBrand(query) {
             memberfilter[2] = "p";
             memberfilter[3] = "pp";
             memberfilter[4] = "bs";
+			memberfilter[5] = "d";
 
             var recommendindex = JSON.parse(res);
             result = '[';
@@ -314,11 +317,12 @@ function brand(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].p);
-
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
                         result += ',\"seq\":';
@@ -452,6 +456,8 @@ function brandmore(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
@@ -590,6 +596,8 @@ function rankingdiscount(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
@@ -666,6 +674,8 @@ function rankingsales(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
@@ -766,6 +776,8 @@ function search(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
@@ -884,6 +896,8 @@ function searchmore(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
@@ -985,6 +999,8 @@ function goodsdetail(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
+						result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].bp);
                         result += ',\"bp\":';
