@@ -22,6 +22,14 @@ public interface ProductDao extends GenericDao<ProductModel> {
 	public List<ProductBuildDto> findAll(SolrPage page);
 
 	/**
+	 * 查询单个商品，用于Solr
+	 * 
+	 * @param productId
+	 * @return ProductBuildDto
+	 */
+	public ProductBuildDto getProductBuildDtoById(Integer productId);
+
+	/**
 	 * 删除产品
 	 * 
 	 * @param productId

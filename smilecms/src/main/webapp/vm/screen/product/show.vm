@@ -11,6 +11,14 @@
 	.divImgs{
 		margin:5px 0;
 	}
+	.colorImg{
+		width:80px;
+		height:27px;
+	}
+	.productImg{
+		width:150px;
+		height:150px;
+	}
 </style>
 <script type="text/javascript">
     /*
@@ -70,6 +78,15 @@
         })
 	};
 	
+	function reChooseImg(){
+		$("#showColorImg").empty();//删除图片
+		//$("#oldColorimg").val("");//清除旧图片路径
+		var addHtml = '<input id="colorimg" name="colorimg" type="file" style="display:none">';
+		addHtml += '<div><input id="colorimgCover" type="text" class="filetxtweidth1">';
+		addHtml += '<input type="button" onclick="javascript:chooseImg(\'colorimg\',\'colorimgCover\');" value="选择图片"/></div>';
+		$("#showColorImg").append(addHtml);
+	}
+	
 	function addImgsUpload(tdId){
 		var imgsLength = $('div[id^=div_imgs]').length + 1;
 		var addHtml = '<div id="div_imgs' + imgsLength + '" class="divImgs">';
@@ -87,12 +104,18 @@
 		$("#" + divId).remove();
 	}
 	
+	function delSrcImgs(divId){
+		$("#" + divId).remove();
+		var length = $("tr[id^=tr_srcImg_]").length + 1;
+		$("#rowProductImg").attr("rowspan",length);
+	}
+	
 	function closeAddPage(){
 		var api = frameElement.api, W = api.opener; 
 		api.close();
 	}
 </script>
-<form action="$server_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
+<form action="$server_name/product/edit" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
     <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
 		<input type="hidden" id="id" name="id" value="$!product.id"/>
 		<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.oldColorimg"/>
@@ -163,36 +186,48 @@
 			<tr>
                 <td>颜色图片:</td>
 				<td>
-					#if($!product.colorimg)
-						<img src="$!server_name/static/css/images/test$!product.colorimg" alt="$!product.color" style="height:30px;width:80px"/>
-					#else
-    					<input id="colorimg" name="colorimg" type="file" style="display:none">
-                        <div>
-                           <input id="colorimgCover" type="text" class="filetxtweidth1">
-    					   <input type="button" onclick="javascript:chooseImg('colorimg','colorimgCover');" value="选择图片"/>
-                        </div>
-					#end
+					<div id="showColorImg">
+						<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.colorimg"/>
+    					#if($!product.colorimg)
+    						<img src="$!server_name/static/css/images/test$!product.colorimg" class="colorImg"/>
+    						<input type="button" onclick="javascript:reChooseImg();" value="重新上传" class="colorImg"/>
+    					#else
+        					<input id="colorimg" name="colorimg" type="file" style="display:none">
+                            <div>
+                               <input id="colorimgCover" type="text" class="filetxtweidth1">
+        					   <input type="button" onclick="javascript:chooseImg('colorimg','colorimgCover');" value="选择图片"/>
+                            </div>
+    					#end
+					</div>
 				</td>
 			</tr>
 			<tr>
-                <td>产品图片:</td>
+                <td id="rowProductImg" #if($!product.productImgsCount) rowspan="$!product.productImgsCount" #end>产品图片:</td>
 				<td id="productImgs">
-					#if($!product.productImgs)
-						#foreach($productImg in $!product.productImgs)
-							<div>
-								<img src="$!server_name/static/css/images/test$!productImg" alt=""/>
-							</div>
-						#end
-					#else
-                        <div id="div_imgs1" class="divImgs">
-    					   <input id="imgs1" name="imgs" type="file" style="display:none">
-                           <input id="imgs1Cover" type="text" class="filetxtweidth">
-    					   <input type="button" onclick="javascript:chooseImg('imgs1','imgs1Cover');" value="选择图片"/>
-    					   <input type="button" onclick="javascript:addImgsUpload('div_imgs1');" value="添  加"/>
-                        </div>
-					#end
+					<div id="div_imgs1" class="divImgs">
+					   <input id="imgs1" name="imgs" type="file" style="display:none">
+                       <input id="imgs1Cover" type="text" class="filetxtweidth">
+					   <input type="button" onclick="javascript:chooseImg('imgs1','imgs1Cover');" value="选择图片"/>
+					   <input type="button" onclick="javascript:addImgsUpload('div_imgs1');" value="添  加"/>
+                    </div>
 				</td>
 			</tr>
+			#set($count = 0)
+			#if($!product.productImgsCount)
+				#foreach($productImg in $!product.productImgs)
+					<tr id="tr_srcImg_$count">
+    					<td>
+    						<div>
+    							<input type="hidden" id="productImg_$count" name="productImgs" value="$!productImg"/>
+    							<input type="hidden" id="productSrcImgs_$count" name="productSrcImgs" value="$!product.productSrcImgs[$count]"/>
+    							<img src="$!server_name/static/css/images/test$!productImg" class="productImg"/>
+								<input type="button" onclick="javascript:delSrcImgs('tr_srcImg_$count');" value="删除图片" class="colorImg"/>
+    						</div>
+                        </td>
+                    </tr>
+					#set($count = $count+1)
+				#end
+			#end
 			<tr>
                 <td>注意事项:</td>
                 <td>

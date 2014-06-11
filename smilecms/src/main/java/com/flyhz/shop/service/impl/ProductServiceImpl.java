@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -13,11 +15,13 @@ import org.apache.commons.lang.StringUtils;
 import org.lost.image.ImageUtil;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.file.FileRepository;
 import com.flyhz.framework.lang.page.Pager;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
+import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.dto.ProductCmsDto;
 import com.flyhz.shop.dto.ProductParamDto;
 import com.flyhz.shop.persistence.dao.ProductDao;
@@ -26,11 +30,23 @@ import com.flyhz.shop.service.ProductService;
 
 public class ProductServiceImpl implements ProductService {
 	@Resource
-	private ProductDao		productDao;
+	private ProductDao					productDao;
 	@Resource
-	private FileRepository	fileRepository;
+	private FileRepository				fileRepository;
+	@Resource
+	private SolrData					solrData;
 
-	private String			pathFileUpload;
+	private String						pathFileUpload;
+
+	// 初始化保存图片的前缀
+	private static Map<String, String>	prefixMap	= new HashMap<String, String>();
+	static {
+		prefixMap.put("1", "chanel");
+		prefixMap.put("2", "coach");
+		prefixMap.put("3", "prada");
+		prefixMap.put("4", "swarovski");
+		prefixMap.put("99", "color");
+	}
 
 	public String getPathFileUpload() {
 		return pathFileUpload;
@@ -79,7 +95,11 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setBrandstyle(productParamDto.getBrandstyle());
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
-		productModel.setDescription(productParamDto.getDescription());
+		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
+			productModel.setDescription(productParamDto.getDescription());
+		} else {
+			productModel.setDescription(productModel.getName());
+		}
 		productModel.setGmtCreate(new Date());
 		productModel.setGmtModify(new Date());
 		productModel.setLocalprice(productParamDto.getLocalprice());
@@ -87,10 +107,13 @@ public class ProductServiceImpl implements ProductService {
 		int maxStyle = productDao.getMaxStyle();
 		productModel.setStyle(String.valueOf(maxStyle + 1));
 		// 处理颜色图片
-		dispostColorimg(productParamDto.getColorimg(), productModel);
+		dispostColorimg(productParamDto.getColorimg(), productModel, productParamDto);
 		// 处理商品图片
 		dispostProductImgs(productParamDto.getImgs(), productModel);
 		productDao.addProduct(productModel);
+		// builder数据到Solr中
+		ProductBuildDto productBuildDto = productDao.getProductBuildDtoById(productModel.getId());
+		solrData.submitProduct(productBuildDto);
 	}
 
 	@Override
@@ -154,15 +177,22 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setBrandstyle(productParamDto.getBrandstyle());
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
-		productModel.setDescription(productParamDto.getDescription());
+		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
+			productModel.setDescription(productParamDto.getDescription());
+		} else {
+			productModel.setDescription(productModel.getName());
+		}
 		productModel.setGmtModify(new Date());
 		productModel.setLocalprice(productParamDto.getLocalprice());
 		productModel.setPurchasingprice(productParamDto.getPurchasingprice());
-		// 处理颜色图片(旧颜色图片不存在)
-		dispostColorimg(productParamDto.getColorimg(), productModel);
-		// 处理商品图片(保留旧商品图片)
-		dispostProductImgs(productParamDto.getImgs(), productModel);
-		productDao.addProduct(productModel);
+		// 处理颜色图片
+		dispostColorimg(productParamDto.getColorimg(), productModel, productParamDto);
+		// 处理商品图片
+		dispostProductImgs(productParamDto.getImgs(), productModel, productParamDto);
+		productDao.editProduct(productModel);
+		// builder数据到Solr中
+		ProductBuildDto productBuildDto = productDao.getProductBuildDtoById(productModel.getId());
+		solrData.submitProduct(productBuildDto);
 	}
 
 	@Override
@@ -179,12 +209,14 @@ public class ProductServiceImpl implements ProductService {
 		return productCmsDtos;
 	}
 
-	private void dispostColorimg(MultipartFile file, ProductModel productModel) {
-		if (file != null && productModel != null) {
+	private void dispostColorimg(MultipartFile file, ProductModel productModel,
+			ProductParamDto productParamDto) {
+		if (file != null && productModel != null && productParamDto != null
+				&& StringUtils.isBlank(productParamDto.getOldColorimg())) {
 			String origName = file.getOriginalFilename();
 			if (StringUtils.isNotBlank(origName)) {
 				StringBuffer newFileName = new StringBuffer();
-				newFileName.append("color").append(File.separatorChar)
+				newFileName.append(prefixMap.get("99")).append(File.separatorChar)
 							.append(productModel.getStyle())
 							.append(origName.substring(origName.lastIndexOf(".")));
 				// 保存颜色图到指定文件路径里
@@ -209,8 +241,9 @@ public class ProductServiceImpl implements ProductService {
 					String origName = multipartFile.getOriginalFilename();
 					if (StringUtils.isNotBlank(origName)) {
 						StringBuffer newFileName = new StringBuffer();
-						newFileName.append("coach").append(File.separatorChar)
-									.append(productModel.getStyle()).append("_").append(count)
+						newFileName.append(prefixMap.get(String.valueOf(productModel.getBrandId())))
+									.append(File.separatorChar).append(productModel.getStyle())
+									.append("_").append(count)
 									.append(origName.substring(origName.lastIndexOf(".")));
 						// 处理物品大图
 						String bigPath = fileRepository.saveToTarget(
@@ -222,22 +255,66 @@ public class ProductServiceImpl implements ProductService {
 						String litPath = ImageUtil.createSquareImage(pathFileUpload
 								+ File.separatorChar + bigPath, 300, "lit");
 						if (StringUtils.isNotBlank(litPath)) {
-							litImgUrls.add(File.separatorChar + "coach" + File.separatorChar
-									+ litPath);
+							litImgUrls.add(File.separatorChar
+									+ prefixMap.get(String.valueOf(productModel.getBrandId()))
+									+ File.separatorChar + litPath.replace("_lit", ""));
 						}
 					}
 					count++;
 				}
 				productModel.setImgs(JSONUtil.getEntity2Json(bigImgUrls));
 				productModel.setCover(JSONUtil.getEntity2Json(litImgUrls));
-				productModel.setCoverSmall(litImgUrls.get(0));
-				// 处理生成cover_small文件路径
-				// StringBuffer coverSmall = new StringBuffer();
-				// String coverImg1 = litImgUrls.get(0);
-				// coverSmall.append(coverImg1.substring(0,
-				// coverImg1.lastIndexOf(".")))
-				// .append("_lit").append(coverImg1.substring(coverImg1.lastIndexOf(".")));
-				// productModel.setCoverSmall(coverSmall.toString());
+				List<String> coverSmall = new ArrayList<String>();
+				coverSmall.add(litImgUrls.get(0));
+				productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void dispostProductImgs(List<MultipartFile> files, ProductModel productModel,
+			ProductParamDto productParamDto) {
+		if (productModel != null && productParamDto != null) {
+			List<String> bigImgUrls = productParamDto.getProductSrcImgs() == null ? new ArrayList<String>()
+					: productParamDto.getProductSrcImgs();
+			List<String> litImgUrls = productParamDto.getProductImgs() == null ? new ArrayList<String>()
+					: productParamDto.getProductImgs();
+			try {
+				if (files != null && !files.isEmpty()) {
+					int count = 0;
+					for (MultipartFile multipartFile : files) {
+						String origName = multipartFile.getOriginalFilename();
+						if (StringUtils.isNotBlank(origName)) {
+							StringBuffer newFileName = new StringBuffer();
+							newFileName.append(
+									prefixMap.get(String.valueOf(productModel.getBrandId())))
+										.append(File.separatorChar).append(productModel.getStyle())
+										.append("_").append(count)
+										.append(origName.substring(origName.lastIndexOf(".")));
+							// 处理物品大图
+							String bigPath = fileRepository.saveToTarget(
+									multipartFile.getInputStream(), newFileName.toString());
+							if (StringUtils.isNotBlank(bigPath)) {
+								bigImgUrls.add(File.separatorChar + bigPath);
+							}
+							// 处理物品小图
+							String litPath = ImageUtil.createSquareImage(pathFileUpload
+									+ File.separatorChar + bigPath, 300, "lit");
+							if (StringUtils.isNotBlank(litPath)) {
+								litImgUrls.add(File.separatorChar
+										+ prefixMap.get(String.valueOf(productModel.getBrandId()))
+										+ File.separatorChar + litPath.replace("_lit", ""));
+							}
+						}
+						count++;
+					}
+				}
+				productModel.setImgs(JSONUtil.getEntity2Json(bigImgUrls));
+				productModel.setCover(JSONUtil.getEntity2Json(litImgUrls));
+				List<String> coverSmall = new ArrayList<String>();
+				coverSmall.add(litImgUrls.get(0));
+				productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
