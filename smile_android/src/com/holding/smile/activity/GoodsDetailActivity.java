@@ -274,7 +274,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		if (picList != null && !picList.isEmpty()) {
 			int size = picList.size();
 			for (int i = 0; i < size; i++) {
-				View view = inflater.inflate(R.layout.good_pic_item, null);
+				View view = inflater.inflate(R.layout.pager_pic_item, null);
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
 				viewList.add(view);

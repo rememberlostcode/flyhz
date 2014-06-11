@@ -335,21 +335,22 @@ public final class R {
         public static final int order_list=0x7f03001b;
         public static final int order_manager=0x7f03001c;
         public static final int order_pay_view=0x7f03001d;
-        public static final int password=0x7f03001e;
-        public static final int personal_settings=0x7f03001f;
-        public static final int phone=0x7f030020;
-        public static final int pic_pager=0x7f030021;
-        public static final int pulltorefresh_footer=0x7f030022;
-        public static final int pulltorefresh_header=0x7f030023;
-        public static final int recommend_good_item=0x7f030024;
-        public static final int register=0x7f030025;
-        public static final int search_goods_view=0x7f030026;
-        public static final int search_header=0x7f030027;
-        public static final int shopping_cart_item=0x7f030028;
-        public static final int shopping_cart_view=0x7f030029;
-        public static final int simple_list_text=0x7f03002a;
-        public static final int smile_main=0x7f03002b;
-        public static final int web_view=0x7f03002c;
+        public static final int pager_pic_item=0x7f03001e;
+        public static final int password=0x7f03001f;
+        public static final int personal_settings=0x7f030020;
+        public static final int phone=0x7f030021;
+        public static final int pic_pager=0x7f030022;
+        public static final int pulltorefresh_footer=0x7f030023;
+        public static final int pulltorefresh_header=0x7f030024;
+        public static final int recommend_good_item=0x7f030025;
+        public static final int register=0x7f030026;
+        public static final int search_goods_view=0x7f030027;
+        public static final int search_header=0x7f030028;
+        public static final int shopping_cart_item=0x7f030029;
+        public static final int shopping_cart_view=0x7f03002a;
+        public static final int simple_list_text=0x7f03002b;
+        public static final int smile_main=0x7f03002c;
+        public static final int web_view=0x7f03002d;
     }
     public static final class menu {
         public static final int main=0x7f080000;
