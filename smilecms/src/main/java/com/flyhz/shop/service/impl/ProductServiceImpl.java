@@ -236,14 +236,15 @@ public class ProductServiceImpl implements ProductService {
 			List<String> bigImgUrls = new ArrayList<String>();
 			List<String> litImgUrls = new ArrayList<String>();
 			try {
-				int count = 0;
+				// int count = 0;
 				for (MultipartFile multipartFile : files) {
 					String origName = multipartFile.getOriginalFilename();
 					if (StringUtils.isNotBlank(origName)) {
 						StringBuffer newFileName = new StringBuffer();
 						newFileName.append(prefixMap.get(String.valueOf(productModel.getBrandId())))
 									.append(File.separatorChar).append(productModel.getStyle())
-									.append("_").append(count)
+									// .append("_").append(count)
+									.append("_").append(System.currentTimeMillis())
 									.append(origName.substring(origName.lastIndexOf(".")));
 						// 处理物品大图
 						String bigPath = fileRepository.saveToTarget(
@@ -260,7 +261,7 @@ public class ProductServiceImpl implements ProductService {
 									+ File.separatorChar + litPath.replace("_lit", ""));
 						}
 					}
-					count++;
+					// count++;
 				}
 				productModel.setImgs(JSONUtil.getEntity2Json(bigImgUrls));
 				productModel.setCover(JSONUtil.getEntity2Json(litImgUrls));
@@ -282,7 +283,7 @@ public class ProductServiceImpl implements ProductService {
 					: productParamDto.getProductImgs();
 			try {
 				if (files != null && !files.isEmpty()) {
-					int count = 0;
+					// int count = 0;
 					for (MultipartFile multipartFile : files) {
 						String origName = multipartFile.getOriginalFilename();
 						if (StringUtils.isNotBlank(origName)) {
@@ -290,7 +291,8 @@ public class ProductServiceImpl implements ProductService {
 							newFileName.append(
 									prefixMap.get(String.valueOf(productModel.getBrandId())))
 										.append(File.separatorChar).append(productModel.getStyle())
-										.append("_").append(count)
+										// .append("_").append(count)
+										.append("_").append(System.currentTimeMillis())
 										.append(origName.substring(origName.lastIndexOf(".")));
 							// 处理物品大图
 							String bigPath = fileRepository.saveToTarget(
@@ -307,13 +309,13 @@ public class ProductServiceImpl implements ProductService {
 										+ File.separatorChar + litPath.replace("_lit", ""));
 							}
 						}
-						count++;
+						// count++;
 					}
 				}
 				productModel.setImgs(JSONUtil.getEntity2Json(bigImgUrls));
 				productModel.setCover(JSONUtil.getEntity2Json(litImgUrls));
 				List<String> coverSmall = new ArrayList<String>();
-				coverSmall.add(litImgUrls.get(0));
+				coverSmall.add(litImgUrls.get(0).replace("_cut", "_cut_lit"));
 				productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 			} catch (IOException e) {
 				e.printStackTrace();
