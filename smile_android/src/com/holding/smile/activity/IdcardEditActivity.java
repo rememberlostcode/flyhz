@@ -23,6 +23,7 @@ import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Idcard;
 import com.holding.smile.tools.BitmapUtils;
+import com.holding.smile.tools.IdcardValidator;
 
 /**
  * 身份证信息编辑
@@ -36,7 +37,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 	private EditText	idcardName;
 	private EditText	idcardNumber;
-	private TextView		idcardPhotoButton;
+	private TextView	idcardPhotoButton;
 	private Button		idcardSave;
 	private Button		idcardDelete;
 	private ImageView	imageView;
@@ -140,8 +141,14 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					break;
 				}
 				idcard.setNumber(sfzh.trim());
-				
-				if(idcard.getId()==null && (picturePath==null || "".equals(picturePath.trim()))){
+				IdcardValidator iv = new IdcardValidator();
+				if (!iv.isValidatedAllIdcard(idcard.getNumber())) {
+					Toast.makeText(context, "身份证号非法，请确认后再提交！", Toast.LENGTH_SHORT).show();
+					break;
+				}
+
+				if (idcard.getId() == null
+						&& (picturePath == null || "".equals(picturePath.trim()))) {
 					Toast.makeText(context, "必须上传身份证", Toast.LENGTH_SHORT).show();
 					break;
 				}

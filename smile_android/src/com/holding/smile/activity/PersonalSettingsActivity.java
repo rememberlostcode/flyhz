@@ -113,7 +113,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 			case R.id.user_info_pwd_layout: {
 				Intent intent = new Intent();
 				intent.setClass(context, ResetPwdActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;
 			}

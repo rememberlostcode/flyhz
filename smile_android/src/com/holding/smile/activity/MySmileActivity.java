@@ -75,7 +75,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.mysmile_mycoupon_layout: {
-				Toast.makeText(context, "点击了我的优惠券", Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "敬请期待", Toast.LENGTH_SHORT).show();
 				break;
 			}
 			case R.id.mysmile_setting_layout: {
