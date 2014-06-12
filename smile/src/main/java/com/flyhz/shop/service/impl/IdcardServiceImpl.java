@@ -1,6 +1,7 @@
 
 package com.flyhz.shop.service.impl;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -47,18 +48,18 @@ public class IdcardServiceImpl implements IdcardService {
 			if (multipartFile != null) {
 				// 生成新文件名
 				String origName = multipartFile.getOriginalFilename();
-				origName = DateUtil.dateToStrMSec(new Date())
+				origName = "idcard/" + File.separatorChar + DateUtil.dateToStrMSec(new Date())
 						+ origName.substring(origName.lastIndexOf("."));
 				fileRepository.saveToTemp(multipartFile.getInputStream(), origName);
 				// 更新收件人地址中身份证照片路径
-				idcardModel.setUrl("/idcard/" + origName);
+				idcardModel.setUrl("/" + origName);
 			}
 
 		} catch (Exception e) {
 			// 文件保存失败
 			throw new ValidateException(122222);
 		}
-		
+
 		try {
 			Date date = new Date();
 			if (idcardModel != null && idcardModel.getId() != null) {

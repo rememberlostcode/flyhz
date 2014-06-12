@@ -24,7 +24,8 @@ public class ProductParamDto {
 	private String				color;
 	private MultipartFile		colorimg;
 	private String				oldColorimg;		// 旧颜色图片地址
-	private String				oldImgs;			// 旧产品图片地址
+	private List<String>		productImgs;		// 产品旧cover图片
+	private List<String>		productSrcImgs;	// 产品旧imgs
 
 	public Integer getId() {
 		return id;
@@ -122,11 +123,19 @@ public class ProductParamDto {
 		this.oldColorimg = oldColorimg;
 	}
 
-	public String getOldImgs() {
-		return oldImgs;
+	public List<String> getProductImgs() {
+		return productImgs;
 	}
 
-	public void setOldImgs(String oldImgs) {
-		this.oldImgs = oldImgs;
+	public void setProductImgs(List<String> productImgs) {
+		this.productImgs = productImgs;
+	}
+
+	public List<String> getProductSrcImgs() {
+		return productSrcImgs;
+	}
+
+	public void setProductSrcImgs(List<String> productSrcImgs) {
+		this.productSrcImgs = productSrcImgs;
 	}
 }

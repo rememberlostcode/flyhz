@@ -81,10 +81,18 @@ public class ProductController {
 		ProductModel productModel = productService.getProductById(productId);
 		ProductShowDto productShowDto = new ProductShowDto();
 		BeanUtils.copyProperties(productModel, productShowDto);
+		// 初始化产品coverImgs
 		if (StringUtils.isNotBlank(productShowDto.getCover())) {
 			List<String> productImgs = JSONUtil.getJson2EntityList(productShowDto.getCover(),
 					ArrayList.class, String.class);
 			productShowDto.setProductImgs(productImgs);
+			productShowDto.setProductImgsCount(productImgs.size() + 1);
+		}
+		// 初始化产品srcImgs
+		if (StringUtils.isNotBlank(productModel.getImgs())) {
+			List<String> productSrcImgs = JSONUtil.getJson2EntityList(productShowDto.getImgs(),
+					ArrayList.class, String.class);
+			productShowDto.setProductSrcImgs(productSrcImgs);
 		}
 		model.addAttribute("product", productShowDto);
 		// 查询品牌列表
