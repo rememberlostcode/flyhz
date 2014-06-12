@@ -96,7 +96,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 				holder.sn.setText("已售 " + jGoods.getSn() + " 件");
 				holder.sn.setVisibility(ViewGroup.VISIBLE);
 			} else {
-				holder.sn.setVisibility(ViewGroup.GONE);
+				// holder.sn.setVisibility(ViewGroup.GONE);
 			}
 			if (jGoods.getP() != null && jGoods.getP().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
