@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/idcard_list_name"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:gravity="center_vertical"
                 android:text="姓名"

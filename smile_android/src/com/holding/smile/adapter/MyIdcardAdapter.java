@@ -63,9 +63,18 @@ public class MyIdcardAdapter extends BaseAdapter {
 		}
 
 		final Idcard idcard = (Idcard) getItem(position);
-		holder.name.setText(idcard.getName().trim());
+			holder.name.setText(idcard.getName().trim());
 
-		holder.idcard.setText(idcard.getNumber());
+		String idnum = idcard.getNumber().trim();
+		if (idnum.length() >= 15) {
+			if (idnum.length() > 15){
+				holder.idcard.setText(idnum.subSequence(0, 6) + "*********" + idnum.substring(15));
+			} else {
+				holder.idcard.setText(idnum.subSequence(0, 6) + "******" + idnum.substring(idnum.length() -3));
+			}
+		} else {
+			holder.idcard.setText(idnum);
+		}
 
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
