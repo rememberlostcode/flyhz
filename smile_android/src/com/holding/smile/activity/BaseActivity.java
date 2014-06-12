@@ -157,7 +157,7 @@ public class BaseActivity extends Activity {
 	 * 设置内容区域
 	 * 
 	 * @param resId
-	 *            资源文件ID
+	 * 资源文件ID
 	 */
 	public void setContentLayout(int resId) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -325,7 +325,8 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, MainActivity.class);
-							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							finish();
 							overridePendingTransition(0, 0);
@@ -337,7 +338,8 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, SortActivity.class);
-							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
 						}
@@ -348,7 +350,8 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, SearchGoodsActivity.class);
-							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
 						}
@@ -365,7 +368,8 @@ public class BaseActivity extends Activity {
 							} else {
 								intent.setClass(context, ShoppingCartActivity.class);
 							}
-							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
 						}
@@ -376,7 +380,8 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, MySmileActivity.class);
-							intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
 						}

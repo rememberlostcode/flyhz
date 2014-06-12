@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -201,6 +200,23 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 					if (jGoods != null) {
 						Intent intent = new Intent(context, GoodsDetailActivity.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						intent.putExtra("gid", jGoods.getId());
+						intent.putExtra("bs", jGoods.getBrandstyle());
+						((Activity) parent.getContext()).startActivityForResult(intent,
+								BaseActivity.SEARCH_CODE);
+					} else {
+						notifyDataSetChanged();
+					}
+				}
+			});
+			holder.n.setOnClickListener(new OnClickListener() {
+				@SuppressWarnings("unused")
+				@Override
+				public void onClick(View v) {
+					if (jGoods != null) {
+						Intent intent = new Intent(context, GoodsDetailActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						intent.putExtra("bs", jGoods.getBrandstyle());
 						intent.putExtra("gid", jGoods.getId());
 						((Activity) parent.getContext()).startActivityForResult(intent,
 								BaseActivity.SEARCH_CODE);
