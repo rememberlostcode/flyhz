@@ -114,7 +114,7 @@ public class SolrDataImpl implements SolrData {
 				if (product.getPp() == null) {
 					continue;
 				} else {
-					product.setLp(BigDecimal.valueOf(product.getPp().doubleValue() * 2 + 1000));
+					product.setLp(BigDecimal.valueOf(product.getPp().intValue() * 2 + 1000));
 					doc.addField("sp", product.getLp().subtract(product.getPp()));
 				}
 			}

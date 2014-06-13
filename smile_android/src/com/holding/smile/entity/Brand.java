@@ -1,23 +1,19 @@
-
-package com.flyhz.shop.dto;
+package com.holding.smile.entity;
 
 import java.io.Serializable;
 
 /**
- * 用于build的品牌dto
- * 
- * @author zhangb 2014年4月3日 下午3:48:41
- * 
+ * 品牌
+ * @author zhangb
+ *
  */
-public class BrandBuildDto implements Serializable {
-	private static final long	serialVersionUID	= 1L;
-	private Integer				id;
-	private String				name;
-	private String				img_url;
+public class Brand implements Serializable {
 
-	public BrandBuildDto() {
-	}
-
+	private static final long	serialVersionUID	= 7726637667817705868L;
+	private Integer			id; // 品牌ID
+	private String			name;	// 品牌名
+	private String			img_url;	// 品牌图片url
+	
 	public Integer getId() {
 		return id;
 	}
@@ -27,7 +23,7 @@ public class BrandBuildDto implements Serializable {
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public void setName(String name) {

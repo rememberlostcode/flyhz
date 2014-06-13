@@ -13,6 +13,13 @@ client.on('error', function (err) {
     console.log('Error ' + err);
 });
 
+//返回的response的头部内容
+var headContentObject = {
+            "Content-Type": applicationJson,
+            "Access-Control-Allow-Origin":"*",
+            'Access-Control-Allow-Methods': 'GET',
+            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'};
+
 /**
  * 所有分类
  * @param query
@@ -27,11 +34,7 @@ function category(query,response) {
             items.push(JSON.parse(res[i]));
         }
         //console.log(items);
-        response.writeHead(200, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(200, headContentObject);
         response.write(addData(JSON.stringify(items)));
         response.end();
     });
@@ -63,11 +66,7 @@ function recommendactivity(query,response) {
                 result += '}';
             }
             result += ']';
-            response.writeHead(200, {
-                "Content-Type": applicationJson,
-                "Access-Control-Allow-Origin":"*",
-                'Access-Control-Allow-Methods': 'GET',
-                'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+            response.writeHead(200, headContentObject);
             response.write(addData(result));
             response.end();
         }
@@ -94,7 +93,7 @@ function index(query,response) {
                 result2 += ',\"p\":';
                 result2 += JSON.stringify(recommendindex[i].p);
                 result2 += ',\"url\":';
-                result2 += JSON.stringify(recommendindex[i].url);
+                result2 += JSON.stringify(recommendindex[i].url?recommendindex[i].url:null);
                 result2 += '}';
             }
         }
@@ -115,10 +114,11 @@ function index(query,response) {
                 var memberfilter = new Array();
                 memberfilter[0] = "id";
                 memberfilter[1] = "n";
-                memberfilter[2] = "p";
-                memberfilter[3] = "pp";
-                memberfilter[4] = "bs";
-				memberfilter[5] = "d";
+				memberfilter[2] = "d";
+                memberfilter[3] = "p";
+                memberfilter[4] = "pp";
+				memberfilter[5] = "lp";
+                memberfilter[6] = "bs";
 
                 var recommendindex = JSON.parse(res);
                 result += '[';
@@ -128,8 +128,10 @@ function index(query,response) {
                     }
                     result += '{\"id\":';
                     result += recommendindex[i].id;
-                    result += ',\"n\":';
-                    result += JSON.stringify(recommendindex[i].n);
+                    result += ',\"name\":';
+                    result += JSON.stringify(recommendindex[i].name ? recommendindex[i].name : null);
+					result += ',\"img_url\":';
+                    result += JSON.stringify(recommendindex[i].img_url?recommendindex[i].img_url:null);
                     result += ',\"gs\":';
                     result += JSON.stringify(recommendindex[i].gs,memberfilter);
                     result += '}';
@@ -137,11 +139,70 @@ function index(query,response) {
                 result += ']';
             }
             result += '}';
-            response.writeHead(200, {
-                "Content-Type": applicationJson,
-                "Access-Control-Allow-Origin":"*",
-                'Access-Control-Allow-Methods': 'GET',
-                'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+            response.writeHead(200, headContentObject);
+            response.write(addData(result));
+            response.end();
+        });
+    });
+}
+
+/**
+ * 首页活动及品牌推荐
+ * @param query
+ * @param response
+ */
+function indexsingle(query,response) {
+    var key ='smile@recommend@index';
+    client.get(key, function(err, res) {
+        var result2 = '[';
+        var recommendindex = JSON.parse(res);
+        if(recommendindex){
+            for(var i=0;i<recommendindex.length;i++){
+                if(i > 0){
+                    result2 += ',';
+                }
+                result2 += '{\"id\":';
+                result2 += JSON.stringify(recommendindex[i].id);
+                result2 += ',\"p\":';
+                result2 += JSON.stringify(recommendindex[i].p);
+                result2 += ',\"url\":';
+                result2 += JSON.stringify(recommendindex[i].url?recommendindex[i].url:null);
+                result2 += '}';
+            }
+        }
+        result2 += ']';
+
+        var result = '{"activity":'+result2+'';
+        result += ',"brand":';
+        key ='smile@brands@recommend';
+        var param = '';
+        var cid = query.cid;
+        if(cid!=null && cid!=''){
+            key = 'smile@brands@recommend&cates@' + cid;
+        }
+        console.log('key='+key);
+        client.get(key, function(err, res) {
+            //console.log(res);
+            if(res){
+
+                var recommendindex = JSON.parse(res);
+                result += '[';
+                for(var i=0;i<recommendindex.length;i++){
+                    if(i>0){
+                        result += ',';
+                    }
+                    result += '{\"id\":';
+                    result += recommendindex[i].id;
+                    result += ',\"name\":';
+                    result += JSON.stringify(recommendindex[i].name ? recommendindex[i].name : null);
+					result += ',\"img_url\":';
+                    result += JSON.stringify(recommendindex[i].img_url?recommendindex[i].img_url:null);
+                    result += '}';
+                }
+                result += ']';
+            }
+            result += '}';
+            response.writeHead(200, headContentObject);
             response.write(addData(result));
             response.end();
         });
@@ -160,7 +221,7 @@ function recommendbrand(query,response) {
     if(cid!=null && cid!=''){
         key = 'smile@brands@recommend&cates@' + cid;
     }
-    console.log('key='+key);
+    //console.log('key='+key);
     client.get(key, function(err, res) {
         //console.log(res);
         var result = '';
@@ -168,10 +229,11 @@ function recommendbrand(query,response) {
             var memberfilter = new Array();
             memberfilter[0] = "id";
             memberfilter[1] = "n";
-            memberfilter[2] = "p";
-            memberfilter[3] = "pp";
-            memberfilter[4] = "bs";
-			memberfilter[5] = "d";
+			memberfilter[2] = "d";
+            memberfilter[3] = "p";
+            memberfilter[4] = "pp";
+			memberfilter[5] = "lp";
+            memberfilter[6] = "bs";
 
             var recommendindex = JSON.parse(res);
             result = '[';
@@ -181,61 +243,19 @@ function recommendbrand(query,response) {
                 }
                 result += '{\"id\":';
                 result += recommendindex[i].id;
-                result += ',\"n\":';
-                result += JSON.stringify(recommendindex[i].n);
+                result += ',\"name\":';
+                result += JSON.stringify(recommendindex[i].name);
+				result += ',\"img_url\":';
+                result += JSON.stringify((recommendindex[i].img_url && recommendindex[i].img_url!=undefined)?recommendindex[i].img_url:null);
                 result += ',\"gs\":';
                 result += JSON.stringify(recommendindex[i].gs,memberfilter);
                 result += '}';
             }
             result += ']';
         }
-        response.writeHead(200, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(200, headContentObject);
         response.write(addData(result));
         response.end();
-    });
-}
-
-function getRecommendBrand(query) {
-    var key ='smile@brands@recommend';
-    var param = '';
-    var cid = query.cid;
-    if(cid!=null && cid!=''){
-        key = 'smile@brands@recommend&cates@' + cid;
-    }
-    console.log('key='+key);
-    client.get(key, function(err, res) {
-        //console.log(res);
-        var result = '';
-        if(res){
-            var memberfilter = new Array();
-            memberfilter[0] = "id";
-            memberfilter[1] = "n";
-            memberfilter[2] = "p";
-            memberfilter[3] = "pp";
-            memberfilter[4] = "bs";
-			memberfilter[5] = "d";
-
-            var recommendindex = JSON.parse(res);
-            result = '[';
-            for(var i=0;i<recommendindex.length;i++){
-                if(i>0){
-                    result += ',';
-                }
-                result += '{\"id\":';
-                result += recommendindex[i].id;
-                result += ',\"n\":';
-                result += JSON.stringify(recommendindex[i].n);
-                result += ',\"gs\":';
-                result += JSON.stringify(recommendindex[i].gs,memberfilter);
-                result += '}';
-            }
-            result += ']';
-        }
-        return result;
     });
 }
 
@@ -264,11 +284,7 @@ function brand(query,response) {
     var bcparam = '';
     var bid = query.bid;
     if(bid==null || bid==''){
-        response.writeHead(200, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(200, headContentObject);
         response.write( '{"data":null,"code":120001}');
         response.end();
     } else {
@@ -286,7 +302,7 @@ function brand(query,response) {
 
     var urlPath = "/solr/smile_product/select?"+bcparam+param;
 
-    console.log("Got urlPath: " + urlPath);
+    //console.log("Got urlPath: " + urlPath);
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -297,7 +313,7 @@ function brand(query,response) {
         }
     };
     var req = http.request(options, function(res) {
-        console.log("res======== " + res);
+        //console.log("res======== " + res);
         res.setEncoding('utf8');
         try{
             var tmp = '';
@@ -325,6 +341,8 @@ function brand(query,response) {
                         result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
+						result += ',\"lp\":';
+                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
@@ -346,11 +364,7 @@ function brand(query,response) {
                 } else {
                     result = "[]";
                 }
-                response.writeHead(200, {
-                    "Content-Type": applicationJson,
-                    "Access-Control-Allow-Origin":"*",
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.writeHead(200, headContentObject);
                 response.write(addData(result));
                 response.end();
             });
@@ -360,11 +374,7 @@ function brand(query,response) {
     });
     req.on('error', function(e) {
         console.log("Got error: " + e.message);
-        response.writeHead(404, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(404, headContentObject);
         response.write(e.message);
         response.end();
     });
@@ -408,11 +418,7 @@ function brandmore(query,response) {
     var bcparam ='';
     var bid = query.bid;
     if(bid==null || bid==''){
-        response.writeHead(200, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(200, headContentObject);
         response.write('Bid can not empty!');
         response.end();
     } else {
@@ -464,6 +470,8 @@ function brandmore(query,response) {
                         result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
+						result += ',\"lp\":';
+                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
@@ -486,11 +494,7 @@ function brandmore(query,response) {
                     result = "[]";
                 }
                 //console.log("result: " + result);
-                response.writeHead(200, {
-                    "Content-Type": applicationJson,
-                    "Access-Control-Allow-Origin":"*",
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.writeHead(200, headContentObject);
                 response.write(addData(result));
                 response.end();
             });
@@ -500,11 +504,7 @@ function brandmore(query,response) {
     });
     req.on('error', function(e) {
         console.log("Got error: " + e.message);
-        response.writeHead(404, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(404, headContentObject);
         response.write(e.message);
         response.end();
     });
@@ -524,11 +524,7 @@ function sorttype(query,response){
 
     result += ']';
 
-    response.writeHead(200, {
-        "Content-Type": applicationJson,
-        "Access-Control-Allow-Origin":"*",
-        'Access-Control-Allow-Methods': 'GET',
-        'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+    response.writeHead(200, headContentObject);
     response.write(addData(result));
     response.end();
 }
@@ -551,11 +547,7 @@ function sort(query,response) {
 
     result += ']';
 
-    response.writeHead(200, {
-        "Content-Type": applicationJson,
-        "Access-Control-Allow-Origin":"*",
-        'Access-Control-Allow-Methods': 'GET',
-        'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+    response.writeHead(200, headContentObject);
     response.write(addData(result));
     response.end();
 }
@@ -604,6 +596,8 @@ function rankingdiscount(query,response) {
                         result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
+						result += ',\"lp\":';
+                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"seq\":';
                         result += JSON.stringify(docs[i].sd);
                         result += '}';
@@ -613,11 +607,7 @@ function rankingdiscount(query,response) {
                 } else {
                     result = "[]";
                 }
-                response.writeHead(200, {
-                    "Content-Type": applicationJson,
-                    "Access-Control-Allow-Origin":"*",
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.writeHead(200, headContentObject);
                 response.write(addData(result));
                 response.end();
             });
@@ -627,11 +617,7 @@ function rankingdiscount(query,response) {
     });
     req.on('error', function(e) {
         console.log("Got error: " + e.message);
-        response.writeHead(404, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(404, headContentObject);
         response.write(e.message);
         response.end();
     });
@@ -684,6 +670,8 @@ function rankingsales(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
+						result += ',\"lp\":';
+                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"seq\":';
                         result += JSON.stringify(docs[i].ss);
                         result += '}';
@@ -693,11 +681,7 @@ function rankingsales(query,response) {
                 } else {
                     result = "[]";
                 }
-                response.writeHead(200, {
-                    "Content-Type": applicationJson,
-                    "Access-Control-Allow-Origin":"*",
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.writeHead(200, headContentObject);
                 response.write(addData(result));
                 response.end();
             });
@@ -707,11 +691,7 @@ function rankingsales(query,response) {
     });
     req.on('error', function(e) {
         console.log("Got error: " + e.message);
-        response.writeHead(404, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(404, headContentObject);
         response.write(e.message);
         response.end();
     });
@@ -803,11 +783,7 @@ function search(query,response) {
                 } else {
                     result = "[]";
                 }
-                response.writeHead(200, {
-                    "Content-Type": applicationJson,
-                    "Access-Control-Allow-Origin":"*",
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.writeHead(200, headContentObject);
                 response.write(addData(result));
                 response.end();
             });
@@ -817,11 +793,7 @@ function search(query,response) {
     });
     req.on('error', function(e) {
         console.log("Got error: " + e.message);
-        response.writeHead(404, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(404, headContentObject);
         response.write(e.message);
         response.end();
     });
@@ -924,11 +896,7 @@ function searchmore(query,response) {
                     result = "[]";
                 }
                 //console.log("result: " + result);
-                response.writeHead(200, {
-                    "Content-Type": applicationJson,
-                    "Access-Control-Allow-Origin":"*",
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.writeHead(200, headContentObject);
                 response.write(addData(result));
                 response.end();
             });
@@ -938,11 +906,7 @@ function searchmore(query,response) {
     });
     req.on('error', function(e) {
         console.log("Got error: " + e.message);
-        response.writeHead(404, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(404, headContentObject);
         response.write(e.message);
         response.end();
     });
@@ -957,17 +921,13 @@ function searchmore(query,response) {
 function goodsdetail(query,response) {
     var bs = query.bs;
     if(bs==null || bs==''){
-        response.writeHead(200, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(200, headContentObject);
         response.write( '{"code":111112}');
         response.end();
     }
     var urlPath = "/solr/smile_product/select?&sort=sf+desc&q=bs%3A"+encodeURIComponent(bs);
 
-    console.log("Got urlPath: " + urlPath);
+    //console.log("Got urlPath: " + urlPath);
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -1014,7 +974,7 @@ function goodsdetail(query,response) {
                         result += ',\"be\":';
                         result += JSON.stringify(docs[i].ce);
 
-                        if(i==0){
+                        /*if(i==0){
                             result += ',\"c\":"黄色",\"ci\":"/color/00000.jpg"';
                         } else if(i==1){
                             result += ',\"c\":"黑色",\"ci\":"/color/00001.jpg"';
@@ -1030,12 +990,13 @@ function goodsdetail(query,response) {
                             result += ',\"c\":"矢车菊色",\"ci\":"/color/00006.jpg"';
                         } else if(i==7){
                             result += ',\"c\":"海军蓝",\"ci\":"/color/00007.jpg"';
-                        }
+                        }*/
 
-                        /*result += ',\"c\":';
-                        result += JSON.stringify(docs[i].c?docs[i].c:'');
+                        result += ',\"c\":';
+                        result += JSON.stringify(docs[i].c?docs[i].c:null);
                         result += ',\"ci\":';
-                        result += JSON.stringify(docs[i].ci?docs[i].ci:'');*/
+                        result += JSON.stringify(docs[i].ci?docs[i].ci:null);
+
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += ',\"sn\":';
@@ -1049,11 +1010,7 @@ function goodsdetail(query,response) {
                 } else {
                     result = "[]";
                 }
-                response.writeHead(200, {
-                    "Content-Type": applicationJson,
-                    "Access-Control-Allow-Origin":"*",
-                    'Access-Control-Allow-Methods': 'GET',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+                response.writeHead(200, headContentObject);
                 response.write(addData(result));
                 response.end();
             });
@@ -1063,11 +1020,7 @@ function goodsdetail(query,response) {
     });
     req.on('error', function(e) {
         console.log("Got error: " + e.message);
-        response.writeHead(404, {
-            "Content-Type": applicationJson,
-            "Access-Control-Allow-Origin":"*",
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'X-Requested-With,content-type'});
+        response.writeHead(404, headContentObject);
         response.write(e.message);
         response.end();
     });
@@ -1075,6 +1028,7 @@ function goodsdetail(query,response) {
 }
 
 exports.index = index;
+exports.indexsingle = indexsingle;
 exports.recommendbrand = recommendbrand;
 exports.category = category;
 exports.recommendactivity = recommendactivity;

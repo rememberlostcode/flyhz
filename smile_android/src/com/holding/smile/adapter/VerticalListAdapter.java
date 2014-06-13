@@ -136,7 +136,7 @@ public class VerticalListAdapter extends BaseAdapter {
 				});
 				hlAdapter.notifyDataSetChanged();
 
-				holder.brand.setText(brandJGoods.getN());
+				holder.brand.setText(brandJGoods.getBrand().getName());
 				holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
 
 					@SuppressWarnings("unused")
@@ -144,8 +144,8 @@ public class VerticalListAdapter extends BaseAdapter {
 					public void onClick(View arg0) {
 						if (brandJGoods != null) {
 							Intent intent = new Intent(context, MainTwoActivity.class);
-							intent.putExtra("bid", brandJGoods.getId());
-							intent.putExtra("bn", brandJGoods.getN());
+							intent.putExtra("bid", brandJGoods.getBrand().getId());
+							intent.putExtra("bn", brandJGoods.getBrand().getName());
 							intent.putExtra("cid", cid);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							Activity activity = (Activity) context;

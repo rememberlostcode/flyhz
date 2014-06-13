@@ -92,12 +92,10 @@ public class BuildServiceImpl implements BuildService {
 		// TODO Auto-generated method stub
 		log.info("buildRedis开始...");
 
-		/******** build首页推荐商品 start *******/
-//		cacheRepository.setString("smile@recommend@index@products",
-//				solrData.getProductsString(null, null));
+		/******** build首页活动 start *******/
 		cacheRepository.setString(Constants.REDIS_KEY_RECOMMEND_INDEX,
 				JSONUtil.getEntity2Json(activityDao.getModelList(new ActivityModel())));
-		/******** build首页推荐商品 end *******/
+		/******** build首页活动 end *******/
 
 		/******** build商品品牌分类 start *******/
 		List<CategoryBuildDto> catList = categoryDao.getCategoryBuildDtoList();
@@ -125,27 +123,22 @@ public class BuildServiceImpl implements BuildService {
 
 		// build每个品牌的推荐商品（前10个）（首页不选分类时）
 		StringBuilder brandProducts = new StringBuilder(100);
-		String gs = "";
+		String productsJsonString = "";
 		brandProducts.append("[");
 		for (int i = 0; i < brandList.size(); i++) {
 			if (brandList.get(i) != null && brandList.get(i).getId() != null) {
-				gs = solrData.getProductsString(null, brandList.get(i).getId());
-				if (StringUtil.isNotBlank(gs) && !"[]".equals(gs)) {// 该品牌没有商品就跳过
+				productsJsonString = solrData.getProductsString(null, brandList.get(i).getId());
+				if (StringUtil.isNotBlank(productsJsonString) && !"[]".equals(productsJsonString)) {// 该品牌没有商品就跳过
 					if (brandProducts.length() > 1) {
 						brandProducts.append(",");
 					}
-					brandProducts.append("{");
-					brandProducts.append("\"id\":\"" + brandList.get(i).getId() + "\",");
-					brandProducts.append("\"n\":\"" + brandList.get(i).getName() + "\",");
-					brandProducts.append("\"gs\":");
-					brandProducts.append(gs);
-					brandProducts.append("}");
+					brandProducts.append(getBrandAndProductsJsonString(brandList.get(i),productsJsonString));
 				}
 			}
 		}
 		brandProducts.append("]");
 		cacheRepository.setString(Constants.REDIS_KEY_BRANDS_RECOMMEND, brandProducts.toString());
-		cacheRepository.setString("smile@recommend@index@products", brandProducts.toString());
+//		cacheRepository.setString("smile@recommend@index@products", brandProducts.toString());
 
 		// build各品牌各分类推荐商品（前10个）（首页选分类时）
 		StringBuilder brandCateProducts = new StringBuilder(100);
@@ -155,24 +148,21 @@ public class BuildServiceImpl implements BuildService {
 				if (catList.get(i) != null && catList.get(i).getId() != null
 						&& brandList.get(j) != null && brandList.get(j).getId() != null) {
 
-					gs = solrData.getProductsString(catList.get(i).getId(), brandList.get(j)
+					productsJsonString = solrData.getProductsString(catList.get(i).getId(), brandList.get(j)
 																						.getId());
-					if (StringUtil.isNotBlank(gs) && !"[]".equals(gs)) {// 该品牌没有商品就跳过
+					if (StringUtil.isNotBlank(productsJsonString) && !"[]".equals(productsJsonString)) {// 该品牌没有商品就跳过
 						if (brandCateProducts.length() > 1) {
 							brandCateProducts.append(",");
 						}
-						brandCateProducts.append("{");
-						brandCateProducts.append("\"id\":\"" + brandList.get(j).getId() + "\",");
-						brandCateProducts.append("\"n\":\"" + brandList.get(j).getName() + "\",");
-						brandCateProducts.append("\"gs\":");
-						brandCateProducts.append(gs);
-						brandCateProducts.append("}");
+						brandCateProducts.append(getBrandAndProductsJsonString(brandList.get(j),productsJsonString));
 					}
 				}
 			}
 			brandCateProducts.append("]");
 			cacheRepository.setString(Constants.PREFIX_BRANDS_RECOMMEND_CATES
 					+ catList.get(i).getId(), brandCateProducts.toString());
+			
+			//清空brandCateProducts
 			brandCateProducts.delete(0, brandCateProducts.length());
 		}
 
@@ -183,7 +173,7 @@ public class BuildServiceImpl implements BuildService {
 		/******** build用户订单 end *******/
 		log.info("buildRedis结束");
 	}
-
+	
 	public double getDollarExchangeRate() {
 		// TODO Auto-generated method stub
 		log.info("开始获取美元汇率...");
@@ -203,6 +193,25 @@ public class BuildServiceImpl implements BuildService {
 		}
 		log.info("获取美元汇率结束");
 		return dollarExchangeRate;
+	}
+	
+	/**
+	 * 获取品牌和该品牌下商品的json格式字符串，包括最外层的{}
+	 * @param brand
+	 * @return
+	 */
+	private String getBrandAndProductsJsonString(BrandBuildDto brand,String productsJsonString){
+		StringBuilder json = new StringBuilder(100);
+		json.append("{");
+		
+		json.append("\"brand\":");
+		json.append(JSONUtil.getEntity2Json(brand));
+		
+		json.append("\"gs\":");
+		json.append(productsJsonString);
+		
+		json.append("}");
+		return json.toString();
 	}
 
 }

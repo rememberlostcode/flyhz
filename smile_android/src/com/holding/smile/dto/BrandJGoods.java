@@ -3,6 +3,7 @@ package com.holding.smile.dto;
 
 import java.util.List;
 
+import com.holding.smile.entity.Brand;
 import com.holding.smile.entity.JGoods;
 
 /**
@@ -12,24 +13,22 @@ import com.holding.smile.entity.JGoods;
  * 
  */
 public class BrandJGoods {
-	private Integer			id; // 品牌ID
-	private String			n;	// 品牌名
-	private List<JGoods>	gs; // 返回数据
+	
+	/**
+	 * 品牌信息
+	 */
+	private Brand			brand;
+	/**
+	 * 商品信息集合
+	 */
+	private List<JGoods>	gs;
 
-	public Integer getId() {
-		return id;
+	public Brand getBrand() {
+		return brand;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getN() {
-		return n;
-	}
-
-	public void setN(String n) {
-		this.n = n;
+	public void setBrand(Brand brand) {
+		this.brand = brand;
 	}
 
 	public List<JGoods> getGs() {

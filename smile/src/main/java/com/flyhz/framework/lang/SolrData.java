@@ -20,7 +20,7 @@ public interface SolrData {
 	public void reBuildOrder();
 
 	/**
-	 * 从solr获得指定品牌和分类的商品
+	 * 从solr获得指定品牌和分类的商品，最外层有{}
 	 * 
 	 * @param cid
 	 *            分类ID

@@ -22,6 +22,8 @@
 		                       p.brand_id bid,
 		                       b.name be,
 		                       p.category_id cid,
+		                       p.color c,
+				       		   p.colorimg ci,
 		                       c.name ce,
 		                       p.localprice - p.purchasingprice sp,
 		                       @rownum := @rownum + 1 st,

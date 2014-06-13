@@ -3,9 +3,9 @@ package com.flyhz.shop.dto;
 
 public class BrandDto {
 
-	private Integer	id;
-
-	private String	name;
+	private Integer				id;
+	private String				name;
+	private String				url;
 
 	public Integer getId() {
 		return id;
@@ -16,11 +16,19 @@ public class BrandDto {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }
