@@ -174,8 +174,8 @@ function indexsingle(query,response) {
         }
         result2 += ']';
 
-        var result = '{"activity":'+result2+'';
-        result += ',"brand":';
+        var result = '{"activitys":'+result2+'';
+        result += ',"brands":';
         key ='smile@brands@recommend';
         var param = '';
         var cid = query.cid;
@@ -244,12 +244,8 @@ function recommendbrand(query,response) {
                 if(i>0){
                     result += ',';
                 }
-                result += '{\"id\":';
-                result += recommendindex[i].id;
-                result += ',\"name\":';
-                result += JSON.stringify(recommendindex[i].name);
-				result += ',\"img_url\":';
-                result += JSON.stringify((recommendindex[i].img_url && recommendindex[i].img_url!=undefined)?recommendindex[i].img_url:null);
+                result += '{\"brand\":';
+                result += JSON.stringify(recommendindex[i].brand);
                 result += ',\"gs\":';
                 result += JSON.stringify(recommendindex[i].gs,memberfilter);
                 result += '}';
