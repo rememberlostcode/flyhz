@@ -151,6 +151,9 @@ public class SolrDataImpl implements SolrData {
 			doc.addField("be", product.getBe());// 品牌名称
 			doc.addField("cid", product.getCid());// 分类ID
 			doc.addField("ce", product.getCe());// 分类名称
+			
+			doc.addField("c", product.getC());// 颜色名称
+			doc.addField("ci", product.getCi());// 颜色图片
 
 			doc.addField("sf", productFraction.getProductFraction(product));// 分数
 			doc.addField("st", product.getSt());// 时间排序值
