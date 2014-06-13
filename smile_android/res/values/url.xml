@@ -6,6 +6,7 @@
     
     <string name="img_static_url">/smile/static</string>
     <string name="jGoods_index_url">/smile/node/index</string>
+    <string name="jGoods_index_single_url">/smile/node/index/single</string>
     <string name="jGoods_recommend_url">/smile/node/recommend/brand</string>
     <string name="jGoods_cate_url">/smile/node/category</string>
     <string name="jGoods_brand_url">/smile/node/brand</string>

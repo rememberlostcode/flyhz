@@ -179,7 +179,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																			} else {
 																				intent = new Intent(
 																						context,
-																						MainActivity.class);
+																						MainSmileActivity.class);
 																			}
 																			startActivity(intent);
 																		}

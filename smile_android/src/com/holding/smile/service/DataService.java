@@ -18,6 +18,7 @@ import com.holding.smile.protocol.PCartItem;
 import com.holding.smile.protocol.PCategory;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
+import com.holding.smile.protocol.PIndexBrands;
 import com.holding.smile.protocol.PIndexJGoods;
 import com.holding.smile.protocol.POrder;
 import com.holding.smile.protocol.POrderList;
@@ -38,6 +39,7 @@ public class DataService {
 
 	private String			prefix_url;
 	private String			jGoods_index_url;
+	private String			jGoods_index_single_url;
 	private String			jGoods_recommend_url;
 	private String			jGoods_cate_url;
 	private String			jGoods_brand_url;
@@ -56,6 +58,7 @@ public class DataService {
 	public DataService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
 		jGoods_index_url = context.getString(R.string.jGoods_index_url);
+		jGoods_index_single_url = context.getString(R.string.jGoods_index_single_url);
 		jGoods_recommend_url = context.getString(R.string.jGoods_recommend_url);
 		jGoods_cate_url = context.getString(R.string.jGoods_cate_url);
 		jGoods_brand_url = context.getString(R.string.jGoods_brand_url);
@@ -141,9 +144,9 @@ public class DataService {
 	 * 搜索物品初始化
 	 * 
 	 * @param keywords
-	 *            关键词
+	 * 关键词
 	 * @param mLocation
-	 *            经纬度
+	 * 经纬度
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSearchListInit(String keywords, String seqorderType,
@@ -159,11 +162,11 @@ public class DataService {
 	 * 搜索物品刷新
 	 * 
 	 * @param keywords
-	 *            关键词
+	 * 关键词
 	 * @param jGoodsFirst
-	 *            第一个物品
+	 * 第一个物品
 	 * @param mLocation
-	 *            经纬度
+	 * 经纬度
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSearchListRefresh(String keywords, JGoods jGoodsFirst,
@@ -183,11 +186,11 @@ public class DataService {
 	 * 搜索物品更多
 	 * 
 	 * @param keywords
-	 *            关键词
+	 * 关键词
 	 * @param jGoodsLast
-	 *            最后一个物品
+	 * 最后一个物品
 	 * @param mLocation
-	 *            经纬度
+	 * 经纬度
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSearchListMore(String keywords, JGoods jGoodsLast,
@@ -220,6 +223,37 @@ public class DataService {
 				PIndexJGoods indexJGoods = JSONUtil.getJson2Entity(rStr, PIndexJGoods.class);
 				if (indexJGoods != null)
 					rvd.setIndexData(indexJGoods.getData());
+			} catch (Exception e) {
+				e.printStackTrace();
+				ValidateDto vd = new ValidateDto();
+				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				rvd.setValidate(vd);
+			}
+		} else {
+			ValidateDto vd = new ValidateDto();
+			vd.setMessage(Constants.MESSAGE_NET);
+			rvd.setValidate(vd);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 首页商品品牌
+	 * 
+	 * @return
+	 */
+	public RtnValueDto getIndexBrands(Integer cid) {
+		RtnValueDto rvd = new RtnValueDto();
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (cid != null)
+			param.put("cid", String.valueOf(cid));
+
+		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_index_single_url, param);
+		if (rStr != null && !"".equals(rStr)) {
+			try {
+				PIndexBrands indexBrands = JSONUtil.getJson2Entity(rStr, PIndexBrands.class);
+				if (indexBrands != null)
+					rvd.setIndexBrandsData(indexBrands.getData());
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -318,9 +352,9 @@ public class DataService {
 	 * 搜索物品
 	 * 
 	 * @param keywords
-	 *            关键词
+	 * 关键词
 	 * @param seqorder
-	 *            序号
+	 * 序号
 	 * @param seqorderType
 	 * @param seqorderValue
 	 * @return

@@ -19,6 +19,8 @@ public class BrandDto implements Serializable {
 	 */
 	private String				name;
 
+	private String				img_url;
+
 	public Integer getId() {
 		return id;
 	}
@@ -34,5 +36,14 @@ public class BrandDto implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public String getImg_url() {
+		return img_url;
+	}
+
+	public void setImg_url(String img_url) {
+		this.img_url = img_url;
+	}
+
 
 }

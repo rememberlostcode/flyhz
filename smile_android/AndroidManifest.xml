@@ -22,7 +22,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.holding.smile.activity.MainActivity"
+            android:name="com.holding.smile.activity.MainSmileActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask" >
             <intent-filter>

@@ -324,7 +324,7 @@ public class BaseActivity extends Activity {
 						@Override
 						public void onClick(View v) {
 							Intent intent = new Intent();
-							intent.setClass(context, MainActivity.class);
+							intent.setClass(context, MainSmileActivity.class);
 							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);

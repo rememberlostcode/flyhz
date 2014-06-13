@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+    
+    <View android:layout_height="1px" android:background="@drawable/qianhuise" android:layout_width="fill_parent"></View>
+    
+    <RelativeLayout
+        android:id="@+id/brand_head"
+        android:layout_width="fill_parent"
+	    android:layout_height="30dp"
+	    android:gravity="bottom"
+	    android:orientation="horizontal"
+	    android:background="@android:color/transparent">
+        <TextView 
+            android:id="@+id/list_brand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_alignParentBottom="true"
+            android:text=""
+            android:textSize="22sp"
+            android:textColor="@drawable/shenhuise"
+            />
+        
+         <TextView
+            android:id="@+id/list_more"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:text="查看全部 &gt;"
+            android:textSize="16sp"
+            android:textColor="@drawable/shenhuise"
+            />
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/branc_pic"
+        android:layout_width="fill_parent"
+        android:layout_height="160dip"
+        android:paddingTop="5dp"
+        android:scaleType="fitXY"
+        android:contentDescription="@null"
+        />
+</LinearLayout>
