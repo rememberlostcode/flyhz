@@ -10,7 +10,7 @@ public class JIndexJGoods implements Serializable {
 
 	private static final long	serialVersionUID	= 1L;
 	private List<JActivity>		activity;
-	private List<BrandJGoods>	brand;
+	private List<BrandJGoods>	brands;
 
 	public List<JActivity> getActivity() {
 		return activity;
@@ -20,12 +20,12 @@ public class JIndexJGoods implements Serializable {
 		this.activity = activity;
 	}
 
-	public List<BrandJGoods> getBrand() {
-		return brand;
+	public List<BrandJGoods> getBrands() {
+		return brands;
 	}
 
-	public void setBrand(List<BrandJGoods> brand) {
-		this.brand = brand;
+	public void setBrands(List<BrandJGoods> brands) {
+		this.brands = brands;
 	}
 
 }

@@ -207,7 +207,7 @@ public class BuildServiceImpl implements BuildService {
 		json.append("\"brand\":");
 		json.append(JSONUtil.getEntity2Json(brand));
 		
-		json.append("\"gs\":");
+		json.append(",\"gs\":");
 		json.append(productsJsonString);
 		
 		json.append("}");

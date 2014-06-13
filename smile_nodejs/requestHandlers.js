@@ -100,7 +100,7 @@ function index(query,response) {
         result2 += ']';
 
         var result = '{"activity":'+result2+'';
-        result += ',"brand":';
+        result += ',"brands":';
         key ='smile@brands@recommend';
         var param = '';
         var cid = query.cid;
@@ -126,12 +126,14 @@ function index(query,response) {
                     if(i>0){
                         result += ',';
                     }
-                    result += '{\"id\":';
+                    /*result += '{\"id\":';
                     result += recommendindex[i].id;
                     result += ',\"name\":';
                     result += JSON.stringify(recommendindex[i].name ? recommendindex[i].name : null);
 					result += ',\"img_url\":';
-                    result += JSON.stringify(recommendindex[i].img_url?recommendindex[i].img_url:null);
+                    result += JSON.stringify(recommendindex[i].img_url?recommendindex[i].img_url:null);*/
+                    result += '{\"brand\":';
+                    result += JSON.stringify(recommendindex[i].brand);
                     result += ',\"gs\":';
                     result += JSON.stringify(recommendindex[i].gs,memberfilter);
                     result += '}';
@@ -182,7 +184,7 @@ function indexsingle(query,response) {
         }
         console.log('key='+key);
         client.get(key, function(err, res) {
-            //console.log(res);
+//            console.log(res);
             if(res){
 
                 var recommendindex = JSON.parse(res);
@@ -191,13 +193,14 @@ function indexsingle(query,response) {
                     if(i>0){
                         result += ',';
                     }
-                    result += '{\"id\":';
+                   /* result += '{\"id\":';
                     result += recommendindex[i].id;
                     result += ',\"name\":';
                     result += JSON.stringify(recommendindex[i].name ? recommendindex[i].name : null);
 					result += ',\"img_url\":';
                     result += JSON.stringify(recommendindex[i].img_url?recommendindex[i].img_url:null);
-                    result += '}';
+                    result += '}';*/
+                    result += JSON.stringify(recommendindex[i].brand);
                 }
                 result += ']';
             }

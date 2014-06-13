@@ -326,7 +326,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 															}
 
 															// 品牌区
-															List<BrandJGoods> brands = obj.getBrand();
+															List<BrandJGoods> brands = obj.getBrands();
 															if (brands != null && !brands.isEmpty()) {
 																int bSize = brands.size();
 																for (int i = 0; i < bSize; i++) {
