@@ -206,7 +206,6 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 														if (list == null || list.size() == 0) {
 															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
-															break;
 														}
 
 														if (adapter != null) {
