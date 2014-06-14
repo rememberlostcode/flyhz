@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.tools.StrUtils;
 
 /**
  * 注册
@@ -72,21 +73,26 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 					Toast.makeText(context, "用户名不能为空！", Toast.LENGTH_SHORT).show();
 					return;
 				}
-				if (username.length() < 6 || username.length() >12) {
+				if (username.length() < 6 || username.length() > 12) {
 					Toast.makeText(context, "用户名只能6到12个字符！", Toast.LENGTH_SHORT).show();
 					return;
 				}
-				
+
 				if (password == null || "".equals(password.trim())) {
 					Toast.makeText(context, "密码不能为空！", Toast.LENGTH_SHORT).show();
 					return;
 				}
-				if (password.length() < 6 || password.length() >12) {
+				if (password.length() < 6 || password.length() > 12) {
 					Toast.makeText(context, "密码只能6到12个字符！", Toast.LENGTH_SHORT).show();
 					return;
 				}
 				if (!password.equals(password2.trim())) {
 					Toast.makeText(context, "两个密码不一致！", Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				if (!StrUtils.chaeckPassword(password)) {
+					Toast.makeText(context, "密码太简单了，至少需要字母加数字！", Toast.LENGTH_SHORT).show();
 					return;
 				}
 
@@ -129,7 +135,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																					Toast.LENGTH_SHORT)
 																					.show();
 																		} else {
-																			if("200000".equals(rvd.getCode())){
+																			if (rvd.getCode().equals(200000)) {
 																				Toast.makeText(
 																						context,
 																						"注册成功！",
@@ -141,31 +147,36 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																				startActivity(intent);
 																				finish();
 																			} else {
-																				if(rvd.getCode().equals(140001)){
+																				if (rvd.getCode()
+																						.equals(140001)) {
 																					Toast.makeText(
 																							context,
 																							"用户名与密码不能为空！",
 																							Toast.LENGTH_SHORT)
 																							.show();
-																				} else if(rvd.getCode().equals(140002)){
+																				} else if (rvd.getCode()
+																								.equals(140002)) {
 																					Toast.makeText(
 																							context,
 																							"用户名为空！",
 																							Toast.LENGTH_SHORT)
 																							.show();
-																				} else if(rvd.getCode().equals(140003)){
+																				} else if (rvd.getCode()
+																								.equals(140003)) {
 																					Toast.makeText(
 																							context,
 																							"用户名长度不能大于32个字符！",
 																							Toast.LENGTH_SHORT)
 																							.show();
-																				}  else if(rvd.getCode().equals(140004)){
+																				} else if (rvd.getCode()
+																								.equals(140004)) {
 																					Toast.makeText(
 																							context,
 																							"用户名已存在！",
 																							Toast.LENGTH_SHORT)
 																							.show();
-																				}  else if(rvd.getCode().equals(140005)){
+																				} else if (rvd.getCode()
+																								.equals(140005)) {
 																					Toast.makeText(
 																							context,
 																							"密码为空！",

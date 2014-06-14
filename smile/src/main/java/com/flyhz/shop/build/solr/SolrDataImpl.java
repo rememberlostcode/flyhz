@@ -114,12 +114,12 @@ public class SolrDataImpl implements SolrData {
 				if (product.getPp() == null) {
 					continue;
 				} else {
-					product.setLp(BigDecimal.valueOf(product.getPp().intValue() * 2 + 1000));
+					product.setLp(BigDecimal.valueOf(product.getPp().doubleValue() * 2 + 1000));
 					doc.addField("sp", product.getLp().subtract(product.getPp()));
 				}
 			}
-			doc.addField("lp", product.getLp());// 本地价格
-			doc.addField("pp", product.getPp());// 代购价格
+			doc.addField("lp", product.getLp().intValue());// 本地价格
+			doc.addField("pp", product.getPp().intValue());// 代购价格
 
 			// 原图封面
 			if (product.getImgs() != null) {

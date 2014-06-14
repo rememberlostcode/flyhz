@@ -1,11 +1,13 @@
 
 package com.flyhz.shop.dto;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class BrandDto {
 
 	private Integer				id;
 	private String				name;
-	private String				url;
+	private String				img_url;
 
 	public Integer getId() {
 		return id;
@@ -23,12 +25,13 @@ public class BrandDto {
 		this.name = name;
 	}
 
-	public String getUrl() {
-		return url;
+	@JsonIgnore
+	public String getImg_url() {
+		return img_url;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setImg_url(String img_url) {
+		this.img_url = img_url;
 	}
 
 }

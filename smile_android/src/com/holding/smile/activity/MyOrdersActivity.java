@@ -12,14 +12,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyOrdersAdapter;
@@ -211,6 +206,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 														if (list == null || list.size() == 0) {
 															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
+															break;
 														}
 
 														if (adapter != null) {

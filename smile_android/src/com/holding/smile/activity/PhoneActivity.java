@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.tools.StrUtils;
 
 /**
  * 手机设置
@@ -65,6 +66,12 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 			case R.id.phone_save: {
 				// 设置手机
 				phone = phoneEditText.getText().toString();
+				
+				if(!StrUtils.checkPhoneNumber(phone)){
+					Toast.makeText(context, "手机号格式不对，请修改！", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("mphone", phone);
 				if (rvd != null && 200000 == rvd.getCode()) {
