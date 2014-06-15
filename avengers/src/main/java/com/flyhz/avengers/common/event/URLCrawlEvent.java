@@ -23,7 +23,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +34,7 @@ public class URLCrawlEvent implements Event {
 
 	@Override
 	public boolean call(Map<String, Object> context) {
+
 		URL url = null;
 		HttpURLConnection connection = null;
 		try {
@@ -76,7 +76,6 @@ public class URLCrawlEvent implements Event {
 			// NodeList list = parser.parse(tableFilter);
 			Document doc = Jsoup.parse(sb.toString());
 			LOG.info(doc.html());
-			Elements tables = doc.getElementsByTag("table");
 
 			LOG.info("init hbase");
 			Configuration hconf = HBaseConfiguration.create();

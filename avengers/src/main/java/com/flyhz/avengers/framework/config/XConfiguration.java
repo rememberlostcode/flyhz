@@ -16,6 +16,7 @@ import com.flyhz.avengers.framework.config.xml.XDomain;
 import com.flyhz.avengers.framework.config.xml.XDomains;
 import com.flyhz.avengers.framework.config.xml.XEvent;
 import com.flyhz.avengers.framework.config.xml.XEvents;
+import com.flyhz.avengers.framework.config.xml.XFilter;
 import com.flyhz.avengers.framework.config.xml.XTemplate;
 import com.flyhz.avengers.framework.config.xml.XTemplates;
 import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
@@ -28,12 +29,42 @@ public class XConfiguration {
 
 	private final Map<String, Object>	avengersConfiguration	= new HashMap<String, Object>();
 
+	/**
+	 * Map<String,Map<String,Object>>,key值是avengers.xml中domain.root,value是key为
+	 * CRAWL_EVENTS
+	 * ,FETCH_EVENTS,TEMPLATE_EVENTS,ANALYZE_EVENTS,URLFILTER_BEFORE_CRAWL
+	 * ,URLFILTER_AFTER_CRAWL
+	 */
 	public static final String			AVENGERS_DOMAINS		= "avengers.domains";
+
+	/**
+	 * List<Event>
+	 */
 	public static final String			CRAWL_EVENTS			= "crawl.events";
+
+	/**
+	 * List<Event>
+	 */
 	public static final String			FETCH_EVENTS			= "fetch.events";
+
+	/**
+	 * List<Event>
+	 */
 	public static final String			TEMPLATE_EVENTS			= "template.events";
+
+	/**
+	 * List<Event>
+	 */
 	public static final String			ANALYZE_EVENTS			= "analyze.events";
+
+	/**
+	 * List<String>
+	 */
 	public static final String			URLFILTER_BEFORE_CRAWL	= "crawl.before.filter";
+
+	/**
+	 * List<String>
+	 */
 	public static final String			URLFILTER_AFTER_CRAWL	= "crawl.after.filter";
 
 	private XConfiguration() {
@@ -54,10 +85,30 @@ public class XConfiguration {
 							throw new AvengersConfigurationException("domain root" + root
 									+ " duplicated");
 						}
+
 					}
-					XEvents crawlEvents = domain.getCrawlEvents();
+
 					Map<String, Object> domainMap = new HashMap<String, Object>();
 					domainsMap.put(root, domainMap);
+
+					XFilter xBeforeCrawlFilters = domain.getUrlFilterBeforeCrawl();
+					if (xBeforeCrawlFilters != null) {
+						List<String> beforeCrawlFilterList = xBeforeCrawlFilters.getValue();
+						if (beforeCrawlFilterList != null && !beforeCrawlFilterList.isEmpty()) {
+							domainMap.put(URLFILTER_BEFORE_CRAWL, beforeCrawlFilterList);
+						}
+					}
+
+					XFilter xAfterCrawlFilters = domain.getUrlFilterAfterCrawl();
+					if (xAfterCrawlFilters != null) {
+						List<String> afterCrawlFilterList = xAfterCrawlFilters.getValue();
+						if (afterCrawlFilterList != null && !afterCrawlFilterList.isEmpty()) {
+							domainMap.put(URLFILTER_AFTER_CRAWL, afterCrawlFilterList);
+						}
+					}
+
+					XEvents crawlEvents = domain.getCrawlEvents();
+
 					if (crawlEvents != null) {
 						List<XEvent> listEvent = crawlEvents.getEvent();
 						if (listEvent != null && !listEvent.isEmpty()) {
