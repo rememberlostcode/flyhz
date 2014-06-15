@@ -86,7 +86,9 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					public WebResourceResponse shouldInterceptRequest(
 							WebView view, String url) {
 						if(url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1){
+							TbUtil.setWebView(view);
 							TbUtil.cshTb();
+//							view.loadUrl("http://h5.m.taobao.com/awp/base/buy.htm?itemId=38752474914&item_num_id=38752474914&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=38752474914&item_num_id=38752474914&_input_charset=utf-8&buyNow=true&v=0&skuId=");
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
@@ -94,6 +96,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					@Override
 					public void onPageFinished(WebView view, String url) {
 						super.onPageFinished(view, url);
+						TbUtil.setWebView(view);
 						// 设置隐藏返回按钮
 						view.loadUrl("javascript:document.getElementsByTagName('li')[1].style.display='none';");
 						// 给卖家留言设置订单编号和数量
