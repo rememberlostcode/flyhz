@@ -47,7 +47,8 @@ public abstract class AvengersExecutor implements Runnable {
 		this.events.addAll(events);
 	}
 
-	public void execute(String[] args) {
+	protected void execute(String[] args) {
+		init(args);
 		new Thread(this).start();
 	}
 

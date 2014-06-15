@@ -28,6 +28,13 @@
 			<element name="templates" type="ave:xTemplates" minOccurs="0"/>
 		</all>
 		<attribute name="root" use="required"/>
+		<attribute name="encoding" use="optional" default="UTF-8"/>
+		<attribute name="depth" use="optional" default="3">
+			<simpleType>
+				<restriction base="unsignedInt">
+				</restriction>
+			</simpleType>
+		</attribute>
 	</complexType>
 	<complexType name="xFilter">
 		<sequence>
