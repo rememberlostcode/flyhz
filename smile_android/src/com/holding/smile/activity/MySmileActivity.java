@@ -43,6 +43,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 
 		myOrdersLayout = (LinearLayout) findViewById(R.id.mysmile_myorders_layout);
 		myCouponLayout = (LinearLayout) findViewById(R.id.mysmile_mycoupon_layout);
+		myCouponLayout.setVisibility(View.GONE);
 		settingLayout = (LinearLayout) findViewById(R.id.mysmile_setting_layout);
 		clearCacheLayout = (LinearLayout) findViewById(R.id.mysmile_clearcache_layout);
 

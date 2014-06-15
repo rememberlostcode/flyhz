@@ -163,9 +163,9 @@ static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *userp) {
  * http get方式连接
  */
 static std::string connect_get(JNIEnv *env, std::string url) {
-	LOGD("this url is get!\n");
-	LOGD("url : %s \n", url.c_str());
-	LOGD("cookie: %s\n", cookieString.c_str());
+//	LOGD("this url is get!\n");
+//	LOGD("url : %s \n", url.c_str());
+//	LOGD("cookie: %s\n", cookieString.c_str());
 	int retcode = 0;
 	CURL* curl;
 	CURLcode res;
@@ -209,12 +209,12 @@ static std::string connect_get(JNIEnv *env, std::string url) {
 		LOGD("curl error: %d !\n", res);
 	} else {
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &retcode);
-		LOGD("CURL HTTP STATUS:%d", retcode);
+//		LOGD("CURL HTTP STATUS:%d", retcode);
 	}
 	//释放内存
 	curl_easy_cleanup(curl);
 	if (200 == retcode) {
-		LOGD("curl content = %s \n", content.c_str());
+//		LOGD("curl content = %s \n", content.c_str());
 	} else {
 		LOGD("curl error: %d\n", res);
 		content =
@@ -255,10 +255,10 @@ static std::string connect_get(JNIEnv *env, std::string url) {
  */
 static std::string connect_post(JNIEnv *env, std::string url,
 		std::string postFields) {
-	LOGD("this url is post!");
-	LOGD("url : %s \n", url.c_str());
-	LOGD("postFields: %s\n", postFields.c_str());
-	LOGD("cookie: %s\n", cookieString.c_str());
+//	LOGD("this url is post!");
+//	LOGD("url : %s \n", url.c_str());
+//	LOGD("postFields: %s\n", postFields.c_str());
+//	LOGD("cookie: %s\n", cookieString.c_str());
 	int retcode = 0;
 	CURL* curl;
 	CURLcode res;
@@ -298,7 +298,7 @@ static std::string connect_post(JNIEnv *env, std::string url,
 		LOGD("CURL HTTP STATUS:%d", retcode);
 		//cookie是空的就从header中找出cookie内容
 		if (cookieString.empty() && !header.empty()) {
-			LOGD("header: %s\n", header.c_str());
+//			LOGD("header: %s\n", header.c_str());
 			//存储匹配到的字符串
 			char matched[header.size()];
 			//源字符串
@@ -315,7 +315,7 @@ static std::string connect_post(JNIEnv *env, std::string url,
 	curl_slist_free_all(headerlist);
 	curl_easy_cleanup(curl);
 	if (200 == retcode) {
-		LOGD("curl content = %s \n", content.c_str());
+//		LOGD("curl content = %s \n", content.c_str());
 	} else {
 		LOGD("curl error: %d\n", res);
 		content =
@@ -355,8 +355,8 @@ static std::string connect_post(JNIEnv *env, std::string url,
  * http get方式连接(无cookie)
  */
 static std::string connect_get_without_cookie(JNIEnv *env, std::string url) {
-	LOGD("this url is get!\n");
-	LOGD("url : %s \n", url.c_str());
+//	LOGD("this url is get!\n");
+//	LOGD("url : %s \n", url.c_str());
 	int retcode = 0;
 	CURL* curl;
 	CURLcode res;
@@ -382,7 +382,7 @@ static std::string connect_get_without_cookie(JNIEnv *env, std::string url) {
 	//释放内存
 	curl_easy_cleanup(curl);
 	if (200 == retcode) {
-		LOGD("curl content = %s \n", content.c_str());
+//		LOGD("curl content = %s \n", content.c_str());
 	} else {
 		LOGD("curl error: %d\n", res);
 		content =
@@ -395,8 +395,8 @@ static std::string connect_get_without_cookie(JNIEnv *env, std::string url) {
  * http post方式连接(无cookie)
  */
 static std::string connect_post(JNIEnv *env, std::string url) {
-	LOGD("this url is post!");
-	LOGD("url : %s \n", url.c_str());
+//	LOGD("this url is post!");
+//	LOGD("url : %s \n", url.c_str());
 	int retcode = 0;
 	CURL* curl;
 	CURLcode res;
@@ -428,7 +428,7 @@ static std::string connect_post(JNIEnv *env, std::string url) {
 	//释放内存
 	curl_easy_cleanup(curl);
 	if (200 == retcode) {
-		LOGD("curl content = %s", content.c_str());
+//		LOGD("curl content = %s", content.c_str());
 	} else {
 		LOGD("curl error: %d\n", res);
 		content =
