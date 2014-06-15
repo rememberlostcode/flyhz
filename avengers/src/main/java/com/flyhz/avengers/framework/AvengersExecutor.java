@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +41,13 @@ public abstract class AvengersExecutor implements Runnable {
 
 	abstract List<Event> initAvengersEvents(Map<String, Object> context);
 
-	public void execute(String[] args) {
+	protected void init(String[] args) {
 		initAvengersContext(args);
 		List<Event> events = initAvengersEvents(context);
 		this.events.addAll(events);
+	}
+
+	public void execute(String[] args) {
 		new Thread(this).start();
 	}
 
@@ -96,4 +100,11 @@ public abstract class AvengersExecutor implements Runnable {
 		}
 	}
 
+	public List<Event> getEvents() {
+		return Collections.unmodifiableList(events);
+	}
+
+	public Map<String, Object> getContext() {
+		return Collections.unmodifiableMap(context);
+	}
 }
