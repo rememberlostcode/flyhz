@@ -43,6 +43,16 @@ public class XConfiguration {
 	public static final String			CRAWL_EVENTS			= "crawl.events";
 
 	/**
+	 * String
+	 */
+	public static final String			ENCODING				= "encoding";
+
+	/**
+	 * Integer
+	 */
+	public static final String			CRAWL_DEPTH				= "crawl.depth";
+
+	/**
 	 * List<Event>
 	 */
 	public static final String			FETCH_EVENTS			= "fetch.events";
@@ -80,6 +90,9 @@ public class XConfiguration {
 				avengersConfiguration.put(AVENGERS_DOMAINS, domainsMap);
 				for (XDomain domain : listDomain) {
 					String root = domain.getRoot();
+					String encoding = domain.getEncoding();
+					Long depth = domain.getDepth();
+
 					if (StringUtil.isNotBlank(root)) {
 						if (domainsMap.keySet().contains(root)) {
 							throw new AvengersConfigurationException("domain root" + root
@@ -90,6 +103,8 @@ public class XConfiguration {
 
 					Map<String, Object> domainMap = new HashMap<String, Object>();
 					domainsMap.put(root, domainMap);
+					domainMap.put(ENCODING, encoding);
+					domainMap.put(CRAWL_DEPTH, depth);
 
 					XFilter xBeforeCrawlFilters = domain.getUrlFilterBeforeCrawl();
 					if (xBeforeCrawlFilters != null) {
