@@ -25,9 +25,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.util.ReflectHelper;
-
-public class HbaseShell<Entity> {
+public class HbaseShell {
 	private static Logger	LOG		= LoggerFactory.getLogger(HbaseShell.class);
 	private Configuration	conf	= null;
 
@@ -47,11 +45,6 @@ public class HbaseShell<Entity> {
 		return hbaseAdmin;
 	}
 
-	public boolean createTable(Class<Entity> clazz) throws IOException {
-		String[] fields = ReflectHelper.getFiledNames(clazz);
-		return createTable(clazz.getSimpleName().toLowerCase(), fields);
-	}
-
 	public boolean isTableExists(String tableName) throws IOException {
 		HBaseAdmin hAdmin = null;
 		try {
@@ -63,10 +56,6 @@ public class HbaseShell<Entity> {
 			}
 
 		}
-	}
-
-	public boolean deleteTable(Class<Entity> clazz) throws IOException {
-		return deleteTable(clazz.getSimpleName().toLowerCase());
 	}
 
 	// 创建数据库表

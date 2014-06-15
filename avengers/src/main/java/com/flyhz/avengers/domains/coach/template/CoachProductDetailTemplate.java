@@ -4,7 +4,6 @@ package com.flyhz.avengers.domains.coach.template;
 import java.util.Map;
 
 import com.flyhz.avengers.framework.Template;
-import com.flyhz.avengers.framework.util.persister.HbaseShell;
 
 public class CoachProductDetailTemplate implements Template {
 
@@ -12,7 +11,7 @@ public class CoachProductDetailTemplate implements Template {
 	public void apply(Map<String, Object> context) {
 		String url = (String) context.get("template.url");
 		String htmlDoc = null;
-		HbaseShell<?> shell = new HbaseShell();
+		// HbaseShell shell = new HbaseShell();
 		// shell.....
 		htmlDoc = "<html>.....</html>";
 	}

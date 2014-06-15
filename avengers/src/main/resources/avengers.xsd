@@ -52,6 +52,20 @@
 		</sequence>
 	</complexType>
 	<complexType name="xEvent">
-		<attribute name="class" type="token" use="required"/>
+		<all>
+			<element name="constructor" type="ave:xConstructor" minOccurs="0" maxOccurs="1"/>
+		</all>
+		<attribute name="class" use="required">
+			<simpleType>
+				<restriction base="token">
+					<minLength value="1"/>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+	<complexType name="xConstructor">
+		<sequence>
+			<element name="arg" type="token" minOccurs="1" maxOccurs="unbounded"/>
+		</sequence>
 	</complexType>
 </schema>

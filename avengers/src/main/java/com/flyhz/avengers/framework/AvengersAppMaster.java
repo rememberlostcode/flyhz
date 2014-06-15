@@ -199,8 +199,6 @@ public class AvengersAppMaster {
 	// Only request for more if the original requirement changes.
 	private AtomicInteger			numRequestedContainers		= new AtomicInteger();
 
-	// Shell command to be executed
-	private String					shellCommand				= "";
 	// Args to be passed to the shell command
 	private String					shellArgs					= "";
 	// Env variables to be setup for the shell command
@@ -224,6 +222,8 @@ public class AvengersAppMaster {
 
 	// Launch threads
 	private List<Thread>			launchThreads				= new ArrayList<Thread>();
+
+	private Vector<String>			cmds						= new Vector<String>();
 
 	/**
 	 * @param args
@@ -307,7 +307,7 @@ public class AvengersAppMaster {
 		}
 		LOG.info(sb.toString());
 		Options opts = new Options();
-		opts.addOption("shell_command", true, "all,crawl,fetch,out");
+		opts.addOption("cmd", true, "all,crawl,fetch,out");
 		CommandLine cliParser = new GnuParser().parse(opts, args);
 
 		if (args.length == 0) {
@@ -350,34 +350,36 @@ public class AvengersAppMaster {
 				+ appAttemptID.getApplicationId().getClusterTimestamp() + ", attemptId="
 				+ appAttemptID.getAttemptId());
 
-		if ("crawl".equals(cliParser.getOptionValue("shell_command"))) {
+		if ("crawl".equals(cliParser.getOptionValue("cmd"))) {
 			LOG.info("App run crawl");
 			Map<String, Object> context = XConfiguration.getAvengersContext();
 			@SuppressWarnings("unchecked")
 			Map<String, Object> domainsMap = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 			numTotalContainers = domainsMap.size();
-			Vector<CharSequence> vargs = new Vector<CharSequence>(30);
+			for (String root : domainsMap.keySet()) {
+				Vector<CharSequence> vargs = new Vector<CharSequence>(30);
 
-			// Set java executable command
-			LOG.info("Setting up app master command");
+				// Set java executable command
+				LOG.info("Setting up app master command");
 
-			vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
-			// Set Xmx based on am memory size
-			vargs.add("-Xmx" + containerMemory + "m");
-			// Set class name
-			vargs.add(Crawl.class.getName());
+				vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+				// Set Xmx based on am memory size
+				vargs.add("-Xmx" + containerMemory + "m");
+				// Set class name
+				vargs.add(Crawl.class.getName());
+				vargs.add("-url " + root);
+				vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
+				vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
 
-			vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
-			vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
+				// Get final commmand
+				StringBuilder command = new StringBuilder();
+				for (CharSequence str : vargs) {
+					command.append(str).append(" ");
+				}
 
-			// Get final commmand
-			StringBuilder command = new StringBuilder();
-			for (CharSequence str : vargs) {
-				command.append(str).append(" ");
+				LOG.info("Completed setting up app master command " + command.toString());
+				cmds.add(command.toString());
 			}
-
-			LOG.info("Completed setting up app master command " + command.toString());
-			shellCommand = command.toString();
 			// List<String> commands = new ArrayList<String>();
 			// commands.add(command.toString());
 
@@ -616,7 +618,11 @@ public class AvengersAppMaster {
 			LOG.info("Got response from RM for container ask, allocatedCnt="
 					+ allocatedContainers.size());
 			numAllocatedContainers.addAndGet(allocatedContainers.size());
-			for (Container allocatedContainer : allocatedContainers) {
+			XConfiguration.getAvengersContext().get(XConfiguration.AVENGERS_DOMAINS);
+
+			for (int i = 0; i < allocatedContainers.size(); i++) {
+				Container allocatedContainer = allocatedContainers.get(i);
+				String cmd = cmds.get(i);
 				LOG.info("Launching shell command on a new container." + ", containerId="
 						+ allocatedContainer.getId() + ", containerNode="
 						+ allocatedContainer.getNodeId().getHost() + ":"
@@ -626,7 +632,7 @@ public class AvengersAppMaster {
 				// + ", containerToken"
 				// +allocatedContainer.getContainerToken().getIdentifier().toString());
 				LaunchContainerRunnable runnableLaunchContainer = new LaunchContainerRunnable(
-						allocatedContainer, containerListener);
+						allocatedContainer, containerListener, cmd);
 				Thread launchThread = new Thread(runnableLaunchContainer);
 
 				// launch and start the container on a separate thread to keep
@@ -734,15 +740,19 @@ public class AvengersAppMaster {
 
 		NMCallbackHandler	containerListener;
 
+		String				cmd;
+
 		/**
 		 * @param lcontainer
 		 *            Allocated container
 		 * @param containerListener
 		 *            Callback handler of the container
 		 */
-		public LaunchContainerRunnable(Container lcontainer, NMCallbackHandler containerListener) {
+		public LaunchContainerRunnable(Container lcontainer, NMCallbackHandler containerListener,
+				String cmd) {
 			this.container = lcontainer;
 			this.containerListener = containerListener;
+			this.cmd = cmd;
 		}
 
 		@Override
@@ -789,7 +799,7 @@ public class AvengersAppMaster {
 			Vector<CharSequence> vargs = new Vector<CharSequence>(5);
 
 			// Set executable command
-			vargs.add(shellCommand);
+			vargs.add(cmd);
 			// Set shell script path
 			if (!shellScriptPath.isEmpty()) {
 				vargs.add(ExecShellStringPath);

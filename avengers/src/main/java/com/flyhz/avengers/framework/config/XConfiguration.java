@@ -1,23 +1,17 @@
 
 package com.flyhz.avengers.framework.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.Event;
+import com.flyhz.avengers.framework.config.xml.XConstructor;
 import com.flyhz.avengers.framework.config.xml.XDomain;
 import com.flyhz.avengers.framework.config.xml.XDomains;
 import com.flyhz.avengers.framework.config.xml.XEvent;
@@ -43,24 +37,11 @@ public class XConfiguration {
 	public static final String			URLFILTER_AFTER_CRAWL	= "crawl.after.filter";
 
 	private XConfiguration() {
-		ClassLoader classLoader = XConfiguration.class.getClassLoader();
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL avengersXml = classLoader.getResource("avengers.xml");
 		URL avengersSchema = classLoader.getResource("avengers.xsd");
-		URL avengersProperties = classLoader.getResource("avengers.properties");
-		Properties avengersPropertiesConfig = new Properties();
-		try {
-			avengersPropertiesConfig.load(new FileInputStream(new File(avengersProperties.toURI())));
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("can't find avengers.properties", e);
-		} catch (IOException e) {
-			throw new RuntimeException("when open avengers.properties make an error", e);
-		} catch (URISyntaxException e) {
-			throw new RuntimeException("avengers uri Syntax error", e);
-		}
-		for (Entry<Object, Object> entry : avengersPropertiesConfig.entrySet()) {
-			avengersConfiguration.put((String) entry.getKey(), entry.getValue());
-		}
 		XDomains domains = XmlUtil.convertXmlToObject(XDomains.class, avengersXml, avengersSchema);
+		LOG.info("domains is {}", domains);
 		if (domains != null) {
 			List<XDomain> listDomain = domains.getDomain();
 			if (listDomain != null && !listDomain.isEmpty()) {
@@ -85,7 +66,21 @@ public class XConfiguration {
 							try {
 								for (XEvent event : listEvent) {
 									Class<?> clazz = Class.forName(event.getClazz());
-									Event e = (Event) clazz.newInstance();
+									Event e = null;
+									XConstructor constructor = event.getConstructor();
+									if (constructor != null) {
+										List<String> args = constructor.getArg();
+										@SuppressWarnings("unchecked")
+										Class<String>[] paramTypes = new Class[args.size()];
+										for (int i = 0; i < args.size(); i++) {
+											paramTypes[i] = String.class;
+										}
+
+										e = (Event) clazz.getConstructor(paramTypes).newInstance(
+												args.toArray());
+									} else {
+										e = (Event) clazz.newInstance();
+									}
 									crawlEventList.add(e);
 								}
 							} catch (Throwable e) {
@@ -108,7 +103,7 @@ public class XConfiguration {
 									fetchEventList.add(e);
 								}
 							} catch (Throwable e) {
-								LOG.error("root:" + root + "fetch event配置出错", e);
+								LOG.error("root:" + root + " fetch event配置出错", e);
 								throw new AvengersConfigurationException("", e);
 							}
 							domainMap.put(FETCH_EVENTS, fetchEventList);

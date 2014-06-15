@@ -27,7 +27,7 @@ public class HbaseUtil {
 	private static Configuration	conf	= null;
 	static {
 		conf = HBaseConfiguration.create();
-		conf.set("hbase.zookeeper.quorum", "m1,s1,s2");
+		conf.set("hbase.zookeeper.quorum", "m1,s1");
 		conf.set("hbase.zookeeper.property.clientPort", "2181");
 	}
 

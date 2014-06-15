@@ -13,6 +13,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 
+import com.flyhz.avengers.framework.config.XConfiguration;
+
 public abstract class AvengersExecutor implements Runnable {
 
 	private final List<Event>			events	= new ArrayList<Event>();
@@ -22,7 +24,7 @@ public abstract class AvengersExecutor implements Runnable {
 	protected final Options				opts	= new Options();
 
 	public AvengersExecutor() {
-
+		context.putAll(XConfiguration.getAvengersContext());
 	}
 
 	abstract Logger getLog();
@@ -40,7 +42,8 @@ public abstract class AvengersExecutor implements Runnable {
 
 	public void execute(String[] args) {
 		initAvengersContext(args);
-		initAvengersEvents(context);
+		List<Event> events = initAvengersEvents(context);
+		this.events.addAll(events);
 		new Thread(this).start();
 	}
 

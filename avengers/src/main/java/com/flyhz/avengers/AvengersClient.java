@@ -20,9 +20,6 @@ package com.flyhz.avengers;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,77 +131,65 @@ import com.flyhz.avengers.framework.DSConstants;
 @InterfaceStability.Unstable
 public class AvengersClient {
 
-	private static final Log	LOG					= LogFactory.getLog(AvengersClient.class);
+	private static final Log	LOG						= LogFactory.getLog(AvengersClient.class);
 
 	// Configuration
 	private Configuration		conf;
 	private YarnClient			yarnClient;
 	// Application master specific info to register a new Application with
 	// RM/ASM
-	private String				appName				= "";
+	private String				appName					= "";
 	// App master priority
-	private int					amPriority			= 0;
+	private int					amPriority				= 0;
 	// Queue for App master
-	private String				amQueue				= "";
+	private String				amQueue					= "";
 	// Amt. of memory resource to request for to run the App Master
-	private int					amMemory			= 10;
+	private int					amMemory				= 10;
 
 	// Application master jar file
-	private String				appMasterJar		= "";
+	private String				appMasterJar			= "";
 	// Main class to invoke application master
 	private final String		appMasterMainClass;
 
 	// Shell command to be executed
-	private String				shellCommand		= "";
+	private String				shellCommand			= "";
 	// Location of shell script
-	private String				shellScriptPath		= "";
+	private String				shellScriptPath			= "";
 	// Args to be passed to the shell command
-	private String				shellArgs			= "";
+	private String				shellArgs				= "";
 	// Env variables to be setup for the shell command
-	private Map<String, String>	shellEnv			= new HashMap<String, String>();
+	private Map<String, String>	shellEnv				= new HashMap<String, String>();
 	// Shell Command Container priority
-	private int					shellCmdPriority	= 0;
+	private int					shellCmdPriority		= 0;
 
 	// Amt of memory to request for container in which shell script will be
 	// executed
-	private int					containerMemory		= 10;
+	private int					containerMemory			= 10;
 	// No. of containers in which the shell script needs to be executed
-	private int					numContainers		= 1;
+	private int					numContainers			= 1;
 
 	// log4j.properties file
 	// if available, add to local resources and set into classpath
-	private String				log4jPropFile		= "";
+	private String				log4jPropFile			= "";
 
 	// Start time for client
-	private final long			clientStartTime		= System.currentTimeMillis();
+	private final long			clientStartTime			= System.currentTimeMillis();
 	// Timeout threshold for client. Kill app after time interval expires.
-	private long				clientTimeout		= 600000;
+	private long				clientTimeout			= 600000;
 
 	// Debug flag
-	boolean						debugFlag			= false;
+	boolean						debugFlag				= false;
 
 	// Command line options
 	private Options				opts;
+
+	private final String		avengersConfigTableName	= "avengers_config";
 
 	/**
 	 * @param args
 	 *            Command line arguments
 	 */
 	public static void main(String[] args) {
-		// System.out.println(System.getenv("HADOOP_HOME"));
-
-		// System.setProperty("hadoop.home.dir",
-		// "/Users/huoding/Downloads/hadoop-2.2.0");
-		System.setProperty("yarn.resourcemanager.adress", "10.203.3.39");
-		System.setProperty("HADOOP_USER_NAME", "avengers");
-		LOG.info("HADOOP_CONF_DIR = " + System.getenv("HADOOP_CONF_DIR"));
-		try {
-			InetSocketAddress isa = new InetSocketAddress("10.22.23.63", 8032);
-			System.out.println(isa.getAddress().getCanonicalHostName());
-			LOG.info(InetAddress.getLocalHost().getHostName());
-		} catch (UnknownHostException e1) {
-			e1.printStackTrace();
-		}
 		boolean result = false;
 		try {
 			AvengersClient client = new AvengersClient();
@@ -256,8 +241,7 @@ public class AvengersClient {
 		opts = new Options();
 		opts.addOption("appname", true, "Application Name. Default value - avengers");
 		opts.addOption("jar", true, "Jar file containing the application master");
-		opts.addOption("shell_command", true,
-				"Shell command to be executed by the Application Master");
+		opts.addOption("cmd", true, "Shell command to be executed by the Application Master");
 	}
 
 	/**
@@ -290,15 +274,9 @@ public class AvengersClient {
 		}
 
 		appName = cliParser.getOptionValue("appname", "Avengers");
-		amPriority = Integer.parseInt(cliParser.getOptionValue("priority", "0"));
-		amQueue = cliParser.getOptionValue("queue", "default");
-		amMemory = Integer.parseInt(cliParser.getOptionValue("master_memory", "10"));
-
-		if (amMemory < 0) {
-			throw new IllegalArgumentException(
-					"Invalid memory specified for application master, exiting."
-							+ " Specified memory=" + amMemory);
-		}
+		amPriority = 0;
+		amQueue = "default";
+		amMemory = 10;
 
 		if (!cliParser.hasOption("jar")) {
 			throw new IllegalArgumentException("No jar file specified for application master");
@@ -306,27 +284,20 @@ public class AvengersClient {
 
 		appMasterJar = cliParser.getOptionValue("jar");
 
-		if (!cliParser.hasOption("shell_command")) {
+		if (!cliParser.hasOption("cmd")) {
 			throw new IllegalArgumentException(
-					"No shell command specified to be executed by application master");
+					"No cmd specified to be executed by application master");
 		}
-		shellCommand = cliParser.getOptionValue("shell_command");
+		shellCommand = cliParser.getOptionValue("cmd");
 
 		shellCmdPriority = Integer.parseInt("0");
 
-		containerMemory = Integer.parseInt(cliParser.getOptionValue("container_memory", "10"));
-		numContainers = Integer.parseInt(cliParser.getOptionValue("num_containers", "1"));
+		containerMemory = 10;
+		numContainers = 1;
 
-		if (containerMemory < 0 || numContainers < 1) {
-			throw new IllegalArgumentException(
-					"Invalid no. of containers or container memory specified, exiting."
-							+ " Specified containerMemory=" + containerMemory + ", numContainer="
-							+ numContainers);
-		}
+		clientTimeout = 600000;
 
-		clientTimeout = Integer.parseInt(cliParser.getOptionValue("timeout", "600000"));
-
-		log4jPropFile = cliParser.getOptionValue("log_properties", "");
+		log4jPropFile = "";
 
 		return true;
 	}
@@ -341,6 +312,52 @@ public class AvengersClient {
 	public boolean run() throws IOException, YarnException {
 
 		LOG.info("Running Client");
+
+		// LOG.info("init hbase");
+		// Configuration hconf = HBaseConfiguration.create();
+		// hconf.set("hbase.zookeeper.quorum", "m1,s1,s2");
+		// hconf.set("hbase.zookeeper.property.clientPort", "2181");
+		// HConnection connection = HConnectionManager.createConnection(hconf);
+		// HBaseAdmin hbaseAdmin = new HBaseAdmin(connection);
+		// if (!hbaseAdmin.tableExists(avengersConfigTableName)) {
+		// HTableDescriptor tableDesc = new HTableDescriptor(
+		// TableName.valueOf(avengersConfigTableName));
+		// HColumnDescriptor columnConf = new HColumnDescriptor("conf");
+		// tableDesc.addFamily(columnConf);
+		// hbaseAdmin.createTable(tableDesc);
+		// }
+		// ClassLoader classLoader =
+		// Thread.currentThread().getContextClassLoader();
+		// URL avengersXml = classLoader.getResource("avengers.xml");
+		// URL avengersSchema = classLoader.getResource("avengers.xsd");
+		// URL avengersProperties =
+		// classLoader.getResource("avengers.properties");
+		// Properties avengersPropertiesConfig = new Properties();
+		// try {
+		// avengersPropertiesConfig.load(new FileInputStream(new
+		// File(avengersProperties.toURI())));
+		// } catch (FileNotFoundException e) {
+		// throw new RuntimeException("can't find avengers.properties", e);
+		// } catch (IOException e) {
+		// throw new
+		// RuntimeException("when open avengers.properties make an error", e);
+		// } catch (URISyntaxException e) {
+		// throw new RuntimeException("avengers uri Syntax error", e);
+		// }
+		// HTable table = null;
+		// try {
+		// table = new HTable(hconf, avengersConfigTableName);
+		// Put put = new Put(Bytes.toBytes("avengers"));
+		// // 参数出分别：列族、列、值
+		// put.add(Bytes.toBytes("conf"), Bytes.toBytes("xml"),
+		// Bytes.toBytes(XmlUtil.convertXmlToString(avengersXml)));
+		// table.put(put);
+		// } finally {
+		// if (table != null) {
+		// table.close();
+		// }
+		// }
+
 		yarnClient.start();
 
 		YarnClusterMetrics clusterMetrics = yarnClient.getYarnClusterMetrics();
@@ -533,7 +550,7 @@ public class AvengersClient {
 		// vargs.add("--num_containers " + String.valueOf(numContainers));
 		// vargs.add("--priority " + String.valueOf(shellCmdPriority));
 		if (!shellCommand.isEmpty()) {
-			vargs.add("--shell_command " + shellCommand + "");
+			vargs.add("--cmd " + shellCommand + "");
 		}
 		// if (!shellArgs.isEmpty()) {
 		// vargs.add("--shell_args " + shellArgs + "");

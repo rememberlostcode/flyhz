@@ -6,9 +6,6 @@
 		<urlFilterBeforeCrawl>
 			<value>^http://www.coach.com/online/handbags/prodyuct</value>
 		</urlFilterBeforeCrawl>
-		<fetchEvents>
-			<event class=""/>
-		</fetchEvents>
 		<templates>
 			<template url="^http://www.coach.com/online/handbags/Product-"
 				pattern="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
@@ -16,6 +13,22 @@
 					
 				</templateApplyEvents>
 			</template>
+		</templates>
+	</domain>
+	<domain root="http://www.coachfactory.com">
+		<urlFilterBeforeCrawl>
+			<value>^http://www.coachfactory.com/store/default/the-june-11-event/handbags</value>
+		</urlFilterBeforeCrawl>
+		<crawlEvents>
+			<event class="com.flyhz.avengers.domains.coachfactory.event.CoachFactoryLoginEvent">
+				<constructor>
+					<arg>roman1121@hotmail.com</arg>
+					<arg>123123</arg>
+				</constructor>
+			</event>
+		</crawlEvents>
+		<templates>
+			<template url="" pattern=""></template>
 		</templates>
 	</domain>
 </ave:xDomains>
