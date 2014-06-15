@@ -7,10 +7,13 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -261,9 +264,38 @@ public class StringUtil extends StringUtils {
 		return str;
 	}
 
+	/**
+	 * 校验URL是否匹配正则表达式集合
+	 * 
+	 * @param url
+	 * @param values
+	 * @return boolean
+	 */
+	public static boolean filterUrl(String url, List<String> values) {
+		boolean flag = false;
+		if (StringUtils.isNotBlank(url) && values != null && !values.isEmpty()) {
+			for (String value : values) {
+				if (StringUtils.isNotBlank(value)) {
+					// 校验URL是否匹配正则表达式
+					flag = Pattern.compile(value).matcher(url).find();
+					if (flag) {
+						return flag;
+					}
+				}
+			}
+		}
+		return flag;
+	}
+
 	public static void main(String[] name) {
 		// System.out.println(convertStringToDate("2011-06-16 11:30:20",
 		// DEFAULT_DATE_FORMAT));
-		System.out.println(200 / 200);
+		// System.out.println(200 / 200);
+		List<String> values = new ArrayList<String>();
+		values.add("^http://www.coach.com/online/handbags/product");
+		String url = "http://www.coach.com/online/handbags/product?id=123456";
+		System.out.println(filterUrl(url, values));
+		url = "http://www.coach.com/online/mens/product?id=123456";
+		System.out.println(filterUrl(url, values));
 	}
 }
