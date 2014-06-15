@@ -92,7 +92,7 @@ public class XConfiguration {
 					String root = domain.getRoot();
 					String encoding = domain.getEncoding();
 					Long depth = domain.getDepth();
-
+					
 					if (StringUtil.isNotBlank(root)) {
 						if (domainsMap.keySet().contains(root)) {
 							throw new AvengersConfigurationException("domain root" + root
