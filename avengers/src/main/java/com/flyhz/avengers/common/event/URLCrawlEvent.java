@@ -4,47 +4,80 @@ package com.flyhz.avengers.common.event;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.flyhz.avengers.framework.Crawl;
 import com.flyhz.avengers.framework.Event;
+import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.util.StringUtil;
 
 public class URLCrawlEvent implements Event {
 
 	private static final Logger	LOG	= LoggerFactory.getLogger(URLCrawlEvent.class);
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean call(Map<String, Object> context) {
+		String url = (String) context.get(Crawl.CRAWL_URL);
+		Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
+		Map<String, Object> domain = (Map<String, Object>) domains.get(url);
 
+		String encode = (String) domain.get("encoding");
+		Long depth = (Long) domain.get("crawl.depth");
+
+		List<String> urlFilterBeforeCrawls = (List<String>) domain.get(XConfiguration.URLFILTER_BEFORE_CRAWL);
+		List<String> urlFilterAfterCrawls = (List<String>) domain.get(XConfiguration.URLFILTER_AFTER_CRAWL);
+
+		recursiveMethod(url, depth, encode, urlFilterBeforeCrawls, urlFilterAfterCrawls);
+
+		return false;
+	}
+
+	/**
+	 * 递归采集Url
+	 */
+	private void recursiveMethod(String crawlUrl, Long depth, String charset,
+			List<String> urlFilterBeforeCrawls, List<String> urlFilterAfterCrawls) {
+		Set<String> urls = new HashSet<String>();
 		URL url = null;
 		HttpURLConnection connection = null;
 		try {
-			url = new URL((String) context.get("crawl.url"));
+			url = new URL(crawlUrl);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("accept", "*/*");
 			connection.setRequestProperty("connection", "Keep-Alive");
 			connection.setRequestProperty("user-agent",
 					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
+			connection.setRequestProperty("Charset", charset); // 设置编码
 
 			connection.connect();
 
@@ -61,7 +94,7 @@ public class URLCrawlEvent implements Event {
 			// 定义BufferedReader输入流来读取URL的响应
 			BufferedReader in;
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream(),
-					Charset.forName("gb2312")));
+					Charset.forName(charset)));
 
 			StringBuffer sb = new StringBuffer();
 			String line;
@@ -77,40 +110,45 @@ public class URLCrawlEvent implements Event {
 			Document doc = Jsoup.parse(sb.toString());
 			LOG.info(doc.html());
 
-			LOG.info("init hbase");
-			Configuration hconf = HBaseConfiguration.create();
-			hconf.set("hbase.zookeeper.quorum", "m1,s1,s2");
-			hconf.set("hbase.zookeeper.property.clientPort", "2181");
-			HConnection hConnection = HConnectionManager.createConnection(hconf);
-			HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
-			if (!hbaseAdmin.tableExists("avengers_page")) {
-				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf("avengers_page"));
-				HColumnDescriptor columnConf = new HColumnDescriptor("page");
-				tableDesc.addFamily(columnConf);
-				hbaseAdmin.createTable(tableDesc);
+			Elements linksElements = doc.select("a");
+			if (linksElements != null) {
+				int size = linksElements.size();
+				for (int i = 0; i < size; i++) {
+					String href = linksElements.get(i).attr("href");
+					if (StringUtil.isNotBlank(href)) {
+						if (href.startsWith("http:")) {
+							urls.add(href);
+						} else if (href.startsWith("/")) {
+							urls.add(crawlUrl + href);
+						} else {
+							urls.add(crawlUrl + "/" + href);
+						}
+					}
+				}
 			}
 
-			HTable table = null;
-			try {
-				hbaseAdmin.flush("avengers_page");
-				table = new HTable(hconf, "avengers_page");
-				Put put = new Put(Bytes.toBytes("avengers"));
-				// 参数出分别：列族、列、值
-				put.add(Bytes.toBytes("page"), Bytes.toBytes("response"), Bytes.toBytes(doc.html()));
-				table.put(put);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} finally {
-				if (table != null) {
-					table.close();
+			if (urls != null && !urls.isEmpty()) {
+				LOG.info("=======depth===========" + depth + "==========begin========");
+				Long new_depth = depth - 1;
+				if (new_depth > 0) {
+					for (String tempUrl : urls) {
+						LOG.info(tempUrl);
+						if (StringUtil.filterUrl(tempUrl, urlFilterAfterCrawls)) {
+							LOG.info("=====AfterFilter=====" + tempUrl);
+							insertInfoToHbase(crawlUrl, "");
+						} else if (StringUtil.filterUrl(tempUrl, urlFilterBeforeCrawls)) {
+							LOG.info("=====beforeFilter=====" + tempUrl);
+							recursiveMethod(tempUrl, new_depth, charset, urlFilterBeforeCrawls,
+									urlFilterAfterCrawls);
+						}
+					}
 				}
-				if (hbaseAdmin != null) {
-					hbaseAdmin.close();
+				if (new_depth > 1) {
+					depth -= 1;
 				}
-				if (hConnection != null) {
-					hConnection.close();
-				}
+
+				LOG.info("=======depth===========" + depth + "==========end========");
+				insertInfoToHbase(crawlUrl, doc.html());
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -121,6 +159,48 @@ public class URLCrawlEvent implements Event {
 				connection.disconnect();
 			}
 		}
-		return false;
+	}
+
+	private void insertInfoToHbase(String crawlUrl, String htmlContent) throws IOException,
+			MasterNotRunningException, ZooKeeperConnectionException, InterruptedIOException,
+			RetriesExhaustedWithDetailsException {
+		LOG.info("init hbase");
+		if (StringUtil.isBlank(crawlUrl))
+			return;
+
+		Configuration hconf = HBaseConfiguration.create();
+		hconf.set("hbase.zookeeper.quorum", "m1,s1,s2");
+		hconf.set("hbase.zookeeper.property.clientPort", "2181");
+		HConnection hConnection = HConnectionManager.createConnection(hconf);
+		HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
+		if (!hbaseAdmin.tableExists("av_page")) {
+			HTableDescriptor tableDesc = new HTableDescriptor(
+TableName.valueOf("av_page"));
+			HColumnDescriptor columnConf = new HColumnDescriptor("page");
+			tableDesc.addFamily(columnConf);
+			hbaseAdmin.createTable(tableDesc);
+		}
+
+		HTable table = null;
+		try {
+			hbaseAdmin.flush("av_page");
+			table = new HTable(hconf, "av_page");
+			Put put = new Put(Bytes.toBytes(crawlUrl));
+			// 参数出分别：列族、列、值
+			put.add(Bytes.toBytes("info"), Bytes.toBytes("response"), Bytes.toBytes(htmlContent));
+			table.put(put);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			if (table != null) {
+				table.close();
+			}
+			if (hbaseAdmin != null) {
+				hbaseAdmin.close();
+			}
+			if (hConnection != null) {
+				hConnection.close();
+			}
+		}
 	}
 }

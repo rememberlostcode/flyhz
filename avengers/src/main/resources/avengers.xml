@@ -2,10 +2,13 @@
 <ave:xDomains  xmlns:ave="http://www.flyhz.com/avengrs"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.flyhz.com/avengrs avengers.xsd ">
-	<domain root="http://www.cocah.com" encoding="UTF-8" depth="3">
+	<domain root="http://www.coach.com/online/handbags/Home-10551-10051-en" encoding="UTF-8" depth="3">
 		<urlFilterBeforeCrawl>
-			<value>^http://www.coach.com/online/handbags/prodyuct</value>
+			<value>^http://www.coach.com/online/handbags/-handbags_</value>
 		</urlFilterBeforeCrawl>
+		<urlFilterAfterCrawl>
+		    <value>^http://www.coach.com/online/handbags/Product</value>
+		</urlFilterAfterCrawl>
 		<templates>
 			<template url="^http://www.coach.com/online/handbags/Product-"
 				pattern="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
