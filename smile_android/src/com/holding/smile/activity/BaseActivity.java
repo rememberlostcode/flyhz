@@ -189,7 +189,8 @@ public class BaseActivity extends Activity {
 		 * 1. 如果不分组，就自定义为Menu.NONE 2. id:　这个很重要：onOptionsItemSelected(MenuItem
 		 * item) 根据id来判断那个菜单被选中 3. 定义菜单的排列 3. 设置Title
 		 */
-		menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, R.string.action_settings);
+		// menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE,
+		// R.string.action_settings);
 		// menu.add(Menu.NONE, MENU_CHANGEACCOUNT, Menu.NONE,
 		// R.string.action_changeaccount);
 		// menu.add(Menu.NONE, MENU_QUIT, Menu.NONE, R.string.action_quit);
