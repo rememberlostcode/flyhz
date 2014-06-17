@@ -135,7 +135,7 @@ public class URLCrawlEvent implements Event {
 						LOG.info(tempUrl);
 						if (StringUtil.filterUrl(tempUrl, urlFilterAfterCrawls)) {
 							LOG.info("=====AfterFilter=====" + tempUrl);
-							insertInfoToHbase(crawlUrl, "");
+							insertInfoToHbase(tempUrl, "");
 						} else if (StringUtil.filterUrl(tempUrl, urlFilterBeforeCrawls)) {
 							LOG.info("=====beforeFilter=====" + tempUrl);
 							recursiveMethod(tempUrl, new_depth, charset, urlFilterBeforeCrawls,
@@ -174,8 +174,7 @@ public class URLCrawlEvent implements Event {
 		HConnection hConnection = HConnectionManager.createConnection(hconf);
 		HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
 		if (!hbaseAdmin.tableExists("av_page")) {
-			HTableDescriptor tableDesc = new HTableDescriptor(
-TableName.valueOf("av_page"));
+			HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_page"));
 			HColumnDescriptor columnConf = new HColumnDescriptor("page");
 			tableDesc.addFamily(columnConf);
 			hbaseAdmin.createTable(tableDesc);
