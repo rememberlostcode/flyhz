@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -41,12 +42,16 @@ import com.flyhz.avengers.framework.util.StringUtil;
 
 public class URLCrawlEvent implements Event {
 
-	private static final Logger	LOG	= LoggerFactory.getLogger(URLCrawlEvent.class);
+	private static final Logger	LOG		= LoggerFactory.getLogger(URLCrawlEvent.class);
+	private String				rootUrl	= "";
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean call(Map<String, Object> context) {
 		String url = (String) context.get(Crawl.CRAWL_URL);
+		if (StringUtils.isBlank(url))
+			return false;
+
 		Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 		Map<String, Object> domain = (Map<String, Object>) domains.get(url);
 
@@ -56,20 +61,36 @@ public class URLCrawlEvent implements Event {
 		List<String> urlFilterBeforeCrawls = (List<String>) domain.get(XConfiguration.URLFILTER_BEFORE_CRAWL);
 		List<String> urlFilterAfterCrawls = (List<String>) domain.get(XConfiguration.URLFILTER_AFTER_CRAWL);
 
-		recursiveMethod(url, depth, encode, urlFilterBeforeCrawls, urlFilterAfterCrawls);
+		String tempUrl = "";
+		String httpStr = "";
+		if (url.startsWith("http")) {
+			httpStr = url.substring(0, url.indexOf("://") + 3);
+			tempUrl = url.substring(url.indexOf("://") + 3);
+		} else {
+			httpStr = "http://";
+			tempUrl = url;
+		}
+		rootUrl = httpStr + tempUrl.substring(0, tempUrl.indexOf("/"));
 
+		recursiveMethod(url, null, depth, encode, urlFilterBeforeCrawls, urlFilterAfterCrawls);
 		return false;
 	}
 
 	/**
 	 * 递归采集Url
 	 */
-	private void recursiveMethod(String crawlUrl, Long depth, String charset,
-			List<String> urlFilterBeforeCrawls, List<String> urlFilterAfterCrawls) {
+	private void recursiveMethod(String crawlUrl, Set<String> alreadyCrawlUrls, Long depth,
+			String charset, List<String> urlFilterBeforeCrawls, List<String> urlFilterAfterCrawls) {
+		if (alreadyCrawlUrls == null) {
+			alreadyCrawlUrls = new HashSet<String>();
+		}
 		Set<String> urls = new HashSet<String>();
 		URL url = null;
 		HttpURLConnection connection = null;
 		try {
+			if (!crawlUrl.startsWith("http")) {
+				crawlUrl = "http://" + crawlUrl;
+			}
 			url = new URL(crawlUrl);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
@@ -108,7 +129,7 @@ public class URLCrawlEvent implements Event {
 			// NodeFilter filter = new TagNameFilter("table");
 			// NodeList list = parser.parse(tableFilter);
 			Document doc = Jsoup.parse(sb.toString());
-			LOG.info(doc.html());
+			// LOG.info(doc.html());
 
 			Elements linksElements = doc.select("a");
 			if (linksElements != null) {
@@ -116,38 +137,48 @@ public class URLCrawlEvent implements Event {
 				for (int i = 0; i < size; i++) {
 					String href = linksElements.get(i).attr("href");
 					if (StringUtil.isNotBlank(href)) {
-						if (href.startsWith("http:")) {
-							urls.add(href);
-						} else if (href.startsWith("/")) {
-							urls.add(crawlUrl + href);
-						} else {
-							urls.add(crawlUrl + "/" + href);
+						if (href.startsWith("javascript:"))
+							continue;
+
+						if (!href.startsWith("http://")) {
+							if (href.startsWith("/")) {
+								href = rootUrl + href;
+							} else {
+								href = crawlUrl + "/" + href;
+							}
+						}
+
+						// 只有通过过滤条件才放入队列里
+						if (StringUtil.filterUrl(href, urlFilterBeforeCrawls)
+								|| StringUtil.filterUrl(href, urlFilterAfterCrawls)) {
+							// 判断是否已经采过，采了就不要再采了
+							if (alreadyCrawlUrls.add(href))
+								urls.add(href);
 						}
 					}
 				}
 			}
 
 			if (urls != null && !urls.isEmpty()) {
-				LOG.info("=======depth===========" + depth + "==========begin========");
 				Long new_depth = depth - 1;
-				if (new_depth > 0) {
-					for (String tempUrl : urls) {
-						LOG.info(tempUrl);
-						if (StringUtil.filterUrl(tempUrl, urlFilterAfterCrawls)) {
-							LOG.info("=====AfterFilter=====" + tempUrl);
-							insertInfoToHbase(tempUrl, "");
-						} else if (StringUtil.filterUrl(tempUrl, urlFilterBeforeCrawls)) {
-							LOG.info("=====beforeFilter=====" + tempUrl);
-							recursiveMethod(tempUrl, new_depth, charset, urlFilterBeforeCrawls,
-									urlFilterAfterCrawls);
+				for (String tempUrl : urls) {
+					LOG.info("=======url_number===========" + new_depth + "==========begin========");
+					if (StringUtil.filterUrl(tempUrl, urlFilterAfterCrawls)) {
+						LOG.info("=====AfterFilter=====" + tempUrl);
+						insertInfoToHbase(tempUrl, "");
+					} else if (StringUtil.filterUrl(tempUrl, urlFilterBeforeCrawls)) {
+						LOG.info("=====beforeFilter=====" + tempUrl);
+						if (new_depth > 0) {
+							recursiveMethod(tempUrl, alreadyCrawlUrls, new_depth, charset,
+									urlFilterBeforeCrawls, urlFilterAfterCrawls);
 						}
 					}
 				}
-				if (new_depth > 1) {
+				if (new_depth > 0) {
 					depth -= 1;
 				}
 
-				LOG.info("=======depth===========" + depth + "==========end========");
+				LOG.info("=======depth===========" + new_depth + "==========end========");
 				insertInfoToHbase(crawlUrl, doc.html());
 			}
 		} catch (MalformedURLException e) {
