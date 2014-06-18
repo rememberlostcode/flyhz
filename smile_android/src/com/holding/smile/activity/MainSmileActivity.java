@@ -135,7 +135,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getIndexBrands(cid);
 		if (rtnValue != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);

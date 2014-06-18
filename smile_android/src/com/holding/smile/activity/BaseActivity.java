@@ -1,6 +1,8 @@
 
 package com.holding.smile.activity;
 
+import java.util.LinkedList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -64,6 +66,8 @@ public class BaseActivity extends Activity {
 	protected int			reqCode				= 0;
 	protected String		filepath;
 	protected ProgressBar	progressBar;
+
+	private static LinkedList<LoadTask>	taskQueues			= new LinkedList<LoadTask>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -276,8 +280,15 @@ public class BaseActivity extends Activity {
 	 */
 	protected void startTask() {
 		progressBar.setVisibility(View.VISIBLE);
-		LoadTask lt = new LoadTask();
-		lt.execute();
+		// LoadTask lt = new LoadTask();
+		// lt.execute();
+		MyApplication.getThreadPool().submit(new Runnable() {
+
+			@Override
+			public void run() {
+				loadData();
+			}
+		});
 	}
 
 	/**

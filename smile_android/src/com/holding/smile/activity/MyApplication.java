@@ -1,6 +1,9 @@
 
 package com.holding.smile.activity;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -60,11 +63,15 @@ public class MyApplication extends Application {
 
 	// JSESSIONID=6CCC2F179859F7D98D2F8E35CEBD5CF4
 	private String					sessionId;
+	
+	/** 任务线程池 */
+	private static ExecutorService	threadPool;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		singleton = this;
+		threadPool = Executors.newFixedThreadPool(2);
 
 		Context context = getApplicationContext();
 		dataService = new DataService(context);
@@ -78,6 +85,10 @@ public class MyApplication extends Application {
 
 	public static ImageLoader getImageLoader() {
 		return mImageLoader;
+	}
+
+	public static ExecutorService getThreadPool() {
+		return threadPool;
 	}
 
 	public DataService getDataService() {
