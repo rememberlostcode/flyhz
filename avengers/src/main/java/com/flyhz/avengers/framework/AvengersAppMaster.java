@@ -255,6 +255,7 @@ public class AvengersAppMaster {
 	/**
 	 * Dump out contents of $CWD and the environment to stdout for debugging
 	 */
+	@SuppressWarnings("unused")
 	private void dumpOutDebugInfo() {
 
 		LOG.info("Dump debug output");

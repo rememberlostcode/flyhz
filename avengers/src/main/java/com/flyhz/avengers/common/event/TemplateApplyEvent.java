@@ -12,5 +12,4 @@ public class TemplateApplyEvent implements Event {
 		context.get("");
 		return false;
 	}
-
 }
