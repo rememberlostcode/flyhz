@@ -32,7 +32,6 @@ import com.holding.smile.tools.TbUtil;
  * 
  */
 public class WebViewActivity extends Activity implements OnClickListener {
-
 	private String		number;	// 订单号
 	private BigDecimal	amount;	// 总额
 
@@ -52,7 +51,6 @@ public class WebViewActivity extends Activity implements OnClickListener {
 			amount = (BigDecimal) intent.getExtras().getSerializable("amount");
 
 			if (StrUtils.isNotEmpty(number) && amount != null) {
-
 				headerNum.setText(number + "");
 				headerAmount.setText(amount.doubleValue() + "");
 
@@ -87,8 +85,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							WebView view, String url) {
 						if(url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1){
 							TbUtil.setWebView(view);
-							TbUtil.cshTb();
-//							view.loadUrl("http://h5.m.taobao.com/awp/base/buy.htm?itemId=38752474914&item_num_id=38752474914&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=38752474914&item_num_id=38752474914&_input_charset=utf-8&buyNow=true&v=0&skuId=");
+							//TbUtil.cshTb();
+							view.loadUrl("http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity=" + amount.intValue());
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
@@ -100,38 +98,20 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						// 设置隐藏返回按钮
 						view.loadUrl("javascript:document.getElementsByTagName('li')[1].style.display='none';");
 						// 给卖家留言设置订单编号和数量
-						if (url.indexOf("buyNow=true") >= 0) {
+						if (url.indexOf("buyNow=true") > -1) {
 							StringBuffer jsStringBuffer = new StringBuffer();
 							jsStringBuffer.append("javascript:window.onload = function(){");
 							// 立即购买:卖家留言设置订单编号
-							jsStringBuffer.append("document.getElementsByTagName('input')[1].setAttribute('value','");
+							jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('value','");
 							jsStringBuffer.append(number);
 							jsStringBuffer.append("');");
 							// 设置卖家留言属性值为空
-							jsStringBuffer.append("document.getElementsByTagName('input')[1].setAttribute('placeholder','');");
-							// 立即购买:设置数量为订单总价
-							jsStringBuffer.append("document.getElementsByName('quantity')[0].setAttribute('value','");
-							jsStringBuffer.append(amount.intValue());
-							jsStringBuffer.append("');");
-							// 修改总价显示
-							jsStringBuffer.append("document.getElementsByTagName('section')[3].lastChild.lastChild.lastChild.innerHTML = '￥");
-							jsStringBuffer.append(amount.intValue());
-							jsStringBuffer.append(".00';");
-							// 合计修改价格数量
-							jsStringBuffer.append("document.getElementsByTagName('section')[7].lastChild.lastChild.innerHTML = '￥");
-							jsStringBuffer.append(amount.intValue());
-							jsStringBuffer.append(".00';");
-							// 实付款修改价格
-							jsStringBuffer.append("document.getElementById('final').innerHTML = '￥");
-							jsStringBuffer.append(amount.intValue());
-							jsStringBuffer.append(".00';");
-
+							jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('placeholder','');");
+							//设置数量只读，不能修改
+							view.loadUrl("javascript:document.getElementsByName('quantity')[0].setAttribute('readonly','readonly');");
 							jsStringBuffer.append("};");
 							view.loadUrl(jsStringBuffer.toString());
 						}
-						// 设置不显示提示信息
-						view.loadUrl("javascript:window.SmartbannerJSON.mainDetail='';");
-						view.loadUrl("javascript:window.SmartbannerJSON.addcart='';");
 					}
 
 					@Override
@@ -139,9 +119,9 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							String failingUrl) {
 						super.onReceivedError(view, errorCode, description, failingUrl);
 					}
-
 				});
-				TbUtil.cshTb();
+				//TbUtil.cshTb();
+				TbUtil.getWebView().loadUrl("http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity=" + amount.intValue());
 			} else {
 				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
 				setResult(RESULT_CANCELED, null);
