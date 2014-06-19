@@ -3,7 +3,10 @@ package com.flyhz.avengers.domains.abercrombie.template;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -31,7 +34,6 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,43 +127,87 @@ public class AbercrombieProductTemplateImpl implements Template {
 				}
 				// 解析HTML获得所需要的产品数据
 				Document doc = Jsoup.parse(htmlDoc);
+				String brand = "abercrombie";// 品牌
+				String productId = doc.select("input[name=productId]").first().val();// 产品ID
+				String collection = doc.select("input[name=collection]").first().val();// 款号
+				String cseq = doc.select("input[name=cseq]").first().val();// 不同颜色seq
+				// 定义添加产品的put
 				tableProduct = new HTable(hconf, "av_product");
+				Put putProduct = new Put(Bytes.toBytes(productId + cseq));
 				// 获取产品名称
-				String name = doc.select(".name").first().text();
+				String name = doc.select("input[name=name]").first().val();// 产品
+				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("name"), Bytes.toBytes(name));
 				System.out.println(name);
 				// 获取产品描述
 				String description = doc.select(".copy").first().text();
+				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("description"),
+						Bytes.toBytes(description));
 				System.out.println(description);
 				// 获取品牌名
-				String brand = "abercrombie";
+				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("brand"), Bytes.toBytes(brand));
 				System.out.println(brand);
 				// 获取分类名称
 				String category = doc.select("a[data-categoryId=13051]").first().text();
+				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("category"),
+						Bytes.toBytes(category));
 				System.out.println(category);
 				// 获取款号
-				Element element = doc.select("li.selected").first().children().first();
-				String style = doc.select(".collection").first().text() + element.attr("data-seq");
-				System.out.println(style);
+				// Element element =
+				// doc.select("li.selected").first().children().first();
+				// String style = doc.select(".collection").first().text() +
+				// element.attr("data-seq");
+				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("style"),
+						Bytes.toBytes(collection + cseq));
+				System.out.println(collection + cseq);
 				// 获取原始价格
 				String originalPrice = doc.select(".list-price").first().text();
 				originalPrice = originalPrice.substring(7);
+				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("original_price"),
+						Bytes.toBytes(originalPrice));
 				System.out.println(originalPrice);
 				// 获取当前价格
-				String presentPrice = doc.select(".offer-price").first().text();
-				presentPrice = presentPrice.substring(3);
+				// String presentPrice =
+				// doc.select(".offer-price").first().text();
+				// presentPrice = presentPrice.substring(3);
+				String presentPrice = doc.select("input[name=price]").first().val();
+				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("present_price"),
+						Bytes.toBytes(presentPrice));
 				System.out.println(presentPrice);
 				// 获取颜色
-				String color = doc.select("li.selected a span").first().text();
+				// String color =
+				// doc.select("li.selected a span").first().text();
+				String color = doc.select("input[name=color]").first().val();
+				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("color"), Bytes.toBytes(color));
 				System.out.println(color);
-				// 获取颜色图片
-				StringBuffer colorImgBuffer = new StringBuffer();
-				colorImgBuffer.append(File.separator).append("abercrombie").append(File.separator)
-								.append("color").append(style).append(".jpg");
-				File file = new File(colorImgBuffer.toString());
-				// 颜色文件不存在，切割处理颜色文件
-				if (!file.exists()) {
+				try {
+					// 获取颜色图片
+					StringBuffer colorImgBuffer = new StringBuffer();
+					colorImgBuffer.append(File.separator).append(brand).append(File.separator)
+									.append("color").append(File.separator).append(color)
+									.append(".jpg");
+					File file = new File(colorImgBuffer.toString());
+					// 颜色文件不存在，切割处理颜色文件
+					if (!file.exists()) {
+						String colorImgUrl = doc.select("a.swatch-link").first().attr("style");
+					}
+					// 颜色图片转换为bytes数组插入product
+					FileInputStream fis = new FileInputStream(file);
+					ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
+					byte[] b = new byte[1000];
+					int n;
+					while ((n = fis.read(b)) != -1) {
+						bos.write(b, 0, n);
+					}
+					fis.close();
+					bos.close();
+					byte[] colorImgBytes = bos.toByteArray();
+					putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("color_img"), colorImgBytes);
+					// 获取产品图片
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				// HBase product 插入颜色图片的byte数组
 				// 获取产品图片
 				// 获取产品访问URL
 				System.out.println(analyzeUrl);
