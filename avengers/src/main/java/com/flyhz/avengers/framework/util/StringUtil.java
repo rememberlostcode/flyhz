@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 public class StringUtil extends StringUtils {
-
 	public static final String	EMPTY_STRING	= "";
 	public static final String	NULL_STRING		= "null";
 

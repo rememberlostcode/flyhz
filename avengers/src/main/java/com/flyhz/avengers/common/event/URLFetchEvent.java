@@ -78,9 +78,6 @@ public class URLFetchEvent implements Event {
 				// 插入preference列族
 				HColumnDescriptor columnConfPreference = new HColumnDescriptor("preference");
 				tableDesc.addFamily(columnConfPreference);
-				// 插入fullhtml列族
-				HColumnDescriptor columnConfFullhtml = new HColumnDescriptor("fullhtml");
-				tableDesc.addFamily(columnConfFullhtml);
 				hbaseAdmin.createTable(tableDesc);
 			}
 			LOG.info("init hbase end..............");
