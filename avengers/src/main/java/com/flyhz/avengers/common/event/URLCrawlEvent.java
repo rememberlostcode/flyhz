@@ -70,7 +70,10 @@ public class URLCrawlEvent implements Event {
 			httpStr = "http://";
 			tempUrl = url;
 		}
-		rootUrl = httpStr + tempUrl.substring(0, tempUrl.indexOf("/"));
+		if (tempUrl.indexOf("/") > 0) {
+			tempUrl = tempUrl.substring(0, tempUrl.indexOf("/"));
+		}
+		rootUrl = httpStr + tempUrl;
 
 		recursiveMethod(url, null, depth, encode, urlFilterBeforeCrawls, urlFilterAfterCrawls);
 		return false;
@@ -133,6 +136,13 @@ public class URLCrawlEvent implements Event {
 
 			Elements linksElements = doc.select("a");
 			if (linksElements != null) {
+				String rootPath = "";
+				if (crawlUrl.lastIndexOf("/") > 8) {
+					rootPath = crawlUrl.substring(0, crawlUrl.lastIndexOf("/"));
+				} else {
+					rootPath = crawlUrl;
+				}
+
 				int size = linksElements.size();
 				for (int i = 0; i < size; i++) {
 					String href = linksElements.get(i).attr("href");
@@ -144,7 +154,7 @@ public class URLCrawlEvent implements Event {
 							if (href.startsWith("/")) {
 								href = rootUrl + href;
 							} else {
-								href = crawlUrl + "/" + href;
+								href = rootPath + "/" + href;
 							}
 						}
 
@@ -161,10 +171,9 @@ public class URLCrawlEvent implements Event {
 
 			if (urls != null && !urls.isEmpty()) {
 				Long new_depth = depth - 1;
+				LOG.info("=======url_number===========" + new_depth + "==========begin========");
 				for (String tempUrl : urls) {
-					LOG.info("=======url_number===========" + new_depth + "==========begin========");
 					if (StringUtil.filterUrl(tempUrl, urlFilterAfterCrawls)) {
-						LOG.info("=====AfterFilter=====" + tempUrl);
 						insertInfoToHbase(tempUrl, "");
 					} else if (StringUtil.filterUrl(tempUrl, urlFilterBeforeCrawls)) {
 						LOG.info("=====beforeFilter=====" + tempUrl);
@@ -174,11 +183,12 @@ public class URLCrawlEvent implements Event {
 						}
 					}
 				}
+				LOG.info("=======url_number===========" + new_depth + "==========end========");
 				if (new_depth > 0) {
 					depth -= 1;
 				}
 
-				LOG.info("=======depth===========" + new_depth + "==========end========");
+				LOG.info("=======depth===========" + depth + "==========end========");
 				insertInfoToHbase(crawlUrl, doc.html());
 			}
 		} catch (MalformedURLException e) {
@@ -198,7 +208,7 @@ public class URLCrawlEvent implements Event {
 		LOG.info("init hbase");
 		if (StringUtil.isBlank(crawlUrl))
 			return;
-
+		LOG.info("=====init hbase=====" + crawlUrl);
 		Configuration hconf = HBaseConfiguration.create();
 		hconf.set("hbase.zookeeper.quorum", "m1,s1,s2");
 		hconf.set("hbase.zookeeper.property.clientPort", "2181");
@@ -206,8 +216,15 @@ public class URLCrawlEvent implements Event {
 		HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
 		if (!hbaseAdmin.tableExists("av_page")) {
 			HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_page"));
-			HColumnDescriptor columnConf = new HColumnDescriptor("page");
-			tableDesc.addFamily(columnConf);
+			// 插入info列族
+			HColumnDescriptor columnConfInfo = new HColumnDescriptor("info");
+			tableDesc.addFamily(columnConfInfo);
+			// 插入preference列族
+			HColumnDescriptor columnConfPreference = new HColumnDescriptor("preference");
+			tableDesc.addFamily(columnConfPreference);
+			// 插入fullhtml列族
+			HColumnDescriptor columnConfFullhtml = new HColumnDescriptor("fullhtml");
+			tableDesc.addFamily(columnConfFullhtml);
 			hbaseAdmin.createTable(tableDesc);
 		}
 
