@@ -298,8 +298,8 @@ public class StringUtil extends StringUtils {
 		url = "http://www.coach.com/online/mens/product?id=123456";
 		System.out.println(filterUrl(url, values));
 		values.clear();
-		values.add("^http://www.abercrombie.com/shop/hk/mens-short-sleeve-graphic-tees/.*\\d+$");
-		url = "http://www.abercrombie.com/shop/hk/mens-short-sleeve-graphic-tees/opalescent-river-tee-1871079_01";
+		values.add("^http://www.abercrombie.com/shop/hk/mens-short-sleeve-tees/.*\\d+$");
+		url = "http://www.abercrombie.com/shop/hk/mens-short-sleeve-tees/sentinel-range-tee-2471071_02";
 		System.out.println(filterUrl(url, values));
 		url = "http://www.abercrombie.com/shop/hk/mens-short-sleeve-graphic-tees/opalescent-river-tee";
 		System.out.println(filterUrl(url, values));

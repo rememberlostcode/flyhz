@@ -22,8 +22,6 @@ import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +60,9 @@ public class URLFetchEvent implements Event {
 			while ((line = in.readLine()) != null) {
 				sb.append(line);
 			}
-			Document doc = Jsoup.parse(sb.toString());
-			LOG.info(doc.html());
-			// LOG.info(sb.toString());
+			// Document doc = Jsoup.parse(sb.toString());
+			// LOG.info(doc.html());
+			LOG.info(sb.toString());
 			// 初始化HBase av_page表
 			LOG.info("init hbase begin..............");
 			Configuration hconf = HBaseConfiguration.create();

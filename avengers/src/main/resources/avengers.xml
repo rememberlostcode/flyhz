@@ -41,13 +41,13 @@
 			<value>^http://www.abercrombie.com/shop/hk/mens-polos</value>
 		</urlFilterBeforeCrawl>
 		<urlFilterAfterCrawl>
-		    <value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-graphic-tees/.*\\d+$</value>
-			<value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-tees/.*\\d+$</value>
-			<value>^http://www.abercrombie.com/shop/hk/mens-polos/.*\\d+$</value>
+		    <value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-graphic-tees/.*\d+$</value>
+			<value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-tees/.*\d+$</value>
+			<value>^http://www.abercrombie.com/shop/hk/mens-polos/.*\d+$</value>
 		</urlFilterAfterCrawl>
 		<templates>
-			<template url="^http://www.coach.com/online/handbags/Product-"
-				pattern="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
+			<template url="^http://www.abercrombie.com/shop/hk/mens-short-sleeve-tees/.*\d+$"
+				pattern="com.flyhz.avengers.domains.abercrombie.template.AbercrombieProductTemplateImpl" >
 				<templateApplyEvents>
 					
 				</templateApplyEvents>

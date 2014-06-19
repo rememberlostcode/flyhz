@@ -77,6 +77,11 @@ public class XConfiguration {
 	 */
 	public static final String			URLFILTER_AFTER_CRAWL	= "crawl.after.filter";
 
+	/**
+	 * List<XTemplate>
+	 */
+	public static final String			DOMAIN_TEMPLATES		= "domain.templates";
+
 	private XConfiguration() {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL avengersXml = classLoader.getResource("avengers.xml");
@@ -92,7 +97,7 @@ public class XConfiguration {
 					String root = domain.getRoot();
 					String encoding = domain.getEncoding();
 					Long depth = domain.getDepth();
-					
+
 					if (StringUtil.isNotBlank(root)) {
 						if (domainsMap.keySet().contains(root)) {
 							throw new AvengersConfigurationException("domain root" + root
@@ -178,6 +183,7 @@ public class XConfiguration {
 					XTemplates templates = domain.getTemplates();
 					if (templates != null) {
 						List<XTemplate> templateList = templates.getTemplate();
+						domainMap.put(DOMAIN_TEMPLATES, templateList);
 						for (XTemplate template : templateList) {
 							XEvents templateApplyEvents = template.getTemplateApplyEvents();
 							if (templateApplyEvents != null) {
