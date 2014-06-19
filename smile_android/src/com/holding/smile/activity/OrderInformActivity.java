@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -103,7 +102,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 	}
 
-	public void loadData() {
+	public synchronized void loadData() {
 		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
 			String pidQty = "";
 			if (gid != null) {

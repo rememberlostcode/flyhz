@@ -333,7 +333,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 		}, 1000);
 	}
 
-	private void loadData(String keywords) {
+	private synchronized void loadData(String keywords) {
 		progressBar.setVisibility(View.VISIBLE);
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getJGoodsSearchListInit(keywords, null, null);

@@ -63,9 +63,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		backBtn.setOnClickListener(this);
 		TextView headerDesc = displayHeaderDescription();
 		headerDesc.setText(R.string.my_shopping_cart);
-		
+
 		displayFooterMain(R.id.mainfooter_four);
-		
+
 		editBtn = displayHeaderRight();
 		editBtn.setText(R.string.edit);
 		editBtn.setTag("edit");
@@ -79,7 +79,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	 * 初始化View
 	 */
 	private void initView() {
-		//displayFooterMain(R.id.mainfooter_four);
+		// displayFooterMain(R.id.mainfooter_four);
 		displayFooterMainTotal();
 
 		setContentLayout(R.layout.shopping_cart_view);
@@ -88,25 +88,25 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		totalNumber = (TextView) findViewById(R.id.totalnumber);
 		totalMoney = (TextView) findViewById(R.id.totalmoney);
 		allChecked = (ImageView) findViewById(R.id.all_checked);
-		
+
 		allChecked.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				boolean selected = allChecked.isSelected();
-				if(selected){
+				if (selected) {
 					allChecked.setSelected(false);
 					cartAdapter.setSelectAll(false);
-				}else{
+				} else {
 					allChecked.setSelected(true);
 					cartAdapter.setSelectAll(true);
 				}
 			}
-		});	
+		});
 
 		allQty = 0;
 		allTotal = new BigDecimal(0);
-		totalNumber.setText(allQty+"");
-		totalMoney.setText(allTotal.doubleValue()+"");
+		totalNumber.setText(allQty + "");
+		totalMoney.setText(allTotal.doubleValue() + "");
 
 		initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.cart_list);
@@ -114,7 +114,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		listView.setAdapter(cartAdapter);
 	}
 
-	public void loadData() {
+	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getCartItemList();
 		Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 		msg.obj = rtnValue;
@@ -241,8 +241,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 				}
 			}
 		}
-		totalNumber.setText(allQty+"");
-		totalMoney.setText(allTotal.doubleValue()+"");
+		totalNumber.setText(allQty + "");
+		totalMoney.setText(allTotal.doubleValue() + "");
 		cartAdapter.notifyDataSetChanged();
 	}
 

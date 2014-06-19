@@ -104,7 +104,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(bs);
 		if (rtnValue != null) {
 			Message msg = mUIHandler.obtainMessage(0);

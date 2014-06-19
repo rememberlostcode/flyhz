@@ -71,7 +71,7 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		// 默认全部
 		Category cate = new Category();
 		cate.setName(context.getString(R.string.all_cate));
