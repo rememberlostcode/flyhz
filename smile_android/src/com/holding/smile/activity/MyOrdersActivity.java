@@ -201,13 +201,13 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 														}
 														
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
-														list = rvd.getOrderListData();
 
-														if (list == null || list.size() == 0) {
+														if (rvd==null || rvd.getOrderListData() == null || rvd.getOrderListData().size() == 0) {
 															Toast.makeText(context, "暂无数据",
 																	Toast.LENGTH_SHORT).show();
 														}
 
+														list = rvd.getOrderListData();
 														if (adapter != null) {
 															adapter.setData(list);
 														} else {

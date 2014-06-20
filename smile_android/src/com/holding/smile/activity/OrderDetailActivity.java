@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.OrderDetailAdapter;
-import com.holding.smile.dto.LogisticsDto;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.ClickUtil;
@@ -93,11 +92,14 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 					total.setText("共计" + order.getQty() + "件商品，￥" + order.getTotal() + "元");
 
 					if (order.getStatus() != null && Integer.parseInt(order.getStatus()) >= 20
-							&& !order.getStatus().equals("50")) {
-						order.setLogisticsDto(new LogisticsDto());
+							&& !order.getStatus().equals("50") && order.getLogisticsDto() != null
+							&& order.getLogisticsDto().getTransitStepInfoList() != null) {
 						logisticsListView = (MyListView) findViewById(R.id.order_detail_logistics_list);
 						logisticsListView.setAdapter(new ArrayAdapter<String>(this,
-								R.layout.simple_list_text, order.getLogisticsDto().getList()));
+								R.layout.simple_list_text, order.getLogisticsDto()
+																.getTransitStepInfoList()));
+					} else {
+						findViewById(R.id.order_detail_wuliu).setVisibility(View.GONE);
 					}
 
 					statusButton = (Button) findViewById(R.id.order_detail_status);
