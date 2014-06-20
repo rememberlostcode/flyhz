@@ -55,7 +55,9 @@ public class BrandAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return brandList.size();
+		if (brandList != null)
+			return brandList.size();
+		return 0;
 	}
 
 	@Override
