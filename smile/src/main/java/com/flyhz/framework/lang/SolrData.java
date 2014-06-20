@@ -3,6 +3,7 @@ package com.flyhz.framework.lang;
 import java.util.Date;
 import java.util.List;
 
+import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 
@@ -58,9 +59,10 @@ public interface SolrData {
 	 * @param orderId
 	 * @param status
 	 * @param gmtModify
+	 * @param logisticsDto
 	 */
 	public void submitOrder(Integer userId, Integer orderId, String status,
-			Date gmtModify);
+			Date gmtModify,LogisticsDto logisticsDto);
 
 	/**
 	 * 查询指定用户的订单

@@ -127,7 +127,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 		cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId, String.valueOf(orderId),
 				orderDetal);
 		// solr建立订单索引
-		solrData.submitOrder(userId, orderId, null, null);
+		solrData.submitOrder(userId, orderId, null, null,null);
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 			throw new ValidateException(130003);
 		}
 		// solr修改订单索引
-		solrData.submitOrder(userId, orderId, status, null);
+		solrData.submitOrder(userId, orderId, status, null,null);
 	}
 
 	public void chacheOrders() {

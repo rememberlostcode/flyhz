@@ -65,4 +65,9 @@
 	<select id="findAllOrders" parameterType="SolrPage" resultType="OrderModel">
 		select id,detail from `order` limit #{start},#{num}
     </select>
+    <select id="getOrderByNumber" parameterType="String" resultType="OrderSimpleDto">
+	    select id,user_id userId,gmt_modify gmtModify,status
+	    from `order`
+	    where number = #{number}
+	</select>
 </mapper>

@@ -32,6 +32,7 @@ import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
+import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 
@@ -106,7 +107,7 @@ public class SolrDataImpl implements SolrData {
 			doc.addField("n", product.getN());// 名称
 			doc.addField("d", product.getD());// 说明
 			doc.addField("bs", product.getBs());// 款号
-			
+
 			// 调整本地价格及计算差价（即折扣）
 			if (product.getLp() != null && product.getPp() != null) {
 				doc.addField("sp", product.getLp().subtract(product.getPp()));
@@ -151,7 +152,7 @@ public class SolrDataImpl implements SolrData {
 			doc.addField("be", product.getBe());// 品牌名称
 			doc.addField("cid", product.getCid());// 分类ID
 			doc.addField("ce", product.getCe());// 分类名称
-			
+
 			doc.addField("c", product.getC());// 颜色名称
 			doc.addField("ci", product.getCi());// 颜色图片
 
@@ -177,7 +178,7 @@ public class SolrDataImpl implements SolrData {
 			// solrServer.shutdown();
 		}
 	}
-	
+
 	public void removeProduct(String productId) {
 		// 提交到solr
 		HttpSolrServer solrServer = getServer(PRODUCT_URL);
@@ -193,7 +194,8 @@ public class SolrDataImpl implements SolrData {
 		}
 	}
 
-	public void submitOrder(Integer userId, Integer orderId, String status, Date gmtModify) {
+	public void submitOrder(Integer userId, Integer orderId, String status, Date gmtModify,
+			LogisticsDto logisticsDto) {
 		if (StringUtil.isBlank(status)) {
 			status = Constants.OrderStateCode.FOR_PAYMENT.code;
 		}
@@ -205,6 +207,19 @@ public class SolrDataImpl implements SolrData {
 		doc.addField("user_id", userId);
 		doc.addField("status", status);
 		doc.addField("gmt_modify", gmtModify);
+
+		if (logisticsDto != null) {
+			doc.addField("logisticsStatus", logisticsDto.getLogisticsStatus());
+			doc.addField("companyName", logisticsDto.getCompanyName());
+			doc.addField("tid", logisticsDto.getTid());
+			if (logisticsDto.getTransitStepInfoList() != null
+					&& logisticsDto.getTransitStepInfoList().size() > 0) {
+				for (int i = 0; i < logisticsDto.getTransitStepInfoList().size(); i++) {
+					doc.addField("transitStepInfoList", logisticsDto.getTransitStepInfoList()
+																	.get(i));
+				}
+			}
+		}
 
 		// 提交到solr
 		HttpSolrServer solrServer = getServer(ORDER_URL);
@@ -296,17 +311,45 @@ public class SolrDataImpl implements SolrData {
 		try {
 			QueryResponse response = solrServer.query(sQuery);
 			SolrDocumentList doclist = response.getResults();
+
 			Integer orderId = null;
+			String logisticsStatus = null;
+			Long tid = null;
+			String companyName = null;
 			for (SolrDocument solrDocument : doclist) {
 				orderId = solrDocument.getFieldValue("id") != null ? Integer.valueOf(solrDocument.getFieldValue(
 						"id").toString())
 						: null;
 				status = solrDocument.getFieldValue("status") != null ? solrDocument.getFieldValue(
 						"status").toString() : null;
+
+				logisticsStatus = solrDocument.getFieldValue("logisticsStatus") != null ? solrDocument.getFieldValue(
+						"logisticsStatus").toString()
+						: null;
+				tid = solrDocument.getFieldValue("tid") != null ? Long.valueOf(solrDocument.getFieldValue(
+						"tid").toString())
+						: null;
+				companyName = solrDocument.getFieldValue("companyName") != null ? solrDocument.getFieldValue(
+						"companyName").toString()
+						: null;
 				if (orderId != null) {
 					OrderSimpleDto or = new OrderSimpleDto();
+					LogisticsDto logisticsDto = new LogisticsDto();
 					or.setId(orderId);
 					or.setStatus(status);
+					logisticsDto.setLogisticsStatus(logisticsStatus);
+					logisticsDto.setTid(tid);
+					logisticsDto.setCompanyName(companyName);
+
+					if(solrDocument.getFieldValues("transitStepInfoList")!=null){
+						List<String> newlist = new ArrayList<String>();
+						Object obj[] = solrDocument.getFieldValues("transitStepInfoList").toArray(); // 将所有的内容变为对象数组
+						for (int x = 0; x < obj.length; x++) {
+							newlist.add(String.valueOf(obj[x]));
+						}
+						logisticsDto.setTransitStepInfoList(newlist);
+					}
+					or.setLogisticsDto(logisticsDto);
 					list.add(or);
 				}
 			}
