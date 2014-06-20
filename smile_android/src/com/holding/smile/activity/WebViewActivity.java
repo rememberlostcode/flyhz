@@ -102,13 +102,18 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							StringBuffer jsStringBuffer = new StringBuffer();
 							jsStringBuffer.append("javascript:window.onload = function(){");
 							// 立即购买:卖家留言设置订单编号
-							jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('value','");
+							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('value','");
+							//jsStringBuffer.append(number);
+							//jsStringBuffer.append("');");
+							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('value','");
 							jsStringBuffer.append(number);
 							jsStringBuffer.append("');");
 							// 设置卖家留言属性值为空
-							jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('placeholder','');");
+							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('placeholder','');");
+							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('placeholder','');");
 							// 设置卖家留言框只读，不能修改
-							jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('readonly','readonly');");
+							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('readonly','readonly');");
+							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('readonly','readonly');");
 							// 设置数量只读，不能修改
 							view.loadUrl("javascript:document.getElementsByName('quantity')[0].setAttribute('readonly','readonly');");
 							jsStringBuffer.append("};");
