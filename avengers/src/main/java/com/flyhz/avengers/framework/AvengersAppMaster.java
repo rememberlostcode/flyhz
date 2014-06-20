@@ -25,6 +25,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +46,22 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HColumnDescriptor;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HConnection;
+import org.apache.hadoop.hbase.client.HConnectionManager;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.Credentials;
@@ -158,6 +176,9 @@ public class AvengersAppMaster {
 	// XConfiguration
 	private Configuration			conf;
 
+	// hbase
+	private final Configuration		hbaseConf					= HBaseConfiguration.create();
+
 	// Handle to communicate with the Resource Manager
 	@SuppressWarnings("rawtypes")
 	private AMRMClientAsync			amRMClient;
@@ -225,6 +246,15 @@ public class AvengersAppMaster {
 
 	private Vector<String>			cmds						= new Vector<String>();
 
+	private long					version;
+
+	public AvengersAppMaster() {
+		// Set up the configuration
+		conf = new YarnConfiguration();
+		hbaseConf.set("hbase.zookeeper.quorum", "m1,s1,s2");
+		hbaseConf.set("hbase.zookeeper.property.clientPort", "2181");
+	}
+
 	/**
 	 * @param args
 	 *            Command line args
@@ -283,11 +313,6 @@ public class AvengersAppMaster {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public AvengersAppMaster() {
-		// Set up the configuration
-		conf = new YarnConfiguration();
 	}
 
 	/**
@@ -350,6 +375,8 @@ public class AvengersAppMaster {
 				+ appAttemptID.getApplicationId().getClusterTimestamp() + ", attemptId="
 				+ appAttemptID.getAttemptId());
 
+		initHbase();
+
 		if ("crawl".equals(cliParser.getOptionValue("cmd"))) {
 			LOG.info("App run crawl");
 			Map<String, Object> context = XConfiguration.getAvengersContext();
@@ -368,6 +395,7 @@ public class AvengersAppMaster {
 				// Set class name
 				vargs.add(Crawl.class.getName());
 				vargs.add("-url " + root);
+				vargs.add("-version " + version);
 				vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
 				vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
 
@@ -385,6 +413,27 @@ public class AvengersAppMaster {
 
 		} else if (cliParser.hasOption("fetch")) {
 			LOG.info("AvengersAppMaster run fetch");
+			HConnection hConnection = HConnectionManager.createConnection(hbaseConf);
+			HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
+			HTable table = null;
+			try {
+				table = new HTable(conf, "av_page");
+				Scan scan = new Scan();
+				ResultScanner results = table.getScanner(scan);
+				// 输出结果
+				for (Result result : results) {
+					for (Cell cell : result.rawCells()) {
+						System.out.print("Row Name: " + new String(cell.getRowArray()) + " ");
+						System.out.print("Timestamp: " + cell.getTimestamp() + " ");
+						System.out.print("column Family: " + new String(cell.getFamilyArray())
+								+ " ");
+						System.out.print("Row Name:  " + new String(cell.getQualifierArray()) + " ");
+						System.out.println("Value: " + new String(cell.getValueArray()) + " ");
+					}
+				}
+			} finally {
+				table.close();
+			}
 		} else if (cliParser.hasOption("out")) {
 			LOG.info("AvengersAppMaster run out");
 		}
@@ -415,6 +464,135 @@ public class AvengersAppMaster {
 		requestPriority = Integer.parseInt(cliParser.getOptionValue("priority", "0"));
 
 		return true;
+	}
+
+	private void initHbase() {
+		LOG.info("init hbase");
+		HConnection hConnection = null;
+		HBaseAdmin hbaseAdmin = null;
+		HTable hVersion = null;
+		HTable hPage = null;
+		HTable hDomain = null;
+		try {
+			hConnection = HConnectionManager.createConnection(hbaseConf);
+			hbaseAdmin = new HBaseAdmin(hConnection);
+			if (!hbaseAdmin.tableExists("av_page")) {
+				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_page"));
+				HColumnDescriptor info = new HColumnDescriptor("info");
+				HColumnDescriptor preference = new HColumnDescriptor("preference");
+				tableDesc.addFamily(info);
+				tableDesc.addFamily(preference);
+				hbaseAdmin.createTable(tableDesc);
+			}
+			if (!hbaseAdmin.tableExists("av_version")) {
+				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_version"));
+				HColumnDescriptor info = new HColumnDescriptor("info");
+				tableDesc.addFamily(info);
+				hbaseAdmin.createTable(tableDesc);
+				String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
+
+				hbaseAdmin.disableTable("av_version");
+
+				HTableDescriptor htd = hbaseAdmin.getTableDescriptor(TableName.valueOf("av_version"));
+
+				htd.addCoprocessor(coprocessClassName);
+
+				hbaseAdmin.modifyTable("av_version", htd);
+
+				hbaseAdmin.enableTable("av_version");
+
+			}
+			if (!hbaseAdmin.tableExists("av_domain")) {
+				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_domain"));
+				HColumnDescriptor preference = new HColumnDescriptor("preference");
+				tableDesc.addFamily(preference);
+				hbaseAdmin.createTable(tableDesc);
+			}
+			if (!hbaseAdmin.tableExists("av_product")) {
+				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_product"));
+				HColumnDescriptor info = new HColumnDescriptor("info");
+				HColumnDescriptor preference = new HColumnDescriptor("preference");
+				tableDesc.addFamily(info);
+				tableDesc.addFamily(preference);
+				hbaseAdmin.createTable(tableDesc);
+			}
+			hbaseAdmin.flush("av_version");
+			Configuration configuration = HBaseConfiguration.create(hbaseConf);
+
+			configuration.setLong("hbase.rpc.timeout", 600000);
+			// 设置Scan缓存
+			configuration.setLong("hbase.client.scanner.caching", 1000);
+
+			AggregationClient aggregationClient = new AggregationClient(configuration);
+			Scan scan = new Scan();
+			// 指定扫描列族，唯一值
+			scan.addColumn(Bytes.toBytes("info"), Bytes.toBytes("version"));
+			long rowCount = aggregationClient.rowCount(TableName.valueOf("av_version"), null, scan);
+			long hVersionRowKey = rowCount - 1;
+			hVersion = new HTable(hbaseConf, "av_version");
+			long version = System.currentTimeMillis();
+			if (hVersionRowKey > 0) {
+				Get get = new Get(Bytes.toBytes(hVersionRowKey));
+				Result hVersionResult = hVersion.get(get);
+				if (hVersionResult.size() == 1) {
+					String value = new String(hVersionResult.rawCells()[0].getValueArray());
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(new Date(Long.valueOf(value)));
+					Map<String, Object> context = XConfiguration.getAvengersContext();
+					@SuppressWarnings("unchecked")
+					Map<String, Object> domainsMap = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
+					for (String root : domainsMap.keySet()) {
+						@SuppressWarnings("unchecked")
+						Map<String, Object> domainMap = (Map<String, Object>) domainsMap.get(root);
+						// 小时
+						Long period = (Long) domainMap.get(XConfiguration.CRAWL_PERIOD);
+						calendar.add(Calendar.HOUR_OF_DAY, period.intValue());
+						if (calendar.before(new Date(version))) {
+
+						}
+					}
+				}
+
+			}
+			Put put = new Put(Bytes.toBytes(version));
+			// 参数出分别：列族、列、值
+			put.add(Bytes.toBytes("info"), Bytes.toBytes("status"), Bytes.toBytes("create"));
+			hVersion.put(put);
+			this.version = version;
+
+			hDomain = new HTable(hbaseConf, "av_domain");
+			Scan hDomainScan = new Scan();
+
+		} catch (IOException e) {
+			LOG.error("", e);
+		} catch (InterruptedException e) {
+			LOG.error("", e);
+		} catch (Throwable e) {
+			LOG.error("", e);
+		} finally {
+			if (hPage != null) {
+				try {
+					hPage.close();
+				} catch (IOException e) {
+					LOG.error("", e);
+				}
+			}
+			if (hbaseAdmin != null) {
+				try {
+					hbaseAdmin.close();
+				} catch (IOException e) {
+					LOG.error("", e);
+				}
+			}
+			if (hConnection != null) {
+				try {
+					hConnection.close();
+				} catch (IOException e) {
+					LOG.error("", e);
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -817,6 +995,7 @@ public class AvengersAppMaster {
 				command.append(str).append(" ");
 			}
 
+			LOG.info("command > " + command.toString());
 			List<String> commands = new ArrayList<String>();
 			commands.add(command.toString());
 			ctx.setCommands(commands);

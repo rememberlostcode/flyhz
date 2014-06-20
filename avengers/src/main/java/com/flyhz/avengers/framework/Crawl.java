@@ -3,10 +3,8 @@ package com.flyhz.avengers.framework;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,22 +20,11 @@ import com.flyhz.avengers.framework.util.StringUtil;
 
 public class Crawl extends AvengersExecutor {
 
-	private static final Logger		LOG					= LoggerFactory.getLogger(Crawl.class);
+	private static final Logger		LOG			= LoggerFactory.getLogger(Crawl.class);
 
-	private final ExecutorService	es					= Executors.newFixedThreadPool(10);
+	private final ExecutorService	es			= Executors.newFixedThreadPool(10);
 
-	private static final String		CRAWL_URL			= "crawl.url";
-
-	/**
-	 * 
-	 * 正则表达式过滤器，cral之前过滤，判断是否crawl
-	 */
-	private final Set<String>		beforeCrawlFilter	= new HashSet<String>();
-
-	/**
-	 * 正则表达式过滤器 cral之后过滤，判断是否入库
-	 */
-	private final Set<String>		afterCrawlFilter	= new HashSet<String>();
+	private static final String		CRAWL_URL	= "crawl.url";
 
 	public static void main(String[] args) {
 		try {
@@ -52,7 +39,6 @@ public class Crawl extends AvengersExecutor {
 
 	Map<String, Object> initArgs(String[] args) {
 		opts.addOption("url", true, "crawl the url");
-		opts.addOption("depth", true, "深度");
 		CommandLine cliParser;
 		try {
 			cliParser = new GnuParser().parse(opts, args);
@@ -66,16 +52,6 @@ public class Crawl extends AvengersExecutor {
 		if (args.length == 0) {
 			printUsage(opts);
 			throw new IllegalArgumentException("No args specified for Crawl to initialize");
-		}
-
-		if (cliParser.hasOption("help")) {
-			printUsage(opts);
-			System.exit(0);
-		}
-
-		if (cliParser.hasOption("debug")) {
-			dumpOutDebugInfo();
-			System.exit(0);
 		}
 
 		String url = cliParser.getOptionValue("url");

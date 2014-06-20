@@ -12,9 +12,6 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HConnectionManager;
@@ -26,6 +23,7 @@ import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.flyhz.avengers.framework.Crawl;
 import com.flyhz.avengers.framework.Event;
 
 public class URLCrawlEvent implements Event {
@@ -83,24 +81,32 @@ public class URLCrawlEvent implements Event {
 			hconf.set("hbase.zookeeper.property.clientPort", "2181");
 			HConnection hConnection = HConnectionManager.createConnection(hconf);
 			HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
-			if (!hbaseAdmin.tableExists("avengers_page")) {
-				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf("avengers_page"));
-				HColumnDescriptor columnConf = new HColumnDescriptor("page");
-				tableDesc.addFamily(columnConf);
-				hbaseAdmin.createTable(tableDesc);
-			}
+			// if (!hbaseAdmin.tableExists("av_page")) {
+			// HTableDescriptor tableDesc = new
+			// HTableDescriptor(TableName.valueOf("av_page"));
+			// HColumnDescriptor columnConf = new HColumnDescriptor("info");
+			// tableDesc.addFamily(columnConf);
+			// hbaseAdmin.createTable(tableDesc);
+			// }
 
 			HTable table = null;
 			try {
-				hbaseAdmin.flush("avengers_page");
-				table = new HTable(hconf, "avengers_page");
-				Put put = new Put(Bytes.toBytes("avengers"));
+				hbaseAdmin.flush("av_page");
+				table = new HTable(hconf, "av_page");
+				// Get get = new Get(Bytes.toBytes((String)
+				// context.get("crawl.url")));
+				// Result res = table.get(get);
+				// for (Cell cell : res.rawCells()) {
+				// LOG.info("value is " + new String(cell.getValueArray()));
+				// }
+				Put put = new Put(Bytes.toBytes((String) context.get("crawl.url")));
 				// 参数出分别：列族、列、值
-				put.add(Bytes.toBytes("page"), Bytes.toBytes("response"), Bytes.toBytes(doc.html()));
+				put.add(Bytes.toBytes("info"), Bytes.toBytes("response"), Bytes.toBytes(doc.html()));
+				put.add(Bytes.toBytes("preference"), Bytes.toBytes("version"),
+						Bytes.toBytes((String) context.get(Crawl.VERSION)));
 				table.put(put);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				LOG.error("", e);
 			} finally {
 				if (table != null) {
 					table.close();

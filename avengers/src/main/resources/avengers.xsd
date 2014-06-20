@@ -35,6 +35,14 @@
 				</restriction>
 			</simpleType>
 		</attribute>
+		<attribute name="period" use="optional" default="720">
+			<annotation>
+				<documentation>单位是小时</documentation>
+			</annotation>
+			<simpleType>
+				<restriction base="unsignedInt"/>
+			</simpleType>
+		</attribute>
 	</complexType>
 	<complexType name="xFilter">
 		<sequence>

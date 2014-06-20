@@ -10,13 +10,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 
 import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.util.StringUtil;
 
 public abstract class AvengersExecutor implements Runnable {
+
+	public static final String			VERSION	= "version";
 
 	private final List<Event>			events	= new ArrayList<Event>();
 
@@ -31,9 +37,26 @@ public abstract class AvengersExecutor implements Runnable {
 	abstract Logger getLog();
 
 	void initAvengersContext(String[] args) {
-		opts.addOption("debug", false, "Dump out debug information");
-		opts.addOption("help", false, "Print usage");
+		StringBuffer sb = new StringBuffer();
+		for (String arg : args) {
+			sb.append(arg).append(" ");
+		}
+		getLog().info(this.getClass() + " main args = " + sb.toString());
+		opts.addOption("version", true, "版本号");
 		Map<String, Object> customerContext = initArgs(args);
+		CommandLine cliParser;
+		try {
+			cliParser = new GnuParser().parse(opts, args);
+		} catch (ParseException e) {
+			getLog().error(sb.toString(), e);
+			throw new RuntimeException(sb.toString(), e);
+		}
+		String version = cliParser.getOptionValue("version");
+		if (StringUtil.isBlank(version)) {
+			System.exit(0);
+		}
+		context.put(VERSION, version);
+		getLog().info("version = " + version);
 		if (customerContext != null && !customerContext.isEmpty()) {
 			context.putAll(customerContext);
 		}

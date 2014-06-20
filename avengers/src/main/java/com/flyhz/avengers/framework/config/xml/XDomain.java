@@ -34,6 +34,12 @@ import javax.xml.bind.annotation.XmlType;
  *           &lt;/restriction>
  *         &lt;/simpleType>
  *       &lt;/attribute>
+ *       &lt;attribute name="period" default="720">
+ *         &lt;simpleType>
+ *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}unsignedInt">
+ *           &lt;/restriction>
+ *         &lt;/simpleType>
+ *       &lt;/attribute>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -60,6 +66,8 @@ public class XDomain {
 	protected String		encoding;
 	@XmlAttribute
 	protected Long			depth;
+	@XmlAttribute
+	protected Long			period;
 
 	/**
 	 * Gets the value of the urlFilterBeforeCrawl property.
@@ -235,6 +243,31 @@ public class XDomain {
 	 */
 	public void setDepth(Long value) {
 		this.depth = value;
+	}
+
+	/**
+	 * Gets the value of the period property.
+	 * 
+	 * @return possible object is {@link Long }
+	 * 
+	 */
+	public long getPeriod() {
+		if (period == null) {
+			return 720L;
+		} else {
+			return period;
+		}
+	}
+
+	/**
+	 * Sets the value of the period property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Long }
+	 * 
+	 */
+	public void setPeriod(Long value) {
+		this.period = value;
 	}
 
 }
