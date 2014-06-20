@@ -229,6 +229,10 @@
 			<groupId>org.opensymphony.quartz</groupId>
 			<artifactId>quartz-all</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.taobao</groupId>
+			<artifactId>taobao-sdk</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -771,10 +775,15 @@
 				<artifactId>solr-solrj</artifactId>
 				<version>4.5.1</version>
 			</dependency>
+			<dependency>
+				<groupId>com.taobao</groupId>
+				<artifactId>taobao-sdk</artifactId>
+				<version>20140508</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
-		<finalName>sapp</finalName>
+		<finalName>smile</finalName>
 		<plugins>
 			<!-- Facilitates downloading source and javadoc in Eclipse -->
 			<plugin>

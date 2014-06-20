@@ -31,7 +31,7 @@ public class OrderController {
 	public void list(@Identify Integer userId, String status, Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			protocol.setData(orderService.listOrders(16, status));
+			protocol.setData(orderService.listOrders(userId, status));
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());

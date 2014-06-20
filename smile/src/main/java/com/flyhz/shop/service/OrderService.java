@@ -7,7 +7,6 @@ import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.OrderPayDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
-import com.flyhz.shop.persistence.entity.OrderModel;
 
 public interface OrderService {
 

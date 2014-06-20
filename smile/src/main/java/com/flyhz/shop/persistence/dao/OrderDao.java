@@ -53,5 +53,11 @@ public interface OrderDao extends GenericDao<OrderModel> {
 	 * @return
 	 */
 	public OrderSimpleDto getOrderByNumber(String number);
+	
+	/**
+	 * 通过订单编号修改状态
+	 * @param orderModel
+	 */
+	public void updateStatusByNumber(OrderModel orderModel);
 
 }

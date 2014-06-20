@@ -70,4 +70,8 @@
 	    from `order`
 	    where number = #{number}
 	</select>
+	<update id="updateStatusByNumber" parameterType="OrderModel">
+	    update `order` set status = #{status} 
+	    where number = #{number}
+	</update>
 </mapper>

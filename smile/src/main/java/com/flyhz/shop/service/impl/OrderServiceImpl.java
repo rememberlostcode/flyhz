@@ -249,19 +249,19 @@ public class OrderServiceImpl implements OrderService {
 
 	public OrderSimpleDto getOrderDtoByNumber(String number) {
 		OrderSimpleDto orderDto = orderDao.getOrderByNumber(number);
-		LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderId(orderDto.getId());
-		
-		
-		if(logisticsModel !=null){
-			LogisticsDto logisticsDto = new LogisticsDto();
-			logisticsDto.setCompanyName(logisticsModel.getCompanyName());
-			logisticsDto.setLogisticsStatus(logisticsModel.getLogisticsStatus());
-			logisticsDto.setTid(logisticsModel.getTid());
-			if(StringUtils.isNotBlank(logisticsModel.getContent())){
-				String[] lls = logisticsModel.getContent().split("@#@");
-				logisticsDto.setTransitStepInfoList(Arrays.asList(lls));
+		if(orderDto!=null){
+			LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderId(orderDto.getId());
+			if(logisticsModel !=null){
+				LogisticsDto logisticsDto = new LogisticsDto();
+				logisticsDto.setCompanyName(logisticsModel.getCompanyName());
+				logisticsDto.setLogisticsStatus(logisticsModel.getLogisticsStatus());
+				logisticsDto.setTid(logisticsModel.getTid());
+				if(StringUtils.isNotBlank(logisticsModel.getContent())){
+					String[] lls = logisticsModel.getContent().split("@#@");
+					logisticsDto.setTransitStepInfoList(Arrays.asList(lls));
+				}
+				orderDto.setLogisticsDto(logisticsDto);
 			}
-			orderDto.setLogisticsDto(logisticsDto);
 		}
 		
 		return orderDto;
