@@ -66,11 +66,17 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
+		if (orderList == null) {
+			orderList = new ArrayList<OrderDto>();
+		}
 		return orderList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
+		if (orderList == null) {
+			return null;
+		}
 		return orderList.get(position);
 	}
 

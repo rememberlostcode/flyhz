@@ -73,6 +73,22 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 		initView();
 		startTask();
 
+		/* 自动登录另起一个线程 */
+		mUIHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+				if (user != null) {
+					MyApplication.getInstance().setCurrentUser(user);
+				}
+				if (user != null && user.getUsername() != null && user.getToken() != null) {
+					Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
+					msg.obj = user;
+					msg.sendToTarget();
+				}
+			}
+		}, 200);
+
 	}
 
 	private void initView() {
@@ -145,21 +161,6 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 
-		/* 自动登录另起一个线程 */
-		mUIHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
-				if (user != null) {
-					MyApplication.getInstance().setCurrentUser(user);
-				}
-				if (user != null && user.getUsername() != null && user.getToken() != null) {
-					Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
-					msg.obj = user;
-					msg.sendToTarget();
-				}
-			}
-		}, 200);
 	}
 
 	public void onRefresh() {

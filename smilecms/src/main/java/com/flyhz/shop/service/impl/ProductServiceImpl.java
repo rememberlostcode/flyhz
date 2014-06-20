@@ -122,6 +122,8 @@ public class ProductServiceImpl implements ProductService {
 			throw new ValidateException("产品不存在!");
 		}
 		productDao.deleteProduct(productId);
+		// 删除索引中的产品
+		solrData.removeProduct(String.valueOf(productId));
 	}
 
 	@Override
@@ -134,6 +136,8 @@ public class ProductServiceImpl implements ProductService {
 			Integer productId = Integer.parseInt(productIdsArray[i]);
 			if (productId != null) {
 				productDao.deleteProduct(productId);
+				// 删除索引中的产品
+				solrData.removeProduct(String.valueOf(productId));
 			}
 		}
 	}

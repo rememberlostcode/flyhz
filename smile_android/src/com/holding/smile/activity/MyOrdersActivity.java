@@ -61,18 +61,18 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 		footerView.setVisibility(View.VISIBLE);
 
 		editView = displayHeaderRight();
-		editView.setText("编辑");
+		editView.setText(R.string.edit);
 		editView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				
 				if ("编辑".equals(editView.getText().toString())) {
-					editView.setText("取消");
+					editView.setText(R.string.finish);
 					adapter.showEdit(true);
 					footerView.setVisibility(View.GONE);
 				} else {
-					editView.setText("编辑");
+					editView.setText(R.string.edit);
 					adapter.showEdit(false);
 					footerView.setVisibility(View.VISIBLE);
 				}
@@ -110,7 +110,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		RtnValueDto orders = MyApplication.getInstance().getDataService().getOrdersList(status);
 		Message msg = mUIHandler.obtainMessage(1);
 		msg.obj = orders;
