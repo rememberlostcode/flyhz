@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +30,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +40,7 @@ import com.flyhz.avengers.domains.abercrombie.AbercrombieImgUtil;
 import com.flyhz.avengers.framework.Analyze;
 import com.flyhz.avengers.framework.Template;
 import com.flyhz.avengers.framework.util.Constants;
+import com.flyhz.avengers.framework.util.WebClientUtil;
 
 public class AbercrombieProductTemplateImpl implements Template {
 	private static final Logger	LOG	= LoggerFactory.getLogger(AbercrombieProductTemplateImpl.class);
@@ -125,6 +130,7 @@ public class AbercrombieProductTemplateImpl implements Template {
 					table.put(put);
 				}
 				// 解析HTML获得所需要的产品数据
+				htmlDoc = WebClientUtil.getContent(analyzeUrl, false, true);
 				Document doc = Jsoup.parse(htmlDoc);
 				String productId = doc.select("input[name=productId]").first().val();// 产品ID
 				String collection = doc.select("input[name=collection]").first().val();// 款号ID
@@ -190,6 +196,20 @@ public class AbercrombieProductTemplateImpl implements Template {
 							AbercrombieImgUtil.getBytesFromFile(colorFile));
 				}
 				// 获取产品图片
+				Elements productImgs = doc.select("ul.thumbnails > li");
+				if (productImgs != null && !productImgs.isEmpty()) {
+					List<byte[]> pimgBytes = new ArrayList<byte[]>();
+					for (Element element : productImgs) {
+						imageBuffer.setLength(0);
+						String productImgUrl = imageBuffer.append("http:")
+															.append(element.attr("data-image-name"))
+															.toString();
+						productImgUrl = productImgUrl.replace("productThumbnail", "productMain");
+						pimgBytes.add(AbercrombieImgUtil.getBytesFromWebUrl(productImgUrl));
+					}
+					putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("product_img"),
+							Bytes.toBytes((ByteBuffer) pimgBytes));
+				}
 				// 获取产品访问URL
 				putProduct.add(Bytes.toBytes("preference"), Bytes.toBytes("url"),
 						Bytes.toBytes(analyzeUrl));

@@ -28,6 +28,8 @@ import org.jsoup.select.Elements;
  * @author fuwb
  */
 public class AbercrombieImgUtil {
+	public static final int	CONN_MAX_NUM	= 3;	// 最大网络连接次数
+
 	/**
 	 * 
 	 * @param colorImgUrl
@@ -43,12 +45,7 @@ public class AbercrombieImgUtil {
 				&& colorNames != null && colorNames.size() > 1) {
 			try {
 				// 获取混合颜色图片
-				URL url = new URL(colorImgUrl);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("GET");
-				conn.setConnectTimeout(10 * 1000);
-				InputStream inStream = conn.getInputStream();
-				byte[] data = readInputStream(inStream);
+				byte[] data = getBytesFromWebUrl(colorImgUrl);
 				// 获取混合颜色图片名称
 				StringBuffer colorBuffer = new StringBuffer();
 				String fileName = colorImgUrl.substring(colorImgUrl.lastIndexOf("/") + 1,
@@ -93,6 +90,22 @@ public class AbercrombieImgUtil {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * 网上下载图片，返回byte数组
+	 * 
+	 * @param imageUrl
+	 * @return byte[]
+	 */
+	public static byte[] getBytesFromWebUrl(String imageUrl) {
+		byte[] buffer = null;
+		int count = 1;
+		while (buffer == null && count <= CONN_MAX_NUM) {
+			buffer = getBytesByConnWeb(imageUrl);
+			count += 1;
+		}
+		return buffer;
 	}
 
 	/**
@@ -214,14 +227,36 @@ public class AbercrombieImgUtil {
 	}
 
 	private static byte[] readInputStream(InputStream inStream) throws Exception {
-		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024];
-		int len = 0;
-		while ((len = inStream.read(buffer)) != -1) {
-			outStream.write(buffer, 0, len);
+		if (inStream != null) {
+			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while ((len = inStream.read(buffer)) != -1) {
+				outStream.write(buffer, 0, len);
+			}
+			inStream.close();
+			return outStream.toByteArray();
 		}
-		inStream.close();
-		return outStream.toByteArray();
+		return null;
+	}
+
+	private static byte[] getBytesByConnWeb(String imageUrl) {
+		byte[] buffer = null;
+		try {
+			URL url = new URL(imageUrl);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setConnectTimeout(5 * 1000);
+			InputStream inStream = conn.getInputStream();
+			buffer = readInputStream(inStream);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return buffer;
 	}
 
 	public static void main(String[] args) {
