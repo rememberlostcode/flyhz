@@ -19,6 +19,7 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.page.Pager;
 import com.flyhz.framework.lang.page.Pagination;
+import com.flyhz.framework.lang.page.ToolConstants;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.shop.dto.ProductCmsDto;
 import com.flyhz.shop.dto.ProductParamDto;
@@ -47,6 +48,9 @@ public class ProductController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String listProducts(@Pagination Pager pager, Model model) {
 		pager.setPageSize(15);
+		pager.setSortName("p.id");
+		pager.setSortWay(ToolConstants.DESC);
+		// pager.setPageId("com.flyhz.shop.persistence.dao.getPageProductCmsDtos");
 		List<ProductCmsDto> productCmsDtos = productService.getProductCmsDtosByPage(pager);
 		model.addAttribute("products", productCmsDtos);
 		model.addAttribute("page", pager);
