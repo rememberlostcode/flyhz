@@ -95,7 +95,7 @@
 			<th>款号</th>
 			<!--<th>描述</th>-->
 			<th>颜色</th>
-			<th>代购价格</th>
+			<th>推荐价格</th>
             <th>操作</th>
         </thead>
 		<tbody>
