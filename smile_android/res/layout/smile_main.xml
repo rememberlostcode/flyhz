@@ -8,8 +8,8 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="3dip"
-        android:paddingRight="3dip"
+        android:paddingLeft="2dip"
+        android:paddingRight="2dip"
         android:scrollbars="none" >
 
         <com.holding.smile.myview.MyListView

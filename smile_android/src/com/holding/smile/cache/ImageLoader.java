@@ -82,12 +82,14 @@ public class ImageLoader {
 	}
 
 	private Bitmap getBitmap(String url) {
+		float density = MyApplication.getInstance().getDensity();
+		int maxWidth = (int) (MyApplication.getInstance().getScreenWidth() * density);
 		File f = fileCache.getFile(url);
 
 		// 先从文件缓存中查找是否有
 		Bitmap b = null;
 		if (f != null && f.exists()) {
-			b = decodeFile(f);
+			b = decodeFile(f, maxWidth, 0);
 		}
 		if (b != null) {
 			return b;
@@ -104,7 +106,7 @@ public class ImageLoader {
 			OutputStream os = new FileOutputStream(f);
 			CopyStream(is, os);
 			os.close();
-			bitmap = decodeFile(f);
+			bitmap = decodeFile(f, maxWidth, 0);
 			return bitmap;
 		} catch (Exception ex) {
 			Log.e(MyApplication.LOG_TAG,
@@ -114,7 +116,7 @@ public class ImageLoader {
 	}
 
 	// decode这个图片并且按比例缩放以减少内存消耗，虚拟机对每张图片的缓存大小也是有限制的
-	private Bitmap decodeFile(File f) {
+	private Bitmap decodeFile(File f, int maxWidth, int maxHeight) {
 		try {
 			// decode image size
 			BitmapFactory.Options o = new BitmapFactory.Options();
@@ -122,15 +124,15 @@ public class ImageLoader {
 			BitmapFactory.decodeStream(new FileInputStream(f), null, o);
 
 			// Find the correct scale value. It should be the power of 2.
-			int REQUIRED_SIZE = 800;
-			int width_tmp = o.outWidth, height_tmp = o.outHeight;
-			int scale = 1;
-			while (true) {
-				if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
-					break;
-				width_tmp /= 2;
-				height_tmp /= 2;
-				scale *= 2;
+			/**
+			 * int REQUIRED_SIZE = maxWidth; int width_tmp = o.outWidth,
+			 * height_tmp = o.outHeight; int scale = 1; while (true) { if
+			 * (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE)
+			 * break; width_tmp /= 2; height_tmp /= 2; scale *= 2; // }
+			 */
+			int scale = calcScaleRatio(o, maxWidth, maxHeight);
+			if (scale < 1) {
+				scale = 1;
 			}
 
 			// decode with inSampleSize
@@ -140,6 +142,24 @@ public class ImageLoader {
 		} catch (FileNotFoundException e) {
 		}
 		return null;
+	}
+
+	public static int calcScaleRatio(BitmapFactory.Options options, int maxWidth, int maxHeight) {
+		double ratio = 1D;
+		if (maxWidth > 0 && maxHeight <= 0) {
+			// 限定宽度，高度不做限制
+			ratio = java.lang.Math.ceil(options.outWidth / maxWidth);
+		} else if (maxHeight > 0 && maxWidth <= 0) {
+			// 限定高度，不限制宽度
+			ratio = java.lang.Math.ceil(options.outHeight / maxHeight);
+		} else if (maxWidth > 0 && maxHeight > 0) {
+			// 高度和宽度都做了限制，这时候我们计算在这个限制内能容纳的最大的图片尺寸，不会使图片变形
+			double _widthRatio = java.lang.Math.ceil(options.outWidth / maxWidth);
+			double _heightRatio = (double) java.lang.Math.ceil(options.outHeight / maxHeight);
+			// ratio = _widthRatio > _heightRatio ? _widthRatio : _heightRatio;
+			ratio = _widthRatio < _heightRatio ? _widthRatio : _heightRatio;
+		}
+		return (int) ratio;
 	}
 
 	// Task for the queue

@@ -62,10 +62,6 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.smile_main);
 
-		TextView cateBtn = displayHeaderRight();
-		cateBtn.setText(R.string.category);
-		cateBtn.setOnClickListener(this);
-
 		headerDescription = displayHeaderDescription();
 		headerDescription.setText(R.string.recommend_goods);
 		displayFooterMain(R.id.mainfooter_one);
@@ -110,9 +106,9 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.header_right: {
-				Intent intent = new Intent(this, CategoryActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResult(intent, CATE_CODE);
+				// Intent intent = new Intent(this, CategoryActivity.class);
+				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				// startActivityForResult(intent, CATE_CODE);
 				break;
 			}
 		}

@@ -33,12 +33,7 @@ import com.holding.smile.tools.StrUtils;
 public class BrandAdapter extends BaseAdapter {
 
 	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
-	private float				density		= MyApplication.getInstance().getDensity();
 	private LayoutInflater	mInflater;
-	// 列宽
-	private int					cWidth		= (int) (80 * density);
-	// 水平间距
-	private int					hSpacing	= (int) (10 * density);
 	private List<Brand>		brandList;
 	private Integer				cid;
 	private boolean			mBusy			= false;
