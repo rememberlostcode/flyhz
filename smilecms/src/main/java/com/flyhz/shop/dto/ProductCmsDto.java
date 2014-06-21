@@ -21,6 +21,7 @@ public class ProductCmsDto {
 	private String			cover;				// 产品详情图
 	private String			coverSmall;		// APP列表图
 	private String			recommendprice;	// 推荐价格
+	private String			offShelf;			// 是否下架
 	private List<String>	appImages;			// APP列表图
 	private List<String>	productImgs;		// 产品详情图
 
@@ -126,5 +127,13 @@ public class ProductCmsDto {
 
 	public void setProductImgs(List<String> productImgs) {
 		this.productImgs = productImgs;
+	}
+
+	public String getOffShelf() {
+		return offShelf;
+	}
+
+	public void setOffShelf(String offShelf) {
+		this.offShelf = offShelf;
 	}
 }

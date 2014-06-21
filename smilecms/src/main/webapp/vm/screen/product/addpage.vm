@@ -95,10 +95,7 @@
 <form action="$server_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
     <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
 		<input type="hidden" name="creator" value= "$!u"/>
-    	<!--
     	<input type="hidden" name="dataSrc" value= "manual"/>
-    	<input type="hidden" name="offShelf" value= "y"/>
-        -->
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>
                 <td><font color="red">*</font>产品名称:</td>
@@ -136,6 +133,15 @@
 				<td>
 					<input type="text" id="brandstyle" name="brandstyle" value="$!product.brandstyle" class="addpage" onblur="javascript:checkStr('brandstyle',this.value,16);"/>
 					<font id="brandstyleMessage" color="red"  size="2"></font>
+				</td>
+			</tr>
+            <tr>
+				<td>是否下架</td>
+                <td>
+					<select id="offShelf" name="offShelf" class="addpage">
+						<option value ="n">否</option>
+    					<option value ="y">是</option>
+            		</select>
 				</td>
 			</tr>
 			<tr>

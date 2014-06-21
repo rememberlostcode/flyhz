@@ -90,8 +90,8 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
 		productModel.setCreator(productParamDto.getCreator());
-		// productModel.setDataSrc(productParamDto.getDataSrc());
-		// productModel.setOffShelf(productParamDto.getOffShelf());
+		productModel.setDataSrc(productParamDto.getDataSrc());
+		productModel.setOffShelf(productParamDto.getOffShelf());
 		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
 			productModel.setDescription(productParamDto.getDescription());
 		} else {
@@ -101,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setGmtModify(new Date());
 		productModel.setForeighprice(productParamDto.getForeighprice());
 		productModel.setRecommendprice(productParamDto.getRecommendprice());
-		// productModel.setLocalprice(productParamDto.getLocalprice());
+		productModel.setLocalprice(productParamDto.getForeighprice());
 		productModel.setPurchasingprice(productParamDto.getRecommendprice());
 		int maxStyle = productDao.getMaxStyle();
 		productModel.setStyle(String.valueOf(maxStyle + 1));
@@ -185,13 +185,14 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setBrandstyle(productParamDto.getBrandstyle());
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
+		productModel.setOffShelf(productParamDto.getOffShelf());
 		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
 			productModel.setDescription(productParamDto.getDescription());
 		} else {
 			productModel.setDescription(productModel.getName());
 		}
 		productModel.setGmtModify(new Date());
-		// productModel.setLocalprice(productParamDto.getLocalprice());
+		productModel.setLocalprice(productParamDto.getForeighprice());
 		productModel.setForeighprice(productParamDto.getForeighprice());
 		productModel.setRecommendprice(productParamDto.getRecommendprice());
 		productModel.setPurchasingprice(productParamDto.getRecommendprice());

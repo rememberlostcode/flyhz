@@ -20,19 +20,19 @@ public class ProductModel implements Serializable {
 	private Date				gmtCreate;
 	private Date				gmtModify;
 	private String				imgs;
-	private BigDecimal			localprice;					// 国内价格
+	private BigDecimal			localprice;				// 国内价格
 	private String				name;
-	private BigDecimal			purchasingprice;				// 现在价格
-	private BigDecimal			foreighprice;					// 国外价格
-	private BigDecimal			recommendprice;				// 推荐价格
+	private BigDecimal			purchasingprice;			// 现在价格
+	private BigDecimal			foreighprice;				// 国外价格
+	private BigDecimal			recommendprice;			// 推荐价格
 	private String				style;
 	private String				color;
 	private String				colorimg;
 	private String				cover;
 	private String				coverSmall;
 	private String				creator;
-	private String				dataSrc				= "manual";
-	private String				offShelf			= "y";
+	private String				dataSrc;					// 数据来源：manual--手动；spider--爬虫
+	private String				offShelf;					// 是否下架：y--是；n--否
 
 	public ProductModel() {
 
