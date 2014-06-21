@@ -70,6 +70,9 @@ public class ProductServiceImpl implements ProductService {
 		if (StringUtil.stringLength(productParamDto.getName()) > 128) {
 			throw new ValidateException("产品名称过长");
 		}
+		if (StringUtils.isBlank(productParamDto.getCreator())) {
+			throw new ValidateException("产品名称过长");
+		}
 		if (productParamDto.getBrandId() == null) {
 			throw new ValidateException("产品品牌为空");
 		}
@@ -95,6 +98,9 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setBrandstyle(productParamDto.getBrandstyle());
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
+		productModel.setCreator(productParamDto.getCreator());
+		// productModel.setDataSrc(productParamDto.getDataSrc());
+		// productModel.setOffShelf(productParamDto.getOffShelf());
 		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
 			productModel.setDescription(productParamDto.getDescription());
 		} else {
@@ -102,8 +108,10 @@ public class ProductServiceImpl implements ProductService {
 		}
 		productModel.setGmtCreate(new Date());
 		productModel.setGmtModify(new Date());
-		productModel.setLocalprice(productParamDto.getLocalprice());
-		productModel.setPurchasingprice(productParamDto.getPurchasingprice());
+		productModel.setForeighprice(productParamDto.getForeighprice());
+		productModel.setRecommendprice(productParamDto.getRecommendprice());
+		// productModel.setLocalprice(productParamDto.getLocalprice());
+		productModel.setPurchasingprice(productParamDto.getRecommendprice());
 		int maxStyle = productDao.getMaxStyle();
 		productModel.setStyle(String.valueOf(maxStyle + 1));
 		// 处理颜色图片
@@ -187,8 +195,10 @@ public class ProductServiceImpl implements ProductService {
 			productModel.setDescription(productModel.getName());
 		}
 		productModel.setGmtModify(new Date());
-		productModel.setLocalprice(productParamDto.getLocalprice());
-		productModel.setPurchasingprice(productParamDto.getPurchasingprice());
+		// productModel.setLocalprice(productParamDto.getLocalprice());
+		productModel.setForeighprice(productParamDto.getForeighprice());
+		productModel.setRecommendprice(productParamDto.getRecommendprice());
+		productModel.setPurchasingprice(productParamDto.getRecommendprice());
 		// 处理颜色图片
 		dispostColorimg(productParamDto.getColorimg(), productModel, productParamDto);
 		// 处理商品图片

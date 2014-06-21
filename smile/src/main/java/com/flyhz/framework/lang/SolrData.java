@@ -16,7 +16,7 @@ import com.flyhz.shop.dto.ProductBuildDto;
 public interface SolrData {
 
 	/**
-	 * 重新建立订单索引
+	 * 重新建立订单索引(用的dataimport方式)
 	 */
 	public void reBuildOrder();
 
@@ -75,4 +75,9 @@ public interface SolrData {
 	 */
 	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId,
 			String status);
+	
+	/**
+	 * 清空商品索引
+	 */
+	public void cleanProduct();
 }

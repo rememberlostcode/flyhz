@@ -3,7 +3,6 @@ package com.flyhz.shop.web.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,10 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.flyhz.framework.lang.RedisRepository;
+import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.JSONUtil;
-import com.flyhz.shop.persistence.dao.ActivityDao;
-import com.flyhz.shop.persistence.entity.ActivityModel;
 import com.flyhz.shop.service.BuildService;
 
 @Controller
@@ -31,9 +29,9 @@ public class BuildController {
 	private RedisRepository	redisRepository;
 	@Resource
 	@Value(value = "${smile.taobao.url}")
-	private String smile_taobao_url;
+	private String			smile_taobao_url;
 	@Resource
-	private ActivityDao 	activityDao;
+	private SolrData		solrData;
 
 	@RequestMapping(value = "/all")
 	public String all(Model model) {
@@ -44,40 +42,52 @@ public class BuildController {
 	@RequestMapping(value = "/solr")
 	public String solr(Model model) {
 		buildService.buildSolr();
+		model.addAttribute("result", "solr finsh!");
 		return "build";
 	}
 
 	@RequestMapping(value = "/redis")
 	public String redis(Model model) {
 		buildService.buildRedis();
+		model.addAttribute("result", "redis finsh!");
 		return "build";
 	}
 
 	@RequestMapping(value = "/test")
 	public String test(Model model) {
 		try {
-			List<ActivityModel> list = activityDao.getModelList();
-			System.out.println(JSONUtil.getEntity2Json(list));
 			model.addAttribute("result",
 					JSONUtil.getEntity2Json(redisRepository.getProductFromRedis("50")));
-			String orderJson = redisRepository.getOrderFromRedis(1, 18);
-			System.out.println(orderJson);
 
 		} catch (ValidateException e) {
 			e.printStackTrace();
 		}
 		return "build";
 	}
-	
+
 	@RequestMapping(value = "/url")
-	public void url(Model model,HttpServletRequest request,
-			HttpServletResponse response) {
+	public void url(Model model, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			PrintWriter writer = response.getWriter();
 			response.reset();
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html");
 			writer.println(smile_taobao_url);
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value = "/clean")
+	public void clean(Model model, HttpServletResponse response) {
+		try {
+			solrData.cleanProduct();
+			PrintWriter writer = response.getWriter();
+			response.reset();
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html");
+			writer.println("solr已经清空商品!");
 			return;
 		} catch (IOException e) {
 			e.printStackTrace();
