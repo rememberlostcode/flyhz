@@ -221,6 +221,20 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager) {
 		List<ProductCmsDto> productCmsDtos = productDao.getPageProductCmsDtos(pager);
+		if (productCmsDtos != null && !productCmsDtos.isEmpty()) {
+			for (ProductCmsDto productCmsDto : productCmsDtos) {
+				if (StringUtils.isNotBlank(productCmsDto.getCover())) {
+					List<String> productImgs = JSONUtil.getJson2EntityList(
+							productCmsDto.getCover(), ArrayList.class, String.class);
+					productCmsDto.setProductImgs(productImgs);
+				}
+				if (StringUtils.isNotBlank(productCmsDto.getCoverSmall())) {
+					List<String> productAppImgs = JSONUtil.getJson2EntityList(
+							productCmsDto.getCoverSmall(), ArrayList.class, String.class);
+					productCmsDto.setAppImages(productAppImgs);
+				}
+			}
+		}
 		return productCmsDtos;
 	}
 

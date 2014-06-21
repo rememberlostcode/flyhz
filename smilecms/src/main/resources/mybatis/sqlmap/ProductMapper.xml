@@ -135,7 +135,10 @@
 		       p.name,
 		       p.description,
 		       p.purchasingprice,
+		       p.recommendprice,
 		       p.color,
+		       p.cover,
+		       p.cover_small coverSmall,
 		       c.name cateName,
 		       b.name brandName,
 		       p.brandstyle

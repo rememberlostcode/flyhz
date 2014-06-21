@@ -73,5 +73,12 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 			<value>classpath:mybatis/sqlMapConfig.xml</value>
 		</property>
 		<property name="mapperLocations" value="classpath*:mybatis/sqlmap/*.xml" />
-	</bean>                     
+	</bean>
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/product/**" />
+			<bean class="com.flyhz.framework.lang.AccessInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>                                   
 </beans>                                        

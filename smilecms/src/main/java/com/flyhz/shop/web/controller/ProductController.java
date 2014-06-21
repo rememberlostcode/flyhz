@@ -47,7 +47,7 @@ public class ProductController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String listProducts(@Pagination Pager pager, Model model) {
-		pager.setPageSize(15);
+		pager.setPageSize(10);
 		pager.setSortName("p.id");
 		pager.setSortWay(ToolConstants.DESC);
 		List<ProductCmsDto> productCmsDtos = productService.getProductCmsDtosByPage(pager);
