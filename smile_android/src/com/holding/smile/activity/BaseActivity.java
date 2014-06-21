@@ -438,4 +438,16 @@ public class BaseActivity extends Activity {
 		return view;
 	}
 
+	/**
+	 * 等待一秒后隐藏加载框
+	 */
+	public void waitCloseProgressBar() {
+		try {
+			Thread.sleep(1000);// 等待一秒
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		progressBar.setVisibility(View.GONE);
+	}
+
 }

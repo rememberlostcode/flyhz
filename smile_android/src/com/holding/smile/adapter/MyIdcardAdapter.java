@@ -35,7 +35,9 @@ public class MyIdcardAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
-		return idcardList.get(position);
+		if (idcardList != null)
+			return idcardList.get(position);
+		return null;
 	}
 
 	@Override
