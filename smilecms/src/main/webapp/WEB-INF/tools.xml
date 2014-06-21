@@ -25,7 +25,7 @@
     <data type="boolean" key="isSimple" value="true"/>
     <data type="number" key="version" value="2.0"/>
     <data type="string" key="server_name" value="http://211.149.175.138:8088/smilecms"></data>
-    <data type="string" key="static_name" value="http://211.149.175.138/static/smile"></data> 
+    <data type="string" key="static_name" value="http://211.149.175.138/static/smile"></data>
   	<tool>
 		<key>math</key>
   		<scope>application</scope>

@@ -50,7 +50,6 @@ public class ProductController {
 		pager.setPageSize(15);
 		pager.setSortName("p.id");
 		pager.setSortWay(ToolConstants.DESC);
-		// pager.setPageId("com.flyhz.shop.persistence.dao.getPageProductCmsDtos");
 		List<ProductCmsDto> productCmsDtos = productService.getProductCmsDtosByPage(pager);
 		model.addAttribute("products", productCmsDtos);
 		model.addAttribute("page", pager);
