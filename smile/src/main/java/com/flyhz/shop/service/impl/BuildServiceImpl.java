@@ -54,7 +54,7 @@ public class BuildServiceImpl implements BuildService {
 
 	public void buildData() {
 		// TODO Auto-generated method stub
-		log.info("buildData开始...");
+		log.info("buildData开始（包括solr和redis）...");
 		try {
 			buildSolr();
 			buildRedis();
@@ -67,7 +67,12 @@ public class BuildServiceImpl implements BuildService {
 	public void buildSolr() {
 		// TODO Auto-generated method stub
 		log.info("buildSolr开始...");
+		
+		log.info("清除所有商品索引...");
+		solrData.cleanProduct();
+		log.info("清除所有商品索引完成");
 
+		log.info("建立所有商品索引...");
 		SolrPage solrPage = new SolrPage();
 		solrPage.setNum(mysqlSize);
 		int thisNum = 0;
@@ -81,9 +86,12 @@ public class BuildServiceImpl implements BuildService {
 			// 设置新的分页查询参数
 			thisNum += mysqlSize;
 		}
+		log.info("建立所有商品索引完成");
 
 		// solr建立订单索引
+		log.info("重建订单索引...");
 		solrData.reBuildOrder();
+		log.info("重建订单索引完成");
 
 		log.info("buildSolr结束");
 	}
@@ -138,7 +146,6 @@ public class BuildServiceImpl implements BuildService {
 		}
 		brandProducts.append("]");
 		cacheRepository.setString(Constants.REDIS_KEY_BRANDS_RECOMMEND, brandProducts.toString());
-//		cacheRepository.setString("smile@recommend@index@products", brandProducts.toString());
 
 		// build各品牌各分类推荐商品（前10个）（首页选分类时）
 		StringBuilder brandCateProducts = new StringBuilder(100);
@@ -162,7 +169,7 @@ public class BuildServiceImpl implements BuildService {
 			cacheRepository.setString(Constants.PREFIX_BRANDS_RECOMMEND_CATES
 					+ catList.get(i).getId(), brandCateProducts.toString());
 			
-			//清空brandCateProducts
+			//再次使用前先清空brandCateProducts
 			brandCateProducts.delete(0, brandCateProducts.length());
 		}
 

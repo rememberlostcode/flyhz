@@ -90,7 +90,84 @@ public class SolrDataImpl implements SolrData {
 	}
 
 	public void submitProduct(ProductBuildDto productBuildDto) {
+		SolrInputDocument doc = new SolrInputDocument();
 
+		String[] pictures = null;
+		doc.addField("id", productBuildDto.getId());// ID
+		doc.addField("n", productBuildDto.getN());// 名称
+		doc.addField("d", productBuildDto.getD());// 说明
+		doc.addField("bs", productBuildDto.getBs());// 款号
+
+		// 调整本地价格及计算差价（即折扣）
+		if (productBuildDto.getLp() != null && productBuildDto.getPp() != null) {
+			doc.addField("sp", productBuildDto.getLp().subtract(productBuildDto.getPp()));
+		} else {
+			if (productBuildDto.getPp() == null) {
+				return;
+			} else {
+				productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getPp().doubleValue() * 2 + 1000));
+				doc.addField("sp", productBuildDto.getLp().subtract(productBuildDto.getPp()));
+			}
+		}
+		doc.addField("lp", productBuildDto.getLp().intValue());// 本地价格
+		doc.addField("pp", productBuildDto.getPp().intValue());// 代购价格
+
+		// 原图封面
+		if (productBuildDto.getImgs() != null) {
+			pictures = productBuildDto.getImgs().replace("[", "").replace("]", "")
+										.replace("\"", "").split(",");
+			for (int k = 0; k < pictures.length; k++) {
+				doc.addField("imgs", pictures[k]);
+			}
+		}
+		// 大图封面
+		if (productBuildDto.getBp() != null) {
+			pictures = productBuildDto.getBp().replace("[", "").replace("]", "").replace("\"", "")
+										.split(",");
+			for (int k = 0; k < pictures.length; k++) {
+				doc.addField("bp", pictures[k]);
+			}
+		}
+		// 小图封面
+		if (productBuildDto.getP() != null) {
+			pictures = productBuildDto.getP().replace("[", "").replace("]", "").replace("\"", "")
+										.split(",");
+			for (int k = 0; k < pictures.length; k++) {
+				doc.addField("p", pictures[k]);
+			}
+		}
+
+		doc.addField("t", DateUtil.strToDateLong(productBuildDto.getT()));// 时间
+		doc.addField("bid", productBuildDto.getBid());// 品牌ID
+		doc.addField("be", productBuildDto.getBe());// 品牌名称
+		doc.addField("cid", productBuildDto.getCid());// 分类ID
+		doc.addField("ce", productBuildDto.getCe());// 分类名称
+
+		doc.addField("c", productBuildDto.getC());// 颜色名称
+		doc.addField("ci", productBuildDto.getCi());// 颜色图片
+
+		doc.addField("sf", productFraction.getProductFraction(productBuildDto));// 分数
+		doc.addField("st", productBuildDto.getSt());// 时间排序值
+		doc.addField("sd", productBuildDto.getSd());// 折扣排序值
+		doc.addField("ss", productBuildDto.getSs());// 总销售量排序值
+		doc.addField("sy", productBuildDto.getSy());// 月销售量排序值
+		doc.addField("sj", productBuildDto.getSj());// 价格排序值
+		
+		doc.addField("sn", productBuildDto.getSn());// 销售量
+		doc.addField("zsn", productBuildDto.getZsn());// 当月销售量
+
+		// 提交到solr
+		HttpSolrServer solrServer = getServer(PRODUCT_URL);
+		try {
+			solrServer.add(doc);
+			solrServer.commit();
+		} catch (SolrServerException e) {
+			log.error(e.getMessage());
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		} finally {
+			// solrServer.shutdown();
+		}
 	}
 
 	public void submitProductList(List<ProductBuildDto> productList) {
@@ -159,9 +236,12 @@ public class SolrDataImpl implements SolrData {
 			doc.addField("sf", productFraction.getProductFraction(product));// 分数
 			doc.addField("st", product.getSt());// 时间排序值
 			doc.addField("sd", product.getSd());// 折扣排序值
-			doc.addField("ss", product.getSs());// 销售量排序值
+			doc.addField("ss", product.getSs());// 总销售量排序值
+			doc.addField("sy", product.getSy());// 月销售量排序值
+			doc.addField("sj", product.getSj());// 价格排序值
+			
 			doc.addField("sn", product.getSn());// 销售量
-			doc.addField("zsn", product.getZsn());// 一周销售量
+			doc.addField("zsn", product.getZsn());// 当月销售量
 			docs.add(doc);
 		}
 
@@ -357,5 +437,20 @@ public class SolrDataImpl implements SolrData {
 			log.error(e.getMessage());
 		}
 		return list;
+	}
+	
+	public void cleanProduct() {
+		// 提交到solr
+		HttpSolrServer solrServer = getServer(PRODUCT_URL);
+		try {
+			solrServer.deleteByQuery("*:*");
+			solrServer.commit();
+		} catch (SolrServerException e) {
+			log.error(e.getMessage());
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		} finally {
+			// solrServer.shutdown();
+		}
 	}
 }

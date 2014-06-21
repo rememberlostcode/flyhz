@@ -57,18 +57,6 @@ public class ProductBuildDto {
 	 */
 	private Integer		sf;
 	/**
-	 * 时间排序值
-	 */
-	private Integer		st;
-	/**
-	 * 折扣排序值
-	 */
-	private Integer		sd;
-	/**
-	 * 销售量排序值
-	 */
-	private Integer		ss;
-	/**
 	 * 品牌ID
 	 */
 	private Integer		bid;
@@ -93,15 +81,42 @@ public class ProductBuildDto {
 	 * 颜色图片
 	 */
 	private String		ci;
+	
+	
 	/**
-	 * 销售数量
+	 * 总销售数量
 	 */
 	private Integer		sn;
 	/**
-	 * 前一周销售数量
+	 * 原为周销售数量，现在改为当月销售数量
 	 */
 	private Integer		zsn;
+	
+	
+	/****************各排序值********************/
+	/**
+	 * 时间排序值
+	 */
+	private Integer		st;
+	/**
+	 * 折扣排序值
+	 */
+	private Integer		sd;
+	/**
+	 * 总销售量排序值
+	 */
+	private Integer		ss;
+	/**
+	 * 价格排序值
+	 */
+	private Integer		sj;
+	/**
+	 * 月销售量排序值
+	 */
+	private Integer		sy;
 
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -284,5 +299,21 @@ public class ProductBuildDto {
 
 	public void setImgs(String imgs) {
 		this.imgs = imgs;
+	}
+
+	public Integer getSj() {
+		return sj;
+	}
+
+	public void setSj(Integer sj) {
+		this.sj = sj;
+	}
+
+	public Integer getSy() {
+		return sy;
+	}
+
+	public void setSy(Integer sy) {
+		this.sy = sy;
 	}
 }
