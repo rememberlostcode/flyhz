@@ -84,9 +84,9 @@ public class ProductServiceImpl implements ProductService {
 		}
 		// 生成产品Model对象
 		ProductModel productModel = new ProductModel();
-		productModel.setName(productParamDto.getName());
+		productModel.setName(productParamDto.getName().trim());
 		productModel.setBrandId(productParamDto.getBrandId());
-		productModel.setBrandstyle(productParamDto.getBrandstyle());
+		productModel.setBrandstyle(productParamDto.getBrandstyle().trim());
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
 		productModel.setCreator(productParamDto.getCreator());
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
 		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
 			productModel.setDescription(productParamDto.getDescription());
 		} else {
-			productModel.setDescription(productModel.getName());
+			productModel.setDescription(productModel.getName().trim());
 		}
 		productModel.setGmtCreate(new Date());
 		productModel.setGmtModify(new Date());
@@ -180,16 +180,16 @@ public class ProductServiceImpl implements ProductService {
 			throw new ValidateException("产品颜色过长");
 		}
 		// 生成产品Model对象
-		productModel.setName(productParamDto.getName());
+		productModel.setName(productParamDto.getName().trim());
 		productModel.setBrandId(productParamDto.getBrandId());
-		productModel.setBrandstyle(productParamDto.getBrandstyle());
+		productModel.setBrandstyle(productParamDto.getBrandstyle().trim());
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
 		productModel.setOffShelf(productParamDto.getOffShelf());
 		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
 			productModel.setDescription(productParamDto.getDescription());
 		} else {
-			productModel.setDescription(productModel.getName());
+			productModel.setDescription(productModel.getName().trim());
 		}
 		productModel.setGmtModify(new Date());
 		productModel.setLocalprice(productParamDto.getForeighprice());
