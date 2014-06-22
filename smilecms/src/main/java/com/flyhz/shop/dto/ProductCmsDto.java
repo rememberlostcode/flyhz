@@ -2,6 +2,7 @@
 package com.flyhz.shop.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 管理员后台产品DTO
@@ -9,14 +10,20 @@ import java.math.BigDecimal;
  * @author Administrator
  */
 public class ProductCmsDto {
-	private Integer		id;				// 主键ID
-	private String		name;				// 产品名称
-	private String		color;				// 颜色
-	private String		brandstyle;		// 款号
-	private String		cateName;			// 分类名称
-	private String		brandName;			// 品牌名称
-	private BigDecimal	purchasingprice;	// 代购价格
-	private String		description;		// 描述
+	private Integer			id;				// 主键ID
+	private String			name;				// 产品名称
+	private String			color;				// 颜色
+	private String			brandstyle;		// 款号
+	private String			cateName;			// 分类名称
+	private String			brandName;			// 品牌名称
+	private BigDecimal		purchasingprice;	// 代购价格
+	private String			description;		// 描述
+	private String			cover;				// 产品详情图
+	private String			coverSmall;		// APP列表图
+	private String			recommendprice;	// 推荐价格
+	private String			offShelf;			// 是否下架
+	private List<String>	appImages;			// APP列表图
+	private List<String>	productImgs;		// 产品详情图
 
 	public Integer getId() {
 		return id;
@@ -80,5 +87,53 @@ public class ProductCmsDto {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getCover() {
+		return cover;
+	}
+
+	public void setCover(String cover) {
+		this.cover = cover;
+	}
+
+	public String getCoverSmall() {
+		return coverSmall;
+	}
+
+	public void setCoverSmall(String coverSmall) {
+		this.coverSmall = coverSmall;
+	}
+
+	public String getRecommendprice() {
+		return recommendprice;
+	}
+
+	public void setRecommendprice(String recommendprice) {
+		this.recommendprice = recommendprice;
+	}
+
+	public List<String> getAppImages() {
+		return appImages;
+	}
+
+	public void setAppImages(List<String> appImages) {
+		this.appImages = appImages;
+	}
+
+	public List<String> getProductImgs() {
+		return productImgs;
+	}
+
+	public void setProductImgs(List<String> productImgs) {
+		this.productImgs = productImgs;
+	}
+
+	public String getOffShelf() {
+		return offShelf;
+	}
+
+	public void setOffShelf(String offShelf) {
+		this.offShelf = offShelf;
 	}
 }

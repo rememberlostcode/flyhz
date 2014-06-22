@@ -16,7 +16,16 @@ public interface BrandDao extends GenericDao<BrandModel> {
 
 	/**
 	 * 获取所有品牌
+	 * 
 	 * @return
 	 */
 	public List<BrandBuildDto> getBrandBuildDtoList();
+
+	/**
+	 * 查询品牌名称
+	 * 
+	 * @param brandId
+	 * @return String
+	 */
+	public String getBrandNameById(Integer brandId);
 }
