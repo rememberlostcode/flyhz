@@ -143,7 +143,8 @@
                 android:text="@string/set_login"
                 android:background="@android:color/transparent"
                 android:textColor="@drawable/qianhuise"
-                android:textSize="15sp"/>
+                android:textSize="15sp"
+                android:visibility="gone"/>
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

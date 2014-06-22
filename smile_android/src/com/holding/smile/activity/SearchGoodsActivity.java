@@ -64,6 +64,9 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	private PullToRefreshView	mPullToRefreshView;
 	private ListView			mListView;
 
+	private String				keywords;
+	private int					optNum				= 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -225,8 +228,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 			mListView.setAdapter(adapter);
 			mListView.setOnScrollListener(mScrollListener);
 		}
-		loadData(keywords);
-
+		this.keywords = keywords;
+		startTask();
 	}
 
 	OnScrollListener	mScrollListener	= new OnScrollListener() {
@@ -318,7 +321,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 		mPullToRefreshView.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				onLoadMore();
+				optNum = 2;
+				loadData();
 			}
 		}, 1000);
 	}
@@ -328,63 +332,47 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 		mPullToRefreshView.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				onRefresh();
+				optNum = 1;
+				loadData();
 			}
 		}, 1000);
 	}
 
-	private synchronized void loadData(String keywords) {
+	@Override
+	public synchronized void loadData() {
 		progressBar.setVisibility(View.VISIBLE);
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
-											.getJGoodsSearchListInit(keywords, null, null);
+		keywords = editText.getText().toString();
+		RtnValueDto rGoods = null;
+		int mseeageWhat = WHAT_DID_LOAD_DATA;
+		if (optNum == 0) {
+			rGoods = MyApplication.getInstance().getDataService().getJGoodsSearchListInit(keywords);
+			mseeageWhat = WHAT_DID_LOAD_DATA;
+		} else if (optNum == 1) {
+			rGoods = MyApplication.getInstance()
+									.getDataService()
+									.getJGoodsSearchListRefresh(keywords, null);
+			mseeageWhat = WHAT_DID_REFRESH;
+		} else if (optNum == 2) {
+			Integer seq = null;
+			Object obj = null;
+			Integer i = mListView.getLastVisiblePosition();
+			if (i >= 0) {
+				obj = mListView.getItemAtPosition(i);
+			}
+			if (obj != null) {
+				seq = ((JGoods) obj).getSeq();
+			}
+			rGoods = MyApplication.getInstance()
+									.getDataService()
+									.getJGoodsSearchListMore(keywords, null,
+											seq);
+			mseeageWhat = WHAT_DID_MORE;
+		}
 		if (rGoods == null) {
 			rGoods = new RtnValueDto();
 			rGoods.setData(null);
 		}
-		Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-		msg.obj = rGoods;
-		msg.sendToTarget();
-	}
-
-	public void onRefresh() {
-		JGoods jGoodsFirst = null;
-		Object obj = mListView.getItemAtPosition(0);
-		if (obj != null) {
-			jGoodsFirst = (JGoods) obj;
-		}
-		RtnValueDto rGoods = MyApplication.getInstance()
-											.getDataService()
-											.getJGoodsSearchListRefresh(
-													editText.getText().toString(), jGoodsFirst,
-													null, null);
-		if (rGoods == null) {
-			rGoods = new RtnValueDto();
-			rGoods.setData(null);
-		}
-		Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
-		msg.obj = rGoods;
-		msg.sendToTarget();
-	}
-
-	public void onLoadMore() {
-		JGoods jGoodsLast = null;
-		Object obj = null;
-		Integer i = mListView.getLastVisiblePosition();
-		if (i >= 0) {
-			obj = mListView.getItemAtPosition(i);
-		}
-		if (obj != null) {
-			jGoodsLast = (JGoods) obj;
-		}
-		RtnValueDto rGoods = MyApplication.getInstance()
-											.getDataService()
-											.getJGoodsSearchListMore(editText.getText().toString(),
-													jGoodsLast, null, null);
-		if (rGoods == null) {
-			rGoods = new RtnValueDto();
-			rGoods.setData(null);
-		}
-		Message msg = mUIHandler.obtainMessage(WHAT_DID_MORE);
+		Message msg = mUIHandler.obtainMessage(mseeageWhat);
 		msg.obj = rGoods;
 		msg.sendToTarget();
 	}
@@ -399,14 +387,18 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															// 物品
-															if (obj.getData() != null) {
+															if (obj != null
+																	&& obj.getData() != null
+																	&& obj.getData().size() > 0) {
 																List<JGoods> strings = obj.getData();
 																if (strings != null) {
 																	mStrings.clear();
 																	mStrings.addAll(strings);
 																	adapter.notifyDataSetChanged();
 																}
+															} else {
+																Toast.makeText(context, "暂无数据",
+																		Toast.LENGTH_SHORT).show();
 															}
 														}
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -415,25 +407,9 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 													case WHAT_DID_REFRESH: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															// 物品
-															if (obj.getValidate() != null) {
-																String option = obj.getValidate()
-																					.getOption();
-																if (option != null
-																		&& "3".equals(option)) {
-																	mStrings.removeAll(mStrings);
-																}
-																String message = obj.getValidate()
-																					.getMessage();
-																if (message != null
-																		&& !"".equals(message.trim())) {
-																	Toast.makeText(context,
-																			message,
-																			Toast.LENGTH_SHORT)
-																			.show();
-																}
-															}
-															if (obj.getData() != null) {
+															if (obj != null
+																	&& obj.getData() != null
+																	&& obj.getData().size() > 0) {
 																List<JGoods> strings = obj.getData();
 																if (strings != null
 																		&& !strings.isEmpty()) {
@@ -459,25 +435,9 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 													case WHAT_DID_MORE: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															// 物品
-															if (obj.getValidate() != null) {
-																String option = obj.getValidate()
-																					.getOption();
-																if (option != null
-																		&& "3".equals(option)) {
-																	mStrings.removeAll(mStrings);
-																}
-																String message = obj.getValidate()
-																					.getMessage();
-																if (message != null
-																		&& !"".equals(message.trim())) {
-																	Toast.makeText(context,
-																			message,
-																			Toast.LENGTH_SHORT)
-																			.show();
-																}
-															}
-															if (obj.getData() != null) {
+															if (obj != null
+																	&& obj.getData() != null
+																	&& obj.getData().size() > 0) {
 																List<JGoods> strings = obj.getData();
 																if (strings != null
 																		&& !strings.isEmpty()) {

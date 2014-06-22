@@ -176,31 +176,17 @@ function indexsingle(query,response) {
 
         var result = '{"activitys":'+result2+'';
         result += ',"brands":';
-        key ='smile@brands@recommend';
-        var param = '';
-        var cid = query.cid;
-        if(cid!=null && cid!=''){
-            key = 'smile@brands@recommend&cates@' + cid;
-        }
+        key ='smile@brands@all';
         console.log('key='+key);
-        client.get(key, function(err, res) {
-//            console.log(res);
+        client.hvals(key, function(err, res) {
+            console.log(res);
             if(res){
-
-                var recommendindex = JSON.parse(res);
                 result += '[';
-                for(var i=0;i<recommendindex.length;i++){
+                for(var i=0;i<res.length;i++){
                     if(i>0){
                         result += ',';
                     }
-                   /* result += '{\"id\":';
-                    result += recommendindex[i].id;
-                    result += ',\"name\":';
-                    result += JSON.stringify(recommendindex[i].name ? recommendindex[i].name : null);
-					result += ',\"img_url\":';
-                    result += JSON.stringify(recommendindex[i].img_url?recommendindex[i].img_url:null);
-                    result += '}';*/
-                    result += JSON.stringify(recommendindex[i].brand);
+                    result += res[i];
                 }
                 result += ']';
             }
@@ -273,6 +259,10 @@ function brand(query,response) {
             param += "&sort=sd+desc";
         } else if(seqorderType=='sales'){
             param += "&sort=ss+desc";
+        } else if(seqorderType=='monthsales'){
+            param += "&sort=sy+desc";
+        } else if(seqorderType=='price'){
+            param += "&sort=sj+asc";
         } else {
             param += "&sort=ss+desc";
         }
@@ -339,9 +329,13 @@ function brand(query,response) {
                         result += ',\"p\":';
                         result += JSON.stringify(docs[i].p);
                         result += ',\"pp\":';
-                        result += JSON.stringify(docs[i].pp?docs[i].pp:null);
+                        result += JSON.stringify(docs[i].pp?docs[i].pp:0);
 						result += ',\"lp\":';
-                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
+                        result += JSON.stringify(docs[i].lp?docs[i].lp:0);
+                        result += ',\"sn\":';
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
@@ -349,12 +343,12 @@ function brand(query,response) {
                             result += JSON.stringify(docs[i].st);
                         } else if(seqorderType=='sales'){
                             result += JSON.stringify(docs[i].ss);
-                            result += ',\"sn\":';
-                            result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        } else if(seqorderType=='monthsales'){
+                            result += JSON.stringify(docs[i].sy);
+                        } else if(seqorderType=='price'){
+                            result += JSON.stringify(docs[i].sj);
                         } else {
                             result += JSON.stringify(docs[i].ss);
-                            result += ',\"sn\":';
-                            result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         }
                         result += '}';
                     }
@@ -394,6 +388,10 @@ function brandmore(query,response) {
             param += "&sort=sd+desc";
         } else if(seqorderType=='sales'){
             param += "&sort=ss+desc";
+        } else if(seqorderType=='monthsales'){
+            param += "&sort=sy+desc";
+        } else if(seqorderType=='price'){
+            param += "&sort=sj+asc";
         } else {
             param += "&sort=ss+desc";
         }
@@ -407,6 +405,12 @@ function brandmore(query,response) {
             param += "&fq=st%3A%5B*+"+(seqorderValue-1)+"%5D";
         } else if(seqorderType=='discount'){
             param += "&fq=sd%3A%5B*+"+(seqorderValue-1)+"%5D";
+        } else if(seqorderType=='sales'){
+            param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
+        } else if(seqorderType=='monthsales'){
+            param += "&fq=sy%3A%5B*+"+(seqorderValue-1)+"%5D";
+        } else if(seqorderType=='price'){
+            param += "&fq=sj%3A%5B"+(seqorderValue-(-1))+"+*%5D";
         } else {
             param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
         }
@@ -471,6 +475,10 @@ function brandmore(query,response) {
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
 						result += ',\"lp\":';
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
+                        result += ',\"sn\":';
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
@@ -478,12 +486,12 @@ function brandmore(query,response) {
                             result += JSON.stringify(docs[i].st);
                         } else if(seqorderType=='sales'){
                             result += JSON.stringify(docs[i].ss);
-                            result += ',\"sn\":';
-                            result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        } else if(seqorderType=='monthsales'){
+                            result += JSON.stringify(docs[i].sy);
+                        } else if(seqorderType=='price'){
+                            result += JSON.stringify(docs[i].sj);
                         } else {
                             result += JSON.stringify(docs[i].ss);
-                            result += ',\"sn\":';
-                            result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         }
                         result += '}';
                     }
@@ -513,12 +521,22 @@ function sorttype(query,response){
     var result = '[';
 
     result += '{';
-    result += '"n":"销售量","v":"sales"';
+    result += '"n":"总销量","v":"sales"';
+    result += '}';
+
+    result += ',';
+    result += '{';
+    result += '"n":"月销量","v":"monthsales"';
     result += '}';
 
     result += ',';
     result += '{';
     result += '"n":"折扣","v":"discount"';
+    result += '}';
+
+    result += ',';
+    result += '{';
+    result += '"n":"价格","v":"price"';
     result += '}';
 
     result += ']';
@@ -536,14 +554,23 @@ function sort(query,response) {
     var result = '[';
 
     result += '{';
+    result += '"n":"总销量排行","u":"/smile/node/ranking/sales"';
+    result += '}';
+
+    result += ',';
+    result += '{';
+    result += '"n":"月销量排行","u":"/smile/node/ranking/monthsales"';
+    result += '}';
+
+    result += ',';
+    result += '{';
     result += '"n":"折扣排行","u":"/smile/node/ranking/discount"';
     result += '}';
 
     result += ',';
     result += '{';
-    result += '"n":"销量排行","u":"/smile/node/ranking/sales"';
+    result += '"n":"价格排行","u":"/smile/node/ranking/price"';
     result += '}';
-
     result += ']';
 
     response.writeHead(200, headContentObject);
@@ -551,6 +578,153 @@ function sort(query,response) {
     response.end();
 }
 
+/**
+ * 总销量排行
+ * @param query
+ * @param response
+ */
+function rankingsales(query,response) {
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=ss+desc&rows=100";
+    var options = {
+        host: solr_server_host,
+        port: solr_server_port,
+        path: urlPath,
+        headers:{
+            "Content-Type": applicationJson,
+            "User-Agent": UserAgent
+        }
+    };
+    var req = http.request(options, function(res) {
+        res.setEncoding('utf8');
+        try{
+            var tmp = '';
+            res.on('data', function (chunk) {
+                tmp += chunk;
+            });
+            res.on('end',function() {
+                var resss = JSON.parse(tmp);
+                if(resss && resss.response && resss.response.docs){
+                    var docs = resss.response.docs;
+                    var result =  '[';
+                    for(var i=0;i<docs.length;i++){
+                        if(i > 0){
+                            result += ',';
+                        }
+                        result += '{\"id\":';
+                        result += docs[i].id;
+                        result += ',\"n\":';
+                        result += JSON.stringify(docs[i].n);
+                        result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
+                        result += ',\"p\":';
+                        result += JSON.stringify(docs[i].p);
+                        result += ',\"sn\":';
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        result += ',\"pp\":';
+                        result += JSON.stringify(docs[i].pp?docs[i].pp:null);
+                        result += ',\"lp\":';
+                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += '}';
+                    }
+
+                    result += ']';
+                } else {
+                    result = "[]";
+                }
+                response.writeHead(200, headContentObject);
+                response.write(addData(result));
+                response.end();
+            });
+        } catch (ee){
+            console.log(ee.message);
+        }
+    });
+    req.on('error', function(e) {
+        console.log("Got error: " + e.message);
+        response.writeHead(404, headContentObject);
+        response.write(e.message);
+        response.end();
+    });
+    req.end();
+}
+
+/**
+ * 月销量排行
+ * @param query
+ * @param response
+ */
+function rankingmonthsales(query,response) {
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sy+desc&rows=100";
+    var options = {
+        host: solr_server_host,
+        port: solr_server_port,
+        path: urlPath,
+        headers:{
+            "Content-Type": applicationJson,
+            "User-Agent": UserAgent
+        }
+    };
+    var req = http.request(options, function(res) {
+        res.setEncoding('utf8');
+        try{
+            var tmp = '';
+            res.on('data', function (chunk) {
+                tmp += chunk;
+            });
+            res.on('end',function() {
+                var resss = JSON.parse(tmp);
+                if(resss && resss.response && resss.response.docs){
+                    var docs = resss.response.docs;
+                    var result =  '[';
+                    for(var i=0;i<docs.length;i++){
+                        if(i > 0){
+                            result += ',';
+                        }
+                        result += '{\"id\":';
+                        result += docs[i].id;
+                        result += ',\"n\":';
+                        result += JSON.stringify(docs[i].n);
+                        result += ',\"d\":';
+                        result += JSON.stringify(docs[i].d);
+                        result += ',\"bs\":';
+                        result += JSON.stringify(docs[i].bs);
+                        result += ',\"p\":';
+                        result += JSON.stringify(docs[i].p);
+                        result += ',\"sn\":';
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        result += ',\"pp\":';
+                        result += JSON.stringify(docs[i].pp?docs[i].pp:null);
+                        result += ',\"lp\":';
+                        result += JSON.stringify(docs[i].lp?docs[i].lp:null);
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += '}';
+                    }
+
+                    result += ']';
+                } else {
+                    result = "[]";
+                }
+                response.writeHead(200, headContentObject);
+                response.write(addData(result));
+                response.end();
+            });
+        } catch (ee){
+            console.log(ee.message);
+        }
+    });
+    req.on('error', function(e) {
+        console.log("Got error: " + e.message);
+        response.writeHead(404, headContentObject);
+        response.write(e.message);
+        response.end();
+    });
+    req.end();
+}
 /**
  * 折扣排行
  * @param query
@@ -597,8 +771,8 @@ function rankingdiscount(query,response) {
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
 						result += ',\"lp\":';
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
-                        result += ',\"seq\":';
-                        result += JSON.stringify(docs[i].sd);
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += '}';
                     }
 
@@ -624,12 +798,12 @@ function rankingdiscount(query,response) {
 }
 
 /**
- * 销量排行
+ * 价格排行
  * @param query
  * @param response
  */
-function rankingsales(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=ss+desc&rows=100";
+function rankingprice(query,response) {
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sj+asc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -659,7 +833,7 @@ function rankingsales(query,response) {
                         result += docs[i].id;
                         result += ',\"n\":';
                         result += JSON.stringify(docs[i].n);
-						result += ',\"d\":';
+                        result += ',\"d\":';
                         result += JSON.stringify(docs[i].d);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
@@ -669,10 +843,10 @@ function rankingsales(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
-						result += ',\"lp\":';
+                        result += ',\"lp\":';
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
-                        result += ',\"seq\":';
-                        result += JSON.stringify(docs[i].ss);
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += '}';
                     }
 
@@ -710,6 +884,12 @@ function search(query,response) {
             param += "&sort=st+desc";
         } else if(seqorderType=='discount'){
             param += "&sort=sd+desc";
+        } else if(seqorderType=='sales'){
+            param += "&sort=ss+desc";
+        } else if(seqorderType=='monthsales'){
+            param += "&sort=sy+desc";
+        } else if(seqorderType=='price'){
+            param += "&sort=sj+asc";
         } else {
             param += "&sort=ss+desc";
         }
@@ -763,15 +943,23 @@ function search(query,response) {
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
 						result += ',\"lp\":';
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
+                        result += ',\"sn\":';
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
                         } else if(seqorderType=='time'){
                             result += JSON.stringify(docs[i].st);
+                        } else if(seqorderType=='sales'){
+                            result += JSON.stringify(docs[i].ss);
+                        } else if(seqorderType=='monthsales'){
+                            result += JSON.stringify(docs[i].sy);
+                        } else if(seqorderType=='price'){
+                            result += JSON.stringify(docs[i].sj);
                         } else {
                             result += JSON.stringify(docs[i].ss);
-                            result += ',\"sn\":';
-                            result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         }
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
@@ -811,6 +999,12 @@ function searchmore(query,response) {
             param += "&sort=st+desc";
         } else if(seqorderType=='discount'){
             param += "&sort=sd+desc";
+        } else if(seqorderType=='sales'){
+            param += "&sort=ss+desc";
+        } else if(seqorderType=='monthsales'){
+            param += "&sort=sy+desc";
+        } else if(seqorderType=='price'){
+            param += "&sort=sj+asc";
         } else {
             param += "&sort=ss+desc";
         }
@@ -824,11 +1018,17 @@ function searchmore(query,response) {
             param += "&fq=st%3A%5B*+"+(seqorderValue-1)+"%5D";
         } else if(seqorderType=='discount'){
             param += "&fq=sd%3A%5B*+"+(seqorderValue-1)+"%5D";
+        } else if(seqorderType=='sales'){
+            param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
+        } else if(seqorderType=='monthsales'){
+            param += "&fq=sy%3A%5B*+"+(seqorderValue-1)+"%5D";
+        } else if(seqorderType=='price'){
+            param += "&fq=sj%3A%5B"+(seqorderValue-(-1))+"+*%5D";
         } else {
             param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
         }
     } else {
-        //param += "&fq=st%3A%5B*+"+seqorderValue+"%5D";
+        //param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
     }
     //param += "&rows=5";
     var keywords = query.keywords;
@@ -875,15 +1075,23 @@ function searchmore(query,response) {
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
 						result += ',\"lp\":';
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
+                        result += ',\"sn\":';
+                        result += JSON.stringify(docs[i].sn?docs[i].sn:0);
+                        result += ',\"zsn\":';
+                        result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += ',\"seq\":';
                         if(seqorderType=='discount'){
                             result += JSON.stringify(docs[i].sd);
                         } else if(seqorderType=='time'){
                             result += JSON.stringify(docs[i].st);
+                        } else if(seqorderType=='sales'){
+                            result += JSON.stringify(docs[i].ss);
+                        } else if(seqorderType=='monthsales'){
+                            result += JSON.stringify(docs[i].sy);
+                        } else if(seqorderType=='price'){
+                            result += JSON.stringify(docs[i].sj);
                         } else {
                             result += JSON.stringify(docs[i].ss);
-                            result += ',\"sn\":';
-                            result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         }
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
@@ -1037,6 +1245,8 @@ exports.sorttype = sorttype;
 exports.sort = sort;
 exports.rankingdiscount = rankingdiscount;
 exports.rankingsales = rankingsales;
+exports.rankingprice = rankingprice;
+exports.rankingmonthsales = rankingmonthsales;
 exports.search = search;
 exports.searchmore = searchmore;
 exports.goodsdetail = goodsdetail;

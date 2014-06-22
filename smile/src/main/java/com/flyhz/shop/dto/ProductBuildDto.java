@@ -81,6 +81,10 @@ public class ProductBuildDto {
 	 * 颜色图片
 	 */
 	private String		ci;
+	/**
+	 * 国外美元价格
+	 */
+	private BigDecimal	foreighprice;
 	
 	
 	/**
@@ -315,5 +319,13 @@ public class ProductBuildDto {
 
 	public void setSy(Integer sy) {
 		this.sy = sy;
+	}
+
+	public BigDecimal getForeighprice() {
+		return foreighprice;
+	}
+
+	public void setForeighprice(BigDecimal foreighprice) {
+		this.foreighprice = foreighprice;
 	}
 }

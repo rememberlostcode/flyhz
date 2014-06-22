@@ -80,4 +80,10 @@ public interface SolrData {
 	 * 清空商品索引
 	 */
 	public void cleanProduct();
+	
+	/**
+	 * 获取美元汇率
+	 * @return
+	 */
+	public double getDollarExchangeRate();
 }

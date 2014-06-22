@@ -15,7 +15,6 @@ import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
-import com.flyhz.framework.util.UrlUtil;
 import com.flyhz.shop.build.solr.ProductFraction;
 import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.dto.BrandBuildDto;
@@ -50,7 +49,7 @@ public class BuildServiceImpl implements BuildService {
 	/**
 	 * 500条数据查询一次并插入数据库
 	 */
-	private final int		mysqlSize	= 100;
+	private final int		mysqlSize	= 500;
 
 	public void buildData() {
 		// TODO Auto-generated method stub
@@ -179,27 +178,6 @@ public class BuildServiceImpl implements BuildService {
 		redisRepository.chacheOrders();
 		/******** build用户订单 end *******/
 		log.info("buildRedis结束");
-	}
-	
-	public double getDollarExchangeRate() {
-		// TODO Auto-generated method stub
-		log.info("开始获取美元汇率...");
-		double dollarExchangeRate = 6.5;
-		String response = UrlUtil.sendGet("http://download.finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s=USDCNY=x");
-		if (StringUtil.isNotBlank(response)) {
-			String[] responses = response.split(",");
-			for (int i = 0; i < responses.length; i++) {
-				log.info(responses[i]);
-			}
-			try {
-				dollarExchangeRate = Double.parseDouble(responses[1]);
-				log.info("当前美元汇率为" + dollarExchangeRate);
-			} catch (Exception e) {
-				log.error("获取美元汇率失败！！！" + e.getLocalizedMessage());
-			}
-		}
-		log.info("获取美元汇率结束");
-		return dollarExchangeRate;
 	}
 	
 	/**

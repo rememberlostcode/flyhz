@@ -49,7 +49,7 @@ public class SolrTimer extends QuartzJobBean {
 	public void startTask() {
 		// TODO Auto-generated method stub
 		log.info("正在启动SolrTimer...");
-
+		
 		log.info("处理商品销售数量...");
 		int mysqlSize = 500;// 每次取500条
 

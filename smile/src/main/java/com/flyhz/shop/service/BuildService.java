@@ -25,10 +25,4 @@ public interface BuildService {
 	 */
 	public void buildRedis();
 
-	/**
-	 * 获取当前美元汇率
-	 * 
-	 * @return
-	 */
-	public double getDollarExchangeRate();
 }

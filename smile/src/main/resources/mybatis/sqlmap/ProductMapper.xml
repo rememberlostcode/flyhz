@@ -3,16 +3,14 @@
 <mapper namespace="com.flyhz.shop.persistence.dao.ProductDao">
     
     <select id="getCountOfAll" resultType="Integer">
-		select count(1) count from product t
+		select count(1) count from product t where t.off_shelf = 'n'
     </select>
     
     <select id="findAll" parameterType="SolrPage" resultType="ProductBuildDto">
 		select t.*, @rownum := @rownum + 1 sj
-		  from (
-		select t.*, @rownum := @rownum + 1 sy
-				  from (
-		select t.*, @rownum := @rownum + 1 ss
-		  from (select t.*, @rownum := @rownum + 1 sd
+			from (select t.*, @rownum := @rownum + 1 sy	  
+			from (select t.*, @rownum := @rownum + 1 ss
+		  	from (select t.*, @rownum := @rownum + 1 sd
 		          from (select p.id,
 		                       p.name n,
 		                       p.brandstyle bs,
@@ -28,6 +26,7 @@
 		                       p.category_id cid,
 		                       p.color c,
 				       		   p.colorimg ci,
+				       		   p.foreighprice,
 		                       c.name ce,
 		                       p.localprice - p.purchasingprice sp,
 		                       @rownum := @rownum + 1 st,
@@ -44,6 +43,7 @@
 		                       category c
 		                 where p.brand_id = b.id
 		                   and p.category_id = c.id
+		                   and p.off_shelf = 'n'
 		                 order by p.gmt_modify asc) t,
 		               (select @rownum := 0) r
 		         order by t.sp asc) t,

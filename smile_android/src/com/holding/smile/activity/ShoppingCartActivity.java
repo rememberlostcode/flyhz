@@ -114,6 +114,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		listView.setAdapter(cartAdapter);
 	}
 
+	@Override
 	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getCartItemList();
 		Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
