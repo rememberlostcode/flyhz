@@ -75,4 +75,7 @@ public class Constants {
 			this.code = code;
 		}
 	}
+
+	// 定义文件保存目录前缀
+	public static final String	IMAGE_PREFIX_PATH	= "D:\\oklfile";
 }

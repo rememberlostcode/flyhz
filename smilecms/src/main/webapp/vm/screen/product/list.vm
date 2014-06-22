@@ -1,3 +1,12 @@
+<style type="text/css">
+	.productImg{
+		width:100px;
+		height:100px;
+		border-style:solid;
+		border-width:1px;
+		border-color:#000;
+	}
+</style>
 <script type="text/javascript">
    $(document).ready(function(){
        var locaUrl = decodeURIComponent(location.href);
@@ -89,13 +98,14 @@
     <table summary="" class="dateline" style="width:99%;margin-top: 5px;" id="en_table">
 		<thead>
             <th><input type="checkbox" onclick="allCheck(this);"/></th>
-			<th>名称</th>
+			<th style="width:27%;">名称</th>
 			<th>品牌</th>
 			<th>分类</th>
 			<th>款号</th>
-			<!--<th>描述</th>-->
 			<th>颜色</th>
-			<th>代购价格</th>
+			<th>推荐价格</th>
+            <th>APP图片</th>
+			<th>产品图片</th>
             <th>操作</th>
         </thead>
 		<tbody>
@@ -103,13 +113,30 @@
     			#foreach($product in $!products)
                    <tr id="tr_$!product.id">
 						<td><input type="checkbox" id="checkbox" name="checkbox" value="$!product.id"/></td>
-						<td>$!product.name</td>
+						<td style="width:27%;">$!product.name</td>
 						<td>$!product.brandName</td>
 						<td>$!product.cateName</td>
 						<td>$!product.brandstyle</td>
-						<!--<td>$!product.description</td>-->
 						<td>$!product.color</td>
-						<td>$!product.purchasingprice</td>
+						<td>$!product.recommendprice</td>
+                        <td>
+							#if($!product.appImages)
+                				#foreach($appImage in $!product.appImages)
+									<div>
+										<img src="$!static_name$!appImage" class="productImg"/><br/><br/>
+									</div>
+                				#end
+							#end
+						</td>
+						<td>
+							#if($!product.productImgs)
+                				#foreach($productImg in $!product.productImgs)
+									<div>
+										<img src="$!static_name$!productImg" class="productImg"/><br/><br/>
+									</div>
+                				#end
+							#end
+						</td>
                 		<td>
 							<button onclick="showProduct('$!product.id')" type="button">编辑</button>
 							<button onclick="delProduct('$!product.id')" type="button">删除</button>

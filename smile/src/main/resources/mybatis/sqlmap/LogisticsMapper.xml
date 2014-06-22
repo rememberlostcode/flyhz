@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.LogisticsDao">
+	<select id="getLogisticsByOrderId" parameterType="String"
+		resultType="LogisticsModel">
+		select id,company_name companyName,gmt_modify
+		gmtModify,content,logistics_status logisticsStatus,tid
+		from logistics
+		where number = #{number}
+	</select>
+
+	<insert id="insertLogistics" parameterType="LogisticsDto">
+		insert into logistics (number,company_name,content,logistics_status,tid,gmt_create,gmt_modify)
+		values (#{number},#{companyName},#{content},#{logisticsStatus},#{tid},#{gmtCreate},#{gmtModify})
+	</insert>
+
+	<update id="updateLogistics" parameterType="LogisticsDto">
+		update logistics set content = #{content}
+		<if test="companyName != null and companyName != ''">
+			, company_name = #{companyName}
+		</if>
+		<if test="gmtModify != null and gmtModify != ''">
+			, gmt_modify = #{gmtModify}
+		</if>
+		<if test="logisticsStatus != null and logisticsStatus != ''">
+			, logistics_status = #{logisticsStatus}
+		</if>
+		<if test="tid != null">
+			, tid = #{tid}
+		</if>
+		where number = #{number}
+	</update>
+</mapper>

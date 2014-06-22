@@ -319,7 +319,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																		&& !strings.isEmpty()) {
 																	for (int i = 0; i < strings.size(); i++) {
 																		JGoods each = strings.get(i);
-																		mStrings.add(0, each);
+																		mStrings.add(each);
 																	}
 																	if (mStrings.size() > LIMIT) {
 																		for (int i = LIMIT; i < mStrings.size(); i++) {

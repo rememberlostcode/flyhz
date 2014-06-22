@@ -6,6 +6,7 @@ import java.util.List;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.dto.OrderPayDto;
+import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.persistence.entity.OrderModel;
 
 public interface OrderDao extends GenericDao<OrderModel> {
@@ -45,5 +46,18 @@ public interface OrderDao extends GenericDao<OrderModel> {
 	 * @return
 	 */
 	public List<OrderModel> findAllOrders(SolrPage page);
+	
+	/**
+	 * 通过订单号获取订单
+	 * @param number
+	 * @return
+	 */
+	public OrderSimpleDto getOrderByNumber(String number);
+	
+	/**
+	 * 通过订单编号修改状态
+	 * @param orderModel
+	 */
+	public void updateStatusByNumber(OrderModel orderModel);
 
 }

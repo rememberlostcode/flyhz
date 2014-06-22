@@ -62,16 +62,28 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.smile_main);
 
-		TextView cateBtn = displayHeaderRight();
-		cateBtn.setText(R.string.category);
-		cateBtn.setOnClickListener(this);
-
 		headerDescription = displayHeaderDescription();
 		headerDescription.setText(R.string.recommend_goods);
 		displayFooterMain(R.id.mainfooter_one);
 
 		initView();
 		startTask();
+
+		/* 自动登录另起一个线程 */
+		mUIHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+				if (user != null) {
+					MyApplication.getInstance().setCurrentUser(user);
+				}
+				if (user != null && user.getUsername() != null && user.getToken() != null) {
+					Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
+					msg.obj = user;
+					msg.sendToTarget();
+				}
+			}
+		}, 200);
 
 	}
 
@@ -94,9 +106,9 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.header_right: {
-				Intent intent = new Intent(this, CategoryActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResult(intent, CATE_CODE);
+				// Intent intent = new Intent(this, CategoryActivity.class);
+				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				// startActivityForResult(intent, CATE_CODE);
 				break;
 			}
 		}
@@ -145,21 +157,6 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 
-		/* 自动登录另起一个线程 */
-		mUIHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
-				if (user != null) {
-					MyApplication.getInstance().setCurrentUser(user);
-				}
-				if (user != null && user.getUsername() != null && user.getToken() != null) {
-					Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
-					msg.obj = user;
-					msg.sendToTarget();
-				}
-			}
-		}, 200);
 	}
 
 	public void onRefresh() {

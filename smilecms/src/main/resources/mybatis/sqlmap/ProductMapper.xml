@@ -96,15 +96,18 @@
 		       p.imgs,
 		       p.description,
 		       p.purchasingprice,
+		       p.recommendprice,
 		       p.style,
 		       p.color,
 		       p.colorimg,
 		       p.category_id categoryId,
 		       p.brand_id brandId,
 		       p.localprice,
+		       p.foreighprice,
 		       p.brandstyle,
 		       p.cover,
-		       p.cover_small coverSmall
+		       p.cover_small coverSmall,
+		       p.off_shelf offShelf
 		  from product p where p.id=#{id}
     </select>
     <select id="getPagedProducts" resultType="ProductModel">
@@ -115,29 +118,35 @@
 		       p.imgs,
 		       p.description,
 		       p.purchasingprice,
+		       p.recommendprice,
 		       p.style,
 		       p.color,
 		       p.colorimg,
 		       p.category_id categoryId,
 		       p.brand_id brandId,
 		       p.localprice,
+		       p.foreighprice,
 		       p.brandstyle,
 		       p.cover,
-		       p.cover_small coverSmall
-		  from product p order by p.id
+		       p.cover_small coverSmall,
+		       p.off_shelf offShelf
+		  from product p
     </select>
     <select id="getPageProductCmsDtos" resultType="ProductCmsDto">
     	select p.id,
 		       p.name,
 		       p.description,
 		       p.purchasingprice,
+		       p.recommendprice,
 		       p.color,
+		       p.cover,
+		       p.cover_small coverSmall,
 		       c.name cateName,
 		       b.name brandName,
-		       p.brandstyle
+		       p.brandstyle,
+		       p.off_shelf offShelf
 		  from product p,brand b,category c 
 		  where p.brand_id = b.id and p.category_id = c.id 
-		  order by p.id
     </select>
     <select id="getMaxStyle" resultType="Integer">
     	select max(style) style from product
@@ -174,6 +183,18 @@
     	<if test="coverSmall != null">
     		,cover_small
     	</if>
+    	<if test="creator != null">
+    		,creator
+    	</if>
+    	<if test="foreighprice != null">
+    		,foreighprice
+    	</if>
+    	<if test="recommendprice != null">
+    		,recommendprice
+    	</if>
+    	<if test="offShelf != null">
+    		,off_shelf
+    	</if>
     	) values(#{id},#{name},#{brandId},#{categoryId},#{brandstyle},#{gmtCreate},#{gmtModify}
     	<if test="imgs != null">
     		,#{imgs}
@@ -202,14 +223,27 @@
     	<if test="coverSmall != null">
     		,#{coverSmall}
     	</if>
+    	<if test="creator != null">
+    		,#{creator}
+    	</if>
+    	<if test="foreighprice != null">
+    		,#{foreighprice}
+    	</if>
+    	<if test="recommendprice != null">
+    		,#{recommendprice}
+    	</if>
+    	<if test="offShelf != null">
+    		,#{offShelf}
+    	</if>
     	)
     	<selectKey resultType="Integer" keyProperty="id">
 	        SELECT LAST_INSERT_ID();
 	    </selectKey>
     </insert>
     <update id="editProduct" parameterType="ProductModel">
-    	update product set name=#{name},gmt_create=#{gmtCreate},gmt_modify=#{gmtModify},imgs=#{imgs},description=#{description},
-    	purchasingprice=#{purchasingprice},style=#{style},color=#{color},colorimg=#{colorimg},category_id=#{categoryId},
-    	brand_id=#{brandId},localprice=#{localprice},brandstyle=#{brandstyle},cover=#{cover},cover=#{cover} where id=#{id}
+    	update product set name=#{name},category_id=#{categoryId},brand_id=#{brandId},brandstyle=#{brandstyle},
+    	gmt_modify=#{gmtModify},imgs=#{imgs},description=#{description},purchasingprice=#{purchasingprice},
+    	cover_small=#{coverSmall},color=#{color},colorimg=#{colorimg},localprice=#{localprice},cover=#{cover},
+    	foreighprice=#{foreighprice},recommendprice=#{recommendprice},off_shelf=#{offShelf} where id=#{id}
     </update>
 </mapper>

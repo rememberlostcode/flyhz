@@ -4,4 +4,7 @@
     <select id="getBrandBuildDtoList" resultType="BrandBuildDto">
 		select id,name from brand 
     </select>
+    <select id="getBrandNameById" parameterType="Integer" resultType="java.lang.String">
+    	select name from brand where id = #{brandId}
+    </select>
 </mapper>

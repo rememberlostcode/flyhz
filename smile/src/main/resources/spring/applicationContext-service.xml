@@ -16,4 +16,6 @@ http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 	<bean id="cacheRepository" class="com.flyhz.shop.persistence.RCacheRepository"></bean>
 	<bean id="solrData" class="com.flyhz.shop.build.solr.SolrDataImpl"></bean>
 	<bean id="mailRepository" class="com.flyhz.framework.lang.mail.MailRepositoryImpl"></bean>
+	<bean id="taobaoData" class="com.flyhz.shop.persistence.TaobaoDataImpl"></bean>
+	<bean id="buildService" class="com.flyhz.shop.service.impl.BuildServiceImpl"></bean>
 </beans>

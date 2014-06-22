@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.holding.smile"
     android:versionCode="1"
-    android:versionName="1.1" >
+    android:versionName="1.2" >
 
     <uses-sdk android:minSdkVersion="8" />
 
@@ -49,17 +49,17 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.GoodsDetailActivity"
-            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:finishOnTaskLaunch="true" >
         </activity>
         <activity
             android:name="com.holding.smile.activity.OrderInformActivity"
-            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:finishOnTaskLaunch="true" >
         </activity>
         <activity
             android:name="com.holding.smile.activity.CategoryActivity"
-            android:launchMode="singleTask"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
         <activity
@@ -76,7 +76,6 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.IdcardEditActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>
@@ -88,13 +87,11 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.EmailActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>
         <activity
             android:name="com.holding.smile.activity.PhoneActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>
@@ -118,7 +115,6 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.OrderPayActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>
@@ -130,7 +126,6 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.OrderDetailActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>

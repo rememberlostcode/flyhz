@@ -34,8 +34,46 @@
 		}
 	}
 	
+	function checkPrice(type,str){
+		//如果未填写价格，不校验
+		if(str.replace(/^\s*/, '') == ''){
+    		if(type == 'foreighprice'){
+    			$("#foreighprice").val("请填写数字");
+    		}else if(type == 'recommendprice'){
+				$("#recommendprice").val("请填写数字");
+    		}
+			return true;
+		}
+		var message = '';
+		var regex = /^[1-9][0-9]{0,7}$|[1-9][0-9]{0,7}[.]\d{1,2}$/;
+		if(!regex.test(str)){
+    		if(type == 'foreighprice'){
+    			message = '国外价格格式错误!';
+    		}else if(type == 'recommendprice'){
+    			message = '推荐价格格式错误!';
+    		}
+		}
+		//设置提示信息
+		if(message != ''){
+			if(type == 'foreighprice'){
+				$("#foreighpriceMessage").html(message);
+			}else if(type == 'recommendprice'){
+				$("#recommendpriceMessage").html(message);
+			}
+			return false;
+		}
+		//校验信息无误
+		if(type == 'foreighprice'){
+			$("#foreighpriceMessage").html(message);
+		}else if(type == 'recommendprice'){
+			$("#recommendpriceMessage").html(message);
+		}
+		return true;
+	}
+	
 	function checkStr(type,str,len){
 		var message = '';
+		//校验字符串是否为空
 		if(str.replace(/^\s*/, '') == ''){
 			if(type == 'name'){
 				message = '产品名称不能为空!';
@@ -60,6 +98,12 @@
 			}
 			return false;
 		}
+		//校验信息无误
+		if(type == 'name'){
+			$("#nameMessage").html(message);
+		}else if(type == 'brandstyle'){
+			$("#brandstyleMessage").html(message);
+		}
 		return true;
 	}
 	
@@ -67,8 +111,8 @@
 		$('input[id=' + fileId + ']').click();
 		$('input[id=' + fileId + ']').change(function() {
            $('#'+ filetxtId).val($(this).val());
-        })
-	};
+        });
+	}
 	
 	function addImgsUpload(tdId){
 		var imgsLength = $('div[id^=div_imgs]').length + 1;
@@ -94,6 +138,8 @@
 </script>
 <form action="$server_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
     <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
+		<input type="hidden" name="creator" value= "$!u"/>
+    	<input type="hidden" name="dataSrc" value= "manual"/>
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>
                 <td><font color="red">*</font>产品名称:</td>
@@ -133,6 +179,15 @@
 					<font id="brandstyleMessage" color="red"  size="2"></font>
 				</td>
 			</tr>
+            <tr>
+				<td>是否下架</td>
+                <td>
+					<select id="offShelf" name="offShelf" class="addpage">
+						<option value ="n">否</option>
+    					<option value ="y">是</option>
+            		</select>
+				</td>
+			</tr>
 			<tr>
                 <td>产品描述:</td>
 				<td>
@@ -140,15 +195,21 @@
 				</td>
 			</tr>
 			<tr>
-                <td>国内价格:</td>
+                <td>国外价格:</td>
 				<td>
-					<input type="text" id="localprice" name="localprice" value="$!product.localprice" class="addpage"/>
+					<!--<span style="font-weight:bolder;">$</span>-->
+					$<input type="text" id="foreighprice" name="foreighprice" value="请填写数字" class="addpage" onblur="javascript:checkPrice('foreighprice',this.value);" onfocus="if(this.value=='请填写数字'){this.value='';}"/>
+					<font id="foreighpriceMessage" color="red"  size="2"></font>
 				</td>
 			</tr>
 			<tr>
-                <td>代购价格:</td>
+                <td>推荐价格:</td>
 				<td>
-					<input type="text" id="purchasingprice" name="purchasingprice" value="$!product.purchasingprice" class="addpage"/>
+                    <!--<span style="font-weight:bolder;">¥</span>-->
+					¥<input type="text" id="recommendprice" name="recommendprice" value="请填写数字" class="addpage" onblur="javascript:checkPrice('recommendprice',this.value);" onfocus="if(this.value=='请填写数字'){this.value='';}"/>
+					<font id="recommendpriceMessage" color="red"  size="2"></font>
+					<br/>
+                    <font color="red">注意：包含物流费用、税金、清关费等最终的一口价</font>
 				</td>
 			</tr>
 			<tr>
@@ -181,7 +242,11 @@
 			<tr>
                 <td>注意事项:</td>
                 <td>
-                    <font color="red">1、*代表必填项.</font>
+                    <font color="red">
+						1、*代表必填项.<br/>
+						2、国外价格和推荐价格：填写大于1.00且小于99999999.99的数字<br/>&nbsp;
+						&nbsp;，小数点后最多2位
+					</font>
 				</td>
             </tr>
             <tr>

@@ -94,8 +94,9 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			}
 			if (jGoods.getSn() != null) {
 				holder.sn.setText("已售 " + jGoods.getSn() + " 件");
-				holder.sn.setVisibility(ViewGroup.VISIBLE);
+				// holder.sn.setVisibility(ViewGroup.VISIBLE);
 			} else {
+				holder.sn.setText("已售 0 件");
 				// holder.sn.setVisibility(ViewGroup.GONE);
 			}
 			if (jGoods.getP() != null && jGoods.getP().length > 0) {

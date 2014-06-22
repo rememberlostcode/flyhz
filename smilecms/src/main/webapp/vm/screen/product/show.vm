@@ -42,6 +42,43 @@
 		}
 	}
 	
+	function checkPrice(type,str){
+		//如果未填写价格，不校验
+		if(str.replace(/^\s*/, '') == ''){
+    		if(type == 'foreighprice'){
+    			$("#foreighprice").val("请填写数字");
+    		}else if(type == 'recommendprice'){
+				$("#recommendprice").val("请填写数字");
+    		}
+			return true;
+		}
+		var message = '';
+		var regex = /^[1-9][0-9]{0,7}$|[1-9][0-9]{0,7}[.]\d{1,2}$/;
+		if(!regex.test(str)){
+    		if(type == 'foreighprice'){
+    			message = '国外价格格式错误!';
+    		}else if(type == 'recommendprice'){
+    			message = '推荐价格格式错误!';
+    		}
+		}
+		//设置提示信息
+		if(message != ''){
+			if(type == 'foreighprice'){
+				$("#foreighpriceMessage").html(message);
+			}else if(type == 'recommendprice'){
+				$("#recommendpriceMessage").html(message);
+			}
+			return false;
+		}
+		//校验信息无误
+		if(type == 'foreighprice'){
+			$("#foreighpriceMessage").html(message);
+		}else if(type == 'recommendprice'){
+			$("#recommendpriceMessage").html(message);
+		}
+		return true;
+	}
+	
 	function checkStr(type,str,len){
 		var message = '';
 		if(str.replace(/^\s*/, '') == ''){
@@ -67,6 +104,12 @@
 				$("#brandstyleMessage").html(message);
 			}
 			return false;
+		}
+		//校验信息无误
+		if(type == 'name'){
+			$("#nameMessage").html(message);
+		}else if(type == 'brandstyle'){
+			$("#brandstyleMessage").html(message);
 		}
 		return true;
 	}
@@ -120,6 +163,7 @@
 		<input type="hidden" id="id" name="id" value="$!product.id"/>
 		<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.oldColorimg"/>
 		<input type="hidden" id="oldImgs" name="oldImgs" value="$!product.oldImgs"/>
+		<input type="hidden" name="creator" value= "$!u"/>
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>
                 <td><font color="red">*</font>产品名称:</td>
@@ -160,21 +204,36 @@
 				</td>
 			</tr>
 			<tr>
+				<td>是否下架</td>
+                <td>
+					<select id="offShelf" name="offShelf" class="addpage">
+						<option value ="n" #if($!product.offShelf == "n") selected=true #end>否</option>
+    					<option value ="y" #if($!product.offShelf == "y") selected=true #end>是</option>
+            		</select>
+				</td>
+			</tr>
+			<tr>
                 <td>产品描述:</td>
 				<td>
                     <textarea id="description" name="description" class="addpage" rows="5" onKeyDown="if(this.value.length>=512){alert('长度过长，请少于512个字符！');this.value=this.value.substr(0,512);return false;}">$!product.description</textarea>
 				</td>
 			</tr>
 			<tr>
-                <td>国内价格:</td>
+                <td>国外价格:</td>
 				<td>
-					<input type="text" id="localprice" name="localprice" value="$!product.localprice" class="addpage"/>
+					<!--<span style="font-weight:bolder;">$</span>-->
+					$<input type="text" id="foreighprice" name="foreighprice" #if($!product.foreighprice) value="$!product.foreighprice" #else value="请填写数字" #end class="addpage" onblur="javascript:checkPrice('foreighprice',this.value);" onfocus="if(this.value=='请填写数字'){this.value='';}"/>
+					<font id="foreighpriceMessage" color="red"  size="2"></font>
 				</td>
 			</tr>
 			<tr>
-                <td>代购价格:</td>
+                <td>推荐价格:</td>
 				<td>
-					<input type="text" id="purchasingprice" name="purchasingprice" value="$!product.purchasingprice" class="addpage"/>
+                    <!--<span style="font-weight:bolder;">¥</span>-->
+					¥<input type="text" id="recommendprice" name="recommendprice"  #if($!product.recommendprice) value="$!product.recommendprice" #else value="请填写数字" #end class="addpage" onblur="javascript:checkPrice('recommendprice',this.value);" onfocus="if(this.value=='请填写数字'){this.value='';}"/>
+					<font id="recommendpriceMessage" color="red"  size="2"></font>
+					<br/>
+                    <font color="red">注意：包含物流费用、税金、清关费等最终的一口价</font>
 				</td>
 			</tr>
 			<tr>
@@ -187,7 +246,7 @@
                 <td>颜色图片:</td>
 				<td>
 					<div id="showColorImg">
-						<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.colorimg"/>
+						<!--<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.colorimg"/>-->
     					#if($!product.colorimg)
     						<img src="$!static_name$!product.colorimg" class="colorImg"/>
     						<input type="button" onclick="javascript:reChooseImg();" value="重新上传" class="colorImg"/>
@@ -231,7 +290,11 @@
 			<tr>
                 <td>注意事项:</td>
                 <td>
-                    <font color="red">1、*代表必填项.</font>
+                    <font color="red">
+						1、*代表必填项.<br/>
+						2、国外价格和推荐价格：填写大于1.00且小于99999999.99的数字<br/>&nbsp;
+						&nbsp;，小数点后最多2位
+					</font>
 				</td>
             </tr>
             <tr>

@@ -3,6 +3,7 @@ package com.flyhz.shop.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.flyhz.framework.util.RandomString;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.IdentitycardDto;
+import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderDetailDto;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.OrderPayDto;
@@ -32,11 +34,13 @@ import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.dto.VoucherDto;
 import com.flyhz.shop.persistence.dao.ConsigneeDao;
 import com.flyhz.shop.persistence.dao.IdcardDao;
+import com.flyhz.shop.persistence.dao.LogisticsDao;
 import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.persistence.entity.IdcardModel;
+import com.flyhz.shop.persistence.entity.LogisticsModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.OrderService;
 
@@ -57,6 +61,8 @@ public class OrderServiceImpl implements OrderService {
 	private RedisRepository	redisRepository;
 	@Resource
 	private SolrData		solrData;
+	@Resource
+	private LogisticsDao	logisticsDao;
 
 	@Override
 	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds,
@@ -186,6 +192,7 @@ public class OrderServiceImpl implements OrderService {
 				OrderDto orderDto = JSONUtil.getJson2Entity(json, OrderDto.class);
 				if (orderDto != null) {
 					orderDto.setStatus(order.getStatus());// 把订单的状态塞入dto
+					orderDto.setLogisticsDto(order.getLogisticsDto());
 					orderDtoList.add(orderDto);
 				}
 			}
@@ -238,6 +245,26 @@ public class OrderServiceImpl implements OrderService {
 				|| (orderPayDto.getId() == null && StringUtils.isBlank(orderPayDto.getNumber())))
 			return null;
 		return orderDao.getOrderPay(orderPayDto);
+	}
+
+	public OrderSimpleDto getOrderDtoByNumber(String number) {
+		OrderSimpleDto orderDto = orderDao.getOrderByNumber(number);
+		if(orderDto!=null){
+			LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderId(orderDto.getId());
+			if(logisticsModel !=null){
+				LogisticsDto logisticsDto = new LogisticsDto();
+				logisticsDto.setCompanyName(logisticsModel.getCompanyName());
+				logisticsDto.setLogisticsStatus(logisticsModel.getLogisticsStatus());
+				logisticsDto.setTid(logisticsModel.getTid());
+				if(StringUtils.isNotBlank(logisticsModel.getContent())){
+					String[] lls = logisticsModel.getContent().split("@#@");
+					logisticsDto.setTransitStepInfoList(Arrays.asList(lls));
+				}
+				orderDto.setLogisticsDto(logisticsDto);
+			}
+		}
+		
+		return orderDto;
 	}
 
 }

@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,11 +66,17 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
+		if (orderList == null) {
+			orderList = new ArrayList<OrderDto>();
+		}
 		return orderList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
+		if (orderList == null) {
+			return null;
+		}
 		return orderList.get(position);
 	}
 

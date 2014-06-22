@@ -114,6 +114,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		listView.setAdapter(cartAdapter);
 	}
 
+	@Override
 	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getCartItemList();
 		Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
@@ -157,8 +158,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 			case R.id.header_right: {
 				String tag = editBtn.getTag().toString();
 				if (tag != null && tag.equals("edit")) {
-					editBtn.setText(R.string.cancel);
-					editBtn.setTag("cancel");
+					editBtn.setText(R.string.finish);
+					editBtn.setTag("finish");
 					cartAdapter.setEditFlag(true);
 				} else {
 					editBtn.setText(R.string.edit);

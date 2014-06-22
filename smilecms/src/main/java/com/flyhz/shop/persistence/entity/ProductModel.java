@@ -20,16 +20,22 @@ public class ProductModel implements Serializable {
 	private Date				gmtCreate;
 	private Date				gmtModify;
 	private String				imgs;
-	private BigDecimal			localprice;
+	private BigDecimal			localprice;				// 国内价格
 	private String				name;
-	private BigDecimal			purchasingprice;
+	private BigDecimal			purchasingprice;			// 现在价格
+	private BigDecimal			foreighprice;				// 国外价格
+	private BigDecimal			recommendprice;			// 推荐价格
 	private String				style;
 	private String				color;
 	private String				colorimg;
 	private String				cover;
 	private String				coverSmall;
+	private String				creator;
+	private String				dataSrc;					// 数据来源：manual--手动；spider--爬虫
+	private String				offShelf;					// 是否下架：y--是；n--否
 
 	public ProductModel() {
+
 	}
 
 	public Integer getId() {
@@ -158,5 +164,45 @@ public class ProductModel implements Serializable {
 
 	public void setCoverSmall(String coverSmall) {
 		this.coverSmall = coverSmall;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	public String getDataSrc() {
+		return dataSrc;
+	}
+
+	public void setDataSrc(String dataSrc) {
+		this.dataSrc = dataSrc;
+	}
+
+	public String getOffShelf() {
+		return offShelf;
+	}
+
+	public void setOffShelf(String offShelf) {
+		this.offShelf = offShelf;
+	}
+
+	public BigDecimal getForeighprice() {
+		return foreighprice;
+	}
+
+	public void setForeighprice(BigDecimal foreighprice) {
+		this.foreighprice = foreighprice;
+	}
+
+	public BigDecimal getRecommendprice() {
+		return recommendprice;
+	}
+
+	public void setRecommendprice(BigDecimal recommendprice) {
+		this.recommendprice = recommendprice;
 	}
 }

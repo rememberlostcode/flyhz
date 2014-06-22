@@ -28,6 +28,8 @@ public class OrderDto {
 	private String					time;
 
 	private String					status;
+	
+	private LogisticsDto logisticsDto;
 
 	public Integer getId() {
 		return id;
@@ -107,6 +109,14 @@ public class OrderDto {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public LogisticsDto getLogisticsDto() {
+		return logisticsDto;
+	}
+
+	public void setLogisticsDto(LogisticsDto logisticsDto) {
+		this.logisticsDto = logisticsDto;
 	}
 
 }

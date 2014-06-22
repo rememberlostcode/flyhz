@@ -3,6 +3,7 @@ package com.flyhz.framework.lang;
 import java.util.Date;
 import java.util.List;
 
+import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductBuildDto;
 
@@ -15,7 +16,7 @@ import com.flyhz.shop.dto.ProductBuildDto;
 public interface SolrData {
 
 	/**
-	 * 重新建立订单索引
+	 * 重新建立订单索引(用的dataimport方式)
 	 */
 	public void reBuildOrder();
 
@@ -58,9 +59,10 @@ public interface SolrData {
 	 * @param orderId
 	 * @param status
 	 * @param gmtModify
+	 * @param logisticsDto
 	 */
 	public void submitOrder(Integer userId, Integer orderId, String status,
-			Date gmtModify);
+			Date gmtModify,LogisticsDto logisticsDto);
 
 	/**
 	 * 查询指定用户的订单
@@ -73,4 +75,15 @@ public interface SolrData {
 	 */
 	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId,
 			String status);
+	
+	/**
+	 * 清空商品索引
+	 */
+	public void cleanProduct();
+	
+	/**
+	 * 获取美元汇率
+	 * @return
+	 */
+	public double getDollarExchangeRate();
 }

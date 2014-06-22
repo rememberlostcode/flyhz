@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -25,20 +24,19 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.flyhz.avengers.domains.abercrombie.AbercrombieEncodeUtil;
 import com.flyhz.avengers.framework.Event;
 import com.flyhz.avengers.framework.Fetch;
-import com.flyhz.avengers.framework.config.XConfiguration;
 
 public class URLFetchEvent implements Event {
-	private static final Logger	LOG		= LoggerFactory.getLogger(URLFetchEvent.class);
-	private static final String	ENCODE	= "UTF-8";
+	private static final Logger	LOG	= LoggerFactory.getLogger(URLFetchEvent.class);
 
 	@Override
 	public boolean call(Map<String, Object> context) {
 		LOG.info("urlFetchEvent begin..............");
 		// 获得参数URL并建立请求连接，返回response数据
 		String fetchUrl = (String) context.get(Fetch.FETCH_URL);
-		String encode = getEncode(context);
+		String encode = AbercrombieEncodeUtil.getFetchUrlEncode(context);
 		URL url = null;
 		HttpURLConnection connection = null;
 		try {
@@ -60,8 +58,6 @@ public class URLFetchEvent implements Event {
 			while ((line = in.readLine()) != null) {
 				sb.append(line);
 			}
-			// Document doc = Jsoup.parse(sb.toString());
-			// LOG.info(doc.html());
 			LOG.info(sb.toString());
 			// 初始化HBase av_page表
 			LOG.info("init hbase begin..............");
@@ -111,28 +107,5 @@ public class URLFetchEvent implements Event {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	private String getEncode(Map<String, Object> context) {
-		if (context != null && !context.isEmpty()) {
-			String fetchUrl = (String) context.get(Fetch.FETCH_URL);
-			Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
-			// 判断参数URL属于哪个domain
-			if (domains != null && !domains.isEmpty()) {
-				Set<String> domainRoots = domains.keySet();
-				for (String domainRoot : domainRoots) {
-					if (fetchUrl.indexOf(domainRoot) > -1) {
-						// 获取匹配domain的fetchEvents
-						Map<String, Object> domain = (Map<String, Object>) domains.get(domainRoot);
-						if (domain != null && domain.get(XConfiguration.ENCODING) != null) {
-							return (String) domain.get(XConfiguration.ENCODING);
-						}
-						break;
-					}
-				}
-			}
-		}
-		return ENCODE;
 	}
 }

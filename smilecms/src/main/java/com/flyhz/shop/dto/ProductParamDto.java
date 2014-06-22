@@ -17,10 +17,15 @@ public class ProductParamDto {
 	private String				brandstyle;
 	private Integer				categoryId;
 	private String				description;
+	private String				creator;
+	private String				dataSrc;
+	private String				offShelf;
 	private List<MultipartFile>	imgs;
-	private BigDecimal			localprice;
+	private BigDecimal			localprice;		// 国内价格
 	private String				name;
-	private BigDecimal			purchasingprice;
+	private BigDecimal			purchasingprice;	// 现在价格
+	private BigDecimal			foreighprice;		// 国外价格
+	private BigDecimal			recommendprice;	// 推荐价格
 	private String				color;
 	private MultipartFile		colorimg;
 	private String				oldColorimg;		// 旧颜色图片地址
@@ -137,5 +142,45 @@ public class ProductParamDto {
 
 	public void setProductSrcImgs(List<String> productSrcImgs) {
 		this.productSrcImgs = productSrcImgs;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	public String getDataSrc() {
+		return dataSrc;
+	}
+
+	public void setDataSrc(String dataSrc) {
+		this.dataSrc = dataSrc;
+	}
+
+	public String getOffShelf() {
+		return offShelf;
+	}
+
+	public void setOffShelf(String offShelf) {
+		this.offShelf = offShelf;
+	}
+
+	public BigDecimal getForeighprice() {
+		return foreighprice;
+	}
+
+	public void setForeighprice(BigDecimal foreighprice) {
+		this.foreighprice = foreighprice;
+	}
+
+	public BigDecimal getRecommendprice() {
+		return recommendprice;
+	}
+
+	public void setRecommendprice(BigDecimal recommendprice) {
+		this.recommendprice = recommendprice;
 	}
 }

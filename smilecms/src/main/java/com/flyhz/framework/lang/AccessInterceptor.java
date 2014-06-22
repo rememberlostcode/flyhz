@@ -23,7 +23,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter implements Init
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		indexPage = "/login";
+		indexPage = "/smilecms/index";
 	}
 
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,

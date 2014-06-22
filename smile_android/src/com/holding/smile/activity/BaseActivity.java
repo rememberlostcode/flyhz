@@ -1,12 +1,9 @@
 
 package com.holding.smile.activity;
 
-import java.util.LinkedList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -66,8 +63,6 @@ public class BaseActivity extends Activity {
 	protected int			reqCode				= 0;
 	protected String		filepath;
 	protected ProgressBar	progressBar;
-
-	private static LinkedList<LoadTask>	taskQueues			= new LinkedList<LoadTask>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -280,10 +275,7 @@ public class BaseActivity extends Activity {
 	 */
 	protected void startTask() {
 		progressBar.setVisibility(View.VISIBLE);
-		// LoadTask lt = new LoadTask();
-		// lt.execute();
 		MyApplication.getThreadPool().submit(new Runnable() {
-
 			@Override
 			public void run() {
 				loadData();
@@ -294,29 +286,7 @@ public class BaseActivity extends Activity {
 	/**
 	 * LoadTask调用的默认方法
 	 */
-	public void loadData() {
-	}
-
-	/**
-	 * 异步执行任务，比如载入数据；使用时需要在activity中覆盖loadData方法，在loadData方法中编写获取数据代码
-	 * 
-	 * @author zhangb 2014年2月17日 下午2:19:10
-	 * 
-	 */
-	protected class LoadTask extends AsyncTask<String, Integer, String> {
-		@Override
-		protected String doInBackground(String... params) {
-			loadData();
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if (!this.isCancelled()) {// 执行完后停止任务
-				this.cancel(true);
-			}
-		}
+	public synchronized void loadData() {
 	}
 
 	public View displayFooterMain(int idNow) {
@@ -436,6 +406,18 @@ public class BaseActivity extends Activity {
 		View view = (View) findViewById(id);
 		setVisible(id);
 		return view;
+	}
+
+	/**
+	 * 等待一秒后隐藏加载框
+	 */
+	public void waitCloseProgressBar() {
+		try {
+			Thread.sleep(1000);// 等待一秒
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		progressBar.setVisibility(View.GONE);
 	}
 
 }

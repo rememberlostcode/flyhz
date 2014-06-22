@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.login);
+		ImageView backBtn = displayHeaderBack();
+		backBtn.setOnClickListener(this);
 		loginViewInit();
 
 		try {
@@ -102,6 +105,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+			case R.id.btn_back: {
+				finish();
+				break;
+			}
 			case R.id.self_login: {
 				String username = userAccount.getText().toString();// 获取用户输入的账号
 				String password = userPwd.getText().toString();// 获取用户输入的密码

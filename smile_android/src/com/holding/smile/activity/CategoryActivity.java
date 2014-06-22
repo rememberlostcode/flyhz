@@ -119,7 +119,6 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 
 									@Override
 									public void handleMessage(Message msg) {
-										progressBar.setVisibility(View.GONE);
 										switch (msg.what) {
 											case WHAT_DID_LOAD_DATA: {
 												if (msg.obj != null) {
@@ -136,7 +135,9 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 												break;
 											}
 										}
+										waitCloseProgressBar();
 									}
+
 								};
 
 }

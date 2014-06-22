@@ -52,8 +52,8 @@
                     android:id="@+id/lp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@drawable/dahong"
-                    android:textSize="16sp" />
+                    android:textColor="@drawable/qianhuise"
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/sn"
@@ -63,8 +63,7 @@
                     android:layout_marginRight="20dp"
                     android:gravity="right|center_vertical"
                     android:textColor="@drawable/qianhuise"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
+                    android:textSize="16sp"/>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

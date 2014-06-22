@@ -144,16 +144,13 @@ public class DataService {
 	 * 搜索物品初始化
 	 * 
 	 * @param keywords
-	 * 关键词
-	 * @param mLocation
-	 * 经纬度
+	 *            关键词
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListInit(String keywords, String seqorderType,
-			Integer seqorderValue) {
+	public RtnValueDto getJGoodsSearchListInit(String keywords) {
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
-			obj = searchGoods(keywords, null, seqorderType, seqorderValue);
+			obj = searchGoods(keywords, null, null);
 		}
 		return obj;
 	}
@@ -162,22 +159,15 @@ public class DataService {
 	 * 搜索物品刷新
 	 * 
 	 * @param keywords
-	 * 关键词
-	 * @param jGoodsFirst
-	 * 第一个物品
-	 * @param mLocation
-	 * 经纬度
+	 *            关键词
+	 * @param seqorderType
+	 *            排序方式
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListRefresh(String keywords, JGoods jGoodsFirst,
-			String seqorderType, Integer seqorderValue) {
+	public RtnValueDto getJGoodsSearchListRefresh(String keywords,String seqorderType) {
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
-			if (jGoodsFirst != null && jGoodsFirst.getSt() != null) {
-				obj = searchGoods(keywords, jGoodsFirst.getSt(), seqorderType, seqorderValue);
-			} else {
-				obj = searchGoods(keywords, null, seqorderType, seqorderValue);
-			}
+			obj = searchGoods(keywords, seqorderType, null);
 		}
 		return obj;
 	}
@@ -186,22 +176,17 @@ public class DataService {
 	 * 搜索物品更多
 	 * 
 	 * @param keywords
-	 * 关键词
+	 *            关键词
 	 * @param jGoodsLast
-	 * 最后一个物品
+	 *            最后一个物品
 	 * @param mLocation
-	 * 经纬度
+	 *            经纬度
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListMore(String keywords, JGoods jGoodsLast,
-			String seqorderType, Integer seqorderValue) {
+	public RtnValueDto getJGoodsSearchListMore(String keywords, String seqorderType, Integer seqorderValue) {
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
-			if (jGoodsLast != null && jGoodsLast.getSt() != null) {
-				obj = searchGoods(keywords, jGoodsLast.getSt(), seqorderType, seqorderValue);
-			} else {
-				obj = searchGoods(keywords, null, seqorderType, seqorderValue);
-			}
+			obj = searchGoods(keywords, seqorderType, seqorderValue);
 		}
 		return obj;
 	}
@@ -352,21 +337,18 @@ public class DataService {
 	 * 搜索物品
 	 * 
 	 * @param keywords
-	 * 关键词
-	 * @param seqorder
-	 * 序号
+	 *            关键词
 	 * @param seqorderType
 	 * @param seqorderValue
 	 * @return
 	 */
-	public RtnValueDto searchGoods(String keywords, Integer seqorder, String seqorderType,
-			Integer seqorderValue) {
+	public RtnValueDto searchGoods(String keywords, String seqorderType, Integer seqorderValue) {
 		RtnValueDto rvd = new RtnValueDto();
 		List<JGoods> results = new ArrayList<JGoods>();
 		String url = prefix_url;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (StrUtils.isNotEmpty(keywords)) {
-			param.put("key", keywords.trim());
+			param.put("keywords", keywords.trim());
 		}
 		if (StrUtils.isNotEmpty(seqorderType)) {
 			param.put("seqorderType", seqorderType.trim());

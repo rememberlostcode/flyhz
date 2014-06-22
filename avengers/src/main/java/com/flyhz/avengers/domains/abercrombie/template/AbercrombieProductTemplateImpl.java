@@ -1,21 +1,17 @@
 
 package com.flyhz.avengers.domains.abercrombie.template;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.imageio.ImageIO;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -34,23 +30,31 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.flyhz.avengers.domains.abercrombie.AbercrombieEncodeUtil;
+import com.flyhz.avengers.domains.abercrombie.AbercrombieImgUtil;
 import com.flyhz.avengers.framework.Analyze;
 import com.flyhz.avengers.framework.Template;
-import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.util.Constants;
+import com.flyhz.avengers.framework.util.WebClientUtil;
 
 public class AbercrombieProductTemplateImpl implements Template {
-	private static final Logger	LOG		= LoggerFactory.getLogger(AbercrombieProductTemplateImpl.class);
-	private static final String	ENCODE	= "UTF-8";
+	private static final Logger	LOG	= LoggerFactory.getLogger(AbercrombieProductTemplateImpl.class);
 
 	@Override
 	public void apply(Map<String, Object> context) {
 		try {
 			LOG.info("abercrombie template begin..............");
 			String analyzeUrl = (String) context.get(Analyze.ANALYZE_URL);
-			String encode = getEncode(context);
+			String encode = AbercrombieEncodeUtil.getAnalyzeUrlEncode(context);
+			String brand = "abercrombie";// 产品品牌
+			StringBuffer imageBuffer = new StringBuffer();
+			String prefix = imageBuffer.append(Constants.IMAGE_PREFIX_PATH).append(File.separator)
+										.append(brand).toString();// 产品图片保存路径前缀
 			LOG.info("init hbase begin..............");
 			Configuration hconf = HBaseConfiguration.create();
 			hconf.set("hbase.zookeeper.quorum", "m1,s1,s2");
@@ -126,93 +130,90 @@ public class AbercrombieProductTemplateImpl implements Template {
 					table.put(put);
 				}
 				// 解析HTML获得所需要的产品数据
+				htmlDoc = WebClientUtil.getContent(analyzeUrl, false, true);
 				Document doc = Jsoup.parse(htmlDoc);
-				String brand = "abercrombie";// 品牌
 				String productId = doc.select("input[name=productId]").first().val();// 产品ID
-				String collection = doc.select("input[name=collection]").first().val();// 款号
-				String cseq = doc.select("input[name=cseq]").first().val();// 不同颜色seq
+				String collection = doc.select("input[name=collection]").first().val();// 款号ID
+				String cseq = doc.select("input[name=cseq]").first().val();// 颜色seq
 				// 定义添加产品的put
 				tableProduct = new HTable(hconf, "av_product");
 				Put putProduct = new Put(Bytes.toBytes(productId + cseq));
 				// 获取产品名称
-				String name = doc.select("input[name=name]").first().val();// 产品
+				String name = doc.select("input[name=name]").first().val();
 				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("name"), Bytes.toBytes(name));
-				System.out.println(name);
 				// 获取产品描述
 				String description = doc.select(".copy").first().text();
 				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("description"),
 						Bytes.toBytes(description));
-				System.out.println(description);
 				// 获取品牌名
 				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("brand"), Bytes.toBytes(brand));
-				System.out.println(brand);
 				// 获取分类名称
-				String category = doc.select("a[data-categoryId=13051]").first().text();
+				String category = doc.select("#breadcrumb a").last().text();
 				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("category"),
 						Bytes.toBytes(category));
-				System.out.println(category);
 				// 获取款号
-				// Element element =
-				// doc.select("li.selected").first().children().first();
-				// String style = doc.select(".collection").first().text() +
-				// element.attr("data-seq");
 				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("style"),
 						Bytes.toBytes(collection + cseq));
-				System.out.println(collection + cseq);
 				// 获取原始价格
 				String originalPrice = doc.select(".list-price").first().text();
 				originalPrice = originalPrice.substring(7);
 				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("original_price"),
 						Bytes.toBytes(originalPrice));
-				System.out.println(originalPrice);
 				// 获取当前价格
-				// String presentPrice =
-				// doc.select(".offer-price").first().text();
-				// presentPrice = presentPrice.substring(3);
 				String presentPrice = doc.select("input[name=price]").first().val();
 				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("present_price"),
 						Bytes.toBytes(presentPrice));
-				System.out.println(presentPrice);
 				// 获取颜色
-				// String color =
-				// doc.select("li.selected a span").first().text();
 				String color = doc.select("input[name=color]").first().val();
 				putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("color"), Bytes.toBytes(color));
-				System.out.println(color);
-				try {
-					// 获取颜色图片
-					StringBuffer colorImgBuffer = new StringBuffer();
-					colorImgBuffer.append(File.separator).append(brand).append(File.separator)
-									.append("color").append(File.separator).append(color)
-									.append(".jpg");
-					File file = new File(colorImgBuffer.toString());
-					// 颜色文件不存在，切割处理颜色文件
-					if (!file.exists()) {
-						String colorImgUrl = doc.select("a.swatch-link").first().attr("style");
+				// 获取颜色图片
+				imageBuffer.setLength(0);
+				imageBuffer.append(prefix).append(File.separator).append("color")
+							.append(File.separator).append(color).append(".jpg");
+				File colorFile = new File(imageBuffer.toString());
+				// 颜色文件不存在，切割处理颜色文件
+				if (!colorFile.exists()) {
+					Elements elements = doc.select("a.swatch-link");
+					if (elements != null) {
+						// 获得混合颜色图片URL
+						imageBuffer.setLength(0);
+						String style = elements.first().attr("style");
+						style = style.substring(style.indexOf("/"), style.lastIndexOf("'"));
+						String colorImgUrl = imageBuffer.append("http:").append(style).toString();
+						// 定义颜色前缀
+						imageBuffer.setLength(0);
+						String colorPrefix = imageBuffer.append(prefix).append(File.separator)
+														.append("color").toString();
+						// 获得颜色名称列表
+						Elements colorElements = doc.select(".product-info .swatches .swatch-link span");
+						AbercrombieImgUtil.cutColorImg(colorImgUrl, colorPrefix,
+								AbercrombieImgUtil.getImgColorNames(colorElements));
 					}
-					// 颜色图片转换为bytes数组插入product
-					FileInputStream fis = new FileInputStream(file);
-					ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
-					byte[] b = new byte[1000];
-					int n;
-					while ((n = fis.read(b)) != -1) {
-						bos.write(b, 0, n);
-					}
-					fis.close();
-					bos.close();
-					byte[] colorImgBytes = bos.toByteArray();
-					putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("color_img"), colorImgBytes);
-					// 获取产品图片
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+				}
+				// 颜色图片转换为bytes数组插入product
+				if (colorFile.exists()) {
+					putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("color_img"),
+							AbercrombieImgUtil.getBytesFromFile(colorFile));
 				}
 				// 获取产品图片
+				Elements productImgs = doc.select("ul.thumbnails > li");
+				if (productImgs != null && !productImgs.isEmpty()) {
+					List<byte[]> pimgBytes = new ArrayList<byte[]>();
+					for (Element element : productImgs) {
+						imageBuffer.setLength(0);
+						String productImgUrl = imageBuffer.append("http:")
+															.append(element.attr("data-image-name"))
+															.toString();
+						productImgUrl = productImgUrl.replace("productThumbnail", "productMain");
+						pimgBytes.add(AbercrombieImgUtil.getBytesFromWebUrl(productImgUrl));
+					}
+					putProduct.add(Bytes.toBytes("info"), Bytes.toBytes("product_img"),
+							Bytes.toBytes((ByteBuffer) pimgBytes));
+				}
 				// 获取产品访问URL
-				System.out.println(analyzeUrl);
+				putProduct.add(Bytes.toBytes("preference"), Bytes.toBytes("url"),
+						Bytes.toBytes(analyzeUrl));
 				// 获取版本号
-				// 产品数据插入HBase product表
 				LOG.info("abercrombie template end..............");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -230,44 +231,6 @@ public class AbercrombieProductTemplateImpl implements Template {
 					hConnection.close();
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private String getEncode(Map<String, Object> context) {
-		if (context != null && !context.isEmpty()) {
-			String analyzeUrl = (String) context.get(Analyze.ANALYZE_URL);
-			Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
-			// 判断参数URL属于哪个domain
-			if (domains != null && !domains.isEmpty()) {
-				Set<String> domainRoots = domains.keySet();
-				for (String domainRoot : domainRoots) {
-					if (analyzeUrl.indexOf(domainRoot) > -1) {
-						// 获取匹配domain的fetchEvents
-						Map<String, Object> domain = (Map<String, Object>) domains.get(domainRoot);
-						if (domain != null && domain.get(XConfiguration.ENCODING) != null) {
-							return (String) domain.get(XConfiguration.ENCODING);
-						}
-						break;
-					}
-				}
-			}
-		}
-		return ENCODE;
-	}
-
-	public static void main(String[] args) {
-		try {
-			File file = new File("D:\\myfile\\smile\\anf_74549_sw56x32.jpg");
-			BufferedImage image = ImageIO.read(file);
-			// int srcWidth = image.getWidth();
-			// int srcHeight = image.getHeight();
-			System.out.println(image.getMinX());
-			System.out.println(image.getMinY());
-			System.out.println(image.getWidth());
-			System.out.println(image.getHeight());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
