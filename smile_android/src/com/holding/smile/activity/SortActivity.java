@@ -120,7 +120,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getJGoodsSortList(sortUrl);
 

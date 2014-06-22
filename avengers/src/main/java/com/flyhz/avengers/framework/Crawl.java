@@ -24,7 +24,7 @@ public class Crawl extends AvengersExecutor {
 
 	private final ExecutorService	es			= Executors.newFixedThreadPool(10);
 
-	private static final String		CRAWL_URL	= "crawl.url";
+	public static final String		CRAWL_URL	= "crawl.url";
 
 	public static void main(String[] args) {
 		try {

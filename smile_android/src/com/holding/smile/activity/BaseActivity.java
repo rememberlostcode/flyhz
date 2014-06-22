@@ -1,6 +1,8 @@
 
 package com.holding.smile.activity;
 
+import java.util.LinkedList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -64,6 +66,8 @@ public class BaseActivity extends Activity {
 	protected int			reqCode				= 0;
 	protected String		filepath;
 	protected ProgressBar	progressBar;
+
+	private static LinkedList<LoadTask>	taskQueues			= new LinkedList<LoadTask>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +193,8 @@ public class BaseActivity extends Activity {
 		 * 1. 如果不分组，就自定义为Menu.NONE 2. id:　这个很重要：onOptionsItemSelected(MenuItem
 		 * item) 根据id来判断那个菜单被选中 3. 定义菜单的排列 3. 设置Title
 		 */
-		menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, R.string.action_settings);
+		// menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE,
+		// R.string.action_settings);
 		// menu.add(Menu.NONE, MENU_CHANGEACCOUNT, Menu.NONE,
 		// R.string.action_changeaccount);
 		// menu.add(Menu.NONE, MENU_QUIT, Menu.NONE, R.string.action_quit);
@@ -275,8 +280,15 @@ public class BaseActivity extends Activity {
 	 */
 	protected void startTask() {
 		progressBar.setVisibility(View.VISIBLE);
-		LoadTask lt = new LoadTask();
-		lt.execute();
+		// LoadTask lt = new LoadTask();
+		// lt.execute();
+		MyApplication.getThreadPool().submit(new Runnable() {
+
+			@Override
+			public void run() {
+				loadData();
+			}
+		});
 	}
 
 	/**

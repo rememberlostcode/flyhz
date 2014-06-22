@@ -118,7 +118,6 @@ public final class R {
         public static final int xiguahong=0x7f02003a;
     }
     public static final class id {
-        public static final int action_settings=0x7f0900b9;
         public static final int add_qty=0x7f090074;
         public static final int addcart=0x7f090023;
         public static final int all_checked=0x7f090010;

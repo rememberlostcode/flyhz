@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +65,8 @@ public class BrandAdapter extends BaseAdapter {
 
 	private static class ViewHolder {
 		private TextView		brand;
-		private TextView		moreText;
-		private RelativeLayout	relativeLayout;
+		// private TextView moreText;
+		// private RelativeLayout relativeLayout;
 		private ImageView		p;
 	}
 
@@ -85,8 +84,10 @@ public class BrandAdapter extends BaseAdapter {
 			mInflater = LayoutInflater.from(context);
 			convertView = mInflater.inflate(R.layout.index_item, null);
 			holder.brand = (TextView) convertView.findViewById(R.id.list_brand);
-			holder.moreText = (TextView) convertView.findViewById(R.id.list_more);
-			holder.relativeLayout = (RelativeLayout) convertView.findViewById(R.id.brand_head);
+			// holder.moreText = (TextView)
+			// convertView.findViewById(R.id.list_more);
+			// holder.relativeLayout = (RelativeLayout)
+			// convertView.findViewById(R.id.brand_head);
 			holder.p = (ImageView) convertView.findViewById(R.id.branc_pic);
 			convertView.setTag(holder);
 		} else {

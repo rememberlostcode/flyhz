@@ -128,7 +128,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		String username = userAccount.getText().toString();// 获取用户输入的账号
 		String password = userPwd.getText().toString();// 获取用户输入的密码
 		password = MD5.getMD5(password);

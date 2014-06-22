@@ -29,10 +29,10 @@ import com.holding.smile.entity.Idcard;
  */
 public class IdcardManagerActivity extends BaseActivity implements OnClickListener {
 
-	private Button				idcardsAdd;
-	private List<Idcard>		list;
-	private MyIdcardAdapter		adapter;
-	private ListView			listView;
+	private Button			idcardsAdd;
+	private List<Idcard>	list;
+	private MyIdcardAdapter	adapter;
+	private ListView		listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		RtnValueDto idcards = MyApplication.getInstance().getDataService().getIdcardsList();
 		if (idcards != null) {
 			Message msg = mUIHandler.obtainMessage(1);
@@ -105,8 +105,7 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 															break;
 														}
 
-														adapter = new MyIdcardAdapter(context,
-																list);
+														adapter = new MyIdcardAdapter(context, list);
 														listView.setAdapter(adapter);
 														break;
 													}

@@ -21,32 +21,27 @@ package com.flyhz.avengers.framework;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -58,7 +53,6 @@ import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -85,8 +79,6 @@ import org.apache.hadoop.yarn.api.records.ContainerState;
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.LocalResource;
-import org.apache.hadoop.yarn.api.records.LocalResourceType;
-import org.apache.hadoop.yarn.api.records.LocalResourceVisibility;
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
@@ -171,13 +163,13 @@ import com.google.common.annotations.VisibleForTesting;
 @InterfaceStability.Unstable
 public class AvengersAppMaster {
 
-	private static final Log		LOG							= LogFactory.getLog(AvengersAppMaster.class);
+	private static final Log		LOG						= LogFactory.getLog(AvengersAppMaster.class);
 
 	// XConfiguration
 	private Configuration			conf;
 
 	// hbase
-	private final Configuration		hbaseConf					= HBaseConfiguration.create();
+	private final Configuration		hbaseConf				= HBaseConfiguration.create();
 
 	// Handle to communicate with the Resource Manager
 	@SuppressWarnings("rawtypes")
@@ -193,48 +185,37 @@ public class AvengersAppMaster {
 
 	// For status update for clients - yet to be implemented
 	// Hostname of the container
-	private String					appMasterHostname			= "";
+	private String					appMasterHostname		= "";
 	// Port on which the app master listens for status updates from clients
-	private int						appMasterRpcPort			= -1;
+	private int						appMasterRpcPort		= -1;
 	// Tracking url to which app master publishes info for clients to monitor
-	private String					appMasterTrackingUrl		= "";
+	private String					appMasterTrackingUrl	= "";
 
 	// App Master configuration
 	// No. of containers to run shell command on
-	private int						numTotalContainers			= 1;
+	private int						numTotalContainers		= 1;
 	// Memory to request for the container on which the shell command will run
-	private int						containerMemory				= 10;
+	private int						containerMemory			= 10;
 	// Priority of the request
 	private int						requestPriority;
 
 	// Counter for completed containers ( complete denotes successful or failed
 	// )
-	private AtomicInteger			numCompletedContainers		= new AtomicInteger();
+	private AtomicInteger			numCompletedContainers	= new AtomicInteger();
 	// Allocated container count so that we know how many containers has the RM
 	// allocated to us
-	private AtomicInteger			numAllocatedContainers		= new AtomicInteger();
+	private AtomicInteger			numAllocatedContainers	= new AtomicInteger();
 	// Count of failed containers
-	private AtomicInteger			numFailedContainers			= new AtomicInteger();
+	private AtomicInteger			numFailedContainers		= new AtomicInteger();
 	// Count of containers already requested from the RM
 	// Needed as once requested, we should not request for containers again.
 	// Only request for more if the original requirement changes.
-	private AtomicInteger			numRequestedContainers		= new AtomicInteger();
+	private AtomicInteger			numRequestedContainers	= new AtomicInteger();
 
 	// Args to be passed to the shell command
-	private String					shellArgs					= "";
+	private String					shellArgs				= "";
 	// Env variables to be setup for the shell command
-	private Map<String, String>		shellEnv					= new HashMap<String, String>();
-
-	// Location of shell script ( obtained from info set in env )
-	// Shell script path in fs
-	private String					shellScriptPath				= "";
-	// Timestamp needed for creating a local resource
-	private long					shellScriptPathTimestamp	= 0;
-	// File length needed for local resource
-	private long					shellScriptPathLen			= 0;
-
-	// Hardcoded path to shell script in launch container's local env
-	private final String			ExecShellStringPath			= "ExecShellScript.sh";
+	private Map<String, String>		shellEnv				= new HashMap<String, String>();
 
 	private volatile boolean		done;
 	private volatile boolean		success;
@@ -242,11 +223,14 @@ public class AvengersAppMaster {
 	private ByteBuffer				allTokens;
 
 	// Launch threads
-	private List<Thread>			launchThreads				= new ArrayList<Thread>();
+	private List<Thread>			launchThreads			= new ArrayList<Thread>();
 
-	private Vector<String>			cmds						= new Vector<String>();
+	private Vector<String>			cmds					= new Vector<String>();
 
 	private long					version;
+
+	// 判断是否超过周期的root集合
+	private Set<String>				domainRootForCrawlSet	= new HashSet<String>();
 
 	public AvengersAppMaster() {
 		// Set up the configuration
@@ -285,6 +269,7 @@ public class AvengersAppMaster {
 	/**
 	 * Dump out contents of $CWD and the environment to stdout for debugging
 	 */
+	@SuppressWarnings("unused")
 	private void dumpOutDebugInfo() {
 
 		LOG.info("Dump debug output");
@@ -331,26 +316,12 @@ public class AvengersAppMaster {
 			sb.append(arg).append(" ");
 		}
 		LOG.info(sb.toString());
-		Options opts = new Options();
-		opts.addOption("cmd", true, "all,crawl,fetch,out");
-		CommandLine cliParser = new GnuParser().parse(opts, args);
-
-		if (args.length == 0) {
-			printUsage(opts);
-			throw new IllegalArgumentException(
-					"No args specified for application master to initialize");
-		}
 
 		Map<String, String> envs = System.getenv();
 
 		if (!envs.containsKey(Environment.CONTAINER_ID.name())) {
-			if (cliParser.hasOption("app_attempt_id")) {
-				String appIdStr = cliParser.getOptionValue("app_attempt_id", "");
-				appAttemptID = ConverterUtils.toApplicationAttemptId(appIdStr);
-			} else {
-				throw new IllegalArgumentException(
-						"Application Attempt Key not set in the environment");
-			}
+
+			throw new IllegalArgumentException("Application Attempt Key not set in the environment");
 		} else {
 			ContainerId containerId = ConverterUtils.toContainerId(envs.get(Environment.CONTAINER_ID.name()));
 			appAttemptID = containerId.getApplicationAttemptId();
@@ -376,14 +347,22 @@ public class AvengersAppMaster {
 				+ appAttemptID.getAttemptId());
 
 		initHbase();
+		initCrawl();
 
-		if ("crawl".equals(cliParser.getOptionValue("cmd"))) {
-			LOG.info("App run crawl");
-			Map<String, Object> context = XConfiguration.getAvengersContext();
-			@SuppressWarnings("unchecked")
-			Map<String, Object> domainsMap = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
-			numTotalContainers = domainsMap.size();
-			for (String root : domainsMap.keySet()) {
+		containerMemory = 10;
+		if (numTotalContainers == 0) {
+			throw new IllegalArgumentException("Cannot run distributed shell with no containers");
+		}
+		requestPriority = 0;
+
+		return true;
+	}
+
+	private void initCrawl() {
+		LOG.info("App init crawl");
+		numTotalContainers = domainRootForCrawlSet.size();
+		if (numTotalContainers > 0) {
+			for (String root : domainRootForCrawlSet) {
 				Vector<CharSequence> vargs = new Vector<CharSequence>(30);
 
 				// Set java executable command
@@ -408,62 +387,11 @@ public class AvengersAppMaster {
 				LOG.info("Completed setting up app master command " + command.toString());
 				cmds.add(command.toString());
 			}
-			// List<String> commands = new ArrayList<String>();
-			// commands.add(command.toString());
-
-		} else if (cliParser.hasOption("fetch")) {
-			LOG.info("AvengersAppMaster run fetch");
-			HConnection hConnection = HConnectionManager.createConnection(hbaseConf);
-			HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
-			HTable table = null;
-			try {
-				table = new HTable(conf, "av_page");
-				Scan scan = new Scan();
-				ResultScanner results = table.getScanner(scan);
-				// 输出结果
-				for (Result result : results) {
-					for (Cell cell : result.rawCells()) {
-						System.out.print("Row Name: " + new String(cell.getRowArray()) + " ");
-						System.out.print("Timestamp: " + cell.getTimestamp() + " ");
-						System.out.print("column Family: " + new String(cell.getFamilyArray())
-								+ " ");
-						System.out.print("Row Name:  " + new String(cell.getQualifierArray()) + " ");
-						System.out.println("Value: " + new String(cell.getValueArray()) + " ");
-					}
-				}
-			} finally {
-				table.close();
-			}
-		} else if (cliParser.hasOption("out")) {
-			LOG.info("AvengersAppMaster run out");
 		}
+	}
 
-		if (envs.containsKey(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION)) {
-			shellScriptPath = envs.get(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION);
+	private void initFetch() {
 
-			if (envs.containsKey(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP)) {
-				shellScriptPathTimestamp = Long.valueOf(envs.get(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP));
-			}
-			if (envs.containsKey(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN)) {
-				shellScriptPathLen = Long.valueOf(envs.get(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN));
-			}
-
-			if (!shellScriptPath.isEmpty()
-					&& (shellScriptPathTimestamp <= 0 || shellScriptPathLen <= 0)) {
-				LOG.error("Illegal values in env for shell script path" + ", path="
-						+ shellScriptPath + ", len=" + shellScriptPathLen + ", timestamp="
-						+ shellScriptPathTimestamp);
-				throw new IllegalArgumentException("Illegal values in env for shell script path");
-			}
-		}
-
-		containerMemory = Integer.parseInt(cliParser.getOptionValue("container_memory", "10"));
-		if (numTotalContainers == 0) {
-			throw new IllegalArgumentException("Cannot run distributed shell with no containers");
-		}
-		requestPriority = Integer.parseInt(cliParser.getOptionValue("priority", "0"));
-
-		return true;
 	}
 
 	private void initHbase() {
@@ -504,8 +432,10 @@ public class AvengersAppMaster {
 			}
 			if (!hbaseAdmin.tableExists("av_domain")) {
 				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_domain"));
+				HColumnDescriptor info = new HColumnDescriptor("info");
 				HColumnDescriptor preference = new HColumnDescriptor("preference");
 				tableDesc.addFamily(preference);
+				tableDesc.addFamily(info);
 				hbaseAdmin.createTable(tableDesc);
 			}
 			if (!hbaseAdmin.tableExists("av_product")) {
@@ -531,10 +461,16 @@ public class AvengersAppMaster {
 			long hVersionRowKey = rowCount - 1;
 			hVersion = new HTable(hbaseConf, "av_version");
 			long version = System.currentTimeMillis();
+			Put put = new Put(Bytes.toBytes(version));
+			// 参数出分别：列族、列、值
+			put.add(Bytes.toBytes("info"), Bytes.toBytes("status"), Bytes.toBytes("create"));
+			hVersion.put(put);
+			this.version = version;
 			if (hVersionRowKey > 0) {
 				Get get = new Get(Bytes.toBytes(hVersionRowKey));
 				Result hVersionResult = hVersion.get(get);
 				if (hVersionResult.size() == 1) {
+					this.domainRootForCrawlSet.clear();
 					String value = new String(hVersionResult.rawCells()[0].getValueArray());
 					Calendar calendar = Calendar.getInstance();
 					calendar.setTime(new Date(Long.valueOf(value)));
@@ -545,23 +481,24 @@ public class AvengersAppMaster {
 						@SuppressWarnings("unchecked")
 						Map<String, Object> domainMap = (Map<String, Object>) domainsMap.get(root);
 						// 小时
-						Long period = (Long) domainMap.get(XConfiguration.CRAWL_PERIOD);
+						Integer period = (Integer) domainMap.get(XConfiguration.CRAWL_PERIOD);
 						calendar.add(Calendar.HOUR_OF_DAY, period.intValue());
 						if (calendar.before(new Date(version))) {
-
+							domainRootForCrawlSet.add(root);
 						}
 					}
 				}
-
+				if (!domainRootForCrawlSet.isEmpty()) {
+					hDomain = new HTable(hbaseConf, "av_domain");
+					for (String domainRoot : domainRootForCrawlSet) {
+						Put avDomainPut = new Put(Bytes.toBytes(domainRoot));
+						// 开始前先插入version数据，crawl的时候插入info数据
+						avDomainPut.add(Bytes.toBytes("preference"), Bytes.toBytes("version"),
+								Bytes.toBytes(version));
+						hDomain.put(avDomainPut);
+					}
+				}
 			}
-			Put put = new Put(Bytes.toBytes(version));
-			// 参数出分别：列族、列、值
-			put.add(Bytes.toBytes("info"), Bytes.toBytes("status"), Bytes.toBytes("create"));
-			hVersion.put(put);
-			this.version = version;
-
-			hDomain = new HTable(hbaseConf, "av_domain");
-			Scan hDomainScan = new Scan();
 
 		} catch (IOException e) {
 			LOG.error("", e);
@@ -593,16 +530,6 @@ public class AvengersAppMaster {
 			}
 		}
 
-	}
-
-	/**
-	 * Helper function to print usage
-	 * 
-	 * @param opts
-	 *            Parsed command line options
-	 */
-	private void printUsage(Options opts) {
-		new HelpFormatter().printHelp("AvengersAppMaster", opts);
 	}
 
 	/**
@@ -954,23 +881,7 @@ public class AvengersAppMaster {
 			// In this scenario, if a shell script is specified, we need to have
 			// it
 			// copied and made available to the container.
-			if (!shellScriptPath.isEmpty()) {
-				LocalResource shellRsrc = Records.newRecord(LocalResource.class);
-				shellRsrc.setType(LocalResourceType.FILE);
-				shellRsrc.setVisibility(LocalResourceVisibility.APPLICATION);
-				try {
-					shellRsrc.setResource(ConverterUtils.getYarnUrlFromURI(new URI(shellScriptPath)));
-				} catch (URISyntaxException e) {
-					LOG.error("Error when trying to use shell script path specified"
-							+ " in env, path=" + shellScriptPath, e);
-					numCompletedContainers.incrementAndGet();
-					numFailedContainers.incrementAndGet();
-					return;
-				}
-				shellRsrc.setTimestamp(shellScriptPathTimestamp);
-				shellRsrc.setSize(shellScriptPathLen);
-				localResources.put(ExecShellStringPath, shellRsrc);
-			}
+
 			ctx.setLocalResources(localResources);
 
 			// Set the necessary command to execute on the allocated container
@@ -978,10 +889,6 @@ public class AvengersAppMaster {
 
 			// Set executable command
 			vargs.add(cmd);
-			// Set shell script path
-			if (!shellScriptPath.isEmpty()) {
-				vargs.add(ExecShellStringPath);
-			}
 
 			// Set args for the shell command if any
 			vargs.add(shellArgs);

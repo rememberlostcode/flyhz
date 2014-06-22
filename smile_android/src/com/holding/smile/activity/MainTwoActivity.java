@@ -173,7 +173,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (rGoods != null) {

@@ -92,7 +92,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 	}
 
 	@Override
-	public void loadData() {
+	public synchronized void loadData() {
 		RtnValueDto rvd = null;
 		try {
 			switch (optNum) {

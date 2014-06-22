@@ -48,12 +48,12 @@ public class XConfiguration {
 	public static final String			ENCODING				= "encoding";
 
 	/**
-	 * Long
+	 * Integer
 	 */
 	public static final String			CRAWL_PERIOD			= "crawl.period";
 
 	/**
-	 * Long
+	 * Integer
 	 */
 	public static final String			CRAWL_DEPTH				= "crawl.depth";
 
@@ -82,6 +82,11 @@ public class XConfiguration {
 	 */
 	public static final String			URLFILTER_AFTER_CRAWL	= "crawl.after.filter";
 
+	/**
+	 * List<XTemplate>
+	 */
+	public static final String			DOMAIN_TEMPLATES		= "domain.templates";
+
 	private XConfiguration() {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL avengersXml = classLoader.getResource("avengers.xml");
@@ -96,8 +101,8 @@ public class XConfiguration {
 				for (XDomain domain : listDomain) {
 					String root = domain.getRoot();
 					String encoding = domain.getEncoding();
-					Long depth = domain.getDepth();
-					Long period = domain.getPeriod();
+					Integer depth = Integer.valueOf(domain.getDepth());
+					Integer period = domain.getPeriod();
 
 					if (StringUtil.isNotBlank(root)) {
 						if (domainsMap.keySet().contains(root)) {
@@ -185,6 +190,7 @@ public class XConfiguration {
 					XTemplates templates = domain.getTemplates();
 					if (templates != null) {
 						List<XTemplate> templateList = templates.getTemplate();
+						domainMap.put(DOMAIN_TEMPLATES, templateList);
 						for (XTemplate template : templateList) {
 							XEvents templateApplyEvents = template.getTemplateApplyEvents();
 							if (templateApplyEvents != null) {
