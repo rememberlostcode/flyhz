@@ -50,6 +50,11 @@ public class XConfiguration {
 	/**
 	 * Integer
 	 */
+	public static final String			CRAWL_PERIOD			= "crawl.period";
+
+	/**
+	 * Integer
+	 */
 	public static final String			CRAWL_DEPTH				= "crawl.depth";
 
 	/**
@@ -96,7 +101,8 @@ public class XConfiguration {
 				for (XDomain domain : listDomain) {
 					String root = domain.getRoot();
 					String encoding = domain.getEncoding();
-					Long depth = domain.getDepth();
+					Integer depth = Integer.valueOf(domain.getDepth());
+					Integer period = domain.getPeriod();
 
 					if (StringUtil.isNotBlank(root)) {
 						if (domainsMap.keySet().contains(root)) {
@@ -110,6 +116,7 @@ public class XConfiguration {
 					domainsMap.put(root, domainMap);
 					domainMap.put(ENCODING, encoding);
 					domainMap.put(CRAWL_DEPTH, depth);
+					domainMap.put(CRAWL_PERIOD, period);
 
 					XFilter xBeforeCrawlFilters = domain.getUrlFilterBeforeCrawl();
 					if (xBeforeCrawlFilters != null) {

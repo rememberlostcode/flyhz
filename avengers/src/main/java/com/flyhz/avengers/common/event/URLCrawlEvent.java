@@ -9,24 +9,26 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
-import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
@@ -38,25 +40,31 @@ import org.slf4j.LoggerFactory;
 import com.flyhz.avengers.framework.Crawl;
 import com.flyhz.avengers.framework.Event;
 import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.util.SerializableUtil;
 import com.flyhz.avengers.framework.util.StringUtil;
 
 public class URLCrawlEvent implements Event {
 
 	private static final Logger	LOG		= LoggerFactory.getLogger(URLCrawlEvent.class);
 	private String				rootUrl	= "";
+	private String				domainRoot;
+	// 统计carwl urls总数
+	private final AtomicInteger	total	= new AtomicInteger(0);
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean call(Map<String, Object> context) {
 		String url = (String) context.get(Crawl.CRAWL_URL);
+		domainRoot = url;
+		String version = (String) context.get(Crawl.VERSION);
 		if (StringUtils.isBlank(url))
 			return false;
 
 		Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 		Map<String, Object> domain = (Map<String, Object>) domains.get(url);
 
-		String encode = (String) domain.get("encoding");
-		Long depth = (Long) domain.get("crawl.depth");
+		String encode = (String) domain.get(XConfiguration.ENCODING);
+		Integer depth = (Integer) domain.get(XConfiguration.CRAWL_DEPTH);
 
 		List<String> urlFilterBeforeCrawls = (List<String>) domain.get(XConfiguration.URLFILTER_BEFORE_CRAWL);
 		List<String> urlFilterAfterCrawls = (List<String>) domain.get(XConfiguration.URLFILTER_AFTER_CRAWL);
@@ -75,15 +83,24 @@ public class URLCrawlEvent implements Event {
 		}
 		rootUrl = httpStr + tempUrl;
 
-		recursiveMethod(url, null, depth, encode, urlFilterBeforeCrawls, urlFilterAfterCrawls);
+		try {
+			recursiveMethod(url, version, null, depth, encode, urlFilterBeforeCrawls,
+					urlFilterAfterCrawls);
+			return true;
+		} catch (ClassNotFoundException e) {
+			LOG.error("", e);
+		}
 		return false;
 	}
 
 	/**
 	 * 递归采集Url
+	 * 
+	 * @throws ClassNotFoundException
 	 */
-	private void recursiveMethod(String crawlUrl, Set<String> alreadyCrawlUrls, Long depth,
-			String charset, List<String> urlFilterBeforeCrawls, List<String> urlFilterAfterCrawls) {
+	private void recursiveMethod(String crawlUrl, String version, Set<String> alreadyCrawlUrls,
+			Integer depth, String charset, List<String> urlFilterBeforeCrawls,
+			List<String> urlFilterAfterCrawls) throws ClassNotFoundException {
 		if (alreadyCrawlUrls == null) {
 			alreadyCrawlUrls = new HashSet<String>();
 		}
@@ -105,16 +122,6 @@ public class URLCrawlEvent implements Event {
 
 			connection.connect();
 
-			// Map<String, List<String>> map = connection.getHeaderFields();
-			//
-			// // 遍历所有的响应头字段
-			//
-			// for (String key : map.keySet()) {
-			//
-			// System.out.println(key + "--->" + map.get(key));
-			//
-			// }
-
 			// 定义BufferedReader输入流来读取URL的响应
 			BufferedReader in;
 			in = new BufferedReader(new InputStreamReader(connection.getInputStream(),
@@ -126,13 +133,8 @@ public class URLCrawlEvent implements Event {
 			while ((line = in.readLine()) != null) {
 				sb.append(line);
 			}
-			// System.out.println(sb.toString());
-			// URLCrawlEvent parser = URLCrawlEvent.createParser(sb.toString(),
-			// "gb2312");
-			// NodeFilter filter = new TagNameFilter("table");
-			// NodeList list = parser.parse(tableFilter);
+
 			Document doc = Jsoup.parse(sb.toString());
-			// LOG.info(doc.html());
 
 			Elements linksElements = doc.select("a");
 			if (linksElements != null) {
@@ -141,6 +143,7 @@ public class URLCrawlEvent implements Event {
 					rootPath = crawlUrl.substring(0, crawlUrl.lastIndexOf("/"));
 				} else {
 					rootPath = crawlUrl;
+
 				}
 
 				int size = linksElements.size();
@@ -170,15 +173,16 @@ public class URLCrawlEvent implements Event {
 			}
 
 			if (urls != null && !urls.isEmpty()) {
-				Long new_depth = depth - 1;
+				Integer new_depth = depth - 1;
 				LOG.info("=======url_number===========" + new_depth + "==========begin========");
 				for (String tempUrl : urls) {
 					if (StringUtil.filterUrl(tempUrl, urlFilterAfterCrawls)) {
-						insertInfoToHbase(tempUrl, "");
-					} else if (StringUtil.filterUrl(tempUrl, urlFilterBeforeCrawls)) {
+						insertInfoToHbase(tempUrl, "", version);
+					}
+					if (StringUtil.filterUrl(tempUrl, urlFilterBeforeCrawls)) {
 						LOG.info("=====beforeFilter=====" + tempUrl);
 						if (new_depth > 0) {
-							recursiveMethod(tempUrl, alreadyCrawlUrls, new_depth, charset,
+							recursiveMethod(tempUrl, version, alreadyCrawlUrls, new_depth, charset,
 									urlFilterBeforeCrawls, urlFilterAfterCrawls);
 						}
 					}
@@ -189,7 +193,7 @@ public class URLCrawlEvent implements Event {
 				}
 
 				LOG.info("=======depth===========" + depth + "==========end========");
-				insertInfoToHbase(crawlUrl, doc.html());
+				insertInfoToHbase(crawlUrl, doc.html(), version);
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -202,9 +206,10 @@ public class URLCrawlEvent implements Event {
 		}
 	}
 
-	private void insertInfoToHbase(String crawlUrl, String htmlContent) throws IOException,
-			MasterNotRunningException, ZooKeeperConnectionException, InterruptedIOException,
-			RetriesExhaustedWithDetailsException {
+	@SuppressWarnings("unchecked")
+	private void insertInfoToHbase(String crawlUrl, String htmlContent, String version)
+			throws IOException, MasterNotRunningException, ZooKeeperConnectionException,
+			InterruptedIOException, RetriesExhaustedWithDetailsException, ClassNotFoundException {
 		LOG.info("init hbase");
 		if (StringUtil.isBlank(crawlUrl))
 			return;
@@ -214,33 +219,54 @@ public class URLCrawlEvent implements Event {
 		hconf.set("hbase.zookeeper.property.clientPort", "2181");
 		HConnection hConnection = HConnectionManager.createConnection(hconf);
 		HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
-		if (!hbaseAdmin.tableExists("av_page")) {
-			HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_page"));
-			// 插入info列族
-			HColumnDescriptor columnConfInfo = new HColumnDescriptor("info");
-			tableDesc.addFamily(columnConfInfo);
-			// 插入preference列族
-			HColumnDescriptor columnConfPreference = new HColumnDescriptor("preference");
-			tableDesc.addFamily(columnConfPreference);
-			// 插入fullhtml列族
-			HColumnDescriptor columnConfFullhtml = new HColumnDescriptor("fullhtml");
-			tableDesc.addFamily(columnConfFullhtml);
-			hbaseAdmin.createTable(tableDesc);
-		}
 
-		HTable table = null;
+		HTable hPage = null;
+		HTable hDomain = null;
 		try {
-			hbaseAdmin.flush("av_page");
-			table = new HTable(hconf, "av_page");
-			Put put = new Put(Bytes.toBytes(crawlUrl));
-			// 参数出分别：列族、列、值
-			put.add(Bytes.toBytes("info"), Bytes.toBytes("response"), Bytes.toBytes(htmlContent));
-			table.put(put);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			hPage = new HTable(hconf, "av_page");
+			byte[] rowKey = Bytes.toBytes(crawlUrl);
+			Get get = new Get(rowKey);
+			get.addColumn(Bytes.toBytes("version"), Bytes.toBytes(version));
+			Result result = hPage.get(get);
+			// 判断是否已经crawl过
+			if (result.isEmpty()) {
+				Put put = new Put(rowKey);
+				// 参数出分别：列族、列、值
+				put.add(Bytes.toBytes("info"), Bytes.toBytes("response"),
+						Bytes.toBytes(htmlContent));
+				put.add(Bytes.toBytes("preference"), Bytes.toBytes("version"),
+						Bytes.toBytes(version));
+				hPage.put(put);
+				int n = total.incrementAndGet() / 1000;
+				String infoColumn = "urls" + n;
+				hDomain = new HTable(hconf, "av_domain");
+				Get hDomainGet = new Get(Bytes.toBytes(domainRoot));
+				hDomainGet.addColumn(Bytes.toBytes("info"), Bytes.toBytes(infoColumn));
+
+				Result res = hDomain.get(hDomainGet);
+				List<String> urls = null;
+				if (res != null && !res.isEmpty() && res.rawCells().length == 1) {
+					Cell cell = res.rawCells()[0];
+					byte[] buf = cell.getValueArray();
+					if (buf != null && buf.length > 0) {
+						urls = SerializableUtil.deserialize(buf, ArrayList.class);
+						urls.add(crawlUrl);
+						byte[] array = SerializableUtil.serializ(urls);
+						Put hDomainPut = new Put(Bytes.toBytes(domainRoot));
+						hDomainPut.add(Bytes.toBytes("info"), Bytes.toBytes(infoColumn), array);
+					}
+				} else {
+					urls = new ArrayList<String>();
+					urls.add(crawlUrl);
+					byte[] array = SerializableUtil.serializ(urls);
+					Put hDomainPut = new Put(Bytes.toBytes(domainRoot));
+					hDomainPut.add(Bytes.toBytes("info"), Bytes.toBytes(infoColumn), array);
+				}
+
+			}
 		} finally {
-			if (table != null) {
-				table.close();
+			if (hPage != null) {
+				hPage.close();
 			}
 			if (hbaseAdmin != null) {
 				hbaseAdmin.close();
@@ -249,5 +275,9 @@ public class URLCrawlEvent implements Event {
 				hConnection.close();
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+
 	}
 }

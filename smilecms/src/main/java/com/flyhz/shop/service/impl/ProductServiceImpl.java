@@ -101,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setGmtModify(new Date());
 		productModel.setForeighprice(productParamDto.getForeighprice());
 		productModel.setRecommendprice(productParamDto.getRecommendprice());
-		productModel.setLocalprice(productParamDto.getForeighprice());
+		// productModel.setLocalprice(productParamDto.getForeighprice());
 		productModel.setPurchasingprice(productParamDto.getRecommendprice());
 		int maxStyle = productDao.getMaxStyle();
 		productModel.setStyle(String.valueOf(maxStyle + 1));
@@ -192,7 +192,7 @@ public class ProductServiceImpl implements ProductService {
 			productModel.setDescription(productModel.getName().trim());
 		}
 		productModel.setGmtModify(new Date());
-		productModel.setLocalprice(productParamDto.getForeighprice());
+		// productModel.setLocalprice(productParamDto.getForeighprice());
 		productModel.setForeighprice(productParamDto.getForeighprice());
 		productModel.setRecommendprice(productParamDto.getRecommendprice());
 		productModel.setPurchasingprice(productParamDto.getRecommendprice());

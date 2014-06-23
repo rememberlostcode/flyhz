@@ -30,7 +30,15 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;attribute name="encoding" type="{http://www.w3.org/2001/XMLSchema}anySimpleType" default="UTF-8" />
  *       &lt;attribute name="depth" default="3">
  *         &lt;simpleType>
- *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}unsignedInt">
+ *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}unsignedByte">
+ *             &lt;maxExclusive value="15"/>
+ *           &lt;/restriction>
+ *         &lt;/simpleType>
+ *       &lt;/attribute>
+ *       &lt;attribute name="period" default="720">
+ *         &lt;simpleType>
+ *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}unsignedShort">
+ *             &lt;maxExclusive value="744"/>
  *           &lt;/restriction>
  *         &lt;/simpleType>
  *       &lt;/attribute>
@@ -59,7 +67,9 @@ public class XDomain {
 	@XmlSchemaType(name = "anySimpleType")
 	protected String		encoding;
 	@XmlAttribute
-	protected Long			depth;
+	protected Short			depth;
+	@XmlAttribute
+	protected Integer		period;
 
 	/**
 	 * Gets the value of the urlFilterBeforeCrawl property.
@@ -215,12 +225,12 @@ public class XDomain {
 	/**
 	 * Gets the value of the depth property.
 	 * 
-	 * @return possible object is {@link Long }
+	 * @return possible object is {@link Short }
 	 * 
 	 */
-	public long getDepth() {
+	public short getDepth() {
 		if (depth == null) {
-			return 3L;
+			return ((short) 3);
 		} else {
 			return depth;
 		}
@@ -230,11 +240,36 @@ public class XDomain {
 	 * Sets the value of the depth property.
 	 * 
 	 * @param value
-	 *            allowed object is {@link Long }
+	 *            allowed object is {@link Short }
 	 * 
 	 */
-	public void setDepth(Long value) {
+	public void setDepth(Short value) {
 		this.depth = value;
+	}
+
+	/**
+	 * Gets the value of the period property.
+	 * 
+	 * @return possible object is {@link Integer }
+	 * 
+	 */
+	public int getPeriod() {
+		if (period == null) {
+			return 720;
+		} else {
+			return period;
+		}
+	}
+
+	/**
+	 * Sets the value of the period property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Integer }
+	 * 
+	 */
+	public void setPeriod(Integer value) {
+		this.period = value;
 	}
 
 }

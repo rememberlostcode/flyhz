@@ -31,7 +31,18 @@
 		<attribute name="encoding" use="optional" default="UTF-8"/>
 		<attribute name="depth" use="optional" default="3">
 			<simpleType>
-				<restriction base="unsignedInt">
+				<restriction base="unsignedByte">
+					<maxExclusive value="15"/>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="period" use="optional" default="720">
+			<annotation>
+				<documentation>单位是小时</documentation>
+			</annotation>
+			<simpleType>
+				<restriction base="unsignedShort">
+					<maxExclusive value="744"/>
 				</restriction>
 			</simpleType>
 		</attribute>

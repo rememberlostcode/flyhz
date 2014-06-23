@@ -1,9 +1,7 @@
-<form action="$server_name/product/edit" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
+<form action="$server_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
     <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
-		<input type="hidden" id="id" name="id" value="$!product.id"/>
-		<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.oldColorimg"/>
-		<input type="hidden" id="oldImgs" name="oldImgs" value="$!product.oldImgs"/>
 		<input type="hidden" name="creator" value= "$!u"/>
+		<input type="hidden" name="dataSrc" value= "manual"/>
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>
                 <td><font color="red">*</font>产品名称:</td>
@@ -79,30 +77,23 @@
 			<tr>
                 <td>产品颜色:</td>
 				<td>
-					<input type="text" id="color" name="color" value="$!product.color" class="addpage"/>
+					<input type="text" id="color" name="color" value="" class="addpage"/>
 				</td>
 			</tr>
 			<tr>
                 <td>颜色图片:</td>
 				<td>
-					<div id="showColorImg">
-    					#if($!product.colorimg)
-    						<img src="$!static_name$!product.colorimg" class="colorImg"/>
-    						<input type="button" onclick="javascript:reChooseImg();" value="重新上传" class="colorImg"/>
-    					#else
-        					<input id="colorimg" name="colorimg" type="file" style="display:none">
-                            <div>
-                               <input id="colorimgCover" type="text" class="filetxtweidth1">
-        					   <input type="button" onclick="javascript:chooseImg('colorimg','colorimgCover');" value="选择图片"/>
-                            </div>
-    					#end
-					</div>
+					<input id="colorimg" name="colorimg" type="file" style="display:none">
+                    <div>
+                       <input id="colorimgCover" type="text" class="filetxtweidth1">
+					   <input type="button" onclick="javascript:chooseImg('colorimg','colorimgCover');" value="选择图片"/>
+                    </div>
 				</td>
 			</tr>
 			<tr>
-                <td id="rowProductImg" #if($!product.productImgsCount) rowspan="$!product.productImgsCount" #end>产品图片:</td>
+                <td>产品图片:</td>
 				<td id="productImgs">
-					<div id="div_imgs1" class="divImgs">
+                    <div id="div_imgs1" class="divImgs">
 					   <input id="imgs1" name="imgs" type="file" style="display:none">
                        <input id="imgs1Cover" type="text" class="filetxtweidth">
 					   <input type="button" onclick="javascript:chooseImg('imgs1','imgs1Cover');" value="选择图片"/>
@@ -110,22 +101,6 @@
                     </div>
 				</td>
 			</tr>
-			#set($count = 0)
-			#if($!product.productImgsCount)
-				#foreach($productImg in $!product.productImgs)
-					<tr id="tr_srcImg_$count">
-    					<td>
-    						<div>
-    							<input type="hidden" id="productImg_$count" name="productImgs" value="$!productImg"/>
-    							<input type="hidden" id="productSrcImgs_$count" name="productSrcImgs" value="$!product.productSrcImgs[$count]"/>
-    							<img src="$!static_name$!productImg" class="productImg"/>
-								<input type="button" onclick="javascript:delSrcImgs('tr_srcImg_$count');" value="删除图片" class="colorImg"/>
-    						</div>
-                        </td>
-                    </tr>
-					#set($count = $count+1)
-				#end
-			#end
 			<tr>
                 <td>注意事项:</td>
                 <td>
