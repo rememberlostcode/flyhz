@@ -105,6 +105,17 @@ public class ProductController {
 		return "/product/show";
 	}
 
+	@RequestMapping(value = "/copy", method = RequestMethod.GET)
+	public String copyProduct(@RequestParam(value = "productId") Integer productId, Model model) {
+		ProductModel productModel = productService.getProductById(productId);
+		model.addAttribute("product", productModel);
+		// 查询品牌列表
+		model.addAttribute("brands", brandService.getAllBrandBuildDtos());
+		// 查询分类列表
+		model.addAttribute("cates", categoryService.getAllCategoryBuildDtos());
+		return "/product/copy";
+	}
+
 	@RequestMapping(value = "/addpage", method = RequestMethod.GET)
 	public String addpage(Model model) {
 		// 查询品牌列表

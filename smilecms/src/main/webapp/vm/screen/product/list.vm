@@ -1,12 +1,3 @@
-<style type="text/css">
-	.productImg{
-		width:100px;
-		height:100px;
-		border-style:solid;
-		border-width:1px;
-		border-color:#000;
-	}
-</style>
 <script type="text/javascript">
    $(document).ready(function(){
        var locaUrl = decodeURIComponent(location.href);
@@ -33,7 +24,7 @@
    function batchdel(){
    	  var productIds = getAllCheckboxIdsNew();
 	  if(productIds == null || productIds == ''){
-		  showMessage('请选择至少一个产品!');
+		  showMessage('请选择至少一个产品');
 		  return false;
 	  }else{
 	      var productIdsArray = productIds.split(",");
@@ -45,13 +36,36 @@
 	  }
    }
    
+   function copyProductPage(){
+   	  var checkedProducts = $("input[name=checkbox]:checked");
+	  if(checkedProducts == null || checkedProducts.length != 1){
+		  showMessage('请只选一个产品复制');
+		  return false;
+	  }else{
+	  	  if(confirm("确定要复制该产品吗?")){
+		  	  var productId = checkedProducts.eq(0).val();
+		      var url =  "$server_name/product/copy?productId=" + productId;
+              jQuery.dialog({
+            	  id:'copyProduct',
+            	  title:'产品数据复制',
+            	  width: 650, 
+            	  height: 520,
+            	  max: false,
+            	  min: false,
+            	  lock: true,
+            	  content: "url:" + url
+              });
+    	  }
+	  }
+   }
+   
    function showProduct(productId){
    	  var url =  "$server_name/product/show?productId=" + productId;
       jQuery.dialog({
     	  id:'editProduct',
     	  title:'产品数据维护',
     	  width: 650, 
-    	  height: 500,
+    	  height: 520,
     	  max: false,
     	  min: false,
     	  lock: true,
@@ -65,18 +79,12 @@
     	  id:'addProductPage',
     	  title:'新增产品',
     	  width: 650, 
-    	  height: 500,
+    	  height: 520,
     	  max: false,
     	  min: false,
     	  lock: true,
-  		  //ok: true,
-		  //cancel: true,
     	  content: "url:" + url
       });
-   }
-   
-   function ok(){
-   	  
    }
 </script>
 
@@ -88,10 +96,15 @@
 <form action="$server_name/product/batchdel" method="post" id="batchdel">
 	<input type="hidden" name="productIds" id="productIds" value=""/>
 </form>
+<!--复制商品-->
+<form action="$server_name/product/copy" method="post" id="copyProduct">
+	<input type="hidden" name="productId" id="copyProductId" value=""/>
+</form>
 
 <input type="hidden"  id="selected" onclick="searchNextPage();"/>
 <div class="searchbox">
     <button onclick="addProductPage();" type="button" style="float:left;margin-top:3px;">添加产品</button>
+	<button onclick="copyProductPage();" type="button" style="float:left;margin-top:3px;">复制产品</button>
 	<button onclick="batchdel();" type="button" style="float:left;margin-top:3px;">批量删除</button>
 </div>
 <div class="formbox">
@@ -123,7 +136,7 @@
 							#if($!product.appImages)
                 				#foreach($appImage in $!product.appImages)
 									<div>
-										<img src="$!static_name$!appImage" class="productImg"/><br/><br/>
+										<img src="$!static_name$!appImage" class="productImgList"/><br/><br/>
 									</div>
                 				#end
 							#end
@@ -132,7 +145,7 @@
 							#if($!product.productImgs)
                 				#foreach($productImg in $!product.productImgs)
 									<div>
-										<img src="$!static_name$!productImg" class="productImg"/><br/><br/>
+										<img src="$!static_name$!productImg" class="productImgList"/><br/><br/>
 									</div>
                 				#end
 							#end
