@@ -18,7 +18,7 @@
 			</template>
 		</templates>
 	</domain>
-	<domain root="http://www.coachfactory.com" period="0">
+	<!-- <domain root="http://www.coachfactory.com" period="0">
 		<urlFilterBeforeCrawl>
 			<value>^http://www.coachfactory.com/store/default/the-june-11-event/handbags</value>
 		</urlFilterBeforeCrawl>
@@ -33,7 +33,7 @@
 		<templates>
 			<template url="" pattern=""></template>
 		</templates>
-	</domain>
+	</domain> -->
 	<domain root="http://www.abercrombie.com/shop/hk" period="0">
 		<urlFilterBeforeCrawl>
 			<value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-graphic-tees</value>

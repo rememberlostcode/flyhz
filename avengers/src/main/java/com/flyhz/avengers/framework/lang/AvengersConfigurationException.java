@@ -24,4 +24,12 @@ public class AvengersConfigurationException extends RuntimeException {
 
 	private static final long	serialVersionUID	= -3043647139868542228L;
 
+	public static void main(String[] args) {
+		for (int i = 0; i < 100; i++) {
+			if (i % 2 == 0) {
+				continue;
+			}
+			System.out.println(i);
+		}
+	}
 }
