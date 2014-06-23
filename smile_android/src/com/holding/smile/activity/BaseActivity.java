@@ -156,11 +156,24 @@ public class BaseActivity extends Activity {
 		return textView;
 	}
 
+	/**
+	 * 显示头部右边部分
+	 * 
+	 * @return
+	 */
+	public ImageView displayHeaderRightBtn() {
+		setHeadVisible();
+		int id = R.id.header_right_btn;
+		ImageView imageView = (ImageView) findViewById(id);
+		setVisible(id);
+		return imageView;
+	}
+
 	/***
 	 * 设置内容区域
 	 * 
 	 * @param resId
-	 *            资源文件ID
+	 * 资源文件ID
 	 */
 	public void setContentLayout(int resId) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
