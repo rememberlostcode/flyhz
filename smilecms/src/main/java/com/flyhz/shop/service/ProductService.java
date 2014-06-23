@@ -73,7 +73,8 @@ public interface ProductService {
 	 * 分页查询产品DTO列表
 	 * 
 	 * @param pager
+	 * @param product
 	 * @return list
 	 */
-	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager);
+	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager, ProductModel product);
 }

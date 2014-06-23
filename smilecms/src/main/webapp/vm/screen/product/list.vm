@@ -10,8 +10,31 @@
    
    function searchNextPage(){
       var url="$server_name/product/list";
-	  var values = jQuery("#currentPage").val();
-	  GetWindowsUrl(url,"currentPage",values);		
+	  var name = $("#name").val().replace(/^\s*/, '');
+	  var brandstyle = $("#brandstyle").val().replace(/^\s*/, '');
+	  var brandId = $("#brandId").val();
+	  var categoryId = $("#categoryId").val();
+	  var params = "currentPage";
+	  var values = $("#currentPage").val();
+	  if(name != null && name != ''){
+	  	  params += ",name";
+		  values += "," + name;
+	  }
+	  if(brandstyle != null && brandstyle != ''){
+	  	  params += ",brandstyle";
+		  values += "," + brandstyle;
+	  }
+	  if(brandId != null && brandId != ''){
+	  	  params += ",brandId";
+		  values += "," + brandId;
+	  }
+	  if(categoryId != null && categoryId != ''){
+	  	  params += ",categoryId";
+		  values += "," + categoryId;
+	  }
+	  alert(params);
+	  alert(values);
+	  GetWindowsUrl(url,params,values);		
    }
    
    function delProduct(productId){
@@ -49,7 +72,7 @@
             	  id:'copyProduct',
             	  title:'产品数据复制',
             	  width: 650, 
-            	  height: 520,
+            	  height: 550,
             	  max: false,
             	  min: false,
             	  lock: true,
@@ -65,7 +88,7 @@
     	  id:'editProduct',
     	  title:'产品数据维护',
     	  width: 650, 
-    	  height: 520,
+    	  height: 550,
     	  max: false,
     	  min: false,
     	  lock: true,
@@ -79,7 +102,7 @@
     	  id:'addProductPage',
     	  title:'新增产品',
     	  width: 650, 
-    	  height: 520,
+    	  height: 550,
     	  max: false,
     	  min: false,
     	  lock: true,
@@ -87,7 +110,6 @@
       });
    }
 </script>
-
 <!--删除商品-->
 <form action="$server_name/product/delete" method="post" id="delProduct">
 	<input type="hidden" name="productId" id="productId" value=""/>
@@ -100,12 +122,41 @@
 <form action="$server_name/product/copy" method="post" id="copyProduct">
 	<input type="hidden" name="productId" id="copyProductId" value=""/>
 </form>
-
 <input type="hidden"  id="selected" onclick="searchNextPage();"/>
 <div class="searchbox">
     <button onclick="addProductPage();" type="button" style="float:left;margin-top:3px;">添加产品</button>
 	<button onclick="copyProductPage();" type="button" style="float:left;margin-top:3px;">复制产品</button>
 	<button onclick="batchdel();" type="button" style="float:left;margin-top:3px;">批量删除</button>
+</div>
+<div>
+	<p class="search_con" style="float:right;">
+		<label>产品名称</label>
+		<input type="text" name="name" id="name" value="$!productParam.name"/>
+		&nbsp;
+		<label>产品款号</label>
+		<input type="text" name="brandstyle" id="brandstyle" value="$!productParam.brandstyle"/>
+		&nbsp;
+		<label>产品品牌</label>
+		<select id="brandId" name="brandId">
+            <option value ="">全部</option>
+			#if($!brands && $!brands.size() > 0)
+				#foreach($brand in $!brands)
+					<option value ="$!brand.id" #if($!productParam.brandId == $!brand.id) selected=true #end>$!brand.name</option>
+				#end
+			#end
+		</select>
+		&nbsp;
+		<label>产品分类</label>
+		<select id="categoryId" name="categoryId">
+			<option value ="">全部</option>
+			#if($!cates && $!cates.size() > 0)
+				#foreach($cate in $!cates)
+					<option value ="$!cate.id" #if($!productParam.categoryId == $!cate.id) selected=true #end>$!cate.name</option>
+				#end
+			#end
+		</select>
+		<button onclick="searchNextPage()" type="button">查询</button>
+	</p>
 </div>
 <div class="formbox">
     <table summary="" class="dateline" style="width:99%;margin-top: 5px;" id="en_table">

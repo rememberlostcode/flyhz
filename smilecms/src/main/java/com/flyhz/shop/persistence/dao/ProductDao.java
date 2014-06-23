@@ -65,9 +65,10 @@ public interface ProductDao extends GenericDao<ProductModel> {
 	 * 分页查询产品DTO列表
 	 * 
 	 * @param pager
+	 * @param productModel
 	 * @return list
 	 */
-	public List<ProductCmsDto> getPageProductCmsDtos(Pager pager);
+	public List<ProductCmsDto> getPageProductCmsDtos(Pager pager, ProductModel productModel);
 
 	/**
 	 * 查询最大自定义款号

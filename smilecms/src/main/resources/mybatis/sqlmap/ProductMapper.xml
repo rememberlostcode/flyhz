@@ -107,10 +107,11 @@
 		       p.brandstyle,
 		       p.cover,
 		       p.cover_small coverSmall,
-		       p.off_shelf offShelf
+		       p.off_shelf offShelf,
+		       p.sizedesc
 		  from product p where p.id=#{id}
     </select>
-    <select id="getPagedProducts" resultType="ProductModel">
+    <select id="getPagedProducts" resultType="ProductModel" parameterType="ProductModel">
     	select p.id,
 		       p.name,
 		       p.gmt_create gmtCreate,
@@ -129,7 +130,8 @@
 		       p.brandstyle,
 		       p.cover,
 		       p.cover_small coverSmall,
-		       p.off_shelf offShelf
+		       p.off_shelf offShelf,
+		       p.sizedesc
 		  from product p
     </select>
     <select id="getPageProductCmsDtos" resultType="ProductCmsDto">
@@ -144,9 +146,22 @@
 		       c.name cateName,
 		       b.name brandName,
 		       p.brandstyle,
-		       p.off_shelf offShelf
+		       p.off_shelf offShelf,
+		       p.sizedesc 
 		  from product p,brand b,category c 
 		  where p.brand_id = b.id and p.category_id = c.id 
+		  <if test="name != null">
+    		   and name like #{name} 
+    	  </if>
+    	  <if test="brandstyle != null">
+    		   and brandstyle=#{brandstyle} 
+    	  </if>
+    	  <if test="brandId != null">
+    		   and brand_id=#{brandId} 
+    	  </if>
+    	  <if test="categoryId != null">
+    		   and category_id=#{categoryId} 
+    	  </if>
     </select>
     <select id="getMaxStyle" resultType="Integer">
     	select max(style) style from product
@@ -195,6 +210,9 @@
     	<if test="offShelf != null">
     		,off_shelf
     	</if>
+    	<if test="sizedesc != null">
+    		,sizedesc
+    	</if>
     	) values(#{id},#{name},#{brandId},#{categoryId},#{brandstyle},#{gmtCreate},#{gmtModify}
     	<if test="imgs != null">
     		,#{imgs}
@@ -235,6 +253,9 @@
     	<if test="offShelf != null">
     		,#{offShelf}
     	</if>
+    	<if test="sizedesc != null">
+    		,#{sizedesc}
+    	</if>
     	)
     	<selectKey resultType="Integer" keyProperty="id">
 	        SELECT LAST_INSERT_ID();
@@ -244,6 +265,7 @@
     	update product set name=#{name},category_id=#{categoryId},brand_id=#{brandId},brandstyle=#{brandstyle},
     	gmt_modify=#{gmtModify},imgs=#{imgs},description=#{description},purchasingprice=#{purchasingprice},
     	cover_small=#{coverSmall},color=#{color},colorimg=#{colorimg},localprice=#{localprice},cover=#{cover},
-    	foreighprice=#{foreighprice},recommendprice=#{recommendprice},off_shelf=#{offShelf} where id=#{id}
+    	foreighprice=#{foreighprice},recommendprice=#{recommendprice},off_shelf=#{offShelf},
+    	sizedesc=#{sizedesc} where id=#{id}
     </update>
 </mapper>

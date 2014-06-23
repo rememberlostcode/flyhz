@@ -26,6 +26,7 @@ public class ProductParamDto {
 	private BigDecimal			purchasingprice;	// 现在价格
 	private BigDecimal			foreighprice;		// 国外价格
 	private BigDecimal			recommendprice;	// 推荐价格
+	private String				sizedesc;			// 产品尺码描述
 	private String				color;
 	private MultipartFile		colorimg;
 	private String				oldColorimg;		// 旧颜色图片地址
@@ -182,5 +183,13 @@ public class ProductParamDto {
 
 	public void setRecommendprice(BigDecimal recommendprice) {
 		this.recommendprice = recommendprice;
+	}
+
+	public String getSizedesc() {
+		return sizedesc;
+	}
+
+	public void setSizedesc(String sizedesc) {
+		this.sizedesc = sizedesc;
 	}
 }

@@ -92,6 +92,7 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setCreator(productParamDto.getCreator());
 		productModel.setDataSrc(productParamDto.getDataSrc());
 		productModel.setOffShelf(productParamDto.getOffShelf());
+		productModel.setSizedesc(productParamDto.getSizedesc());
 		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
 			productModel.setDescription(productParamDto.getDescription());
 		} else {
@@ -186,6 +187,7 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
 		productModel.setOffShelf(productParamDto.getOffShelf());
+		productModel.setSizedesc(productParamDto.getSizedesc());
 		if (StringUtils.isNotBlank(productParamDto.getDescription())) {
 			productModel.setDescription(productParamDto.getDescription());
 		} else {
@@ -220,8 +222,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager) {
-		List<ProductCmsDto> productCmsDtos = productDao.getPageProductCmsDtos(pager);
+	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager, ProductModel product) {
+		if (product != null && StringUtils.isNotBlank(product.getName())) {
+			product.setName("%" + product.getName() + "%");
+		}
+		List<ProductCmsDto> productCmsDtos = productDao.getPageProductCmsDtos(pager, product);
 		if (productCmsDtos != null && !productCmsDtos.isEmpty()) {
 			for (ProductCmsDto productCmsDto : productCmsDtos) {
 				if (StringUtils.isNotBlank(productCmsDto.getCover())) {

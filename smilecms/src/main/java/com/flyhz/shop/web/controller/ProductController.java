@@ -46,11 +46,16 @@ public class ProductController {
 	private CategoryService	categoryService;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public String listProducts(@Pagination Pager pager, Model model) {
-		pager.setPageSize(10);
+	public String listProducts(@Pagination Pager pager, ProductModel productParam, Model model) {
+		model.addAttribute("productParam", productParam);
+		// 查询品牌列表
+		model.addAttribute("brands", brandService.getAllBrandBuildDtos());
+		// 查询分类列表
+		model.addAttribute("cates", categoryService.getAllCategoryBuildDtos());
 		pager.setSortName("p.id");
 		pager.setSortWay(ToolConstants.DESC);
-		List<ProductCmsDto> productCmsDtos = productService.getProductCmsDtosByPage(pager);
+		List<ProductCmsDto> productCmsDtos = productService.getProductCmsDtosByPage(pager,
+				productParam);
 		model.addAttribute("products", productCmsDtos);
 		model.addAttribute("page", pager);
 		model.addAttribute("current", "1");
