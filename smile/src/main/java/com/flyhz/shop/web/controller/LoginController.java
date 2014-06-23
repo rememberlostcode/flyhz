@@ -42,7 +42,6 @@ public class LoginController {
 				protocol.setData(user);
 			} else {
 				protocol.setCode(101026);
-				protocol.setData("loginAuth fail");
 			}
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());
@@ -65,7 +64,6 @@ public class LoginController {
 				protocol.setData(user);
 			} else {
 				protocol.setCode(101026);
-				protocol.setData("loginAuto fail");
 			}
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());
@@ -87,7 +85,6 @@ public class LoginController {
 				protocol.setData(user);
 			} else {
 				protocol.setCode(1);
-				protocol.setData("logout fail");
 			}
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());
