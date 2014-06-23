@@ -118,7 +118,7 @@ public abstract class AvengersExecutor implements Runnable {
 			}
 			buf.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			getLog().error("", e);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.flyhz.avengers;
+package com.flyhz.avengers.framework;
 
 import java.io.File;
 import java.io.IOException;
@@ -352,11 +352,10 @@ public class AvengersClient {
 
 		FileSystem fs = DistributedFileSystem.get(conf);
 		Path src = new Path(appMasterJar);
-		// String pathSuffix = appName + "/" + appId.getId() +
-		// "/AvengersAppMaster.jar";
-		String pathSuffix = appName + "/32/AvengersAppMaster.jar";
+		String pathSuffix = "avengers/" + appId.getId() + "/AvengersAppMaster.jar";
+		// String pathSuffix = appName + "/32/AvengersAppMaster.jar";
 		Path dst = new Path(fs.getHomeDirectory(), pathSuffix);
-		// fs.copyFromLocalFile(false, true, src, dst);
+		fs.copyFromLocalFile(false, true, src, dst);
 		LOG.info("dst.toUri() > {}", dst.toUri());
 		FileStatus destStatus = fs.getFileStatus(dst);
 		LocalResource amJarRsrc = Records.newRecord(LocalResource.class);
@@ -400,9 +399,6 @@ public class AvengersClient {
 		// to the yarn framework.
 		// We do not need to set this as a local resource for the application
 		// master as the application master does not need it.
-		String hdfsShellScriptLocation = "";
-		long hdfsShellScriptLen = 0;
-		long hdfsShellScriptTimestamp = 0;
 
 		// Set local resource info into app master container launch context
 		amContainer.setLocalResources(localResources);
