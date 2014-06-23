@@ -40,6 +40,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -53,6 +54,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.Credentials;
@@ -361,12 +363,7 @@ public class AvengersAppMaster {
 
 				// Set java executable command
 				LOG.info("Setting up app master command");
-
-				vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
-				// Set Xmx based on am memory size
-				vargs.add("-Xmx" + containerMemory + "m");
 				// Set class name
-				vargs.add(Crawl.class.getName());
 				vargs.add("-url " + root);
 				vargs.add("-version " + version);
 				vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/CrawL.stdout");
@@ -848,55 +845,67 @@ public class AvengersAppMaster {
 
 			ctx.setLocalResources(localResources);
 
-			// Set the necessary command to execute on the allocated container
-			Vector<CharSequence> vargs = new Vector<CharSequence>(5);
-			/**
-			 * if [ -f
-			 * $HADOOP_TMP_DIR/app/$APPLICATION_ID/AvengersAppMaster.jar];then
-			 */
-			vargs.add("if");
-			vargs.add("[");
-			vargs.add("!");
-			vargs.add("-f");
-			vargs.add(conf.get("hadoop.tmp.dir") + "/app" + "/"
-					+ appAttemptID.getApplicationId().getId() + "/AvengersAppMaster.jar");
-			vargs.add("];");
-			vargs.add("then");
-			vargs.add("then");
+			FileSystem fs;
+			try {
+				fs = DistributedFileSystem.get(conf);
+				// Set the necessary command to execute on the allocated
+				// container
+				Vector<CharSequence> vargs = new Vector<CharSequence>(30);
+				String copyDir = conf.get("hadoop.tmp.dir") + "/app/"
+						+ appAttemptID.getApplicationId().getId();
+				/**
+				 * if [ -f
+				 * $HADOOP_TMP_DIR/app/$APPLICATION_ID/AvengersAppMaster.
+				 * jar];then
+				 */
+				vargs.add("if");
+				vargs.add("[");
+				vargs.add("!");
+				vargs.add("-f");
+				vargs.add(copyDir + "/AvengersAppMaster.jar");
+				vargs.add("];");
+				vargs.add("then");
+				vargs.add("/bin/mkdir");
+				vargs.add("-p");
+				vargs.add(copyDir + ";");
+				vargs.add(Environment.HADOOP_YARN_HOME.$() + "/bin/hadoop");
+				vargs.add("fs");
+				vargs.add("-copyToLocal");
+				vargs.add(fs.getHomeDirectory() + "/avengers/"
+						+ appAttemptID.getApplicationId().getId() + "/AvengersAppMaster.jar");
+				vargs.add(copyDir + ";");
+				vargs.add("fi");
+				vargs.add("&&");
+				vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+				// Set Xmx based on am memory size
+				vargs.add("-Xmx" + containerMemory + "m");
+				vargs.add("-classpath");
+				vargs.add("$CLASSPATH:" + copyDir + "/AvengersAppMaster.jar");
+				// Set executable command
+				vargs.add(Crawl.class.getName());
+				vargs.add(cmd);
+				// Add log redirect params
+				vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout");
+				vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr");
 
-			// Set executable command
-			vargs.add(cmd);
+				// Get final commmand
+				StringBuilder command = new StringBuilder();
+				for (CharSequence str : vargs) {
+					command.append(str).append(" ");
+				}
 
-			// Set args for the shell command if any
-			vargs.add(shellArgs);
-			// Add log redirect params
-			vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stdout");
-			vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/stderr");
+				LOG.info("command > " + command.toString());
+				List<String> commands = new ArrayList<String>();
+				commands.add(command.toString());
+				ctx.setCommands(commands);
+				ctx.setTokens(allTokens.duplicate());
+				containerListener.addContainer(container.getId(), container);
+				nmClientAsync.startContainerAsync(container, ctx);
 
-			// Get final commmand
-			StringBuilder command = new StringBuilder();
-			for (CharSequence str : vargs) {
-				command.append(str).append(" ");
+			} catch (IOException e) {
+				LOG.error("", e);
 			}
 
-			LOG.info("command > " + command.toString());
-			List<String> commands = new ArrayList<String>();
-			commands.add(command.toString());
-			ctx.setCommands(commands);
-
-			// Set up tokens for the container too. Today, for normal shell
-			// commands,
-			// the container in distribute-shell doesn't need any tokens. We are
-			// populating them mainly for NodeManagers to be able to download
-			// any
-			// files in the distributed file-system. The tokens are otherwise
-			// also
-			// useful in cases, for e.g., when one is running a "hadoop dfs"
-			// command
-			// inside the distributed shell.
-			ctx.setTokens(allTokens.duplicate());
-			containerListener.addContainer(container.getId(), container);
-			nmClientAsync.startContainerAsync(container, ctx);
 		}
 	}
 
