@@ -5,11 +5,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.tools.StrUtils;
@@ -36,14 +39,21 @@ public class HtmlUIActivity extends Activity implements OnClickListener {
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.addJavascriptInterface(new JsObject(), "jsObj");
 
-		String url = "file:///android_asset/index.html";
-
+		// String url = "file:///android_asset/index.html";
+		String url = "";
 		Intent intent = this.getIntent();
 		String pathUrl = intent.getExtras().getString("url");
-		if (StrUtils.isNotEmpty(pathUrl))
+		if (StrUtils.isNotEmpty(pathUrl)) {
 			url = pathUrl;
+			webView.loadUrl(url);
+		} else {
+			Log.e(TAG, "加载活动页面出错，url为空！");
+			Toast toast = Toast.makeText(this, "服务器连接失败!", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+			return;
+		}
 
-		webView.loadUrl(url);
 	}
 
 	/**

@@ -74,6 +74,8 @@ public class ResetPwdActivity extends BaseActivity {
 					return;
 				}
 
+				progressBar.setVisibility(View.VISIBLE);
+
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.passwordReset(oldPwd, newPwd);
 				if (CodeValidator.dealCode(context, rvd)) {
@@ -81,6 +83,7 @@ public class ResetPwdActivity extends BaseActivity {
 					setResult(RESULT_CANCELED, null);
 					finish();
 				}
+				waitCloseProgressBar();
 			}
 		});
 	}

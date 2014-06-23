@@ -75,6 +75,7 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.email_save: {
+				progressBar.setVisibility(View.VISIBLE);
 				// 设置邮箱
 				email = emailEditText.getText().toString();
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
@@ -87,9 +88,11 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 					setResult(RESULT_OK, intent);
 					finish();
 				}
+				waitCloseProgressBar();
 				break;
 			}
 			case R.id.email_canle: {
+				progressBar.setVisibility(View.VISIBLE);
 				// 解除绑定邮箱
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("email", "");
@@ -100,6 +103,7 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 					setResult(RESULT_OK, intent);
 					finish();
 				}
+				waitCloseProgressBar();
 				break;
 			}
 		}

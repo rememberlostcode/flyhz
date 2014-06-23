@@ -192,7 +192,6 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case 1: {
 														if (status == null) {
@@ -227,6 +226,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 													}
 
 												}
+												waitCloseProgressBar();
 											}
 										};
 }

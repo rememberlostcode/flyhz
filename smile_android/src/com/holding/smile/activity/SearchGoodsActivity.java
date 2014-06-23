@@ -148,7 +148,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+				if (actionId == EditorInfo.IME_ACTION_SEARCH
+						|| actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
 					System.out.println("====================================search");
 
 					editText.clearFocus();
@@ -335,8 +336,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	public synchronized void loadData() {
-		progressBar.setVisibility(View.VISIBLE);
-		keywords = editText.getText().toString();
 		RtnValueDto rGoods = null;
 		int mseeageWhat = WHAT_DID_LOAD_DATA;
 		if (optNum == 0) {
@@ -377,7 +376,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
@@ -392,7 +390,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 																	adapter.notifyDataSetChanged();
 																}
 															} else {
-																ToastUtils.showShort(context, "暂无数据！");
+																ToastUtils.showShort(context,
+																		"暂无数据！");
 															}
 														}
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -418,7 +417,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 																	adapter.notifyDataSetChanged();
 																}
 															} else {
-																ToastUtils.showShort(context, "暂无数据！");
+																ToastUtils.showShort(context,
+																		"暂无数据！");
 															}
 														}
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -438,13 +438,17 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 																	adapter.notifyDataSetChanged();
 																}
 															} else {
-																ToastUtils.showShort(context, "最后一个了！");
+																ToastUtils.showShort(context,
+																		"最后一个了！");
 															}
 														}
 														mPullToRefreshView.onFooterRefreshComplete();
 														break;
 													}
 												}
+
+												waitCloseProgressBar();
+
 											}
 										};
 

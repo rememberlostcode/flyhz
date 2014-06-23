@@ -89,7 +89,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 				public void onClick(View v) {
 					jSortLayout.setBackgroundBtn(v.getId());
 					sortUrl = v.getTag().toString();
-					loadData();
+					startTask();
 				}
 			});
 		}
@@ -130,6 +130,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 			msg.sendToTarget();
 		} else {
 			ToastUtils.showShort(context, "暂无数据！");
+			waitCloseProgressBar();
 		}
 	}
 
@@ -183,7 +184,6 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 
 												@Override
 												public void handleMessage(Message msg) {
-													progressBar.setVisibility(View.GONE);
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
 															if (msg.obj != null) {
@@ -202,6 +202,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 															break;
 														}
 													}
+													waitCloseProgressBar();
 												}
 											};
 

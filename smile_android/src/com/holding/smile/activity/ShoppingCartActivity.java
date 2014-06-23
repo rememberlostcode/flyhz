@@ -254,7 +254,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														cartItemList.clear();
@@ -366,6 +365,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 										};
 
@@ -376,7 +376,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 												new DialogInterface.OnClickListener() {
 													public void onClick(DialogInterface dialog,
 															int which) {
-
+														progressBar.setVisibility(View.VISIBLE);
 														RtnValueDto rtnValue = MyApplication.getInstance()
 																							.getSubmitService()
 																							.removeCart(
@@ -400,7 +400,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														} else {
 															ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 														}
-
+														waitCloseProgressBar();
 													}
 												}).setNegativeButton("取消", null).show();
 	}

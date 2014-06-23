@@ -104,6 +104,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 					return;
 				}
 
+				progressBar.setVisibility(View.VISIBLE);
+
 				/* 关闭软键盘 */
 				InputMethodManager inputMgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputMgr.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
@@ -151,6 +153,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																	break;
 																}
 															}
+															waitCloseProgressBar();
 														}
 													};
 

@@ -115,6 +115,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 				Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 				msg.obj = rtnValue;
 				msg.sendToTarget();
+			}else{
+				waitCloseProgressBar();
 			}
 		} else {
 			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
@@ -234,7 +236,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
@@ -391,6 +392,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 
 										};
