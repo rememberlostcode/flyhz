@@ -87,4 +87,5 @@ public class ResetPwdActivity extends BaseActivity {
 			}
 		});
 	}
+
 }

@@ -135,6 +135,12 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+		startTask();
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		jSortList.clear();

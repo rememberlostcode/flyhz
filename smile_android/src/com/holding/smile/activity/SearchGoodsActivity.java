@@ -294,6 +294,12 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	}
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+		showHistoryListView();
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		editText = null;

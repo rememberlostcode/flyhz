@@ -170,6 +170,12 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 	}
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+		startTask();
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		brandList.clear();
