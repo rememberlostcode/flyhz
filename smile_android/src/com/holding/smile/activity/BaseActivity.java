@@ -4,8 +4,11 @@ package com.holding.smile.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -156,7 +160,7 @@ public class BaseActivity extends Activity {
 	 * 设置内容区域
 	 * 
 	 * @param resId
-	 * 资源文件ID
+	 *            资源文件ID
 	 */
 	public void setContentLayout(int resId) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -209,20 +213,53 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		// Log.e(MyApplication.LOG_TAG, "start onStart~~~");
+		Log.e(MyApplication.LOG_TAG, "start onStart~~~");
 	}
 
 	// 当按HOME键时，然后再次启动应用时，我们要恢复先前状态
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		// Log.e(MyApplication.LOG_TAG, "start onRestart~~~");
+		Log.e(MyApplication.LOG_TAG, "start onRestart~~~");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// Log.e(MyApplication.LOG_TAG, "start onResume~~~");
+		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
+		
+		// 先验证是否是需要登录后才可以访问的activity
+		if (this.getClass().equals(ShoppingCartActivity.class)
+				|| this.getClass().equals(MySmileActivity.class)
+				|| this.getClass().equals(MyOrdersActivity.class)
+				|| this.getClass().equals(PersonalSettingsActivity.class)
+				|| this.getClass().equals(IdcardManagerActivity.class)
+				|| this.getClass().equals(EmailActivity.class)
+				|| this.getClass().equals(PhoneActivity.class)
+				|| this.getClass().equals(ResetPwdActivity.class)) {
+			if (!MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
+				Intent intent = new Intent();
+				intent.putExtra("class", this.getClass());
+				intent.setClass(context, LoginActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+				overridePendingTransition(0, 0);
+			}
+		}
+		
+		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		// mobile 3G Data Network
+		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+		State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+		// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态 则进入Network Setting界面 由用户配置网络连接
+		if (mobile == State.CONNECTED || mobile == State.CONNECTING || wifi == State.CONNECTED
+				|| wifi == State.CONNECTING) {
+			MyApplication.setHasNetwork(true);
+		} else {
+			MyApplication.setHasNetwork(false);
+			ToastUtils.showShort(this, "网络异常，请检查网络！");
+			return;
+		}
 	}
 
 	// 当我们按HOME键时
@@ -254,7 +291,7 @@ public class BaseActivity extends Activity {
 		// KeyEvent.KEYCODE_BACK == keyCode) {
 		// long currentTime = System.currentTimeMillis();
 		// if ((currentTime - touchTime) >= waitTime) {
-		// Toast.makeText(this, "再按一次返回键回到桌面", Toast.LENGTH_SHORT).show();
+		// ToastUtils.showShort(context, "再按一次返回键回到桌面！");
 		// touchTime = currentTime;
 		// } else {
 		// /* 与按下HOME键效果一样 begin */
@@ -394,7 +431,7 @@ public class BaseActivity extends Activity {
 		setVisible(id);
 		return view;
 	}
-	
+
 	/**
 	 * 进入我的订单时显示
 	 * 

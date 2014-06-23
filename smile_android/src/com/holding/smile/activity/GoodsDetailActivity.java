@@ -19,7 +19,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyPagerAdapter;
@@ -29,8 +28,9 @@ import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyLinearLayout;
 import com.holding.smile.myview.MyViewPager;
-import com.holding.smile.tools.Constants;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -76,8 +76,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		}
 		if (StrUtils.isNotEmpty(bs)) {
 			startTask();
-		} else {
-			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
 		}
 
 	}
@@ -106,12 +104,10 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(bs);
-		if (rtnValue != null) {
+		if (CodeValidator.dealCode(this, rtnValue)) {
 			Message msg = mUIHandler.obtainMessage(0);
 			msg.obj = rtnValue;
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -252,10 +248,8 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				} else {
 					RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 														.addCart(gid, (short) 1);
-					if (rtnValue != null) {
-						Toast.makeText(context, "已加入购物车", Toast.LENGTH_SHORT).show();
-					} else {
-						Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+					if (CodeValidator.dealCode(this, rtnValue)) {
+						ToastUtils.showShort(this, "已加入购物车！");
 					}
 				}
 				break;
@@ -370,24 +364,12 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 																if (obj.getValidate() != null
 																		&& StrUtils.isNotEmpty(obj.getValidate()
 																									.getMessage())) {
-																	Toast.makeText(
-																			context,
-																			obj.getValidate()
-																				.getMessage(),
-																			Toast.LENGTH_SHORT)
-																			.show();
-																} else {
-																	Toast.makeText(context,
-																			Constants.MESSAGE_NET,
-																			Toast.LENGTH_SHORT)
-																			.show();
+																	ToastUtils.showShort(context, obj.getValidate()
+																			.getMessage());
 																}
 															} else {
 																initView();
 															}
-														} else {
-															Toast.makeText(context, "暂无数据",
-																	Toast.LENGTH_SHORT).show();
 														}
 														break;
 													}

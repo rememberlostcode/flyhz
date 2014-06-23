@@ -1,6 +1,7 @@
 
 package com.holding.smile.activity;
 
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,6 +26,7 @@ import com.holding.smile.service.SubmitService;
  */
 public class MyApplication extends Application {
 
+	private static Date sessionTime;
 	public static final String		LOG_TAG	= "smile";
 	private static MyApplication	singleton;
 
@@ -66,6 +68,8 @@ public class MyApplication extends Application {
 	
 	/** 任务线程池 */
 	private static ExecutorService	threadPool;
+	
+	private static boolean isHasNetwork = false;
 
 	@Override
 	public void onCreate() {
@@ -175,6 +179,22 @@ public class MyApplication extends Application {
 			this.startActivity(intent);
 		} catch (Exception e) {
 		}
+	}
+
+	public static Date getSessionTime() {
+		return sessionTime;
+	}
+
+	public static void setSessionTime(Date sessionTime) {
+		MyApplication.sessionTime = sessionTime;
+	}
+
+	public static boolean isHasNetwork() {
+		return isHasNetwork;
+	}
+
+	public static void setHasNetwork(boolean isHasNetwork) {
+		MyApplication.isHasNetwork = isHasNetwork;
 	}
 
 }

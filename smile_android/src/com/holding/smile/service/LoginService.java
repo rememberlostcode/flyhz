@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.KeyStore;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -34,7 +35,14 @@ public class LoginService {
 	private String		login_url;
 	private String		auto_login_url;
 
+	/**
+	 * 成功的code
+	 */
 	private final int	SUCCESS_CODE	= 200000;
+	/**
+	 * 手机端超过多少时间后需要重新验证是否登录失效的毫秒值
+	 */
+	private final int	SESSION_TIME	= 25 * 1000 * 60;
 
 	public LoginService(Context context) {
 		super();
@@ -42,6 +50,40 @@ public class LoginService {
 
 		login_url = context.getString(R.string.login_url);
 		auto_login_url = context.getString(R.string.auto_login_url);
+	}
+
+	/**
+	 * 判断session是否已经失效，如果失效重新登录;如重新登录失败，清除当前登录人信息
+	 */
+	public boolean isSessionInvalidated() {
+		boolean isLogining = true;
+		System.out.println(MyApplication.getSessionTime());
+		if (MyApplication.getSessionTime() == null) {//
+			SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+			if (user != null) {
+				RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
+														.autoLogin(user);
+				if (rtnValueDto == null || !rtnValueDto.getCode().equals(200000)) {
+					MyApplication.getInstance().setCurrentUser(null);
+					MyApplication.getInstance().setSessionId(null);
+					isLogining = false;
+				}
+			}
+		} else {
+			if (new Date().getTime() - MyApplication.getSessionTime().getTime() > SESSION_TIME) {// 超过20分钟需确认下是否登录失效
+				SUser user = MyApplication.getInstance().getCurrentUser();
+				RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
+														.autoLogin(user);
+				if (rtnValueDto == null || !rtnValueDto.getCode().equals(200000)) {
+					MyApplication.getInstance().setCurrentUser(null);
+					MyApplication.getInstance().setSessionId(null);
+					isLogining = false;
+				}
+			} else {
+				
+			}
+		}
+		return isLogining;
 	}
 
 	/**
@@ -64,6 +106,7 @@ public class LoginService {
 		if (rvdString != null) {
 			PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
 			if (user != null && user.getData() != null && user.getCode() == SUCCESS_CODE) {
+				MyApplication.setSessionTime(new Date());
 				rvd = new RtnValueDto();
 				rvd.setUserData(user.getData());
 				rvd.setCode(200000);
@@ -90,6 +133,7 @@ public class LoginService {
 			param.put("username", iuser.getUsername());
 			param.put("token", iuser.getToken());
 			String rvdString = https_get(auto_login_url, param);
+			MyApplication.setSessionTime(new Date());
 			if (rvdString != null) {
 				PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
 				if (user != null && user.getData() != null && user.getCode() == SUCCESS_CODE) {
@@ -108,6 +152,7 @@ public class LoginService {
 						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
 					}
 				} else {
+					MyApplication.getInstance().setCurrentUser(null);
 					MyApplication.getInstance().setSessionId(null);
 				}
 			}
@@ -124,7 +169,7 @@ public class LoginService {
 	private static void setLoginUser(SUser user) {
 		// 把返回的用户设置成当前用户
 		MyApplication.getInstance().setCurrentUser(user);
-		if(MyApplication.getTb_url() == null || "".equals(MyApplication.getTb_url())){
+		if (MyApplication.getTb_url() == null || "".equals(MyApplication.getTb_url())) {
 			MyApplication.setTb_url(user.getUrl());
 		}
 	}
@@ -158,16 +203,16 @@ public class LoginService {
 				}
 			}
 
-//			long a = System.currentTimeMillis();
+			// long a = System.currentTimeMillis();
 			String key = "222222";
 			char[] keys = key.toCharArray();
 			KeyStore keyStore = KeyStore.getInstance("BKS");
 			InputStream ins = context.getResources().openRawResource(R.raw.client1);
-//			long b = System.currentTimeMillis();
+			// long b = System.currentTimeMillis();
 			keyStore.load(ins, keys);
-//			long c = System.currentTimeMillis();
+			// long c = System.currentTimeMillis();
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");
-//			long d = System.currentTimeMillis();
+			// long d = System.currentTimeMillis();
 			kmf.init(keyStore, keys);
 			KeyManager[] keyManagers = kmf.getKeyManagers();
 			SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -209,12 +254,12 @@ public class LoginService {
 					urlConnection.disconnect();
 				}
 			}
-//			long e = System.currentTimeMillis();
-//			long b_a = b - a;// 2
-//			long c_b = c - b;// 196
-//			long d_c = d - c;// 0
-//			long e_d = e - d;// 4525
-//			long e_a = e - a;// 4723
+			// long e = System.currentTimeMillis();
+			// long b_a = b - a;// 2
+			// long c_b = c - b;// 196
+			// long d_c = d - c;// 0
+			// long e_d = e - d;// 4525
+			// long e_a = e - a;// 4723
 			System.out.println("");
 		} catch (Exception e) {
 			e.printStackTrace();

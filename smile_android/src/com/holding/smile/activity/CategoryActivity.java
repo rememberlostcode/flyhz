@@ -16,12 +16,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.CategoryAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
+import com.holding.smile.tools.CodeValidator;
 
 /**
  * 
@@ -77,12 +77,10 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 		cate.setName(context.getString(R.string.all_cate));
 		cateList.add(cate);
 		RtnValueDto cates = MyApplication.getInstance().getDataService().getCategorys();
-		if (cates != null) {
+		if (CodeValidator.dealCode(this, cates)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = cates;
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 

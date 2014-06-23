@@ -250,7 +250,7 @@ public class OrderServiceImpl implements OrderService {
 	public OrderSimpleDto getOrderDtoByNumber(String number) {
 		OrderSimpleDto orderDto = orderDao.getOrderByNumber(number);
 		if(orderDto!=null){
-			LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderId(orderDto.getId());
+			LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderNumber(number);
 			if(logisticsModel !=null){
 				LogisticsDto logisticsDto = new LogisticsDto();
 				logisticsDto.setCompanyName(logisticsModel.getCompanyName());

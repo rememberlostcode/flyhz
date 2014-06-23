@@ -9,10 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.tools.CodeValidator;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 邮箱设置
@@ -78,14 +79,15 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				email = emailEditText.getText().toString();
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("email", email);
-				if (200000 == rvd.getCode()) {
-					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+				
+				if (CodeValidator.dealCode(this, rvd)) {
+					ToastUtils.showShort(this, "保存成功！");
 					Intent intent = new Intent();
 					intent.putExtra("email", email);
 					setResult(RESULT_OK, intent);
 					finish();
 				} else {
-					Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(this, "保存失败，请重试！");
 				}
 				break;
 			}
@@ -93,14 +95,14 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				// 解除绑定邮箱
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("email", "");
-				if (rvd != null && 200000 == rvd.getCode()) {
-					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+				if (CodeValidator.dealCode(this, rvd)) {
+					ToastUtils.showShort(this, "取消成功！");
 					Intent intent = new Intent();
 					intent.putExtra("email", "");
 					setResult(RESULT_OK, intent);
 					finish();
 				} else {
-					Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(this, "保存失败，请重试！");
 				}
 				break;
 			}

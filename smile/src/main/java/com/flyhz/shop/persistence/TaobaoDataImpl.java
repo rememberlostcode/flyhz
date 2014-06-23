@@ -36,13 +36,14 @@ public class TaobaoDataImpl implements TaobaoData {
 	private String			appkey		= "21799805";
 	private String			secret		= "ac6da6b7525a4c0390f5e4d0dd18d148";
 	private String			sessionKey	= "61023272ec1ff3cab047f128366df05778511ec59c48d62822504044";
+	private String			sellerNick	= "taobao_zb2012";
 
 	@Resource
 	private SolrData		solrData;
 	@Resource
 	private OrderService	orderService;
 	@Resource
-	private OrderDao orderDao;
+	private OrderDao		orderDao;
 	@Resource
 	private LogisticsDao	logisticsDao;
 
@@ -77,96 +78,92 @@ public class TaobaoDataImpl implements TaobaoData {
 				if (StringUtils.isNotBlank(buyerMessage)) {
 					// 通过留言获得smile订单号
 					numbers = buyerMessage.split(",");
-					/*****************************处理订单状态 start***********************************
-					 * 交易状态：
-					 * TRADE_NO_CREATE_PAY(没有创建支付宝交易) 
-					 * WAIT_BUYER_PAY(等待买家付款)
+					/*****************************
+					 * 处理订单状态 start*********************************** 交易状态：
+					 * TRADE_NO_CREATE_PAY(没有创建支付宝交易) WAIT_BUYER_PAY(等待买家付款)
 					 * WAIT_SELLER_SEND_GOODS(等待卖家发货,即:买家已付款)
 					 * SELLER_CONSIGNED_PART（卖家部分发货）
 					 * WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货)
-					 * TRADE_BUYER_SIGNED(买家已签收,货到付款专用) 
-					 * TRADE_FINISHED(交易成功)
-					 * TRADE_CLOSED(交易关闭) 
-					 * TRADE_CLOSED_BY_TAOBAO(交易被淘宝关闭)
+					 * TRADE_BUYER_SIGNED(买家已签收,货到付款专用) TRADE_FINISHED(交易成功)
+					 * TRADE_CLOSED(交易关闭) TRADE_CLOSED_BY_TAOBAO(交易被淘宝关闭)
 					 * ALL_WAIT_PAY(包含：WAIT_BUYER_PAY、TRADE_NO_CREATE_PAY)
 					 * ALL_CLOSED(包含：TRADE_CLOSED、TRADE_CLOSED_BY_TAOBAO)
 					 * WAIT_PRE_AUTH_CONFIRM(余额宝0元购合约中)/
 					 */
 					OrderModel orderModel = new OrderModel();
-					if("WAIT_BUYER_PAY".equals(status)){//等待买家付款
-						for(int g=0;g<numbers.length;g++){
-							if(StringUtils.isNotBlank(numbers[g])){
+					if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
+						for (int g = 0; g < numbers.length; g++) {
+							if (StringUtils.isNotBlank(numbers[g])) {
 								orderModel.setNumber(numbers[g]);
 								orderModel.setStatus(Constants.OrderStateCode.FOR_PAYMENT.code);
 								orderDao.updateStatusByNumber(orderModel);
 							}
 						}
 						continue;
-					} else if("WAIT_SELLER_SEND_GOODS".equals(status)) {//等待卖家发货,即:买家已付款
-						for(int g=0;g<numbers.length;g++){
-							if(StringUtils.isNotBlank(numbers[g])){
+					} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
+						for (int g = 0; g < numbers.length; g++) {
+							if (StringUtils.isNotBlank(numbers[g])) {
 								orderModel.setNumber(numbers[g]);
 								orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_PAID.code);
 								orderDao.updateStatusByNumber(orderModel);
 							}
 						}
 						continue;
-					} else if("SELLER_CONSIGNED_PART".equals(status)) {//卖家部分发货
-						for(int g=0;g<numbers.length;g++){
-							if(StringUtils.isNotBlank(numbers[g])){
+					} else if ("SELLER_CONSIGNED_PART".equals(status)) {// 卖家部分发货
+						for (int g = 0; g < numbers.length; g++) {
+							if (StringUtils.isNotBlank(numbers[g])) {
 								orderModel.setNumber(numbers[g]);
 								orderModel.setStatus(Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code);
 								orderDao.updateStatusByNumber(orderModel);
 							}
 						}
-					} else if("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {//等待买家确认收货,即:卖家已发货
-						for(int g=0;g<numbers.length;g++){
-							if(StringUtils.isNotBlank(numbers[g])){
+					} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
+						for (int g = 0; g < numbers.length; g++) {
+							if (StringUtils.isNotBlank(numbers[g])) {
 								orderModel.setNumber(numbers[g]);
 								orderModel.setStatus(Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code);
 								orderDao.updateStatusByNumber(orderModel);
 							}
 						}
-					} else if("TRADE_BUYER_SIGNED".equals(status)) {//买家已签收,货到付款专用
-						for(int g=0;g<numbers.length;g++){
-							if(StringUtils.isNotBlank(numbers[g])){
+					} else if ("TRADE_BUYER_SIGNED".equals(status)) {// 买家已签收,货到付款专用
+						for (int g = 0; g < numbers.length; g++) {
+							if (StringUtils.isNotBlank(numbers[g])) {
 								orderModel.setNumber(numbers[g]);
 								orderModel.setStatus(Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
 								orderDao.updateStatusByNumber(orderModel);
 							}
 						}
-					} else if("TRADE_FINISHED".equals(status)) {//交易成功
-						for(int g=0;g<numbers.length;g++){
-							if(StringUtils.isNotBlank(numbers[g])){
+					} else if ("TRADE_FINISHED".equals(status)) {// 交易成功
+						for (int g = 0; g < numbers.length; g++) {
+							if (StringUtils.isNotBlank(numbers[g])) {
 								orderModel.setNumber(numbers[g]);
 								orderModel.setStatus(Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
 								orderDao.updateStatusByNumber(orderModel);
 							}
 						}
 						continue;
-					} else if("TRADE_CLOSED".equals(status)) {//交易关闭
-						for(int g=0;g<numbers.length;g++){
-							if(StringUtils.isNotBlank(numbers[g])){
+					} else if ("TRADE_CLOSED".equals(status)) {// 交易关闭
+						for (int g = 0; g < numbers.length; g++) {
+							if (StringUtils.isNotBlank(numbers[g])) {
 								orderModel.setNumber(numbers[g]);
 								orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_CLOSED.code);
 								orderDao.updateStatusByNumber(orderModel);
 							}
 						}
 						continue;
-					} else if("TRADE_CLOSED_BY_TAOBAO".equals(status)) {
+					} else if ("TRADE_CLOSED_BY_TAOBAO".equals(status)) {
 						continue;
-					} else if("ALL_WAIT_PAY".equals(status)) {
+					} else if ("ALL_WAIT_PAY".equals(status)) {
 						continue;
-					} else if("ALL_CLOSED".equals(status)) {
+					} else if ("ALL_CLOSED".equals(status)) {
 						continue;
-					} else if("WAIT_PRE_AUTH_CONFIRM".equals(status)) {
+					} else if ("WAIT_PRE_AUTH_CONFIRM".equals(status)) {
 						continue;
 					} else {
 						continue;
 					}
-					
-					
-					/*****************************处理订单状态 end***********************************/
+
+					/***************************** 处理订单状态 end ***********************************/
 
 					/***************************** 处理物流 start *************************************/
 					for (int j = 0; j < numbers.length; j++) {
@@ -177,7 +174,7 @@ public class TaobaoDataImpl implements TaobaoData {
 						} catch (ApiException e) {
 							e.printStackTrace();
 						}
-						if(res != null){
+						if (res != null) {
 							List<TransitStepInfo> traceList = res.getTraceList();
 							if (res != null && traceList != null && traceList.size() > 0) {
 								List<String> llist = new ArrayList<String>();
@@ -185,20 +182,20 @@ public class TaobaoDataImpl implements TaobaoData {
 									llist.add(traceList.get(k).getStatusTime() + " "
 											+ traceList.get(k).getStatusDesc());
 								}
-	
+
 								if (orderDto.getLogisticsDto() == null) {
 									orderDto.setLogisticsDto(new LogisticsDto());
 									isAdd = true;
 								} else {
 									isAdd = false;
 								}
-	
+
 								orderDto.getLogisticsDto().setNumber(numbers[j]);
 								orderDto.getLogisticsDto().setCompanyName(res.getCompanyName());
 								orderDto.getLogisticsDto().setTid(res.getTid());
 								orderDto.getLogisticsDto().setLogisticsStatus(res.getStatus());
 								orderDto.getLogisticsDto().setTransitStepInfoList(llist);
-	
+
 								StringBuilder content = new StringBuilder(50);
 								for (String c : orderDto.getLogisticsDto().getTransitStepInfoList()) {
 									content.append(c);
@@ -206,7 +203,7 @@ public class TaobaoDataImpl implements TaobaoData {
 								}
 								content.delete(content.length() - 3, content.length());
 								orderDto.getLogisticsDto().setContent(content.toString());
-	
+
 								if (isAdd) {
 									Date date = new Date();
 									orderDto.getLogisticsDto().setGmtCreate(date);
@@ -248,7 +245,7 @@ public class TaobaoDataImpl implements TaobaoData {
 		}
 		LogisticsTraceSearchRequest req = new LogisticsTraceSearchRequest();
 		req.setTid(tid);
-		req.setSellerNick("taobao_zb2012");
+		req.setSellerNick(sellerNick);
 		return client.execute(req);
 	}
 

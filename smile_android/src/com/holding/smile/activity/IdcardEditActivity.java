@@ -17,13 +17,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Idcard;
 import com.holding.smile.tools.BitmapUtils;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.IdcardValidator;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 身份证信息编辑
@@ -111,9 +112,11 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Message msg = mUIHandler.obtainMessage(optNum);
-		msg.obj = rvd;
-		msg.sendToTarget();
+		if(CodeValidator.dealCode(this, rvd)){
+			Message msg = mUIHandler.obtainMessage(optNum);
+			msg.obj = rvd;
+			msg.sendToTarget();
+		}
 	}
 
 	private final int	OPT_CODE_SAVE	= 1;
@@ -130,26 +133,26 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			case R.id.idcard_add_save: {
 				String xm = idcardName.getText().toString();
 				if ("".equals(xm) || "".equals(xm.trim())) {
-					Toast.makeText(context, "姓名不能为空", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(this, "姓名不能为空");
 					break;
 				}
 				idcard.setName(xm.trim());
 
 				String sfzh = idcardNumber.getText().toString();
 				if ("".equals(sfzh) || "".equals(sfzh.trim())) {
-					Toast.makeText(context, "身份证号不能为空", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(this, "身份证号不能为空!");
 					break;
 				}
 				idcard.setNumber(sfzh.trim());
 				IdcardValidator iv = new IdcardValidator();
 				if (!iv.isValidatedAllIdcard(idcard.getNumber())) {
-					Toast.makeText(context, "身份证号非法，请确认后再提交！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(this, "身份证号非法，请确认后再提交！");
 					break;
 				}
 
 				if (idcard.getId() == null
 						&& (picturePath == null || "".equals(picturePath.trim()))) {
-					Toast.makeText(context, "必须上传身份证", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(this, "必须上传身份证!");
 					break;
 				}
 
@@ -213,23 +216,20 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 													case OPT_CODE_SAVE: {
 														RtnValueDto rvd = (RtnValueDto) msg.obj;
 														if (rvd != null && 200000 == rvd.getCode()) {
-															Toast.makeText(context, "保存成功！",
-																	Toast.LENGTH_SHORT).show();
+															ToastUtils.showShort(context, "保存成功!");
 															Intent intent = new Intent();
 															intent.putExtra("idcard", idcard);
 															setResult(RESULT_OK, intent);
 															finish();
 														} else {
-															Toast.makeText(context, "保存失败，请重试！",
-																	Toast.LENGTH_SHORT).show();
+															ToastUtils.showShort(context, "保存失败，请重试！");
 														}
 														break;
 													}
 													case OPT_CODE_REMOVE: {
 														RtnValueDto rvd = (RtnValueDto) msg.obj;
 														if (rvd != null && 200000 == rvd.getCode()) {
-															Toast.makeText(context, "删除成功！",
-																	Toast.LENGTH_SHORT).show();
+															ToastUtils.showShort(context, "删除成功!");
 															Intent intent = new Intent();
 															intent.putExtra("idcard", idcard);
 															setResult(RESULT_OK, intent);
@@ -237,9 +237,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 														} else {
 															if (idcard != null
 																	&& idcard.getId() != null) {
-																Toast.makeText(context,
-																		"删除失败，请重试！",
-																		Toast.LENGTH_SHORT).show();
+																ToastUtils.showShort(context, "删除失败，请重试!");
 															}
 															finish();
 														}

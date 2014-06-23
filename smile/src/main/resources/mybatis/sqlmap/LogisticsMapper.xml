@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.flyhz.shop.persistence.dao.LogisticsDao">
-	<select id="getLogisticsByOrderId" parameterType="String"
+	<select id="getLogisticsByOrderNumber" parameterType="String"
 		resultType="LogisticsModel">
 		select id,company_name companyName,gmt_modify
 		gmtModify,content,logistics_status logisticsStatus,tid

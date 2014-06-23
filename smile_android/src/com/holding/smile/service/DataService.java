@@ -10,8 +10,6 @@ import android.content.Context;
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.dto.ValidateDto;
-import com.holding.smile.entity.Category;
-import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SortType;
 import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.protocol.PCartItem;
@@ -206,8 +204,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PIndexJGoods indexJGoods = JSONUtil.getJson2Entity(rStr, PIndexJGoods.class);
-				if (indexJGoods != null)
+				if (indexJGoods != null){
 					rvd.setIndexData(indexJGoods.getData());
+					rvd.setCode(indexJGoods.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -237,8 +237,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PIndexBrands indexBrands = JSONUtil.getJson2Entity(rStr, PIndexBrands.class);
-				if (indexBrands != null)
+				if (indexBrands != null){
 					rvd.setIndexBrandsData(indexBrands.getData());
+					rvd.setCode(indexBrands.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -268,8 +270,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PBrandJGoods brandJGoods = JSONUtil.getJson2Entity(rStr, PBrandJGoods.class);
-				if (brandJGoods != null)
+				if (brandJGoods != null){
 					rvd.setBrandData(brandJGoods.getData());
+					rvd.setCode(brandJGoods.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -297,7 +301,6 @@ public class DataService {
 	public RtnValueDto getBrandGoods(Integer bid, Integer cid, String seqorderType,
 			Integer seqorderValue) {
 		RtnValueDto rvd = new RtnValueDto();
-		List<JGoods> results = new ArrayList<JGoods>();
 		String url = this.prefix_url;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (bid != null)
@@ -317,7 +320,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
-				results = pst.getData();
+				if(pst != null){
+					rvd.setData(pst.getData());
+					rvd.setCode(pst.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -329,7 +335,6 @@ public class DataService {
 			vd.setMessage(Constants.MESSAGE_NET);
 			rvd.setValidate(vd);
 		}
-		rvd.setData(results);
 		return rvd;
 	}
 
@@ -344,7 +349,6 @@ public class DataService {
 	 */
 	public RtnValueDto searchGoods(String keywords, String seqorderType, Integer seqorderValue) {
 		RtnValueDto rvd = new RtnValueDto();
-		List<JGoods> results = new ArrayList<JGoods>();
 		String url = prefix_url;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (StrUtils.isNotEmpty(keywords)) {
@@ -364,7 +368,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
-				results = pst.getData();
+				if(pst != null) {
+					rvd.setData(pst.getData());
+					rvd.setCode(pst.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -376,7 +383,6 @@ public class DataService {
 			vd.setMessage(Constants.MESSAGE_NET);
 			rvd.setValidate(vd);
 		}
-		rvd.setData(results);
 		return rvd;
 	}
 
@@ -387,24 +393,21 @@ public class DataService {
 	 */
 	public RtnValueDto getCategorys() {
 		RtnValueDto rvd = new RtnValueDto();
-		List<Category> results = new ArrayList<Category>();
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_cate_url, null);
 
+		PCategory pc = null;
 		if (rStr != null && !"".equals(rStr)) {
 			try {
-				PCategory pc = JSONUtil.getJson2Entity(rStr, PCategory.class);
-				results = pc.getData();
+				pc = JSONUtil.getJson2Entity(rStr, PCategory.class);
+				if(pc!=null){
+					rvd.setCode(pc.getCode());
+					rvd.setCateData(pc.getData());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
 		}
-		rvd.setCateData(results);
+		
 		return rvd;
 	}
 
@@ -420,8 +423,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PSort pc = JSONUtil.getJson2Entity(rStr, PSort.class);
-				if (pc != null)
+				if (pc != null){
 					rvd.setSortData(pc.getData());
+					rvd.setCode(pc.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -450,7 +455,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
-				rvd.setData(pst.getData());
+				if (pst != null) {
+					rvd.setData(pst.getData());
+					rvd.setCode(pst.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -481,8 +489,10 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PGoods details = JSONUtil.getJson2Entity(rStr, PGoods.class);
-				if (details != null)
+				if (details != null){
 					rvd.setData(details.getData());
+					rvd.setCode(details.getCode());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -631,10 +641,10 @@ public class DataService {
 		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_list_url, null);
 		if (rvdString != null) {
 			PCartItem pc = JSONUtil.getJson2Entity(rvdString, PCartItem.class);
-			if (pc != null && pc.getData() != null && pc.getCode() == 200000) {
+			if (pc != null) {
 				rvd = new RtnValueDto();
 				rvd.setCartListData(pc.getData());
-				rvd.setCode(200000);
+				rvd.setCode(pc.getCode());
 			}
 		}
 		return rvd;
