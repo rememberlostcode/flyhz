@@ -16,7 +16,6 @@ import android.widget.GridView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
@@ -25,6 +24,7 @@ import com.holding.smile.activity.MyApplication;
 import com.holding.smile.dto.BrandJGoods;
 import com.holding.smile.myview.MyGridView;
 import com.holding.smile.tools.Constants;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -152,8 +152,7 @@ public class VerticalListAdapter extends BaseAdapter {
 							activity.startActivityForResult(intent, BaseActivity.MORE_CODE);
 							activity.overridePendingTransition(0, 0);
 						} else {
-							Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT)
-									.show();
+							ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 							hlAdapter.notifyDataSetChanged();// 更新一下显示的数据
 						}
 					}

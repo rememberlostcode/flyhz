@@ -80,14 +80,12 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("email", email);
 				
-				if (CodeValidator.dealCode(this, rvd)) {
+				if (CodeValidator.dealCode(context, rvd)) {
 					ToastUtils.showShort(this, "保存成功！");
 					Intent intent = new Intent();
 					intent.putExtra("email", email);
 					setResult(RESULT_OK, intent);
 					finish();
-				} else {
-					ToastUtils.showShort(this, "保存失败，请重试！");
 				}
 				break;
 			}
@@ -95,14 +93,12 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				// 解除绑定邮箱
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("email", "");
-				if (CodeValidator.dealCode(this, rvd)) {
+				if (CodeValidator.dealCode(context, rvd)) {
 					ToastUtils.showShort(this, "取消成功！");
 					Intent intent = new Intent();
 					intent.putExtra("email", "");
 					setResult(RESULT_OK, intent);
 					finish();
-				} else {
-					ToastUtils.showShort(this, "保存失败，请重试！");
 				}
 				break;
 			}

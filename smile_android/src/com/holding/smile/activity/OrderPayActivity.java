@@ -22,6 +22,7 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.tools.ClickUtil;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -72,10 +73,10 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 				amountText.setText("￥" + amount + "元");
 				mUIHandler.sendEmptyMessage(WHAT_DID_LOAD_DATA);
 			} else {
-				Toast.makeText(context, Constants.MESSAGE_EXCEPTION, Toast.LENGTH_SHORT).show();
+				ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 			}
 		} catch (Exception e) {
-			Toast.makeText(context, Constants.MESSAGE_EXCEPTION, Toast.LENGTH_SHORT).show();
+			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 		}
 
 	}
@@ -95,7 +96,6 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 		// new DialogInterface.OnClickListener() {
 		// @Override
 		// public void onClick(DialogInterface dialog, int which) {
-		// // TODO Auto-generated method stub
 		//
 		// }
 		// });

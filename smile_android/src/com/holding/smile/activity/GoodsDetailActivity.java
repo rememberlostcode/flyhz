@@ -104,11 +104,10 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	@Override
 	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getGoodsDetail(bs);
-		if (CodeValidator.dealCode(this, rtnValue)) {
-			Message msg = mUIHandler.obtainMessage(0);
-			msg.obj = rtnValue;
-			msg.sendToTarget();
-		}
+
+		Message msg = mUIHandler.obtainMessage(0);
+		msg.obj = rtnValue;
+		msg.sendToTarget();
 	}
 
 	/**
@@ -359,16 +358,18 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 													case 0: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															details = obj.getData();
-															if (details == null) {
-																if (obj.getValidate() != null
-																		&& StrUtils.isNotEmpty(obj.getValidate()
-																									.getMessage())) {
-																	ToastUtils.showShort(context, obj.getValidate()
-																			.getMessage());
+															if (CodeValidator.dealCode(context, obj)) {
+																details = obj.getData();
+																if (details == null) {
+																	if (obj.getValidate() != null
+																			&& StrUtils.isNotEmpty(obj.getValidate()
+																										.getMessage())) {
+																		ToastUtils.showShort(context, obj.getValidate()
+																				.getMessage());
+																	}
+																} else {
+																	initView();
 																}
-															} else {
-																initView();
 															}
 														}
 														break;

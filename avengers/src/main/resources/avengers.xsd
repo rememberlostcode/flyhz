@@ -21,7 +21,7 @@
 	</element>
 	<complexType name="xDomain">
 		<all>
-			<element name="urlFilterBeforeCrawl" type="ave:xFilter" minOccurs="0"/>
+			<element name="urlFilterBeforeCrawl" type="ave:xFilter" minOccurs="0" />
 			<element name="crawlEvents" type="ave:xEvents" minOccurs="0"/>
 			<element name="urlFilterAfterCrawl" type="ave:xFilter" minOccurs="0"/>
 			<element name="fetchEvents" type="ave:xEvents" minOccurs="0"/>

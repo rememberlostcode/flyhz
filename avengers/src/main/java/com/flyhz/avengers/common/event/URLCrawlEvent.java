@@ -278,6 +278,7 @@ public class URLCrawlEvent implements Event {
 	}
 
 	public static void main(String[] args) {
+		System.out.println(1 / 1000);
 
 	}
 }

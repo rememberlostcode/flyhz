@@ -18,11 +18,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.TbUtil;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -133,13 +133,13 @@ public class WebViewActivity extends Activity implements OnClickListener {
 								"http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
 										+ amount.intValue());
 			} else {
-				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
+				ToastUtils.showShort(this, "订单号或金额为空！");
 				setResult(RESULT_CANCELED, null);
 				finish();
 			}
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, "去淘宝支付时出错：" + e.getMessage());
-			Toast.makeText(this, "订单号或金额不能为空！", Toast.LENGTH_SHORT).show();
+			ToastUtils.showShort(this, "订单号或金额不能为空！");
 			setResult(RESULT_CANCELED, null);
 			finish();
 			return;

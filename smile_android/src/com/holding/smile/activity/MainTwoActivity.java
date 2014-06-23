@@ -18,7 +18,6 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyJGoodsAdapter;
@@ -30,6 +29,8 @@ import com.holding.smile.myview.MyLinearLayout;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnFooterRefreshListener;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
+import com.holding.smile.tools.CodeValidator;
+import com.holding.smile.tools.ToastUtils;
 
 public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		OnHeaderRefreshListener, OnFooterRefreshListener {
@@ -178,24 +179,20 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	public synchronized void loadData() {
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
-		if (rGoods != null) {
+		if (CodeValidator.dealCode(context, rGoods)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rGoods;
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
 	public void onRefresh() {
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
-		if (rGoods != null) {
+		if (CodeValidator.dealCode(context, rGoods)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
 			msg.obj = rGoods;
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -213,12 +210,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 											.getDataService()
 											.getBrandJGoodsListMore(bid, cid, seqorderType,
 													jGoodsLast.getSeq());
-		if (rGoods != null) {
+		if (CodeValidator.dealCode(context, rGoods)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_MORE);
 			msg.obj = rGoods;
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -310,10 +305,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																						.getMessage();
 																	if (message != null
 																			&& !"".equals(message.trim())) {
-																		Toast.makeText(context,
-																				message,
-																				Toast.LENGTH_SHORT)
-																				.show();
+																		ToastUtils.showShort(
+																				context, message);
 																	}
 																}
 																List<JGoods> strings = obj.getData();
@@ -349,10 +342,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																						.getMessage();
 																	if (message != null
 																			&& !"".equals(message.trim())) {
-																		Toast.makeText(context,
-																				message,
-																				Toast.LENGTH_SHORT)
-																				.show();
+																		ToastUtils.showShort(
+																				context, message);
 																	}
 																}
 																List<JGoods> strings = obj.getData();

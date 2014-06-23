@@ -8,11 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 修改密码
@@ -57,36 +58,28 @@ public class ResetPwdActivity extends BaseActivity {
 				String conPwd = pwdNewConfirm.getText().toString();
 
 				if (newPwd == null || "".equals(newPwd.trim())) {
-					Toast.makeText(context, "密码不能为空！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "密码不能为空！");
 					return;
 				}
 				if (newPwd.length() < 6 || newPwd.length() > 12) {
-					Toast.makeText(context, "密码只能6到12个字符！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "密码只能6到12个字符！");
 					return;
 				}
 				if (!newPwd.equals(conPwd.trim())) {
-					Toast.makeText(context, "两个密码不一致！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "两个密码不一致！");
 					return;
 				}
 				if (!StrUtils.chaeckPassword(newPwd)) {
-					Toast.makeText(context, "密码太简单了，至少需要字母加数字！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "密码太简单了，至少需要字母加数字！");
 					return;
 				}
 
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.passwordReset(oldPwd, newPwd);
-				if (rvd != null) {
-					if( rvd.getCode() != null && rvd.getCode() == 200000){
-						Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show();
-						setResult(RESULT_CANCELED, null);
-						finish();
-					} else if (rvd.getCode() != null && rvd.getCode() == 101026) {
-						Toast.makeText(context, "修改失败，原密码错误！", Toast.LENGTH_SHORT).show();
-					} else {
-						Toast.makeText(context, "修改失败，请检查网络！", Toast.LENGTH_SHORT).show();
-					}
-				} else {
-					Toast.makeText(context, "修改失败，请检查网络！", Toast.LENGTH_SHORT).show();
+				if (CodeValidator.dealCode(context, rvd)) {
+					ToastUtils.showShort(context, "修改成功！");
+					setResult(RESULT_CANCELED, null);
+					finish();
 				}
 			}
 		});

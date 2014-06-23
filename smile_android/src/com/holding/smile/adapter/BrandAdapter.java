@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
@@ -22,6 +21,7 @@ import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.Brand;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -35,7 +35,7 @@ public class BrandAdapter extends BaseAdapter {
 	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private LayoutInflater	mInflater;
 	private List<Brand>		brandList;
-	private Integer				cid;
+	private Integer			cid;
 	private boolean			mBusy			= false;
 
 	public BrandAdapter(List<Brand> brandList, Integer cid) {
@@ -61,10 +61,10 @@ public class BrandAdapter extends BaseAdapter {
 	}
 
 	private static class ViewHolder {
-		private TextView		brand;
+		private TextView	brand;
 		// private TextView moreText;
 		// private RelativeLayout relativeLayout;
-		private ImageView		p;
+		private ImageView	p;
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class BrandAdapter extends BaseAdapter {
 						activity.startActivityForResult(intent, BaseActivity.MORE_CODE);
 						activity.overridePendingTransition(0, 0);
 					} else {
-						Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+						ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 						notifyDataSetChanged();// 更新一下显示的数据
 					}
 				}

@@ -10,10 +10,10 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 更多
@@ -76,7 +76,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.mysmile_mycoupon_layout: {
-				Toast.makeText(context, "敬请期待", Toast.LENGTH_SHORT).show();
+				ToastUtils.showShort(context, "敬请期待！");
 				break;
 			}
 			case R.id.mysmile_setting_layout: {
@@ -111,8 +111,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 
 														MyApplication.getImageLoader()
 																		.clearMemoryCache();
-														Toast.makeText(context, "清理缓存成功！",
-																	Toast.LENGTH_SHORT).show();
+														ToastUtils.showShort(context, "清理缓存成功！");
 
 													}
 												}).setNegativeButton("取消", null).show();
