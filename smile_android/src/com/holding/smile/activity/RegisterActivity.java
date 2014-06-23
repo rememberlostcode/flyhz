@@ -13,12 +13,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 注册
@@ -77,29 +78,29 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 				String password2 = userPwd2.getText().toString();// 获取用户输入的密码
 
 				if (username == null || "".equals(username.trim())) {
-					Toast.makeText(context, "用户名不能为空！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "用户名不能为空！");
 					return;
 				}
 				if (username.length() < 6 || username.length() > 12) {
-					Toast.makeText(context, "用户名只能6到12个字符！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "用户名只能6到12个字符！");
 					return;
 				}
 
 				if (password == null || "".equals(password.trim())) {
-					Toast.makeText(context, "密码不能为空！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "密码不能为空！");
 					return;
 				}
 				if (password.length() < 6 || password.length() > 12) {
-					Toast.makeText(context, "密码只能6到12个字符！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "密码只能6到12个字符！");
 					return;
 				}
 				if (!password.equals(password2.trim())) {
-					Toast.makeText(context, "两个密码不一致！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "两个密码不一致！");
 					return;
 				}
 
 				if (!StrUtils.chaeckPassword(password)) {
-					Toast.makeText(context, "密码太简单了，至少需要字母加数字！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "密码太简单了，至少需要字母加数字！");
 					return;
 				}
 
@@ -133,71 +134,18 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																										.register(
 																												user);
 
-																		if (rvd == null
-																				|| rvd.getCode() == null) {
+																		if (!CodeValidator.dealCode(
+																				context, rvd)) {
 																			loginViewInit();
-																			Toast.makeText(
-																					context,
-																					"注册失败！",
-																					Toast.LENGTH_SHORT)
-																					.show();
 																		} else {
-																			if (rvd.getCode().equals(200000)) {
-																				Toast.makeText(
-																						context,
-																						"注册成功！",
-																						Toast.LENGTH_SHORT)
-																						.show();
-																				Intent intent = new Intent(
-																						context,
-																						LoginActivity.class);
-																				startActivity(intent);
-																				finish();
-																			} else {
-																				if (rvd.getCode()
-																						.equals(140001)) {
-																					Toast.makeText(
-																							context,
-																							"用户名与密码不能为空！",
-																							Toast.LENGTH_SHORT)
-																							.show();
-																				} else if (rvd.getCode()
-																								.equals(140002)) {
-																					Toast.makeText(
-																							context,
-																							"用户名为空！",
-																							Toast.LENGTH_SHORT)
-																							.show();
-																				} else if (rvd.getCode()
-																								.equals(140003)) {
-																					Toast.makeText(
-																							context,
-																							"用户名长度不能大于32个字符！",
-																							Toast.LENGTH_SHORT)
-																							.show();
-																				} else if (rvd.getCode()
-																								.equals(140004)) {
-																					Toast.makeText(
-																							context,
-																							"用户名已存在！",
-																							Toast.LENGTH_SHORT)
-																							.show();
-																				} else if (rvd.getCode()
-																								.equals(140005)) {
-																					Toast.makeText(
-																							context,
-																							"密码为空！",
-																							Toast.LENGTH_SHORT)
-																							.show();
-																				} else {
-																					Toast.makeText(
-																							context,
-																							"注册失败！",
-																							Toast.LENGTH_SHORT)
-																							.show();
-																				}
-																				loginViewInit();
-																			}
+																			ToastUtils.showShort(
+																					context,
+																					"注册成功！");
+																			Intent intent = new Intent(
+																					context,
+																					LoginActivity.class);
+																			startActivity(intent);
+																			finish();
 																		}
 																	}
 																	break;

@@ -20,7 +20,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyPagerAdapter;
@@ -35,7 +34,9 @@ import com.holding.smile.myview.MyListView;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 import com.holding.smile.service.LoginService;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.ToastUtils;
 
 public class MainActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener {
 
@@ -153,24 +154,20 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 	@Override
 	public void loadData() {
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getIndexJGoods(cid);
-		if (rGoods != null) {
+		if (CodeValidator.dealCode(context, rGoods)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rGoods.getIndexData();
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
 	public void onRefresh() {
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getRecommendBrandsListInit(cid);
-		if (rGoods != null) {
+		if (CodeValidator.dealCode(context, rGoods)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
 			msg.obj = rGoods;
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -212,10 +209,6 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 					@Override
 					public void onClick(View arg0) {
-						// Toast.makeText(context, "您点击了活动区域" + jAct.getId() +
-						// "!", Toast.LENGTH_SHORT)
-						// .show();
-
 						Intent intent = new Intent(context, HtmlUIActivity.class);
 						if (StrUtils.isNotEmpty(jAct.getUrl())) {
 							intent.putExtra("url", jAct.getUrl());
@@ -335,8 +328,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																}
 															}
 														} else {
-															Toast.makeText(context, "暂无数据",
-																	Toast.LENGTH_SHORT).show();
+															ToastUtils.showShort(context, "暂无数据 ！");
 														}
 														vlAdapter.notifyDataSetChanged();
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -356,8 +348,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																}
 															}
 														} else {
-															Toast.makeText(context, "暂无数据",
-																	Toast.LENGTH_SHORT).show();
+															ToastUtils.showShort(context, "暂无数据！");
 														}
 														vlAdapter.notifyDataSetChanged();
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -371,11 +362,10 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 															RtnValueDto rvd = loginService.autoLogin(user);
 															if (rvd != null
 																	&& rvd.getUserData() != null) {
-																Toast.makeText(
+																ToastUtils.showShort(
 																		context,
 																		"自动登录成功！欢迎您,"
-																				+ user.getUsername(),
-																		Toast.LENGTH_SHORT).show();
+																				+ user.getUsername());
 															}
 														}
 														break;

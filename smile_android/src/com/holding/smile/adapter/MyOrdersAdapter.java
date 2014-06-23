@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.IdcardManagerActivity;
@@ -30,6 +29,7 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.ClickUtil;
 import com.holding.smile.tools.Constants;
+import com.holding.smile.tools.ToastUtils;
 
 public class MyOrdersAdapter extends BaseAdapter {
 	private Context				context;
@@ -192,10 +192,8 @@ public class MyOrdersAdapter extends BaseAdapter {
 																									.closeOrder(
 																											order.getId());
 																	if (200000 == rvd.getCode()) {
-																		Toast.makeText(context,
-																				"订单已关闭",
-																				Toast.LENGTH_SHORT)
-																				.show();
+																		ToastUtils.showShort(
+																				context, "订单已关闭！");
 																		String status = Constants.OrderStateCode.HAVE_BEEN_CLOSED.code;
 																		holder.statusButton.setText(ClickUtil.getTextByStatus(status));
 																		holder.statusButton.setBackgroundColor(ClickUtil.getBackgroundColorByStatus(status));

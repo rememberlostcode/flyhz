@@ -105,21 +105,23 @@ public class LoginService {
 		}
 		if (rvdString != null) {
 			PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
-			if (user != null && user.getData() != null && user.getCode() == SUCCESS_CODE) {
+			if (user != null) {
 				MyApplication.setSessionTime(new Date());
 				rvd = new RtnValueDto();
 				rvd.setUserData(user.getData());
-				rvd.setCode(200000);
-				setLoginUser(user.getData());
-				try {
-					// 添加本地数据库用户信息
-					MyApplication.getInstance().getSqliteService().addUser();
-				} catch (Exception e) {
-					System.out.println("SQLite出错了！");
-					e.printStackTrace();
-					System.out.println("SQLite关闭并初始化！");
-					MyApplication.getInstance().getSqliteService().closeDB();
-					MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+				rvd.setCode(user.getCode());
+				if (user.getData() != null && user.getCode() == SUCCESS_CODE) {
+					setLoginUser(user.getData());
+					try {
+						// 添加本地数据库用户信息
+						MyApplication.getInstance().getSqliteService().addUser();
+					} catch (Exception e) {
+						System.out.println("SQLite出错了！");
+						e.printStackTrace();
+						System.out.println("SQLite关闭并初始化！");
+						MyApplication.getInstance().getSqliteService().closeDB();
+						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+					}
 				}
 			}
 		}
@@ -139,17 +141,18 @@ public class LoginService {
 				if (user != null && user.getData() != null && user.getCode() == SUCCESS_CODE) {
 					rvd = new RtnValueDto();
 					rvd.setUserData(user.getData());
-					rvd.setCode(200000);
-					setLoginUser(user.getData());
-					try {
-						// 添加本地数据库用户信息
-						MyApplication.getInstance().getSqliteService().addUser();
-					} catch (Exception e) {
-						System.out.println("SQLite出错了！");
-						e.printStackTrace();
-						System.out.println("SQLite关闭并初始化！");
-						MyApplication.getInstance().getSqliteService().closeDB();
-						MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+					rvd.setCode(user.getCode());
+					if (user.getData() != null && user.getCode() == SUCCESS_CODE) {
+						try {
+							// 添加本地数据库用户信息
+							MyApplication.getInstance().getSqliteService().addUser();
+						} catch (Exception e) {
+							System.out.println("SQLite出错了！");
+							e.printStackTrace();
+							System.out.println("SQLite关闭并初始化！");
+							MyApplication.getInstance().getSqliteService().closeDB();
+							MyApplication.getInstance().setSqliteService(new SQLiteService(context));
+						}
 					}
 				} else {
 					MyApplication.getInstance().setCurrentUser(null);

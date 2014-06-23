@@ -32,9 +32,16 @@ public class CodeValidator {
 	private CodeValidator() {
 	}
 
+	/**
+	 * 处理code并进行提示
+	 * 
+	 * @param context
+	 * @param rtnValueDto
+	 * @return 如果code等于200000则返回true
+	 */
 	public static boolean dealCode(Context context, RtnValueDto rtnValueDto) {
 		boolean res = false;
-		if (rtnValueDto == null) {//rtnValueDto等于null时可能是网络问题，需要检查网络
+		if (rtnValueDto == null) {// rtnValueDto等于null时可能是网络问题，需要检查网络
 			if (MyApplication.isHasNetwork()) {
 				ToastUtils.showShort(context, "暂无数据！");
 			} else {
@@ -89,10 +96,10 @@ public class CodeValidator {
 						ToastUtils.showShort(context, "新密码不能为空！");
 						break;
 					case 101026:
-						ToastUtils.showShort(context, "输入的旧密码错误！");
+						ToastUtils.showShort(context, "密码错误！");
 						break;
 					case 101027:
-						ToastUtils.showShort(context, "旧密码超过长度限制 ！");
+						ToastUtils.showShort(context, "原密码超过长度限制 ！");
 						break;
 					case 101028:
 						ToastUtils.showShort(context, "新密码超过长度限制 ！");

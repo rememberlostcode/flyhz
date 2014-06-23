@@ -77,11 +77,10 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 		cate.setName(context.getString(R.string.all_cate));
 		cateList.add(cate);
 		RtnValueDto cates = MyApplication.getInstance().getDataService().getCategorys();
-		if (CodeValidator.dealCode(this, cates)) {
-			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-			msg.obj = cates;
-			msg.sendToTarget();
-		}
+
+		Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
+		msg.obj = cates;
+		msg.sendToTarget();
 	}
 
 	@Override
@@ -121,13 +120,15 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 											case WHAT_DID_LOAD_DATA: {
 												if (msg.obj != null) {
 													RtnValueDto obj = (RtnValueDto) msg.obj;
-													List<Category> strings = obj.getCateData();
-													if (strings != null && !strings.isEmpty()) {
-														for (int i = 0; i < strings.size(); i++) {
-															Category each = strings.get(i);
-															cateList.add(each);
+													if (CodeValidator.dealCode(context, obj)) {
+														List<Category> strings = obj.getCateData();
+														if (strings != null && !strings.isEmpty()) {
+															for (int i = 0; i < strings.size(); i++) {
+																Category each = strings.get(i);
+																cateList.add(each);
+															}
+															cateAdapter.notifyDataSetChanged();
 														}
-														cateAdapter.notifyDataSetChanged();
 													}
 												}
 												break;

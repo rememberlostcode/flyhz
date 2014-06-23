@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.HistorySearchAdapter;
@@ -36,6 +35,7 @@ import com.holding.smile.entity.JGoods;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnFooterRefreshListener;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -107,7 +107,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 				String inputContent = s.toString();
 				int len = inputContent.length();
 				if (len > 100) {
-					Toast.makeText(context, "最多只能输入100个字符！ ", Toast.LENGTH_LONG).show();
+					ToastUtils.showShort(context, "最多只能输入100个字符！");
 					editText.setText(inputContent.substring(0, 100));
 					return;
 				} else {
@@ -196,12 +196,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				historyListView.setVisibility(ViewGroup.GONE);
 				smartFlag = true;
-				// Toast.makeText(context, "查找" +
-				// historySearchList.get(position)
-				// + "下的物品",
-				// Toast.LENGTH_SHORT).show();
 				editText.setText(historySearchList.get(position));
-				// editText.setSelection(historySearchList.get(position).length());
 				editText.setSelection(editText.getText().length());
 
 				InputMethodManager imm = (InputMethodManager) editText.getContext()
@@ -397,8 +392,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 																	adapter.notifyDataSetChanged();
 																}
 															} else {
-																Toast.makeText(context, "暂无数据",
-																		Toast.LENGTH_SHORT).show();
+																ToastUtils.showShort(context, "暂无数据！");
 															}
 														}
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -424,8 +418,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 																	adapter.notifyDataSetChanged();
 																}
 															} else {
-																Toast.makeText(context, "暂无数据",
-																		Toast.LENGTH_SHORT).show();
+																ToastUtils.showShort(context, "暂无数据！");
 															}
 														}
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -445,8 +438,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 																	adapter.notifyDataSetChanged();
 																}
 															} else {
-																Toast.makeText(context, "最后一个了",
-																		Toast.LENGTH_SHORT).show();
+																ToastUtils.showShort(context, "最后一个了！");
 															}
 														}
 														mPullToRefreshView.onFooterRefreshComplete();

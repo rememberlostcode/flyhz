@@ -17,7 +17,6 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyJGoodsAdapter;
@@ -25,6 +24,7 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JSort;
 import com.holding.smile.myview.MyLinearLayout;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -129,7 +129,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 			msg.obj = rGoods;
 			msg.sendToTarget();
 		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
+			ToastUtils.showShort(context, "暂无数据！");
 		}
 	}
 

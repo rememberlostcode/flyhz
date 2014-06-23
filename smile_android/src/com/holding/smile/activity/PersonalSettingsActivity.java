@@ -14,11 +14,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.tools.CodeValidator;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 个人设置
@@ -68,12 +69,10 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 	@Override
 	public void loadData() {
 		RtnValueDto user = MyApplication.getInstance().getDataService().getUserInfo();
-		if (user != null) {
+		if (CodeValidator.dealCode(context, user)) {
 			Message msg = mUIHandler.obtainMessage(1);
 			msg.obj = user;
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -198,8 +197,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 																}
 															}
 														} else {
-															Toast.makeText(context, "暂无数据",
-																	Toast.LENGTH_SHORT).show();
+															ToastUtils.showShort(context, "暂无数据！");
 														}
 														break;
 													}

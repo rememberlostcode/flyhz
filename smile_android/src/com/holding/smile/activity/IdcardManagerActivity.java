@@ -14,12 +14,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyIdcardAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Idcard;
+import com.holding.smile.tools.CodeValidator;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 收货地址管理
@@ -54,12 +55,10 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 	@Override
 	public synchronized void loadData() {
 		RtnValueDto idcards = MyApplication.getInstance().getDataService().getIdcardsList();
-		if (idcards != null) {
+		if (CodeValidator.dealCode(context, idcards)) {
 			Message msg = mUIHandler.obtainMessage(1);
 			msg.obj = idcards;
 			msg.sendToTarget();
-		} else {
-			Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -100,8 +99,7 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
 														list = rvd.getIdcardsData();
 														if (list == null) {
-															Toast.makeText(context, "暂无数据",
-																	Toast.LENGTH_SHORT).show();
+															ToastUtils.showShort(context, "暂无数据！");
 															break;
 														}
 

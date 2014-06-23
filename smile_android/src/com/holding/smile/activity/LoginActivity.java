@@ -14,13 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.service.LoginService;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.MD5;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 思路： 1、初始化组件 2、添加按钮点击监听事件 3、获取用户输入的数据并转换成JSON对象 4、设置请求数据url和实体数据，并执行请求
@@ -113,18 +114,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				String username = userAccount.getText().toString();// 获取用户输入的账号
 				String password = userPwd.getText().toString();// 获取用户输入的密码
 				if (username == null || "".equals(username.trim())) {
-					Toast.makeText(context, "用户名不能为空！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "用户名不能为空！");
 					return;
 				}
 				if (password == null || "".equals(password.trim())) {
-					Toast.makeText(context, "密码不能为空！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "密码不能为空！");
 					return;
 				}
 				startTask();
 				break;
 			}
 			case R.id.login_btn_to_register: {
-				// Toast.makeText(context, "点击了注册", Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(context, RegisterActivity.class);
 				startActivity(intent);
 				overridePendingTransition(0, 0);
@@ -163,16 +163,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																	LoginService loginService = MyApplication.getInstance()
 																												.getLoginService();
 																	RtnValueDto rvd = loginService.login(user);
-																	if (rvd == null
-																			|| rvd.getCode() == null
-																			|| rvd.getUserData() == null) {
-																		loginViewInit();
-																		Toast.makeText(context,
-																				"登录失败！",
-																				Toast.LENGTH_SHORT)
-																				.show();
-																		progressBar.setVisibility(View.INVISIBLE);
-																	} else {
+																	if (CodeValidator.dealCode(context, rvd)) {
 																		if (!isClose) {
 																			Intent intent = null;
 																			if (goingActivityClass != null) {
@@ -191,6 +182,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																			startActivity(intent);
 																		}
 																		finish();
+																	} else {
+																		loginViewInit();
+																		progressBar.setVisibility(View.INVISIBLE);
 																	}
 																}
 																break;

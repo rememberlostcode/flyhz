@@ -14,13 +14,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyOrdersAdapter;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.myview.MyListView;
+import com.holding.smile.tools.CodeValidator;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 我的订单
@@ -112,9 +113,11 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public synchronized void loadData() {
 		RtnValueDto orders = MyApplication.getInstance().getDataService().getOrdersList(status);
-		Message msg = mUIHandler.obtainMessage(1);
-		msg.obj = orders;
-		msg.sendToTarget();
+		if(CodeValidator.dealCode(context, orders)){
+			Message msg = mUIHandler.obtainMessage(1);
+			msg.obj = orders;
+			msg.sendToTarget();
+		}
 	}
 
 	@Override
@@ -154,7 +157,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				BigDecimal total = adapter.getTotal();
 
 				if (numbers.isEmpty()) {
-					Toast.makeText(context, "请选择至少一个订单！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "请选择至少一个订单！");
 					break;
 				}
 				Intent intent = new Intent(context, WebViewActivity.class);
@@ -202,9 +205,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 														
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
 
-														if (rvd==null || rvd.getOrderListData() == null || rvd.getOrderListData().size() == 0) {
-															Toast.makeText(context, "暂无数据",
-																	Toast.LENGTH_SHORT).show();
+														if (rvd.getOrderListData() == null || rvd.getOrderListData().size() == 0) {
+															ToastUtils.showShort(context, "暂无数据！");
 														}
 
 														list = rvd.getOrderListData();

@@ -9,11 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 手机设置
@@ -68,20 +68,18 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 				phone = phoneEditText.getText().toString();
 				
 				if(!StrUtils.checkPhoneNumber(phone)){
-					Toast.makeText(context, "手机号格式不对，请修改！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "手机号格式不对，请修改！");
 					return;
 				}
 				
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("mphone", phone);
 				if (rvd != null && 200000 == rvd.getCode()) {
-					Toast.makeText(context, "保存成功！", Toast.LENGTH_SHORT).show();
+					ToastUtils.showShort(context, "保存成功！");
 					Intent intent = new Intent();
 					intent.putExtra("phone", phone);
 					setResult(RESULT_OK, intent);
 					finish();
-				} else {
-					Toast.makeText(context, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
 				}
 				break;
 			}

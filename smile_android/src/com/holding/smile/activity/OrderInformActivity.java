@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyOrderInformAdapter;
@@ -24,8 +23,10 @@ import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.ProductDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.myview.MyListView;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -77,7 +78,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			}
 			startTask();
 		} catch (Exception e) {
-			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 		}
 
 	}
@@ -110,16 +111,14 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			}
 			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.getOrderInform(pidQty, cartIds, addressId);
-			if (rtnValue != null) {
+			if (CodeValidator.dealCode(context, rtnValue)) {
 				Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 				msg.obj = rtnValue;
 				msg.sendToTarget();
-			} else {
-				Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
-				finish();
 			}
 		} else {
-			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
+
 			finish();
 		}
 	}
@@ -140,7 +139,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		// new DialogInterface.OnClickListener() {
 		// @Override
 		// public void onClick(DialogInterface dialog, int which) {
-		// // TODO Auto-generated method stub
 		//
 		// }
 		// });
@@ -164,15 +162,13 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			}
 			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.confirmOrder(pidQty, cartIds, addressId);
-			if (rtnValue != null) {
+			if (CodeValidator.dealCode(context, rtnValue)) {
 				Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);
 				msg.obj = rtnValue;
 				msg.sendToTarget();
-			} else {
-				Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT).show();
 			}
 		} else {
-			Toast.makeText(context, Constants.MESSAGE_NET, Toast.LENGTH_SHORT).show();
+			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 		}
 	}
 
@@ -249,18 +245,14 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																	if (obj.getValidate() != null
 																			&& StrUtils.isNotEmpty(obj.getValidate()
 																										.getMessage())) {
-																		Toast.makeText(
+																		ToastUtils.showShort(
 																				context,
 																				obj.getValidate()
-																					.getMessage(),
-																				Toast.LENGTH_SHORT)
-																				.show();
+																					.getMessage());
 																	} else {
-																		Toast.makeText(
+																		ToastUtils.showShort(
 																				context,
-																				Constants.MESSAGE_NET,
-																				Toast.LENGTH_SHORT)
-																				.show();
+																				Constants.MESSAGE_EXCEPTION);
 																	}
 																} else {
 																	orderDetails = order.getDetails();
@@ -283,18 +275,14 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																	if (obj.getValidate() != null
 																			&& StrUtils.isNotEmpty(obj.getValidate()
 																										.getMessage())) {
-																		Toast.makeText(
+																		ToastUtils.showShort(
 																				context,
 																				obj.getValidate()
-																					.getMessage(),
-																				Toast.LENGTH_SHORT)
-																				.show();
+																					.getMessage());
 																	} else {
-																		Toast.makeText(
+																		ToastUtils.showShort(
 																				context,
-																				Constants.MESSAGE_NET,
-																				Toast.LENGTH_SHORT)
-																				.show();
+																				Constants.MESSAGE_EXCEPTION);
 																	}
 																} else {
 																	if (orderDetails != null
@@ -319,9 +307,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																}
 															}
 														} else {
-															Toast.makeText(context,
-																	Constants.MESSAGE_NET,
-																	Toast.LENGTH_SHORT).show();
+															ToastUtils.showShort(context,
+																	Constants.MESSAGE_EXCEPTION);
 														}
 														if (pDialog != null)
 															pDialog.dismiss();
@@ -336,18 +323,14 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																	if (obj.getValidate() != null
 																			&& StrUtils.isNotEmpty(obj.getValidate()
 																										.getMessage())) {
-																		Toast.makeText(
+																		ToastUtils.showShort(
 																				context,
 																				obj.getValidate()
-																					.getMessage(),
-																				Toast.LENGTH_SHORT)
-																				.show();
+																					.getMessage());
 																	} else {
-																		Toast.makeText(
+																		ToastUtils.showShort(
 																				context,
-																				Constants.MESSAGE_NET,
-																				Toast.LENGTH_SHORT)
-																				.show();
+																				Constants.MESSAGE_EXCEPTION);
 																	}
 																} else {
 																	if (order.getNumber() != null
@@ -382,11 +365,9 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																		}
 																		finish();
 																	} else {
-																		Toast.makeText(
+																		ToastUtils.showShort(
 																				context,
-																				Constants.MESSAGE_NET,
-																				Toast.LENGTH_SHORT)
-																				.show();
+																				Constants.MESSAGE_EXCEPTION);
 																	}
 																}
 															}
