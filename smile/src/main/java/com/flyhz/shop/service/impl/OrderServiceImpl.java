@@ -149,7 +149,7 @@ public class OrderServiceImpl implements OrderService {
 
 		String number = null;
 		if (flag) {
-			number = RandomString.generateRandomString8();
+			number = RandomString.generateRandomStringTime();
 			orderDto.setNumber(number);
 		}
 
@@ -249,21 +249,21 @@ public class OrderServiceImpl implements OrderService {
 
 	public OrderSimpleDto getOrderDtoByNumber(String number) {
 		OrderSimpleDto orderDto = orderDao.getOrderByNumber(number);
-		if(orderDto!=null){
+		if (orderDto != null) {
 			LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderId(orderDto.getId());
-			if(logisticsModel !=null){
+			if (logisticsModel != null) {
 				LogisticsDto logisticsDto = new LogisticsDto();
 				logisticsDto.setCompanyName(logisticsModel.getCompanyName());
 				logisticsDto.setLogisticsStatus(logisticsModel.getLogisticsStatus());
 				logisticsDto.setTid(logisticsModel.getTid());
-				if(StringUtils.isNotBlank(logisticsModel.getContent())){
+				if (StringUtils.isNotBlank(logisticsModel.getContent())) {
 					String[] lls = logisticsModel.getContent().split("@#@");
 					logisticsDto.setTransitStepInfoList(Arrays.asList(lls));
 				}
 				orderDto.setLogisticsDto(logisticsDto);
 			}
 		}
-		
+
 		return orderDto;
 	}
 
