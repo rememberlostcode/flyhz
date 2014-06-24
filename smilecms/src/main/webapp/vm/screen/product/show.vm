@@ -43,6 +43,7 @@
 					<font id="brandstyleMessage" color="red"  size="2"></font>
 				</td>
 			</tr>
+			<!--
 			<tr>
 				<td>尺码描述</td>
                 <td>
@@ -54,6 +55,7 @@
             		</select>
 				</td>
 			</tr>
+			-->
 			<tr>
 				<td>是否下架</td>
                 <td>

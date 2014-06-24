@@ -21,6 +21,7 @@ import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.dto.ProductCmsDto;
+import com.flyhz.shop.dto.ProductPageDto;
 import com.flyhz.shop.dto.ProductParamDto;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
@@ -223,10 +224,68 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager, ProductModel product) {
-		if (product != null && StringUtils.isNotBlank(product.getName())) {
-			product.setName("%" + product.getName() + "%");
+		if (pager == null || product == null) {
+			return null;
 		}
-		List<ProductCmsDto> productCmsDtos = productDao.getPageProductCmsDtos(pager, product);
+		// 处理生成分页参数
+		ProductPageDto productPageDto = new ProductPageDto();
+		// 设置搜索参数
+		if (StringUtils.isNotBlank(product.getName())) {
+			StringBuffer nameBuffer = new StringBuffer();
+			nameBuffer.append("%").append(product.getName()).append("%");
+			productPageDto.setName(nameBuffer.toString());
+		}
+		if (StringUtils.isNotBlank(product.getBrandstyle())) {
+			productPageDto.setBrandstyle(product.getBrandstyle());
+		}
+		if (product.getBrandId() != null) {
+			productPageDto.setBrandId(product.getBrandId());
+		}
+		if (product.getCategoryId() != null) {
+			productPageDto.setCategoryId(product.getCategoryId());
+		}
+		// 定义分页参数
+		int currentPage = pager.getCurrentPage();
+		int pageSize = pager.getPageSize();
+		// 查询产品总数量
+		int count = productDao.getProductCmsDtosPageCount(productPageDto);
+		// pager设置总页数和总数量
+		pager.setTotalRowsAmount(count);
+		if (count % pageSize == 0) {
+			pager.setTotalPages(count / pageSize);
+		} else {
+			pager.setTotalPages(count / pageSize + 1);
+		}
+		// 重新定义当前页
+		if (currentPage > pager.getTotalPages()) {
+			currentPage = 1;
+			pager.setCurrentPage(currentPage);
+		}
+		// 设置分页参数
+		productPageDto.setStart((currentPage - 1) * pageSize);
+		productPageDto.setPagesize(pageSize);
+		// 查询产品列表
+		List<ProductCmsDto> productCmsDtos = productDao.getProductCmsDtosPage(productPageDto);
+		if (productCmsDtos != null && !productCmsDtos.isEmpty()) {
+			for (ProductCmsDto productCmsDto : productCmsDtos) {
+				if (StringUtils.isNotBlank(productCmsDto.getCover())) {
+					List<String> productImgs = JSONUtil.getJson2EntityList(
+							productCmsDto.getCover(), ArrayList.class, String.class);
+					productCmsDto.setProductImgs(productImgs);
+				}
+				if (StringUtils.isNotBlank(productCmsDto.getCoverSmall())) {
+					List<String> productAppImgs = JSONUtil.getJson2EntityList(
+							productCmsDto.getCoverSmall(), ArrayList.class, String.class);
+					productCmsDto.setAppImages(productAppImgs);
+				}
+			}
+		}
+		return productCmsDtos;
+	}
+
+	@Override
+	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager) {
+		List<ProductCmsDto> productCmsDtos = productDao.getPageProductCmsDtos(pager);
 		if (productCmsDtos != null && !productCmsDtos.isEmpty()) {
 			for (ProductCmsDto productCmsDto : productCmsDtos) {
 				if (StringUtils.isNotBlank(productCmsDto.getCover())) {

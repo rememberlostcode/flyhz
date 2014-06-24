@@ -32,8 +32,8 @@
 	  	  params += ",categoryId";
 		  values += "," + categoryId;
 	  }
-	  alert(params);
-	  alert(values);
+	  //alert(params);
+	  //alert(values);
 	  GetWindowsUrl(url,params,values);		
    }
    
@@ -209,7 +209,7 @@
         		#end
 			#else
     			<tr>
-    				<td colspan="4" class="nothing">未查询到相关记录！</td>
+    				<td colspan="10" class="nothing">未查询到相关记录！</td>
     			</tr>
 			#end
 		</tbody>
