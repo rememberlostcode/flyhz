@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.tools.CodeValidator;
+import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
 
 /**
@@ -75,20 +76,24 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.email_save: {
-				progressBar.setVisibility(View.VISIBLE);
 				// 设置邮箱
 				email = emailEditText.getText().toString();
-				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
-												.setUserInfo("email", email);
-				
-				if (CodeValidator.dealCode(context, rvd)) {
-					ToastUtils.showShort(this, "保存成功！");
-					Intent intent = new Intent();
-					intent.putExtra("email", email);
-					setResult(RESULT_OK, intent);
-					finish();
+				if(StrUtils.checkEmail(email)){
+					progressBar.setVisibility(View.VISIBLE);
+					RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
+													.setUserInfo("email", email);
+					if (CodeValidator.dealCode(context, rvd)) {
+						ToastUtils.showShort(this, "保存成功！");
+						Intent intent = new Intent();
+						intent.putExtra("email", email);
+						setResult(RESULT_OK, intent);
+						finish();
+					}
+					waitCloseProgressBar();
+				} else {
+					ToastUtils.showShort(this, "邮箱格式不正确！");
+					return;
 				}
-				waitCloseProgressBar();
 				break;
 			}
 			case R.id.email_canle: {

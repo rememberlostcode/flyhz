@@ -236,6 +236,7 @@ public class SubmitService {
 			HashMap<String, String> param = new HashMap<String, String>();
 			param.put("username", iuser.getUsername());
 			param.put("password", iuser.getPassword());
+			param.put("email", iuser.getEmail());
 			String rvdString = URLUtil.getStringByGet(prefix_url + register_url, param);
 			if (rvdString != null) {
 				PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);

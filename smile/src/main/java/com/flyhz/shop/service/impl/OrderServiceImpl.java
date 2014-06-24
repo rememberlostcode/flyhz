@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
+import com.flyhz.framework.lang.TaobaoData;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.mail.MailRepository;
 import com.flyhz.framework.util.Constants;
@@ -47,6 +48,7 @@ import com.flyhz.shop.persistence.entity.LogisticsModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.OrderService;
+import com.taobao.api.domain.Trade;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -69,7 +71,9 @@ public class OrderServiceImpl implements OrderService {
 	private LogisticsDao	logisticsDao;
 	@Resource
 	private MailRepository	mailRepository;
-
+	@Resource
+	private TaobaoData taobaoData;
+	
 	@Override
 	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds,
 			boolean flag) throws ValidateException {
@@ -290,5 +294,27 @@ public class OrderServiceImpl implements OrderService {
 				}
 			}
 		}
+	}
+	
+	public String getOrderPayStatusByTid(Integer orderId, Long tid) {
+		OrderModel orderModel = orderDao.getModelById(orderId);
+		if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())
+				||Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {//如果状态已经是已付款/卖家已发货则直接返回状态
+			return orderModel.getStatus();
+		} else {//mysql显示未付款时，需要调用淘宝接口查看
+			Trade trade = taobaoData.getTradeByTid(tid);
+			if (trade == null) {
+				return "400000";
+			}
+			String status = trade.getStatus();
+			if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
+				return Constants.OrderStateCode.FOR_PAYMENT.code;
+			} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
+				return Constants.OrderStateCode.HAVE_BEEN_PAID.code;
+			} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
+				return Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code;
+			}
+		}
+		return "400000";
 	}
 }

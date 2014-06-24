@@ -54,12 +54,12 @@ public class UserServiceImpl implements UserService {
 			throw new ValidateException(140002);// 用户名为空
 		if (StringUtil.stringLength(userDetail.getUsername()) > 32)
 			throw new ValidateException(140003);// 用户名长度不能大于32个字符
+		if (StringUtils.isBlank(userDetail.getPassword()))
+			throw new ValidateException(140005);// 密码为空
 		UserModel user = userDao.getUserByName(userDetail.getUsername());
 		if (user != null)
 			throw new ValidateException(140004);// 用户名已存在
 
-		if (StringUtils.isBlank(userDetail.getPassword()))
-			throw new ValidateException(140005);// 密码为空
 		UserModel userModel = new UserModel();
 		userModel.setUsername(userDetail.getUsername());
 		userModel.setPassword(MD5.getMD5(userDetail.getPassword()));

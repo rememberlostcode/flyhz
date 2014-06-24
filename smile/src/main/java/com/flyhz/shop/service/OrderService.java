@@ -70,5 +70,13 @@ public interface OrderService {
 	 * @return
 	 */
 	public OrderSimpleDto getOrderDtoByNumber(String number);
+	
+	/**
+	 * 通过淘宝订单号获取付款状态
+	 * @param orderId
+	 * @param tid
+	 * @return
+	 */
+	public String getOrderPayStatusByTid(Integer orderId,Long tid);
 
 }

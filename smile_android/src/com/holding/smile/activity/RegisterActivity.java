@@ -32,6 +32,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 	private EditText	userAccount;	// 用户的账号
 	private EditText	userPwd;		// 用户密码
 	private EditText	userPwd2;		// 用户密码
+	private EditText	userEmail;	// 用户的账号
 	private Button		btnToRegister;	// 注册登录按钮
 
 	@Override
@@ -61,6 +62,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		userPwd2 = (EditText) findViewById(R.id.register_pwd2);
 		btnToRegister = (Button) findViewById(R.id.self_register);
 		userAccount.setSelection(userAccount.getText().toString().trim().length());
+		userEmail = (EditText) findViewById(R.id.register_email);
 
 		btnToRegister.setOnClickListener(this);
 	}
@@ -76,6 +78,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 				String username = userAccount.getText().toString();// 获取用户输入的账号
 				String password = userPwd.getText().toString();// 获取用户输入的密码
 				String password2 = userPwd2.getText().toString();// 获取用户输入的密码
+				String email = userEmail.getText().toString();// 获取用户输入的密码
 
 				if (username == null || "".equals(username.trim())) {
 					ToastUtils.showShort(context, "用户名不能为空！");
@@ -104,6 +107,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 					return;
 				}
 
+				if(!StrUtils.checkEmail(email)){
+					ToastUtils.showShort(context, "输入的邮箱格式不正确！");
+					return;
+				}
 				progressBar.setVisibility(View.VISIBLE);
 
 				/* 关闭软键盘 */
@@ -113,6 +120,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 				SUser user = new SUser();
 				user.setUsername(username);
 				user.setPassword(password);
+				user.setEmail(email);
 				Message msg = mUIHandler.obtainMessage(REGISTER_BY_SELF);
 				msg.obj = user;
 				msg.sendToTarget();

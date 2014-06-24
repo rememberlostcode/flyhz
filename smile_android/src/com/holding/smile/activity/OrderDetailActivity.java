@@ -94,6 +94,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 					if (order.getStatus() != null && Integer.parseInt(order.getStatus()) >= 20
 							&& !order.getStatus().equals("50") && order.getLogisticsDto() != null
 							&& order.getLogisticsDto().getTransitStepInfoList() != null) {
+						TextView textViewAddres =  (TextView) findViewById(R.id.order_detail_address);
+						textViewAddres.setText(textViewAddres.getText() + (order.getLogisticsDto().getAddress()!=null?order.getLogisticsDto().getAddress():""));
+						
 						logisticsListView = (MyListView) findViewById(R.id.order_detail_logistics_list);
 						logisticsListView.setAdapter(new ArrayAdapter<String>(this,
 								R.layout.simple_list_text, order.getLogisticsDto()

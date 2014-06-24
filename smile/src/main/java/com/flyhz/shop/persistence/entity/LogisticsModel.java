@@ -31,6 +31,10 @@ public class LogisticsModel implements Serializable {
 	 * 运单号
 	 */
 	protected Long				tid;
+	/**
+	 * 详细地址
+	 */
+	protected String			address;
 
 	public Integer getId() {
 		return id;
@@ -94,5 +98,13 @@ public class LogisticsModel implements Serializable {
 
 	public void setNumber(String number) {
 		this.number = number;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

@@ -247,6 +247,7 @@ public class SolrDataImpl implements SolrData {
 		doc.addField("gmt_modify", gmtModify);
 
 		if (logisticsDto != null) {
+			doc.addField("address", logisticsDto.getAddress());
 			doc.addField("logisticsStatus", logisticsDto.getLogisticsStatus());
 			doc.addField("companyName", logisticsDto.getCompanyName());
 			doc.addField("tid", logisticsDto.getTid());
@@ -354,9 +355,13 @@ public class SolrDataImpl implements SolrData {
 			String logisticsStatus = null;
 			Long tid = null;
 			String companyName = null;
+			String address = null;
 			for (SolrDocument solrDocument : doclist) {
 				orderId = solrDocument.getFieldValue("id") != null ? Integer.valueOf(solrDocument.getFieldValue(
 						"id").toString())
+						: null;
+				address = solrDocument.getFieldValue("address") != null ? solrDocument.getFieldValue(
+						"address").toString()
 						: null;
 				status = solrDocument.getFieldValue("status") != null ? solrDocument.getFieldValue(
 						"status").toString() : null;
@@ -378,6 +383,7 @@ public class SolrDataImpl implements SolrData {
 					logisticsDto.setLogisticsStatus(logisticsStatus);
 					logisticsDto.setTid(tid);
 					logisticsDto.setCompanyName(companyName);
+					logisticsDto.setAddress(address);
 
 					if (solrDocument.getFieldValues("transitStepInfoList") != null) {
 						List<String> newlist = new ArrayList<String>();

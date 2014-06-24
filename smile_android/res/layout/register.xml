@@ -37,10 +37,17 @@
             <!-- 账号 -->
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
-                android:text="用户名："
+                android:text="*"
+                android:textColor="@drawable/xiguahong"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="用户名"
                 android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
 
@@ -54,7 +61,8 @@
                 android:inputType="text"
                 android:maxLength="12"
                 android:padding="5dp"
-                android:textColor="@drawable/shenhuise" />
+                android:textColor="@drawable/shenhuise"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -66,10 +74,17 @@
             <!-- 密码 -->
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
-                android:text="密码："
+                android:text="*"
+                android:textColor="@drawable/xiguahong"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="密码"
                 android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
 
@@ -83,7 +98,8 @@
                 android:inputType="textPassword"
                 android:maxLength="12"
                 android:padding="5dp"
-                android:textColor="@drawable/shenhuise" />
+                android:textColor="@drawable/shenhuise"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -95,10 +111,17 @@
             <!-- 密码确认 -->
 
             <TextView
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
-                android:text="密码确认："
+                android:text="*"
+                android:textColor="@drawable/xiguahong"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="密码确认"
                 android:textColor="@drawable/shenhuise"
                 android:textSize="18sp" />
 
@@ -112,17 +135,48 @@
                 android:inputType="textPassword"
                 android:maxLength="12"
                 android:padding="5dp"
-                android:textColor="@drawable/shenhuise" />
+                android:textColor="@drawable/shenhuise"
+                android:textSize="15sp" />
         </LinearLayout>
 
-        <!-- 登陆按钮 -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rouse2"
+            android:gravity="center" >
+
+            <!-- 邮箱 -->
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:text="邮箱"
+                android:textColor="@drawable/shenhuise"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/register_email"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1.0"
+                android:hint="请输入邮箱地址"
+                android:inputType="text"
+                android:maxLength="30"
+                android:padding="5dp"
+                android:textColor="@drawable/shenhuise"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <!-- 注册按钮 -->
 
         <Button
             android:id="@+id/self_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/self_login_bg"
             android:layout_marginTop="10dp"
+            android:background="@drawable/self_login_bg"
             android:padding="5dp"
             android:text="@string/btn_register"
             android:textColor="@drawable/baise"
