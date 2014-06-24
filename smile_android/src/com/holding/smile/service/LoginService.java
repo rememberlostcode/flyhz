@@ -230,8 +230,8 @@ public class LoginService {
 					((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslContext.getSocketFactory());
 				}
 				urlConnection.setRequestMethod("GET");
-				urlConnection.setConnectTimeout(1500);
-				urlConnection.setReadTimeout(1500);
+				urlConnection.setConnectTimeout(10000);
+				urlConnection.setReadTimeout(10000);
 				InputStream is = urlConnection.getInputStream();
 				StringBuffer sb = new StringBuffer();
 				byte[] bytes = new byte[1024];
