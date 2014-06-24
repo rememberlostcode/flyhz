@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.file.FileRepository;
-import com.flyhz.framework.lang.mail.MailRepository;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.shop.persistence.dao.IdcardDao;
 import com.flyhz.shop.persistence.entity.IdcardModel;
@@ -24,8 +23,6 @@ public class IdcardServiceImpl implements IdcardService {
 	private IdcardDao		idcardDao;
 	@Resource
 	private FileRepository	fileRepository;
-	@Resource
-	private MailRepository	mailRepository;
 
 	@Override
 	public List<IdcardModel> getAllIdcardsByUserId(Integer userId) {

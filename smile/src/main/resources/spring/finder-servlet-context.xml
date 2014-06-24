@@ -100,6 +100,7 @@
 	  </beans:property>
 	</beans:bean>
 	
+	<!-- mailSender -->
 	<beans:bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<beans:property name="host">
 			<beans:value>${smile.mail.host}</beans:value>
@@ -120,6 +121,15 @@
 			</beans:props>
 		</beans:property>
 	</beans:bean>
+	<!-- velocityEngine -->
+	<beans:bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">  
+      <beans:property name="velocityProperties">  
+         <beans:value>  
+	          resource.loader=class  
+	          class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader  
+          </beans:value>  
+      </beans:property>  
+   </beans:bean> 
 	
 	<!-- Imports user-defined @Controller beans that process client requests -->
 	<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />

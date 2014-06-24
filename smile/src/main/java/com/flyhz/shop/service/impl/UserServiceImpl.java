@@ -4,7 +4,9 @@ package com.flyhz.shop.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
 	@Resource
 	private MailRepository	mailRepository;
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public UserDto register(UserDetailDto userDetail) throws ValidateException {
 		if (userDetail == null)
@@ -57,7 +60,6 @@ public class UserServiceImpl implements UserService {
 
 		if (StringUtils.isBlank(userDetail.getPassword()))
 			throw new ValidateException(140005);// 密码为空
-
 		UserModel userModel = new UserModel();
 		userModel.setUsername(userDetail.getUsername());
 		userModel.setPassword(MD5.getMD5(userDetail.getPassword()));
@@ -72,7 +74,13 @@ public class UserServiceImpl implements UserService {
 		userModel.setGmtModify(new Date());
 		userModel.setGmtRegister(new Date());
 		userDao.register(userModel);
-
+		// 邮箱存在则发送邮件
+		if (StringUtils.isNotBlank(userDetail.getEmail())) {
+			Map modelMap = new HashMap();
+			modelMap.put("username", userDetail.getUsername());
+			mailRepository.sendWithTemplate(userDetail.getEmail(), "注册成功海狗APP",
+					"velocity/mailvm/reg_success_mail.vm", modelMap);
+		}
 		UserDto userDto = new UserDto();
 		userDto.setId(userModel.getId());
 		userDto.setUsername(userModel.getUsername());
@@ -486,5 +494,44 @@ public class UserServiceImpl implements UserService {
 		}
 		userModel.setPassword(MD5.getMD5(newpwd));
 		userDao.updatePwd(userModel);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public void findPwd(Integer userid, String username) throws ValidateException {
+		UserModel userModel = null;
+		// 用户ID不能为空
+		if (userid == null) {
+			if (StringUtils.isNotBlank(username)) {
+				throw new ValidateException(101002);
+			} else {
+				userModel = userDao.getUserByName(username);
+			}
+		} else {
+			userModel = userDao.getModelById(userid);
+		}
+		// 用户ID不能为空
+		if (userModel == null) {
+			throw new ValidateException(101002);
+		}
+		// 用户邮箱不能为空
+		String email = userModel.getEmail();
+		if (StringUtils.isBlank(email)) {
+			throw new ValidateException(101029);
+		}
+		// 用户邮箱格式不正确
+		if (!ValidateUtil.checkEmail(email)) {
+			throw new ValidateException(101017);
+		}
+		// 更新用户密码
+		String password = RandomString.generateRandomString8();
+		userModel.setPassword(password);
+		userDao.updatePwd(userModel);
+		// 发送含新密码邮件
+		Map modelMap = new HashMap();
+		modelMap.put("username", userModel.getUsername());
+		modelMap.put("password", password);
+		mailRepository.sendWithTemplate(email, "找回密码成功", "velocity/mailvm/find_password.vm",
+				modelMap);
 	}
 }

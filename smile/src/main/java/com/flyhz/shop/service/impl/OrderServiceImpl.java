@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.lang.mail.MailRepository;
 import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.JSONUtil;
@@ -42,6 +45,7 @@ import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.persistence.entity.IdcardModel;
 import com.flyhz.shop.persistence.entity.LogisticsModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
+import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.OrderService;
 
 @Service
@@ -63,6 +67,8 @@ public class OrderServiceImpl implements OrderService {
 	private SolrData		solrData;
 	@Resource
 	private LogisticsDao	logisticsDao;
+	@Resource
+	private MailRepository	mailRepository;
 
 	@Override
 	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds,
@@ -249,7 +255,7 @@ public class OrderServiceImpl implements OrderService {
 
 	public OrderSimpleDto getOrderDtoByNumber(String number) {
 		OrderSimpleDto orderDto = orderDao.getOrderByNumber(number);
-		if(orderDto!=null){
+		if (orderDto != null) {
 			LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderNumber(number);
 			if (logisticsModel != null) {
 				LogisticsDto logisticsDto = new LogisticsDto();
@@ -266,4 +272,23 @@ public class OrderServiceImpl implements OrderService {
 		return orderDto;
 	}
 
+	// 订单支付成功后发送邮件
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void sendPaySuccess(Integer orderId) {
+		if (orderId != null) {
+			OrderModel orderModel = orderDao.getModelById(orderId);
+			if (orderModel != null) {
+				UserModel userModel = userDao.getModelById(orderModel.getUserId());
+				// 用户邮箱存在则发送邮件
+				if (userModel != null && StringUtils.isNotBlank(userModel.getEmail())) {
+					Map modelMap = new HashMap();
+					modelMap.put("orderId", orderModel.getNumber());
+					modelMap.put("total", orderModel.getTotal());
+					modelMap.put("username", userModel.getUsername());
+					mailRepository.sendWithTemplate(userModel.getEmail(), "注册成功海狗APP",
+							"velocity/mailvm/pay_success_mail.vm", modelMap);
+				}
+			}
+		}
+	}
 }
