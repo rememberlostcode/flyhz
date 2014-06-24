@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:text="*"
-                android:textColor="@drawable/xiguahong"
+                android:textColor="@drawable/red"
                 android:textSize="18sp" />
 
             <TextView
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:text="*"
-                android:textColor="@drawable/xiguahong"
+                android:textColor="@drawable/red"
                 android:textSize="18sp" />
 
             <TextView
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:text="*"
-                android:textColor="@drawable/xiguahong"
+                android:textColor="@drawable/red"
                 android:textSize="18sp" />
 
             <TextView

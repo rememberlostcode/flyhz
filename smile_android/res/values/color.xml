@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>   
     
+    <drawable name="red">#ff0000</drawable><!-- 西瓜红 -->
     <drawable name="xiguahong">#e95e4b</drawable><!-- 西瓜红 -->   
     <drawable name="qianxiguahong">#ff6752</drawable><!-- 浅西瓜红  -->   
     <drawable name="juhuang">#e8a300</drawable><!-- 橘黄 -->   

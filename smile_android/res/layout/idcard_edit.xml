@@ -24,10 +24,18 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="*"
+                    android:textColor="@drawable/red"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="姓名："
+                    android:text="姓名"
                     android:textColor="@drawable/shenhuise"
                     android:textSize="18sp" />
 
@@ -35,14 +43,14 @@
                     android:id="@+id/idcard_name"
                     android:layout_width="0dp"
                     android:layout_height="42dp"
-                    android:layout_marginRight="8dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:hint="请输入身份证姓名"
                     android:inputType="text"
-                    android:textSize="18sp"
-                    android:maxLength="25" />
+                    android:maxLength="25"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <View
@@ -58,10 +66,18 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="*"
+                    android:textColor="@drawable/red"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="身份证号："
+                    android:text="身份证号"
                     android:textColor="@drawable/shenhuise"
                     android:textSize="18sp" />
 
@@ -69,14 +85,14 @@
                     android:id="@+id/idcard_number"
                     android:layout_width="0dp"
                     android:layout_height="42dp"
-                    android:layout_marginRight="8dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:hint="请输入身份证号"
                     android:inputType="phone"
-                    android:textSize="18sp"
-                    android:maxLength="18" />
+                    android:maxLength="18"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <View
@@ -92,10 +108,18 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="*"
+                    android:textColor="@drawable/red"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="证件照片："
+                    android:text="证件照片"
                     android:textColor="@drawable/shenhuise"
                     android:textSize="18sp" />
 
@@ -103,22 +127,24 @@
                     android:id="@+id/idcard_photo_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@drawable/baise"
                     android:background="@drawable/juhuang"
                     android:text="请选择身份证照片"
+                    android:textColor="@drawable/baise"
                     android:textSize="18sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
                 android:layout_marginTop="8dp"
+                android:gravity="left"
                 android:orientation="vertical" >
+
                 <ImageView
                     android:id="@+id/idcard_idcard_img"
-                    android:contentDescription="@string/my_idcards"
                     android:layout_width="wrap_content"
                     android:layout_height="400dp"
+                    android:contentDescription="@string/my_idcards"
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
@@ -126,17 +152,17 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="right" >
+            android:gravity="right"
+            android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/idcard_delete"
                 android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:layout_margin="10.0dp"
-                android:textColor="@drawable/baise"
                 android:background="@drawable/dahong"
                 android:text="删除"
+                android:textColor="@drawable/baise"
                 android:textSize="18sp" />
 
             <Button
@@ -144,9 +170,9 @@
                 android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:layout_margin="10.0dp"
-                android:textColor="@drawable/baise"
                 android:background="@drawable/lvse"
                 android:text="保存"
+                android:textColor="@drawable/baise"
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
