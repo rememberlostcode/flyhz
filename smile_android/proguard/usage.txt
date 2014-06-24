@@ -1462,19 +1462,19 @@ com.holding.smile.adapter.MyOrderInformAdapter:
     40:41:public void setFlagBusy(boolean)
     54:56:public void setData(java.util.List)
 com.holding.smile.adapter.MyOrdersAdapter:
-    246:246:public java.lang.Boolean getSelectAll()
+    251:251:public java.lang.Boolean getSelectAll()
 com.holding.smile.adapter.MyOrdersAdapter$ViewHolder:
     android.widget.ImageView cover
     android.widget.TextView total
 com.holding.smile.adapter.MyShoppingCartAdapter:
-    47:48:public void setFlagBusy(boolean)
-    84:86:public void setData(java.util.List)
-    89:91:public void removeItem(com.holding.smile.entity.CartItem)
+    46:47:public void setFlagBusy(boolean)
+    83:85:public void setData(java.util.List)
+    88:90:public void removeItem(com.holding.smile.entity.CartItem)
 com.holding.smile.adapter.RecommendGoodsAdapter
 com.holding.smile.adapter.RecommendGoodsAdapter$1
 com.holding.smile.adapter.RecommendGoodsAdapter$ViewHolder
 com.holding.smile.cache.ImageLoader:
-    229:230:public void clearFileCache()
+    249:250:public void clearFileCache()
 com.holding.smile.myview.MyTableLayout
 com.holding.smile.myview.PullToRefreshView:
     private static final int PULL_TO_REFRESH
@@ -1486,9 +1486,9 @@ com.holding.smile.myview.PullToRefreshView:
     145:145:public boolean isMoreFlag()
     607:609:public void onHeaderRefreshComplete(java.lang.CharSequence)
 com.holding.smile.service.DataService:
-    81:82:public com.holding.smile.dto.RtnValueDto getIndexListInit(java.lang.Integer)
+    82:83:public com.holding.smile.dto.RtnValueDto getIndexListInit(java.lang.Integer)
 com.holding.smile.service.LoginService:
-    226:252:public com.holding.smile.dto.RtnValueDto register(com.holding.smile.entity.SUser)
+    271:297:public com.holding.smile.dto.RtnValueDto register(com.holding.smile.entity.SUser)
 com.holding.smile.service.SQLiteService:
     118:131:public java.util.List getProvinces(java.lang.Integer)
     142:154:public java.util.List getCitys(java.lang.Integer)
@@ -1505,6 +1505,9 @@ com.holding.smile.tools.BitmapUtils:
     294:322:public static java.lang.String pngToJPEG(java.lang.String,java.lang.String)
 com.holding.smile.tools.ClickUtil:
     9:9:public ClickUtil()
+com.holding.smile.tools.CodeValidator:
+    32:33:private CodeValidator()
+    145:145:public static void main(java.lang.String[])
 com.holding.smile.tools.CommonLog:
     14:16:public CommonLog(java.lang.String)
     50:55:public void info(java.lang.Object)
@@ -1583,6 +1586,12 @@ com.holding.smile.tools.FileUtils:
     330:407:public static java.lang.String uploadHeadPhoto(java.lang.String,java.lang.String)
     498:509:public java.lang.String readFileSdcardFile(java.lang.String)
 com.holding.smile.tools.FormFile
+com.holding.smile.tools.IdcardValidator:
+    147:229:public boolean isValidate15Idcard(java.lang.String)
+    295:295:public boolean isIdcard(java.lang.String)
+    306:306:public boolean is15Idcard(java.lang.String)
+    318:317:public boolean is18Idcard(java.lang.String)
+    420:436:public static void main(java.lang.String[])
 com.holding.smile.tools.ImgUtil
 com.holding.smile.tools.JSONUtil:
     31:31:public JSONUtil()
@@ -1603,6 +1612,10 @@ com.holding.smile.tools.ProvinceCityUtil:
     7:7:public ProvinceCityUtil()
 com.holding.smile.tools.RecycleBitmapUtil
 com.holding.smile.tools.StrUtils:
-    4:4:public StrUtils()
+    7:7:public StrUtils()
+com.holding.smile.tools.ToastUtils:
+    15:16:private ToastUtils()
+    37:40:public static void showLong(android.content.Context,java.lang.String)
+    43:44:public static void show(android.content.Context,java.lang.String,int)
 com.holding.smile.tools.URLUtil:
     18:18:public URLUtil()

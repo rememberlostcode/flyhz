@@ -1835,9 +1835,10 @@ com.holding.smile.activity.BaseActivity -> com.holding.smile.activity.BaseActivi
     android.view.View displayFooterMainBuyBtn() -> displayFooterMainBuyBtn
     android.view.View displayFooterMainTotal() -> displayFooterMainTotal
     android.view.View displayFooterMainOrder() -> displayFooterMainOrder
+    void waitCloseProgressBar() -> waitCloseProgressBar
 com.holding.smile.activity.BaseActivity$1 -> com.holding.smile.activity.BaseActivity$1:
     com.holding.smile.activity.BaseActivity this$0 -> this$0
-    void onClick(android.view.View) -> onClick
+    void run() -> run
 com.holding.smile.activity.BaseActivity$2 -> com.holding.smile.activity.BaseActivity$2:
     com.holding.smile.activity.BaseActivity this$0 -> this$0
     void onClick(android.view.View) -> onClick
@@ -1850,12 +1851,9 @@ com.holding.smile.activity.BaseActivity$4 -> com.holding.smile.activity.BaseActi
 com.holding.smile.activity.BaseActivity$5 -> com.holding.smile.activity.BaseActivity$5:
     com.holding.smile.activity.BaseActivity this$0 -> this$0
     void onClick(android.view.View) -> onClick
-com.holding.smile.activity.BaseActivity$LoadTask -> com.holding.smile.activity.BaseActivity$LoadTask:
+com.holding.smile.activity.BaseActivity$6 -> com.holding.smile.activity.BaseActivity$6:
     com.holding.smile.activity.BaseActivity this$0 -> this$0
-    java.lang.String doInBackground(java.lang.String[]) -> doInBackground
-    void onPostExecute(java.lang.String) -> onPostExecute
-    void onPostExecute(java.lang.Object) -> onPostExecute
-    java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
+    void onClick(android.view.View) -> onClick
 com.holding.smile.activity.CategoryActivity -> com.holding.smile.activity.CategoryActivity:
     int WHAT_DID_LOAD_DATA -> WHAT_DID_LOAD_DATA
     com.holding.smile.adapter.CategoryAdapter cateAdapter -> cateAdapter
@@ -2063,6 +2061,62 @@ com.holding.smile.activity.MainActivity$5 -> com.holding.smile.activity.MainActi
     void onPageScrolled(int,float,int) -> onPageScrolled
     void onPageScrollStateChanged(int) -> onPageScrollStateChanged
     void setImageBackground(int) -> setImageBackground
+com.holding.smile.activity.MainSmileActivity -> com.holding.smile.activity.MainSmileActivity:
+    int WHAT_DID_LOAD_DATA -> WHAT_DID_LOAD_DATA
+    int WHAT_DID_REFRESH -> WHAT_DID_REFRESH
+    int AUTO_LOGIN -> AUTO_LOGIN
+    com.holding.smile.myview.PullToRefreshView mPullToRefreshView -> mPullToRefreshView
+    android.support.v4.view.ViewPager mViewPager -> mViewPager
+    java.util.List viewList -> viewList
+    com.holding.smile.adapter.MyPagerAdapter pagerAdapter -> pagerAdapter
+    android.widget.ImageView[] tips -> tips
+    com.holding.smile.adapter.BrandAdapter brandAdapter -> brandAdapter
+    com.holding.smile.myview.MyListView listView -> listView
+    java.util.List recActList -> recActList
+    java.util.List brandList -> brandList
+    java.lang.Integer cid -> cid
+    android.widget.TextView headerDescription -> headerDescription
+    android.os.Handler mUIHandler -> mUIHandler
+    void onCreate(android.os.Bundle) -> onCreate
+    void initView() -> initView
+    void onClick(android.view.View) -> onClick
+    void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
+    void onHeaderRefresh(com.holding.smile.myview.PullToRefreshView) -> onHeaderRefresh
+    void loadData() -> loadData
+    void onRefresh() -> onRefresh
+    void onDestroy() -> onDestroy
+    void addViewPager() -> addViewPager
+    java.util.List access$0(com.holding.smile.activity.MainSmileActivity) -> access$0
+    java.util.List access$1(com.holding.smile.activity.MainSmileActivity) -> access$1
+    void access$2(com.holding.smile.activity.MainSmileActivity) -> access$2
+    java.util.List access$3(com.holding.smile.activity.MainSmileActivity) -> access$3
+    void access$4(com.holding.smile.activity.MainSmileActivity,com.holding.smile.adapter.MyPagerAdapter) -> access$4
+    android.support.v4.view.ViewPager access$5(com.holding.smile.activity.MainSmileActivity) -> access$5
+    com.holding.smile.adapter.MyPagerAdapter access$6(com.holding.smile.activity.MainSmileActivity) -> access$6
+    com.holding.smile.adapter.BrandAdapter access$7(com.holding.smile.activity.MainSmileActivity) -> access$7
+    com.holding.smile.myview.PullToRefreshView access$8(com.holding.smile.activity.MainSmileActivity) -> access$8
+    android.os.Handler access$9(com.holding.smile.activity.MainSmileActivity) -> access$9
+    android.widget.ImageView[] access$10(com.holding.smile.activity.MainSmileActivity) -> access$10
+com.holding.smile.activity.MainSmileActivity$1 -> com.holding.smile.activity.MainSmileActivity$1:
+    com.holding.smile.activity.MainSmileActivity this$0 -> this$0
+    void handleMessage(android.os.Message) -> handleMessage
+com.holding.smile.activity.MainSmileActivity$2 -> com.holding.smile.activity.MainSmileActivity$2:
+    com.holding.smile.activity.MainSmileActivity this$0 -> this$0
+    void run() -> run
+com.holding.smile.activity.MainSmileActivity$3 -> com.holding.smile.activity.MainSmileActivity$3:
+    com.holding.smile.activity.MainSmileActivity this$0 -> this$0
+    void run() -> run
+com.holding.smile.activity.MainSmileActivity$4 -> com.holding.smile.activity.MainSmileActivity$4:
+    com.holding.smile.activity.MainSmileActivity this$0 -> this$0
+    com.holding.smile.entity.JActivity val$jAct -> val$jAct
+    void onClick(android.view.View) -> onClick
+com.holding.smile.activity.MainSmileActivity$5 -> com.holding.smile.activity.MainSmileActivity$5:
+    com.holding.smile.activity.MainSmileActivity this$0 -> this$0
+    void onPageSelected(int) -> onPageSelected
+    void onPageScrolled(int,float,int) -> onPageScrolled
+    void onPageScrollStateChanged(int) -> onPageScrollStateChanged
+    void setImageBackground(int) -> setImageBackground
 com.holding.smile.activity.MainTwoActivity -> com.holding.smile.activity.MainTwoActivity:
     int WHAT_DID_LOAD_DATA -> WHAT_DID_LOAD_DATA
     int WHAT_DID_REFRESH -> WHAT_DID_REFRESH
@@ -2113,6 +2167,7 @@ com.holding.smile.activity.MainTwoActivity$5 -> com.holding.smile.activity.MainT
     com.holding.smile.activity.MainTwoActivity this$0 -> this$0
     void run() -> run
 com.holding.smile.activity.MyApplication -> com.holding.smile.activity.MyApplication:
+    java.util.Date sessionTime -> sessionTime
     java.lang.String LOG_TAG -> LOG_TAG
     com.holding.smile.activity.MyApplication singleton -> singleton
     com.holding.smile.cache.ImageLoader mImageLoader -> mImageLoader
@@ -2127,8 +2182,11 @@ com.holding.smile.activity.MyApplication -> com.holding.smile.activity.MyApplica
     java.lang.String tb_url -> tb_url
     com.holding.smile.entity.SUser currentUser -> currentUser
     java.lang.String sessionId -> sessionId
+    java.util.concurrent.ExecutorService threadPool -> threadPool
+    boolean isHasNetwork -> isHasNetwork
     void onCreate() -> onCreate
     com.holding.smile.cache.ImageLoader getImageLoader() -> getImageLoader
+    java.util.concurrent.ExecutorService getThreadPool() -> getThreadPool
     com.holding.smile.service.DataService getDataService() -> getDataService
     com.holding.smile.service.SubmitService getSubmitService() -> getSubmitService
     com.holding.smile.service.LoginService getLoginService() -> getLoginService
@@ -2148,6 +2206,10 @@ com.holding.smile.activity.MyApplication -> com.holding.smile.activity.MyApplica
     java.lang.String getTb_url() -> getTb_url
     void setTb_url(java.lang.String) -> setTb_url
     void appExit() -> appExit
+    java.util.Date getSessionTime() -> getSessionTime
+    void setSessionTime(java.util.Date) -> setSessionTime
+    boolean isHasNetwork() -> isHasNetwork
+    void setHasNetwork(boolean) -> setHasNetwork
 com.holding.smile.activity.MyOrdersActivity -> com.holding.smile.activity.MyOrdersActivity:
     java.util.List list -> list
     com.holding.smile.adapter.MyOrdersAdapter adapter -> adapter
@@ -2170,8 +2232,8 @@ com.holding.smile.activity.MyOrdersActivity -> com.holding.smile.activity.MyOrde
     android.widget.TextView access$2(com.holding.smile.activity.MyOrdersActivity) -> access$2
     android.widget.TextView access$3(com.holding.smile.activity.MyOrdersActivity) -> access$3
     void access$4(com.holding.smile.activity.MyOrdersActivity,java.util.List) -> access$4
-    java.util.List access$5(com.holding.smile.activity.MyOrdersActivity) -> access$5
-    com.holding.smile.adapter.MyOrdersAdapter access$6(com.holding.smile.activity.MyOrdersActivity) -> access$6
+    com.holding.smile.adapter.MyOrdersAdapter access$5(com.holding.smile.activity.MyOrdersActivity) -> access$5
+    java.util.List access$6(com.holding.smile.activity.MyOrdersActivity) -> access$6
     android.os.Handler access$7(com.holding.smile.activity.MyOrdersActivity) -> access$7
     void access$8(com.holding.smile.activity.MyOrdersActivity,com.holding.smile.adapter.MyOrdersAdapter) -> access$8
     com.holding.smile.myview.MyListView access$9(com.holding.smile.activity.MyOrdersActivity) -> access$9
@@ -2362,6 +2424,8 @@ com.holding.smile.activity.SearchGoodsActivity -> com.holding.smile.activity.Sea
     java.util.List mStrings -> mStrings
     com.holding.smile.myview.PullToRefreshView mPullToRefreshView -> mPullToRefreshView
     android.widget.ListView mListView -> mListView
+    java.lang.String keywords -> keywords
+    int optNum -> optNum
     android.widget.AbsListView$OnScrollListener mScrollListener -> mScrollListener
     android.os.Handler mUIHandler -> mUIHandler
     void onCreate(android.os.Bundle) -> onCreate
@@ -2372,9 +2436,7 @@ com.holding.smile.activity.SearchGoodsActivity -> com.holding.smile.activity.Sea
     void onDestroy() -> onDestroy
     void onFooterRefresh(com.holding.smile.myview.PullToRefreshView) -> onFooterRefresh
     void onHeaderRefresh(com.holding.smile.myview.PullToRefreshView) -> onHeaderRefresh
-    void loadData(java.lang.String) -> loadData
-    void onRefresh() -> onRefresh
-    void onLoadMore() -> onLoadMore
+    void loadData() -> loadData
     com.holding.smile.adapter.MyJGoodsAdapter access$0(com.holding.smile.activity.SearchGoodsActivity) -> access$0
     java.util.List access$1(com.holding.smile.activity.SearchGoodsActivity) -> access$1
     com.holding.smile.myview.PullToRefreshView access$2(com.holding.smile.activity.SearchGoodsActivity) -> access$2
@@ -2383,6 +2445,7 @@ com.holding.smile.activity.SearchGoodsActivity -> com.holding.smile.activity.Sea
     android.widget.ListView access$5(com.holding.smile.activity.SearchGoodsActivity) -> access$5
     boolean access$6(com.holding.smile.activity.SearchGoodsActivity) -> access$6
     java.util.List access$7(com.holding.smile.activity.SearchGoodsActivity) -> access$7
+    void access$8(com.holding.smile.activity.SearchGoodsActivity,int) -> access$8
 com.holding.smile.activity.SearchGoodsActivity$1 -> com.holding.smile.activity.SearchGoodsActivity$1:
     com.holding.smile.activity.SearchGoodsActivity this$0 -> this$0
     void onScrollStateChanged(android.widget.AbsListView,int) -> onScrollStateChanged
@@ -2492,31 +2555,55 @@ com.holding.smile.activity.WebViewActivity -> com.holding.smile.activity.WebView
     void onClick(android.view.View) -> onClick
     boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
     void onDestroy() -> onDestroy
-    java.lang.String access$0(com.holding.smile.activity.WebViewActivity) -> access$0
-    java.math.BigDecimal access$1(com.holding.smile.activity.WebViewActivity) -> access$1
+    java.math.BigDecimal access$0(com.holding.smile.activity.WebViewActivity) -> access$0
+    java.lang.String access$1(com.holding.smile.activity.WebViewActivity) -> access$1
 com.holding.smile.activity.WebViewActivity$1 -> com.holding.smile.activity.WebViewActivity$1:
     com.holding.smile.activity.WebViewActivity this$0 -> this$0
     void onPageStarted(android.webkit.WebView,java.lang.String,android.graphics.Bitmap) -> onPageStarted
     android.webkit.WebResourceResponse shouldInterceptRequest(android.webkit.WebView,java.lang.String) -> shouldInterceptRequest
     void onPageFinished(android.webkit.WebView,java.lang.String) -> onPageFinished
     void onReceivedError(android.webkit.WebView,int,java.lang.String,java.lang.String) -> onReceivedError
-com.holding.smile.adapter.CategoryAdapter -> com.holding.smile.a.a:
+com.holding.smile.adapter.BrandAdapter -> com.holding.smile.a.a:
+    com.holding.smile.cache.ImageLoader mImageLoader -> a
+    android.view.LayoutInflater mInflater -> b
+    java.util.List brandList -> c
+    java.lang.Integer cid -> d
+    boolean mBusy -> e
+    void setCid(java.lang.Integer) -> a
+    int getCount() -> getCount
+    java.lang.Object getItem(int) -> getItem
+    long getItemId(int) -> getItemId
+    android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    java.lang.Integer access$0(com.holding.smile.adapter.BrandAdapter) -> a
+com.holding.smile.adapter.BrandAdapter$1 -> com.holding.smile.a.b:
+    com.holding.smile.adapter.BrandAdapter this$0 -> a
+    com.holding.smile.entity.Brand val$brand -> b
+    android.content.Context val$context -> c
+    void onClick(android.view.View) -> onClick
+com.holding.smile.adapter.BrandAdapter$ViewHolder -> com.holding.smile.a.c:
+    android.widget.TextView brand -> a
+    android.widget.ImageView p -> b
+    void access$1(com.holding.smile.adapter.BrandAdapter$ViewHolder,android.widget.TextView) -> a
+    void access$2(com.holding.smile.adapter.BrandAdapter$ViewHolder,android.widget.ImageView) -> a
+    android.widget.ImageView access$3(com.holding.smile.adapter.BrandAdapter$ViewHolder) -> a
+    android.widget.TextView access$4(com.holding.smile.adapter.BrandAdapter$ViewHolder) -> b
+com.holding.smile.adapter.CategoryAdapter -> com.holding.smile.a.d:
     java.util.List cateList -> a
     android.content.Context context -> b
     int getCount() -> getCount
     java.lang.Object getItem(int) -> getItem
     long getItemId(int) -> getItemId
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-com.holding.smile.adapter.CategoryAdapter$ViewHolder -> com.holding.smile.a.b:
+com.holding.smile.adapter.CategoryAdapter$ViewHolder -> com.holding.smile.a.e:
     android.widget.TextView name -> a
     android.widget.TextView gt -> b
-com.holding.smile.adapter.HistorySearchAdapter -> com.holding.smile.a.c:
+com.holding.smile.adapter.HistorySearchAdapter -> com.holding.smile.a.f:
     java.util.List historySearchList -> a
     int getCount() -> getCount
     java.lang.Object getItem(int) -> getItem
     long getItemId(int) -> getItemId
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-com.holding.smile.adapter.HorizontalGridViewAdapter -> com.holding.smile.a.d:
+com.holding.smile.adapter.HorizontalGridViewAdapter -> com.holding.smile.a.g:
     android.view.LayoutInflater mInflater -> a
     java.util.List jGoodsList -> b
     android.content.Context context -> c
@@ -2528,18 +2615,18 @@ com.holding.smile.adapter.HorizontalGridViewAdapter -> com.holding.smile.a.d:
     long getItemId(int) -> getItemId
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
     android.content.Context access$0(com.holding.smile.adapter.HorizontalGridViewAdapter) -> a
-com.holding.smile.adapter.HorizontalGridViewAdapter$1 -> com.holding.smile.a.e:
+com.holding.smile.adapter.HorizontalGridViewAdapter$1 -> com.holding.smile.a.h:
     com.holding.smile.adapter.HorizontalGridViewAdapter this$0 -> a
     com.holding.smile.entity.JGoods val$jGoods -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.HorizontalGridViewAdapter$ViewHolder -> com.holding.smile.a.f:
+com.holding.smile.adapter.HorizontalGridViewAdapter$ViewHolder -> com.holding.smile.a.i:
     android.widget.TextView pn -> a
     android.widget.ImageView im -> b
     void access$1(com.holding.smile.adapter.HorizontalGridViewAdapter$ViewHolder,android.widget.ImageView) -> a
     void access$2(com.holding.smile.adapter.HorizontalGridViewAdapter$ViewHolder,android.widget.TextView) -> a
     android.widget.ImageView access$3(com.holding.smile.adapter.HorizontalGridViewAdapter$ViewHolder) -> a
     android.widget.TextView access$4(com.holding.smile.adapter.HorizontalGridViewAdapter$ViewHolder) -> b
-com.holding.smile.adapter.MyIdcardAdapter -> com.holding.smile.a.g:
+com.holding.smile.adapter.MyIdcardAdapter -> com.holding.smile.a.j:
     android.content.Context context -> a
     java.util.List idcardList -> b
     int getCount() -> getCount
@@ -2547,15 +2634,15 @@ com.holding.smile.adapter.MyIdcardAdapter -> com.holding.smile.a.g:
     long getItemId(int) -> getItemId
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
     android.content.Context access$0(com.holding.smile.adapter.MyIdcardAdapter) -> a
-com.holding.smile.adapter.MyIdcardAdapter$1 -> com.holding.smile.a.h:
+com.holding.smile.adapter.MyIdcardAdapter$1 -> com.holding.smile.a.k:
     com.holding.smile.adapter.MyIdcardAdapter this$0 -> a
     com.holding.smile.entity.Idcard val$idcard -> b
     android.view.ViewGroup val$parent -> c
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyIdcardAdapter$ViewHolder -> com.holding.smile.a.i:
+com.holding.smile.adapter.MyIdcardAdapter$ViewHolder -> com.holding.smile.a.l:
     android.widget.TextView name -> a
     android.widget.TextView idcard -> b
-com.holding.smile.adapter.MyJGoodsAdapter -> com.holding.smile.a.j:
+com.holding.smile.adapter.MyJGoodsAdapter -> com.holding.smile.a.m:
     android.content.Context context -> a
     java.util.List jGoodsList -> b
     com.holding.smile.cache.ImageLoader mImageLoader -> c
@@ -2566,18 +2653,18 @@ com.holding.smile.adapter.MyJGoodsAdapter -> com.holding.smile.a.j:
     long getItemId(int) -> getItemId
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
     android.content.Context access$0(com.holding.smile.adapter.MyJGoodsAdapter) -> a
-com.holding.smile.adapter.MyJGoodsAdapter$1 -> com.holding.smile.a.k:
+com.holding.smile.adapter.MyJGoodsAdapter$1 -> com.holding.smile.a.n:
     com.holding.smile.adapter.MyJGoodsAdapter this$0 -> a
     com.holding.smile.entity.JGoods val$jGoods -> b
     android.view.ViewGroup val$parent -> c
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyJGoodsAdapter$ViewHolder -> com.holding.smile.a.l:
+com.holding.smile.adapter.MyJGoodsAdapter$ViewHolder -> com.holding.smile.a.o:
     android.widget.TextView n -> a
     android.widget.TextView lp -> b
     android.widget.TextView pp -> c
     android.widget.ImageView p -> d
     android.widget.TextView sn -> e
-com.holding.smile.adapter.MyOrderInformAdapter -> com.holding.smile.a.m:
+com.holding.smile.adapter.MyOrderInformAdapter -> com.holding.smile.a.p:
     android.content.Context context -> a
     java.util.List orderDetails -> b
     com.holding.smile.cache.ImageLoader mImageLoader -> c
@@ -2594,22 +2681,22 @@ com.holding.smile.adapter.MyOrderInformAdapter -> com.holding.smile.a.m:
     android.content.Context access$0(com.holding.smile.adapter.MyOrderInformAdapter) -> a
     void access$1(com.holding.smile.adapter.MyOrderInformAdapter) -> b
     android.os.Handler access$2(com.holding.smile.adapter.MyOrderInformAdapter) -> c
-com.holding.smile.adapter.MyOrderInformAdapter$1 -> com.holding.smile.a.n:
+com.holding.smile.adapter.MyOrderInformAdapter$1 -> com.holding.smile.a.q:
     com.holding.smile.adapter.MyOrderInformAdapter this$0 -> a
     com.holding.smile.dto.ProductDto val$jGoods -> b
     android.view.ViewGroup val$parent -> c
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyOrderInformAdapter$2 -> com.holding.smile.a.o:
+com.holding.smile.adapter.MyOrderInformAdapter$2 -> com.holding.smile.a.r:
     com.holding.smile.adapter.MyOrderInformAdapter this$0 -> a
     com.holding.smile.dto.OrderDetailDto val$orderDetail -> b
     com.holding.smile.dto.ProductDto val$jGoods -> c
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyOrderInformAdapter$3 -> com.holding.smile.a.p:
+com.holding.smile.adapter.MyOrderInformAdapter$3 -> com.holding.smile.a.s:
     com.holding.smile.adapter.MyOrderInformAdapter this$0 -> a
     com.holding.smile.dto.OrderDetailDto val$orderDetail -> b
     com.holding.smile.dto.ProductDto val$jGoods -> c
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyOrderInformAdapter$ViewHolder -> com.holding.smile.a.q:
+com.holding.smile.adapter.MyOrderInformAdapter$ViewHolder -> com.holding.smile.a.t:
     android.widget.TextView n -> a
     android.widget.TextView pp -> b
     android.widget.TextView spq -> c
@@ -2619,7 +2706,7 @@ com.holding.smile.adapter.MyOrderInformAdapter$ViewHolder -> com.holding.smile.a
     android.widget.TextView qty -> g
     android.widget.ImageView subBtn -> h
     android.widget.ImageView addBtn -> i
-com.holding.smile.adapter.MyOrdersAdapter -> com.holding.smile.a.r:
+com.holding.smile.adapter.MyOrdersAdapter -> com.holding.smile.a.u:
     android.content.Context context -> a
     java.util.List orderList -> b
     com.holding.smile.myview.MyListView listView -> c
@@ -2643,26 +2730,26 @@ com.holding.smile.adapter.MyOrdersAdapter -> com.holding.smile.a.r:
     java.math.BigDecimal access$2(com.holding.smile.adapter.MyOrdersAdapter) -> c
     void access$3(com.holding.smile.adapter.MyOrdersAdapter,java.math.BigDecimal) -> a
     void access$4(com.holding.smile.adapter.MyOrdersAdapter,java.lang.Boolean) -> a
-com.holding.smile.adapter.MyOrdersAdapter$1 -> com.holding.smile.a.s:
+com.holding.smile.adapter.MyOrdersAdapter$1 -> com.holding.smile.a.v:
     com.holding.smile.adapter.MyOrdersAdapter this$0 -> a
     com.holding.smile.dto.OrderDto val$order -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyOrdersAdapter$2 -> com.holding.smile.a.t:
+com.holding.smile.adapter.MyOrdersAdapter$2 -> com.holding.smile.a.w:
     com.holding.smile.adapter.MyOrdersAdapter this$0 -> a
     com.holding.smile.dto.OrderDto val$order -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyOrdersAdapter$3 -> com.holding.smile.a.u:
+com.holding.smile.adapter.MyOrdersAdapter$3 -> com.holding.smile.a.x:
     com.holding.smile.adapter.MyOrdersAdapter this$0 -> a
     com.holding.smile.dto.OrderDto val$order -> b
     com.holding.smile.adapter.MyOrdersAdapter$ViewHolder val$holder -> c
     void onClick(android.view.View) -> onClick
     com.holding.smile.adapter.MyOrdersAdapter access$0(com.holding.smile.adapter.MyOrdersAdapter$3) -> a
-com.holding.smile.adapter.MyOrdersAdapter$3$1 -> com.holding.smile.a.v:
+com.holding.smile.adapter.MyOrdersAdapter$3$1 -> com.holding.smile.a.y:
     com.holding.smile.adapter.MyOrdersAdapter$3 this$1 -> a
     com.holding.smile.dto.OrderDto val$order -> b
     com.holding.smile.adapter.MyOrdersAdapter$ViewHolder val$holder -> c
     void onClick(android.content.DialogInterface,int) -> onClick
-com.holding.smile.adapter.MyOrdersAdapter$ViewHolder -> com.holding.smile.a.w:
+com.holding.smile.adapter.MyOrdersAdapter$ViewHolder -> com.holding.smile.a.z:
     android.widget.TextView number -> a
     android.widget.TextView time -> b
     android.widget.TextView price -> c
@@ -2670,7 +2757,7 @@ com.holding.smile.adapter.MyOrdersAdapter$ViewHolder -> com.holding.smile.a.w:
     android.widget.TextView statusButton -> e
     android.widget.ImageView deleteButton -> f
     android.widget.ImageView checkBoxImage -> g
-com.holding.smile.adapter.MyPagerAdapter -> com.holding.smile.a.x:
+com.holding.smile.adapter.MyPagerAdapter -> com.holding.smile.a.aa:
     com.holding.smile.cache.ImageLoader mImageLoader -> a
     java.util.List mListViews -> b
     void setListViews(java.util.List) -> a
@@ -2678,7 +2765,7 @@ com.holding.smile.adapter.MyPagerAdapter -> com.holding.smile.a.x:
     java.lang.Object instantiateItem(android.view.ViewGroup,int) -> a
     int getCount() -> a
     boolean isViewFromObject(android.view.View,java.lang.Object) -> a
-com.holding.smile.adapter.MyShoppingCartAdapter -> com.holding.smile.a.y:
+com.holding.smile.adapter.MyShoppingCartAdapter -> com.holding.smile.a.ab:
     android.content.Context context -> a
     java.util.List cartItemList -> b
     com.holding.smile.cache.ImageLoader mImageLoader -> c
@@ -2703,28 +2790,33 @@ com.holding.smile.adapter.MyShoppingCartAdapter -> com.holding.smile.a.y:
     android.os.Handler access$2(com.holding.smile.adapter.MyShoppingCartAdapter) -> c
     java.util.Set access$3(com.holding.smile.adapter.MyShoppingCartAdapter) -> d
     void access$4(com.holding.smile.adapter.MyShoppingCartAdapter,java.lang.Boolean) -> a
-com.holding.smile.adapter.MyShoppingCartAdapter$1 -> com.holding.smile.a.z:
+com.holding.smile.adapter.MyShoppingCartAdapter$1 -> com.holding.smile.a.ac:
     com.holding.smile.adapter.MyShoppingCartAdapter this$0 -> a
     com.holding.smile.dto.ProductDto val$jGoods -> b
     android.view.ViewGroup val$parent -> c
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyShoppingCartAdapter$2 -> com.holding.smile.a.aa:
+com.holding.smile.adapter.MyShoppingCartAdapter$2 -> com.holding.smile.a.ad:
+    com.holding.smile.adapter.MyShoppingCartAdapter this$0 -> a
+    com.holding.smile.dto.ProductDto val$jGoods -> b
+    android.view.ViewGroup val$parent -> c
+    void onClick(android.view.View) -> onClick
+com.holding.smile.adapter.MyShoppingCartAdapter$3 -> com.holding.smile.a.ae:
     com.holding.smile.adapter.MyShoppingCartAdapter this$0 -> a
     com.holding.smile.entity.CartItem val$cartItem -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyShoppingCartAdapter$3 -> com.holding.smile.a.ab:
+com.holding.smile.adapter.MyShoppingCartAdapter$4 -> com.holding.smile.a.af:
     com.holding.smile.adapter.MyShoppingCartAdapter this$0 -> a
     com.holding.smile.entity.CartItem val$cartItem -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyShoppingCartAdapter$4 -> com.holding.smile.a.ac:
+com.holding.smile.adapter.MyShoppingCartAdapter$5 -> com.holding.smile.a.ag:
     com.holding.smile.adapter.MyShoppingCartAdapter this$0 -> a
     com.holding.smile.entity.CartItem val$cartItem -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyShoppingCartAdapter$5 -> com.holding.smile.a.ad:
+com.holding.smile.adapter.MyShoppingCartAdapter$6 -> com.holding.smile.a.ah:
     com.holding.smile.adapter.MyShoppingCartAdapter this$0 -> a
     com.holding.smile.entity.CartItem val$cartItem -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.MyShoppingCartAdapter$ViewHolder -> com.holding.smile.a.ae:
+com.holding.smile.adapter.MyShoppingCartAdapter$ViewHolder -> com.holding.smile.a.ai:
     android.widget.TextView n -> a
     android.widget.TextView pp -> b
     android.widget.ImageView p -> c
@@ -2735,7 +2827,7 @@ com.holding.smile.adapter.MyShoppingCartAdapter$ViewHolder -> com.holding.smile.
     android.widget.ImageView addBtn -> h
     android.widget.ImageView checkBox -> i
     android.widget.ImageView delBtn -> j
-com.holding.smile.adapter.OrderDetailAdapter -> com.holding.smile.a.af:
+com.holding.smile.adapter.OrderDetailAdapter -> com.holding.smile.a.aj:
     android.content.Context context -> a
     com.holding.smile.dto.OrderDto orderDto -> b
     java.util.List orderDetails -> c
@@ -2752,22 +2844,22 @@ com.holding.smile.adapter.OrderDetailAdapter -> com.holding.smile.a.af:
     android.content.Context access$0(com.holding.smile.adapter.OrderDetailAdapter) -> a
     com.holding.smile.dto.OrderDto access$1(com.holding.smile.adapter.OrderDetailAdapter) -> b
     android.view.ViewGroup access$2(com.holding.smile.adapter.OrderDetailAdapter) -> c
-com.holding.smile.adapter.OrderDetailAdapter$1 -> com.holding.smile.a.ag:
+com.holding.smile.adapter.OrderDetailAdapter$1 -> com.holding.smile.a.ak:
     com.holding.smile.adapter.OrderDetailAdapter this$0 -> a
     android.view.ViewGroup val$parent -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.OrderDetailAdapter$2 -> com.holding.smile.a.ah:
+com.holding.smile.adapter.OrderDetailAdapter$2 -> com.holding.smile.a.al:
     com.holding.smile.adapter.OrderDetailAdapter this$0 -> a
     com.holding.smile.dto.ProductDto val$jGoods -> b
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.OrderDetailAdapter$ViewHolder -> com.holding.smile.a.ai:
+com.holding.smile.adapter.OrderDetailAdapter$ViewHolder -> com.holding.smile.a.am:
     android.widget.TextView n -> a
     android.widget.TextView pp -> b
     android.widget.TextView spq -> c
     android.widget.ImageView p -> d
     android.widget.TextView color -> e
     android.widget.TextView brandstyle -> f
-com.holding.smile.adapter.VerticalListAdapter -> com.holding.smile.a.aj:
+com.holding.smile.adapter.VerticalListAdapter -> com.holding.smile.a.an:
     float density -> a
     int cWidth -> b
     int hSpacing -> c
@@ -2780,18 +2872,18 @@ com.holding.smile.adapter.VerticalListAdapter -> com.holding.smile.a.aj:
     long getItemId(int) -> getItemId
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
     java.lang.Integer access$0(com.holding.smile.adapter.VerticalListAdapter) -> a
-com.holding.smile.adapter.VerticalListAdapter$1 -> com.holding.smile.a.ak:
+com.holding.smile.adapter.VerticalListAdapter$1 -> com.holding.smile.a.ao:
     com.holding.smile.adapter.VerticalListAdapter this$0 -> a
     com.holding.smile.adapter.HorizontalGridViewAdapter val$hlAdapter -> b
     void onScrollStateChanged(android.widget.AbsListView,int) -> onScrollStateChanged
     void onScroll(android.widget.AbsListView,int,int,int) -> onScroll
-com.holding.smile.adapter.VerticalListAdapter$2 -> com.holding.smile.a.al:
+com.holding.smile.adapter.VerticalListAdapter$2 -> com.holding.smile.a.ap:
     com.holding.smile.adapter.VerticalListAdapter this$0 -> a
     com.holding.smile.dto.BrandJGoods val$brandJGoods -> b
     android.content.Context val$context -> c
     com.holding.smile.adapter.HorizontalGridViewAdapter val$hlAdapter -> d
     void onClick(android.view.View) -> onClick
-com.holding.smile.adapter.VerticalListAdapter$ViewHolder -> com.holding.smile.a.am:
+com.holding.smile.adapter.VerticalListAdapter$ViewHolder -> com.holding.smile.a.aq:
     android.widget.TextView brand -> a
     android.widget.TextView moreText -> b
     android.widget.RelativeLayout relativeLayout -> c
@@ -2821,7 +2913,8 @@ com.holding.smile.cache.ImageLoader -> com.holding.smile.b.c:
     android.graphics.Bitmap getBitmapFromCache(java.lang.String) -> a
     void queuePhoto(java.lang.String,android.widget.ImageView) -> a
     android.graphics.Bitmap getBitmap(java.lang.String) -> b
-    android.graphics.Bitmap decodeFile(java.io.File) -> a
+    android.graphics.Bitmap decodeFile(java.io.File,int,int) -> a
+    int calcScaleRatio(android.graphics.BitmapFactory$Options,int,int) -> a
     boolean imageViewReused(com.holding.smile.cache.ImageLoader$PhotoToLoad) -> a
     void clearMemoryCache() -> a
     void CopyStream(java.io.InputStream,java.io.OutputStream) -> a
@@ -2854,18 +2947,18 @@ com.holding.smile.dto.BrandDto -> com.holding.smile.dto.BrandDto:
     long serialVersionUID -> serialVersionUID
     java.lang.Integer id -> id
     java.lang.String name -> name
+    java.lang.String img_url -> img_url
     java.lang.Integer getId() -> getId
     void setId(java.lang.Integer) -> setId
     java.lang.String getName() -> getName
     void setName(java.lang.String) -> setName
+    java.lang.String getImg_url() -> getImg_url
+    void setImg_url(java.lang.String) -> setImg_url
 com.holding.smile.dto.BrandJGoods -> com.holding.smile.dto.BrandJGoods:
-    java.lang.Integer id -> id
-    java.lang.String n -> n
+    com.holding.smile.entity.Brand brand -> brand
     java.util.List gs -> gs
-    java.lang.Integer getId() -> getId
-    void setId(java.lang.Integer) -> setId
-    java.lang.String getN() -> getN
-    void setN(java.lang.String) -> setN
+    com.holding.smile.entity.Brand getBrand() -> getBrand
+    void setBrand(com.holding.smile.entity.Brand) -> setBrand
     java.util.List getGs() -> getGs
     void setGs(java.util.List) -> setGs
 com.holding.smile.dto.CouponDto -> com.holding.smile.dto.CouponDto:
@@ -2881,9 +2974,18 @@ com.holding.smile.dto.CouponDto -> com.holding.smile.dto.CouponDto:
     void setDesc(java.lang.String) -> setDesc
 com.holding.smile.dto.LogisticsDto -> com.holding.smile.dto.LogisticsDto:
     long serialVersionUID -> serialVersionUID
-    java.util.List list -> list
-    java.util.List getList() -> getList
-    void setList(java.util.List) -> setList
+    java.lang.String companyName -> companyName
+    java.lang.String logisticsStatus -> logisticsStatus
+    java.lang.Long tid -> tid
+    java.util.List transitStepInfoList -> transitStepInfoList
+    java.lang.String getCompanyName() -> getCompanyName
+    void setCompanyName(java.lang.String) -> setCompanyName
+    java.lang.Long getTid() -> getTid
+    void setTid(java.lang.Long) -> setTid
+    java.util.List getTransitStepInfoList() -> getTransitStepInfoList
+    void setTransitStepInfoList(java.util.List) -> setTransitStepInfoList
+    java.lang.String getLogisticsStatus() -> getLogisticsStatus
+    void setLogisticsStatus(java.lang.String) -> setLogisticsStatus
 com.holding.smile.dto.OrderDetailDto -> com.holding.smile.dto.OrderDetailDto:
     long serialVersionUID -> serialVersionUID
     java.util.List coupons -> coupons
@@ -2993,6 +3095,7 @@ com.holding.smile.dto.RtnValueDto -> com.holding.smile.dto.RtnValueDto:
     java.util.List orderListData -> orderListData
     com.holding.smile.entity.CartItem cartData -> cartData
     java.util.List cartListData -> cartListData
+    com.holding.smile.entity.IndexBrands indexBrandsData -> indexBrandsData
     java.lang.Integer getCode() -> getCode
     void setCode(java.lang.Integer) -> setCode
     com.holding.smile.entity.JGoods getGoodDetail() -> getGoodDetail
@@ -3029,6 +3132,8 @@ com.holding.smile.dto.RtnValueDto -> com.holding.smile.dto.RtnValueDto:
     void setCartData(com.holding.smile.entity.CartItem) -> setCartData
     java.util.List getCartListData() -> getCartListData
     void setCartListData(java.util.List) -> setCartListData
+    com.holding.smile.entity.IndexBrands getIndexBrandsData() -> getIndexBrandsData
+    void setIndexBrandsData(com.holding.smile.entity.IndexBrands) -> setIndexBrandsData
 com.holding.smile.dto.ValidateDto -> com.holding.smile.dto.ValidateDto:
     java.lang.String option -> option
     java.lang.String message -> message
@@ -3047,6 +3152,17 @@ com.holding.smile.dto.VoucherDto -> com.holding.smile.dto.VoucherDto:
     void setName(java.lang.String) -> setName
     java.lang.String getDesc() -> getDesc
     void setDesc(java.lang.String) -> setDesc
+com.holding.smile.entity.Brand -> com.holding.smile.entity.Brand:
+    long serialVersionUID -> serialVersionUID
+    java.lang.Integer id -> id
+    java.lang.String name -> name
+    java.lang.String img_url -> img_url
+    java.lang.Integer getId() -> getId
+    void setId(java.lang.Integer) -> setId
+    java.lang.String getName() -> getName
+    void setName(java.lang.String) -> setName
+    java.lang.String getImg_url() -> getImg_url
+    void setImg_url(java.lang.String) -> setImg_url
 com.holding.smile.entity.CartItem -> com.holding.smile.entity.CartItem:
     long serialVersionUID -> serialVersionUID
     java.lang.Integer id -> id
@@ -3149,6 +3265,14 @@ com.holding.smile.entity.Idcard -> com.holding.smile.entity.Idcard:
     void setGmtCreate(java.lang.String) -> setGmtCreate
     java.lang.String getGmtModify() -> getGmtModify
     void setGmtModify(java.lang.String) -> setGmtModify
+com.holding.smile.entity.IndexBrands -> com.holding.smile.entity.IndexBrands:
+    long serialVersionUID -> serialVersionUID
+    java.util.List activitys -> activitys
+    java.util.List brands -> brands
+    java.util.List getActivitys() -> getActivitys
+    void setActivitys(java.util.List) -> setActivitys
+    java.util.List getBrands() -> getBrands
+    void setBrands(java.util.List) -> setBrands
 com.holding.smile.entity.JActivity -> com.holding.smile.entity.JActivity:
     long serialVersionUID -> serialVersionUID
     java.lang.Integer id -> id
@@ -3248,11 +3372,11 @@ com.holding.smile.entity.JGoods -> com.holding.smile.entity.JGoods:
 com.holding.smile.entity.JIndexJGoods -> com.holding.smile.entity.JIndexJGoods:
     long serialVersionUID -> serialVersionUID
     java.util.List activity -> activity
-    java.util.List brand -> brand
+    java.util.List brands -> brands
     java.util.List getActivity() -> getActivity
     void setActivity(java.util.List) -> setActivity
-    java.util.List getBrand() -> getBrand
-    void setBrand(java.util.List) -> setBrand
+    java.util.List getBrands() -> getBrands
+    void setBrands(java.util.List) -> setBrands
 com.holding.smile.entity.JSort -> com.holding.smile.entity.JSort:
     long serialVersionUID -> serialVersionUID
     java.lang.String n -> n
@@ -3530,6 +3654,10 @@ com.holding.smile.protocol.PIdcards -> com.holding.smile.protocol.PIdcards:
     java.util.List data -> data
     java.util.List getData() -> getData
     void setData(java.util.List) -> setData
+com.holding.smile.protocol.PIndexBrands -> com.holding.smile.protocol.PIndexBrands:
+    com.holding.smile.entity.IndexBrands data -> data
+    com.holding.smile.entity.IndexBrands getData() -> getData
+    void setData(com.holding.smile.entity.IndexBrands) -> setData
 com.holding.smile.protocol.PIndexJGoods -> com.holding.smile.protocol.PIndexJGoods:
     com.holding.smile.entity.JIndexJGoods data -> data
     com.holding.smile.entity.JIndexJGoods getData() -> getData
@@ -3562,45 +3690,49 @@ com.holding.smile.service.DataService -> com.holding.smile.c.a:
     boolean getDataFromNet -> a
     java.lang.String prefix_url -> b
     java.lang.String jGoods_index_url -> c
-    java.lang.String jGoods_recommend_url -> d
-    java.lang.String jGoods_cate_url -> e
-    java.lang.String jGoods_brand_url -> f
-    java.lang.String jGoods_brand_more_url -> g
-    java.lang.String jGoods_sorttype_url -> h
-    java.lang.String jGoods_detail_url -> i
-    java.lang.String jGoods_sort_url -> j
-    java.lang.String jGoods_search_url -> k
-    java.lang.String jGoods_search_more_url -> l
-    java.lang.String user_info -> m
-    java.lang.String idcard_list -> n
-    java.lang.String order_list_url -> o
-    java.lang.String cart_list_url -> p
-    java.lang.String order_status_url -> q
+    java.lang.String jGoods_index_single_url -> d
+    java.lang.String jGoods_recommend_url -> e
+    java.lang.String jGoods_cate_url -> f
+    java.lang.String jGoods_brand_url -> g
+    java.lang.String jGoods_brand_more_url -> h
+    java.lang.String jGoods_sorttype_url -> i
+    java.lang.String jGoods_detail_url -> j
+    java.lang.String jGoods_sort_url -> k
+    java.lang.String jGoods_search_url -> l
+    java.lang.String jGoods_search_more_url -> m
+    java.lang.String user_info -> n
+    java.lang.String idcard_list -> o
+    java.lang.String order_list_url -> p
+    java.lang.String cart_list_url -> q
+    java.lang.String order_status_url -> r
     com.holding.smile.dto.RtnValueDto getRecommendBrandsListInit(java.lang.Integer) -> a
     com.holding.smile.dto.RtnValueDto getBrandJGoodsListInit(java.lang.Integer,java.lang.Integer,java.lang.String) -> a
     java.util.List getSortTypeList() -> a
     com.holding.smile.dto.RtnValueDto getBrandJGoodsListMore(java.lang.Integer,java.lang.Integer,java.lang.String,java.lang.Integer) -> a
-    com.holding.smile.dto.RtnValueDto getJGoodsSearchListInit(java.lang.String,java.lang.String,java.lang.Integer) -> a
-    com.holding.smile.dto.RtnValueDto getJGoodsSearchListRefresh(java.lang.String,com.holding.smile.entity.JGoods,java.lang.String,java.lang.Integer) -> a
-    com.holding.smile.dto.RtnValueDto getJGoodsSearchListMore(java.lang.String,com.holding.smile.entity.JGoods,java.lang.String,java.lang.Integer) -> b
+    com.holding.smile.dto.RtnValueDto getJGoodsSearchListInit(java.lang.String) -> a
+    com.holding.smile.dto.RtnValueDto getJGoodsSearchListRefresh(java.lang.String,java.lang.String) -> a
+    com.holding.smile.dto.RtnValueDto getJGoodsSearchListMore(java.lang.String,java.lang.String,java.lang.Integer) -> a
     com.holding.smile.dto.RtnValueDto getIndexJGoods(java.lang.Integer) -> b
-    com.holding.smile.dto.RtnValueDto getRecommendBrands(java.lang.Integer) -> c
+    com.holding.smile.dto.RtnValueDto getIndexBrands(java.lang.Integer) -> c
+    com.holding.smile.dto.RtnValueDto getRecommendBrands(java.lang.Integer) -> d
     com.holding.smile.dto.RtnValueDto getBrandGoods(java.lang.Integer,java.lang.Integer,java.lang.String,java.lang.Integer) -> b
-    com.holding.smile.dto.RtnValueDto searchGoods(java.lang.String,java.lang.Integer,java.lang.String,java.lang.Integer) -> a
+    com.holding.smile.dto.RtnValueDto searchGoods(java.lang.String,java.lang.String,java.lang.Integer) -> b
     com.holding.smile.dto.RtnValueDto getCategorys() -> b
     com.holding.smile.dto.RtnValueDto getSortList() -> c
-    com.holding.smile.dto.RtnValueDto getJGoodsSortList(java.lang.String) -> a
-    com.holding.smile.dto.RtnValueDto getGoodsDetail(java.lang.String) -> b
+    com.holding.smile.dto.RtnValueDto getJGoodsSortList(java.lang.String) -> b
+    com.holding.smile.dto.RtnValueDto getGoodsDetail(java.lang.String) -> c
     com.holding.smile.dto.RtnValueDto getUserInfo() -> d
     com.holding.smile.dto.RtnValueDto getIdcardsList() -> e
-    com.holding.smile.dto.RtnValueDto getOrdersList(java.lang.String) -> c
-    com.holding.smile.dto.RtnValueDto getOrderStatus(java.lang.String) -> d
+    com.holding.smile.dto.RtnValueDto getOrdersList(java.lang.String) -> d
+    com.holding.smile.dto.RtnValueDto getOrderStatus(java.lang.String) -> e
     com.holding.smile.dto.RtnValueDto getCartItemList() -> f
 com.holding.smile.service.LoginService -> com.holding.smile.c.b:
     android.content.Context context -> a
     java.lang.String login_url -> b
     java.lang.String auto_login_url -> c
     int SUCCESS_CODE -> d
+    int SESSION_TIME -> e
+    boolean isSessionInvalidated() -> a
     com.holding.smile.dto.RtnValueDto login(com.holding.smile.entity.SUser) -> a
     com.holding.smile.dto.RtnValueDto autoLogin(com.holding.smile.entity.SUser) -> b
     void setLoginUser(com.holding.smile.entity.SUser) -> c
@@ -3654,7 +3786,9 @@ com.holding.smile.tools.BitmapUtils -> com.holding.smile.tools.a:
 com.holding.smile.tools.ClickUtil -> com.holding.smile.tools.b:
     java.lang.String getTextByStatus(java.lang.String) -> a
     int getBackgroundColorByStatus(java.lang.String) -> b
-com.holding.smile.tools.CommonLog -> com.holding.smile.tools.c:
+com.holding.smile.tools.CodeValidator -> com.holding.smile.tools.c:
+    boolean dealCode(android.content.Context,com.holding.smile.dto.RtnValueDto) -> a
+com.holding.smile.tools.CommonLog -> com.holding.smile.tools.d:
     java.lang.String tag -> c
     int logLevel -> a
     boolean isDebug -> b
@@ -3664,12 +3798,12 @@ com.holding.smile.tools.CommonLog -> com.holding.smile.tools.c:
     void e(java.lang.Object) -> b
     void debug(java.lang.Object) -> c
     void d(java.lang.Object) -> d
-com.holding.smile.tools.CommonUtil -> com.holding.smile.tools.d:
+com.holding.smile.tools.CommonUtil -> com.holding.smile.tools.e:
     com.holding.smile.tools.CommonLog log -> a
     boolean hasSDCard() -> a
     java.lang.String getRootFilePath() -> b
-com.holding.smile.tools.Constants -> com.holding.smile.tools.e:
-com.holding.smile.tools.Constants$OrderStateCode -> com.holding.smile.tools.f:
+com.holding.smile.tools.Constants -> com.holding.smile.tools.f:
+com.holding.smile.tools.Constants$OrderStateCode -> com.holding.smile.tools.g:
     com.holding.smile.tools.Constants$OrderStateCode FOR_PAYMENT -> a
     com.holding.smile.tools.Constants$OrderStateCode HAVE_BEEN_PAID -> b
     com.holding.smile.tools.Constants$OrderStateCode THE_LACK_OF_IDENTITY_CARD -> c
@@ -3686,37 +3820,48 @@ com.holding.smile.tools.Constants$OrderStateCode -> com.holding.smile.tools.f:
     com.holding.smile.tools.Constants$OrderStateCode[] ENUM$VALUES -> n
     com.holding.smile.tools.Constants$OrderStateCode[] values() -> values
     com.holding.smile.tools.Constants$OrderStateCode valueOf(java.lang.String) -> valueOf
-com.holding.smile.tools.DBHelper -> com.holding.smile.tools.g:
+com.holding.smile.tools.DBHelper -> com.holding.smile.tools.h:
     void onCreate(android.database.sqlite.SQLiteDatabase) -> onCreate
     void onUpgrade(android.database.sqlite.SQLiteDatabase,int,int) -> onUpgrade
     void createTable(android.database.sqlite.SQLiteDatabase) -> a
-com.holding.smile.tools.DateUtil -> com.holding.smile.tools.h:
+com.holding.smile.tools.DateUtil -> com.holding.smile.tools.i:
     java.lang.String dateToStr(java.util.Date) -> a
-com.holding.smile.tools.FileHelper -> com.holding.smile.tools.i:
+com.holding.smile.tools.FileHelper -> com.holding.smile.tools.j:
     com.holding.smile.tools.CommonLog log -> a
     boolean createDirectory(java.lang.String) -> a
     boolean deleteDirectory(java.lang.String) -> b
-com.holding.smile.tools.FileManager -> com.holding.smile.tools.j:
+com.holding.smile.tools.FileManager -> com.holding.smile.tools.k:
     java.lang.String getSaveFilePath() -> a
-com.holding.smile.tools.FileUtils -> com.holding.smile.tools.k:
+com.holding.smile.tools.FileUtils -> com.holding.smile.tools.l:
     java.lang.String uploadIdcardPhoto(java.lang.String,java.util.List,java.lang.String) -> a
-com.holding.smile.tools.JSONUtil -> com.holding.smile.tools.l:
+com.holding.smile.tools.IdcardValidator -> com.holding.smile.tools.m:
+    java.lang.String[][] codeAndCity -> a
+    java.lang.String[] cityCode -> b
+    int[] power -> c
+    boolean isValidatedAllIdcard(java.lang.String) -> a
+    boolean isValidate18Idcard(java.lang.String) -> b
+    java.lang.String convertIdcarBy15bit(java.lang.String) -> c
+    boolean isDigital(java.lang.String) -> d
+    int getPowerSum(int[]) -> a
+    java.lang.String getCheckCodeBySum(int) -> a
+    int[] converCharToInt(char[]) -> a
+com.holding.smile.tools.JSONUtil -> com.holding.smile.tools.n:
     org.codehaus.jackson.map.ObjectMapper objectMapper -> a
     org.codehaus.jackson.JsonGenerator jsonGenerator -> b
     java.lang.Object getJson2Entity(java.lang.String,java.lang.Class) -> a
-com.holding.smile.tools.LogFactory -> com.holding.smile.tools.m:
+com.holding.smile.tools.LogFactory -> com.holding.smile.tools.o:
     com.holding.smile.tools.CommonLog log -> a
     com.holding.smile.tools.CommonLog createLog() -> a
-com.holding.smile.tools.MD5 -> com.holding.smile.tools.n:
+com.holding.smile.tools.MD5 -> com.holding.smile.tools.p:
     java.lang.String getMD5(java.lang.String) -> a
     java.lang.String getHashString(java.security.MessageDigest) -> a
-com.holding.smile.tools.NullHostNameVerifier -> com.holding.smile.tools.o:
+com.holding.smile.tools.NullHostNameVerifier -> com.holding.smile.tools.q:
     boolean verify(java.lang.String,javax.net.ssl.SSLSession) -> verify
-com.holding.smile.tools.NullX509TrustManager -> com.holding.smile.tools.p:
+com.holding.smile.tools.NullX509TrustManager -> com.holding.smile.tools.r:
     void checkClientTrusted(java.security.cert.X509Certificate[],java.lang.String) -> checkClientTrusted
     void checkServerTrusted(java.security.cert.X509Certificate[],java.lang.String) -> checkServerTrusted
     java.security.cert.X509Certificate[] getAcceptedIssuers() -> getAcceptedIssuers
-com.holding.smile.tools.ProvinceCityUtil -> com.holding.smile.tools.q:
+com.holding.smile.tools.ProvinceCityUtil -> com.holding.smile.tools.s:
     java.util.List conturyList -> a
     java.util.List provinceList -> b
     java.util.List cityList -> c
@@ -3727,8 +3872,10 @@ com.holding.smile.tools.ProvinceCityUtil -> com.holding.smile.tools.q:
     java.util.List getCityList() -> c
     java.util.List getDistrictList() -> d
     void cleanData() -> e
-com.holding.smile.tools.StrUtils -> com.holding.smile.tools.r:
+com.holding.smile.tools.StrUtils -> com.holding.smile.tools.t:
     boolean isNotEmpty(java.lang.String) -> a
+    boolean chaeckPassword(java.lang.String) -> b
+    boolean checkPhoneNumber(java.lang.String) -> c
 com.holding.smile.tools.TbUtil -> com.holding.smile.tools.TbUtil:
     android.webkit.WebView webView -> webView
     void init() -> init
@@ -3737,7 +3884,9 @@ com.holding.smile.tools.TbUtil -> com.holding.smile.tools.TbUtil:
     void cshTb() -> cshTb
     android.webkit.WebView getWebView() -> getWebView
     void setWebView(android.webkit.WebView) -> setWebView
-com.holding.smile.tools.URLUtil -> com.holding.smile.tools.s:
+com.holding.smile.tools.ToastUtils -> com.holding.smile.tools.u:
+    void showShort(android.content.Context,java.lang.String) -> a
+com.holding.smile.tools.URLUtil -> com.holding.smile.tools.v:
     java.lang.String getStringByGet(java.lang.String,java.util.HashMap) -> a
     java.lang.String getStringByPost(java.lang.String,java.util.HashMap) -> b
     java.lang.String getStringByPostMulti(java.lang.String,java.util.HashMap) -> c
