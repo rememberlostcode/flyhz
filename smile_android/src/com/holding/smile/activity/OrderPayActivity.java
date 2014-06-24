@@ -15,6 +15,7 @@ import com.holding.smile.R;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.tools.ClickUtil;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
@@ -97,7 +98,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 			progressBar.setVisibility(View.VISIBLE);
 			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
 												.getOrderStatus(number);
-			if (rtnValue != null) {
+			if (CodeValidator.dealCode(context, rtnValue)) {
 				OrderDto order = rtnValue.getOrderData();
 				if (order != null && order.getStatus() != null) {
 					if (!"10".equals(order.getStatus())) {

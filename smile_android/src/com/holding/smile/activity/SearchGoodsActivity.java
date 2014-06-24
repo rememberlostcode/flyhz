@@ -300,6 +300,14 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	}
 
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (returnDesktop(keyCode, event)) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		editText = null;

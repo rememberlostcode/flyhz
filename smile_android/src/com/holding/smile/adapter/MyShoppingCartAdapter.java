@@ -231,8 +231,8 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 				public void onClick(View arg0) {
 					if (cartItem.getQty() > 1) {
 
-						// 先发送空信息显示进度条
-						showLoding();
+						// 先显示进度条信息
+						progressBar.setVisibility(View.VISIBLE);
 
 						cartItem.setQty((short) (cartItem.getQty() - 1));
 						RtnValueDto rtnValue = MyApplication.getInstance()
@@ -249,8 +249,8 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View arg0) {
-					// 先发送空信息显示进度条
-					showLoding();
+					// 先显示进度条信息
+					progressBar.setVisibility(View.VISIBLE);
 
 					cartItem.setQty((short) (cartItem.getQty() + 1));
 					RtnValueDto rtnValue = MyApplication.getInstance()
@@ -285,7 +285,6 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View arg0) {
-					showLoding();
 					Message msg = mUIHandler.obtainMessage(4);
 					msg.obj = cartItem.getId();
 					msg.sendToTarget();
@@ -293,12 +292,6 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 			});
 		}
 		return convertView;
-	}
-
-	// 显示加载信息
-	private void showLoding() {
-		progressBar.setVisibility(View.VISIBLE);
-		mUIHandler.sendEmptyMessage(2);
 	}
 
 }

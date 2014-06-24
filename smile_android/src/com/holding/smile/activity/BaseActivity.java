@@ -300,24 +300,30 @@ public class BaseActivity extends Activity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// if (event.getAction() == KeyEvent.ACTION_DOWN &&
-		// KeyEvent.KEYCODE_BACK == keyCode) {
-		// long currentTime = System.currentTimeMillis();
-		// if ((currentTime - touchTime) >= waitTime) {
-		// ToastUtils.showShort(context, "再按一次返回键回到桌面！");
-		// touchTime = currentTime;
-		// } else {
-		// /* 与按下HOME键效果一样 begin */
-		// Intent intent = new Intent(Intent.ACTION_MAIN);
-		// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
-		// intent.addCategory(Intent.CATEGORY_HOME);
-		// this.startActivity(intent);
-		// /* 与按下HOME键效果一样 end */
-		// return true;
-		// }
+		// if (returnDesktop(keyCode, event)) {
 		// return true;
 		// }
 		return super.onKeyDown(keyCode, event);
+	}
+
+	public boolean returnDesktop(int keyCode, KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN && KeyEvent.KEYCODE_BACK == keyCode) {
+			long currentTime = System.currentTimeMillis();
+			if ((currentTime - touchTime) >= waitTime) {
+				ToastUtils.showShort(context, "再按一次返回键回到桌面！");
+				touchTime = currentTime;
+			} else {
+				/* 与按下HOME键效果一样 begin */
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
+				intent.addCategory(Intent.CATEGORY_HOME);
+				this.startActivity(intent);
+				/* 与按下HOME键效果一样 end */
+				return true;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	/**
