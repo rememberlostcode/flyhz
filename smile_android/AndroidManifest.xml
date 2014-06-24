@@ -131,7 +131,6 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.WebViewActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>
