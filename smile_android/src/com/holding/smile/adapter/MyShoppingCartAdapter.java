@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -17,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.holding.smile.R;
@@ -35,7 +35,8 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private boolean			mBusy			= false;
 	private Integer			sWidth			= MyApplication.getInstance().getScreenWidth();
-	private ProgressDialog	pDialog;
+	// private ProgressDialog pDialog;
+	private ProgressBar		progressBar;
 	private Handler			mUIHandler;
 
 	private Set<Integer>	sIds			= new HashSet<Integer>();
@@ -71,11 +72,11 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 	}
 
 	// 自己定义的构造函数
-	public MyShoppingCartAdapter(Context context, List<CartItem> contacts, ProgressDialog pDialog,
+	public MyShoppingCartAdapter(Context context, List<CartItem> contacts, ProgressBar progressBar,
 			Handler mUIHandler) {
 		this.cartItemList = contacts;
 		this.context = context;
-		this.pDialog = pDialog;
+		this.progressBar = progressBar;
 		this.mUIHandler = mUIHandler;
 	}
 
@@ -232,7 +233,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 					if (cartItem.getQty() > 1) {
 
 						// 先发送空信息显示进度条
-						showPDialog();
+						showLoding();
 
 						cartItem.setQty((short) (cartItem.getQty() - 1));
 						RtnValueDto rtnValue = MyApplication.getInstance()
@@ -250,7 +251,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View arg0) {
 					// 先发送空信息显示进度条
-					showPDialog();
+					showLoding();
 
 					cartItem.setQty((short) (cartItem.getQty() + 1));
 					RtnValueDto rtnValue = MyApplication.getInstance()
@@ -285,6 +286,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View arg0) {
+					showLoding();
 					Message msg = mUIHandler.obtainMessage(4);
 					msg.obj = cartItem.getId();
 					msg.sendToTarget();
@@ -294,9 +296,9 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	// 显示进度条
-	private void showPDialog() {
-		pDialog.show();
+	// 显示加载信息
+	private void showLoding() {
+		progressBar.setVisibility(View.VISIBLE);
 		mUIHandler.sendEmptyMessage(2);
 	}
 

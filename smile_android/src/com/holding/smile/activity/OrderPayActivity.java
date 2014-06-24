@@ -14,7 +14,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.OrderDto;
@@ -54,6 +53,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 		TextView headerDesc = displayHeaderDescription();
 		headerDesc.setText(R.string.order_pay);
 
+		progressBar.setVisibility(View.VISIBLE);
 		Intent intent = getIntent();
 		try {
 			initPDialog();// 初始化进度条
@@ -78,7 +78,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 		} catch (Exception e) {
 			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 		}
-
+		waitCloseProgressBar();
 	}
 
 	/**
@@ -129,6 +129,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ORDER_CODE && RESULT_CANCELED == resultCode) {
+			progressBar.setVisibility(View.VISIBLE);
 			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
 												.getOrderStatus(number);
 			if (rtnValue != null) {
@@ -142,6 +143,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 					}
 				}
 			}
+			waitCloseProgressBar();
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

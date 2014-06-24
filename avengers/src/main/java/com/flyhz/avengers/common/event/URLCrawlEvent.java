@@ -150,7 +150,7 @@ public class URLCrawlEvent implements Event {
 				for (int i = 0; i < size; i++) {
 					String href = linksElements.get(i).attr("href");
 					if (StringUtil.isNotBlank(href)) {
-						if (href.startsWith("javascript:"))
+						if (href.startsWith("javascript:") || href.startsWith("#"))
 							continue;
 
 						if (!href.startsWith("http://")) {
@@ -196,9 +196,9 @@ public class URLCrawlEvent implements Event {
 				insertInfoToHbase(crawlUrl, doc.html(), version);
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			LOG.error("", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error("", e);
 		} finally {
 			if (connection != null) {
 				connection.disconnect();

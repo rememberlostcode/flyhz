@@ -45,6 +45,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 	private PullToRefreshView	mPullToRefreshView;
 	private ListView			mListView;
+	private ImageView			cateBtn				= null;
 	private Integer				bid					= null;						// 品牌ID
 	private Integer				cid					= null;						// 分类ID
 	private String				seqorderType		= null;						// 选中的排序类型
@@ -55,8 +56,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
-		TextView cateBtn = displayHeaderRight();
-		cateBtn.setText(R.string.category);
+		cateBtn = displayHeaderRightBtn();
+		cateBtn.setImageResource(R.drawable.leibie);
 		cateBtn.setOnClickListener(this);
 
 		try {
@@ -109,6 +110,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			v.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					progressBar.setVisibility(View.VISIBLE);
 					sortTypeLayout.setBackgroundBtn(v.getId());
 					seqorderType = v.getTag().toString();
 					onRefresh();
@@ -124,10 +126,11 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 				finish();
 				break;
 			}
-			case R.id.header_right: {
+			case R.id.header_right_btn: {
 				Intent intent = new Intent(this, CategoryActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, CATE_CODE);
+				cateBtn.setImageResource(R.drawable.leibie2);
 				break;
 			}
 		}
@@ -139,6 +142,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			if (data != null) {
 				Category cate = (Category) data.getExtras().getSerializable("cate");
 				if (cate != null) {
+					progressBar.setVisibility(View.VISIBLE);
 					cid = cate.getId();
 					onRefresh();
 				}
@@ -191,6 +195,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
 			msg.obj = rGoods;
 			msg.sendToTarget();
+		} else {
+			waitCloseProgressBar();
 		}
 	}
 

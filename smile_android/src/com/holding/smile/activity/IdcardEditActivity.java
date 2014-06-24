@@ -76,9 +76,9 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					idcardName.setText(idcard.getName());
 					idcardNumber.setText(idcard.getNumber());
 					if (idcard.getUrl() != null && !"".equals(idcard.getUrl())) {
+						imageView.setVisibility(View.VISIBLE);
 						MyApplication.getImageLoader().DisplayImage(
 								MyApplication.jgoods_img_url + idcard.getUrl(), imageView, false);
-						imageView.setVisibility(View.VISIBLE);
 					}
 				}
 			}
@@ -116,6 +116,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			Message msg = mUIHandler.obtainMessage(optNum);
 			msg.obj = rvd;
 			msg.sendToTarget();
+		} else {
+			waitCloseProgressBar();
 		}
 	}
 
@@ -210,7 +212,6 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												// if (msg.obj != null) {
 												switch (msg.what) {
 													case OPT_CODE_SAVE: {
@@ -222,7 +223,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 															setResult(RESULT_OK, intent);
 															finish();
 														} else {
-															ToastUtils.showShort(context, "保存失败，请重试！");
+															ToastUtils.showShort(context,
+																	"保存失败，请重试！");
 														}
 														break;
 													}
@@ -237,13 +239,15 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 														} else {
 															if (idcard != null
 																	&& idcard.getId() != null) {
-																ToastUtils.showShort(context, "删除失败，请重试!");
+																ToastUtils.showShort(context,
+																		"删除失败，请重试!");
 															}
 															finish();
 														}
 														break;
 													}
 												}
+												waitCloseProgressBar();
 												// }
 											}
 										};

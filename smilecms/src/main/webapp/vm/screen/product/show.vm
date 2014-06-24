@@ -44,6 +44,17 @@
 				</td>
 			</tr>
 			<tr>
+				<td>尺码描述</td>
+                <td>
+					<select id="sizedesc" name="sizedesc" class="addpage">
+						<option value ="">不选</option>
+						<option value ="S,M,L,XL,XLL" #if($!product.sizedesc == "S,M,L,XL,XLL") selected=true #end>S,M,L,XL,XLL</option>
+    					<option value ="小号,中号,大号,加大号" #if($!product.sizedesc == "小号,中号,大号,加大号") selected=true #end>小号,中号,大号,加大号</option>
+						<option value ="1,2,3,4,5" #if($!product.sizedesc == "1,2,3,4,5") selected=true #end>1,2,3,4,5</option>
+            		</select>
+				</td>
+			</tr>
+			<tr>
 				<td>是否下架</td>
                 <td>
 					<select id="offShelf" name="offShelf" class="addpage">

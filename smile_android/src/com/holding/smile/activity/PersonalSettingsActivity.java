@@ -73,6 +73,8 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 			Message msg = mUIHandler.obtainMessage(1);
 			msg.obj = user;
 			msg.sendToTarget();
+		} else {
+			waitCloseProgressBar();
 		}
 	}
 
@@ -124,6 +126,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 															public void onClick(
 																	DialogInterface dialog,
 																	int which) {
+																progressBar.setVisibility(View.VISIBLE);
 																SUser user = MyApplication.getInstance()
 																							.getCurrentUser();
 																if (user != null
@@ -139,6 +142,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 																					.setCurrentUserEmpty(
 																							user.getId());
 																}
+																waitCloseProgressBar();
 																finish();
 																Intent intent = new Intent();
 																intent.setClass(context,
@@ -180,7 +184,6 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case 1: {
 														if (msg.obj != null) {
@@ -202,6 +205,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 										};
 }

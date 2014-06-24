@@ -33,7 +33,6 @@ public class Crawl extends AvengersExecutor {
 			crawl.execute(args);
 		} catch (Throwable th) {
 			LOG.error("", th);
-			System.exit(0);
 		}
 	}
 
@@ -56,7 +55,7 @@ public class Crawl extends AvengersExecutor {
 
 		String url = cliParser.getOptionValue("url");
 		if (StringUtil.isBlank(url)) {
-			System.exit(0);
+			throw new RuntimeException("crawl args url can't be null");
 		}
 		Map<String, Object> context = new HashMap<String, Object>();
 		context.put(CRAWL_URL, url);

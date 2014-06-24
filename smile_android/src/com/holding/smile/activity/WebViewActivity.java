@@ -17,12 +17,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.TbUtil;
-import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -41,8 +40,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.web_view);
 		ImageView backBtn = (ImageView) findViewById(R.id.btn_back);
-		TextView headerNum = (TextView) findViewById(R.id.number);
-		TextView headerAmount = (TextView) findViewById(R.id.amount);
+		//TextView headerNum = (TextView) findViewById(R.id.number);
+		//TextView headerAmount = (TextView) findViewById(R.id.amount);
 		backBtn.setOnClickListener(this);
 
 		try {
@@ -51,8 +50,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 			amount = (BigDecimal) intent.getExtras().getSerializable("amount");
 
 			if (StrUtils.isNotEmpty(number) && amount != null) {
-				headerNum.setText(number + "");
-				headerAmount.setText(amount.doubleValue() + "");
+				//headerNum.setText(number + "");
+				//headerAmount.setText(amount.doubleValue() + "");
 
 				// 获取webView控件
 				if (TbUtil.getWebView() == null) {
@@ -84,9 +83,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
 							TbUtil.setWebView(view);
-							// TbUtil.cshTb();
-							view.loadUrl("http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
-									+ amount.intValue());
+							view.reload();
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
@@ -95,30 +92,34 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					public void onPageFinished(WebView view, String url) {
 						super.onPageFinished(view, url);
 						TbUtil.setWebView(view);
-						// 设置隐藏返回按钮
-						view.loadUrl("javascript:document.getElementsByTagName('li')[1].style.display='none';");
+						//加载js
+						StringBuffer jsStringBuffer = new StringBuffer();
+						jsStringBuffer.append("javascript:window.onload = function(){");
 						// 给卖家留言设置订单编号和数量
 						if (url.indexOf("buyNow=true") > -1) {
-							StringBuffer jsStringBuffer = new StringBuffer();
-							jsStringBuffer.append("javascript:window.onload = function(){");
+							// 设置隐藏返回按钮
+							jsStringBuffer.append("document.getElementsByClassName('c-btn-aw')[0].style.display='none';");
+							//设置返回和刷新按钮不显示
+							//jsStringBuffer.append("document.getElementsByClassName('back')[0].style.display='none';");
+							//jsStringBuffer.append("document.getElementsByClassName('fn_btns')[0].style.display='none';");
 							// 立即购买:卖家留言设置订单编号
-							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('value','");
-							//jsStringBuffer.append(number);
-							//jsStringBuffer.append("');");
-							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('value','");
+							jsStringBuffer.append("document.getElementsByClassName('c-form-txt-normal')[1].setAttribute('value','");
 							jsStringBuffer.append(number);
 							jsStringBuffer.append("');");
 							// 设置卖家留言属性值为空
-							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('placeholder','');");
-							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('placeholder','');");
+							jsStringBuffer.append("document.getElementsByClassName('c-form-txt-normal')[1].setAttribute('placeholder','');");
 							// 设置卖家留言框只读，不能修改
-							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('readonly','readonly');");
-							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('readonly','readonly');");
+							jsStringBuffer.append("document.getElementsByClassName('c-form-txt-normal')[1].setAttribute('readonly','readonly');");
 							// 设置数量只读，不能修改
-							view.loadUrl("javascript:document.getElementsByName('quantity')[0].setAttribute('readonly','readonly');");
-							jsStringBuffer.append("};");
-							view.loadUrl(jsStringBuffer.toString());
+							jsStringBuffer.append("document.getElementsByClassName('c-form-txt-normal')[0].setAttribute('readonly','readonly');");
+						}else if(url.indexOf("http://login.m.taobao.com/login.htm") > -1){
+							//设置首页按钮不显示
+							jsStringBuffer.append("document.getElementsByClassName('back')[0].style.display='none';");
+							//jsStringBuffer.append("document.getElementsByTagName('section')[1].style.display='none';");
+							//jsStringBuffer.append("document.getElementsByTagName('section')[3].style.display='none';");
 						}
+						jsStringBuffer.append("};");
+						view.loadUrl(jsStringBuffer.toString());
 					}
 
 					@Override
@@ -133,13 +134,13 @@ public class WebViewActivity extends Activity implements OnClickListener {
 								"http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
 										+ amount.intValue());
 			} else {
-				ToastUtils.showShort(this, "订单号或金额为空！");
+				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
 				setResult(RESULT_CANCELED, null);
 				finish();
 			}
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, "去淘宝支付时出错：" + e.getMessage());
-			ToastUtils.showShort(this, "订单号或金额不能为空！");
+			Toast.makeText(this, "订单号或金额不能为空！", Toast.LENGTH_SHORT).show();
 			setResult(RESULT_CANCELED, null);
 			finish();
 			return;

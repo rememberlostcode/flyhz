@@ -59,6 +59,8 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 			Message msg = mUIHandler.obtainMessage(1);
 			msg.obj = idcards;
 			msg.sendToTarget();
+		} else {
+			waitCloseProgressBar();
 		}
 	}
 
@@ -93,7 +95,6 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case 1: {
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
@@ -108,6 +109,7 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 										};
 }

@@ -353,7 +353,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case 0: {
 														if (msg.obj != null) {
@@ -375,6 +374,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 										};
 

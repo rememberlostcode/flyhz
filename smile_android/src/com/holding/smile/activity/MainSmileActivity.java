@@ -170,6 +170,12 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 	}
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+		startTask();
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		brandList.clear();
@@ -290,7 +296,6 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
@@ -375,6 +380,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 										};
 
