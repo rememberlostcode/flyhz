@@ -4,7 +4,6 @@ package com.holding.smile.adapter;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -15,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.holding.smile.R;
@@ -32,7 +32,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 	private ImageLoader				mImageLoader	= MyApplication.getImageLoader();
 	private boolean					mBusy			= false;
 	private Integer					sWidth			= MyApplication.getInstance().getScreenWidth();
-	private ProgressDialog			pDialog;
+	private ProgressBar				progressBar;
 	private Handler					mUIHandler;
 	private boolean					cartFlag		= false;										// 为true时，说明是从购物车结算的，这时不能修改购买数量
 
@@ -42,10 +42,10 @@ public class MyOrderInformAdapter extends BaseAdapter {
 
 	// 自己定义的构造函数
 	public MyOrderInformAdapter(Context context, List<OrderDetailDto> contacts,
-			ProgressDialog pDialog, Handler mUIHandler, boolean cartFlag) {
+			ProgressBar progressBar, Handler mUIHandler, boolean cartFlag) {
 		this.orderDetails = contacts;
 		this.context = context;
-		this.pDialog = pDialog;
+		this.progressBar = progressBar;
 		this.mUIHandler = mUIHandler;
 		this.cartFlag = cartFlag;
 	}
@@ -192,9 +192,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 
 	// 显示进度条
 	private void showPDialog() {
-		if (pDialog != null) {
-			pDialog.show();
-		}
+		progressBar.setVisibility(View.VISIBLE);
 		if (mUIHandler != null) {
 			mUIHandler.sendEmptyMessage(2);
 		}

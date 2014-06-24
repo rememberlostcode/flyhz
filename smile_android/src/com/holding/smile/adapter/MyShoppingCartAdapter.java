@@ -35,7 +35,6 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private boolean			mBusy			= false;
 	private Integer			sWidth			= MyApplication.getInstance().getScreenWidth();
-	// private ProgressDialog pDialog;
 	private ProgressBar		progressBar;
 	private Handler			mUIHandler;
 
