@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import com.flyhz.shop.persistence.TaobaoDataImpl;
 import com.taobao.api.internal.util.WebUtils;
 
-public class Taobao {
+public class TaobaoTokenUtil {
 	private static String					taobaoPropertiesFilePath	= "C:/Users/silvermoon/taobao.properties";
 	private static String					appKey;
 	private static String					appSecret;
@@ -232,7 +232,7 @@ public class Taobao {
 	}
 
 	public static void setAppKey(String appKey) {
-		Taobao.appKey = appKey;
+		TaobaoTokenUtil.appKey = appKey;
 	}
 
 	public static String getAppSecret() {
@@ -240,7 +240,7 @@ public class Taobao {
 	}
 
 	public static void setAppSecret(String appSecret) {
-		Taobao.appSecret = appSecret;
+		TaobaoTokenUtil.appSecret = appSecret;
 	}
 
 	public static String getSellerNick() {
@@ -248,11 +248,11 @@ public class Taobao {
 	}
 
 	public static void setSellerNick(String sellerNick) {
-		Taobao.sellerNick = sellerNick;
+		TaobaoTokenUtil.sellerNick = sellerNick;
 	}
 
 	public static void setAccessToken(String accessToken) {
-		Taobao.accessToken = accessToken;
+		TaobaoTokenUtil.accessToken = accessToken;
 	}
 
 	public static String getAccessToken() {

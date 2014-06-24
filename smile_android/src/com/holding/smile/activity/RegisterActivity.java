@@ -32,7 +32,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 	private EditText	userAccount;	// 用户的账号
 	private EditText	userPwd;		// 用户密码
 	private EditText	userPwd2;		// 用户密码
-	private EditText	userEmail;	// 用户的账号
+	private EditText	userEmail;		// 用户的账号
 	private Button		btnToRegister;	// 注册登录按钮
 
 	@Override
@@ -107,7 +107,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 					return;
 				}
 
-				if(!StrUtils.checkEmail(email)){
+				if (!"".equals(email.trim()) && !StrUtils.checkEmail(email)) {
 					ToastUtils.showShort(context, "输入的邮箱格式不正确！");
 					return;
 				}

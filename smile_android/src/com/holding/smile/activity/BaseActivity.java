@@ -241,6 +241,20 @@ public class BaseActivity extends Activity {
 		super.onResume();
 		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
 		
+		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		// mobile 3G Data Network
+		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+		State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+		// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态 则进入Network Setting界面 由用户配置网络连接
+		if (mobile == State.CONNECTED || mobile == State.CONNECTING || wifi == State.CONNECTED
+				|| wifi == State.CONNECTING) {
+			MyApplication.setHasNetwork(true);
+		} else {
+			MyApplication.setHasNetwork(false);
+			ToastUtils.showShort(this, "网络异常，请检查网络！");
+			return;
+		}
+		
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
 				|| this.getClass().equals(MySmileActivity.class)
@@ -258,20 +272,6 @@ public class BaseActivity extends Activity {
 				startActivity(intent);
 				overridePendingTransition(0, 0);
 			}
-		}
-		
-		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		// mobile 3G Data Network
-		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-		State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-		// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态 则进入Network Setting界面 由用户配置网络连接
-		if (mobile == State.CONNECTED || mobile == State.CONNECTING || wifi == State.CONNECTED
-				|| wifi == State.CONNECTING) {
-			MyApplication.setHasNetwork(true);
-		} else {
-			MyApplication.setHasNetwork(false);
-			ToastUtils.showShort(this, "网络异常，请检查网络！");
-			return;
 		}
 	}
 
@@ -357,7 +357,6 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, MainSmileActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							finish();
@@ -370,7 +369,6 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, SortActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
@@ -382,7 +380,6 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, SearchGoodsActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
@@ -400,7 +397,6 @@ public class BaseActivity extends Activity {
 							} else {
 								intent.setClass(context, ShoppingCartActivity.class);
 							}
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
@@ -410,9 +406,14 @@ public class BaseActivity extends Activity {
 					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
+							SUser user = MyApplication.getInstance().getCurrentUser();
 							Intent intent = new Intent();
-							intent.setClass(context, MySmileActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							if (user == null || MyApplication.getInstance().getSessionId() == null) {
+								intent.putExtra("class", MySmileActivity.class);
+								intent.setClass(context, LoginActivity.class);
+							} else {
+								intent.setClass(context, MySmileActivity.class);
+							}
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
