@@ -107,13 +107,11 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			}
 			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.getOrderInform(pidQty, cartIds, addressId);
-			if (CodeValidator.dealCode(context, rtnValue)) {
-				Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-				msg.obj = rtnValue;
-				msg.sendToTarget();
-			} else {
-				waitCloseProgressBar();
-			}
+			
+			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
+			msg.obj = rtnValue;
+			msg.sendToTarget();
+			waitCloseProgressBar();
 		} else {
 			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 			finish();
@@ -132,11 +130,9 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			}
 			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.confirmOrder(pidQty, cartIds, addressId);
-			if (CodeValidator.dealCode(context, rtnValue)) {
-				Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);
-				msg.obj = rtnValue;
-				msg.sendToTarget();
-			}
+			Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);
+			msg.obj = rtnValue;
+			msg.sendToTarget();
 		} else {
 			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 		}
@@ -208,7 +204,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj != null) {
+															if (CodeValidator.dealCode(context, obj)) {
 																order = obj.getOrderData();
 																if (order == null) {
 																	if (obj.getValidate() != null
@@ -238,7 +234,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 													case WHAT_DID_UPDATE_DATA: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj != null) {
+															if (CodeValidator.dealCode(context, obj)) {
 																ProductDto product = obj.getProductData();
 																if (product == null) {
 																	if (obj.getValidate() != null
@@ -284,7 +280,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 													case WHAT_DID_CONFIRMORDER_DATA: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj != null) {
+															if (CodeValidator.dealCode(context, obj)) {
 																order = obj.getOrderData();
 																if (order == null) {
 																	if (obj.getValidate() != null

@@ -243,7 +243,7 @@ public class SubmitService {
 				rvd = new RtnValueDto();
 				if (user != null && user.getData() != null && user.getCode() == 200000) {
 					rvd.setUserData(user.getData());
-					rvd.setCode(200000);
+					rvd.setCode(user.getCode());
 				} else {
 					rvd.setCode(user.getCode());
 				}
@@ -285,8 +285,11 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
-				if (pc != null)
+				if (pc != null){
 					rvd.setOrderData(pc.getData());
+					rvd.setCode(pc.getCode());
+				}
+					
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -323,8 +326,10 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PProduct pc = JSONUtil.getJson2Entity(rStr, PProduct.class);
-				if (pc != null)
+				if (pc != null){
+					rvd.setCode(pc.getCode());
 					rvd.setProductData(pc.getData());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -371,8 +376,10 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
-				if (pc != null)
+				if (pc != null){
+					rvd.setCode(pc.getCode());
 					rvd.setOrderData(pc.getData());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -434,7 +441,7 @@ public class SubmitService {
 			if (pc != null && pc.getCode() == 200000) {
 				rvd = new RtnValueDto();
 				rvd.setCartData(pc.getData());
-				rvd.setCode(200000);
+				rvd.setCode(pc.getCode());
 			}
 		}
 		return rvd;
@@ -462,7 +469,7 @@ public class SubmitService {
 			if (pc != null && pc.getCode() == 200000) {
 				rvd = new RtnValueDto();
 				rvd.setCartData(pc.getData());
-				rvd.setCode(200000);
+				rvd.setCode(pc.getCode());
 			}
 		}
 		return rvd;
