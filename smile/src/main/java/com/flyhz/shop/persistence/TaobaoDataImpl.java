@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.TaobaoData;
 import com.flyhz.framework.util.Constants;
+import com.flyhz.framework.util.TaobaoSdkMessage;
 import com.flyhz.framework.util.TaobaoTokenUtil;
 import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
@@ -35,7 +36,7 @@ import com.taobao.api.response.TradesSoldGetResponse;
 public class TaobaoDataImpl implements TaobaoData {
 	private final String	url	= "http://gw.api.taobao.com/router/rest";
 	private String			appkey;
-	private String			secret;
+	private String			appSecret;
 	private String			sessionKey;
 	private String			sellerNick;
 	private static String					propertiesFilePath	= "C:/Users/silvermoon/taobao.properties";
@@ -65,9 +66,11 @@ public class TaobaoDataImpl implements TaobaoData {
 		if("1".equals(taobaoFlag)){//判断是否打开淘宝接口调用
 			propertiesFilePath = taobaoPropertiesFilePath;
 			appkey = TaobaoTokenUtil.getAppKey();
-			secret = TaobaoTokenUtil.getAppSecret();
+			appSecret = TaobaoTokenUtil.getAppSecret();
 			sessionKey = TaobaoTokenUtil.getAccessToken();
 			sellerNick = TaobaoTokenUtil.getSellerNick();
+			
+			TaobaoSdkMessage.startMessageHandler(appkey, appSecret);
 		}
 	}
 
@@ -80,7 +83,7 @@ public class TaobaoDataImpl implements TaobaoData {
 
 			while (page <= totalPage) {
 				System.out.println("第" + page + "页");
-				TaobaoClient client = new DefaultTaobaoClient(url, appkey, secret);
+				TaobaoClient client = new DefaultTaobaoClient(url, appkey, appSecret);
 				TradesSoldGetRequest req = new TradesSoldGetRequest();
 				req.setFields("status,tid,receiver_address,receiver_city,receiver_district,receiver_mobile,receiver_name,receiver_state,receiver_zip");
 				req.setPageSize(PAGE_SIZE);
@@ -322,9 +325,9 @@ public class TaobaoDataImpl implements TaobaoData {
 		Trade trade = null;
 		if("1".equals(taobaoFlag)){
 			init();
-			TaobaoClient client=new DefaultTaobaoClient(url, appkey, secret);
+			TaobaoClient client=new DefaultTaobaoClient(url, appkey, appSecret);
 			TradeGetRequest req=new TradeGetRequest();
-			req.setFields("status,payment,post_fee,buyer_nick");
+			req.setFields("status,payment,post_fee,buyer_nick,buyer_message");
 			req.setTid(tid);
 			try {
 				TradeGetResponse response = client.execute(req , sessionKey);
