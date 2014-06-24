@@ -285,7 +285,7 @@ public class OrderServiceImpl implements OrderService {
 					modelMap.put("orderId", orderModel.getNumber());
 					modelMap.put("total", orderModel.getTotal());
 					modelMap.put("username", userModel.getUsername());
-					mailRepository.sendWithTemplate(userModel.getEmail(), "注册成功海狗APP",
+					mailRepository.sendWithTemplate(userModel.getEmail(), "订单支付成功",
 							"velocity/mailvm/pay_success_mail.vm", modelMap);
 				}
 			}
