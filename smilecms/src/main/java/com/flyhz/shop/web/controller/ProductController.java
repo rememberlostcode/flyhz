@@ -19,7 +19,6 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.page.Pager;
 import com.flyhz.framework.lang.page.Pagination;
-import com.flyhz.framework.lang.page.ToolConstants;
 import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.shop.dto.ProductCmsDto;
 import com.flyhz.shop.dto.ProductParamDto;
@@ -52,8 +51,6 @@ public class ProductController {
 		model.addAttribute("brands", brandService.getAllBrandBuildDtos());
 		// 查询分类列表
 		model.addAttribute("cates", categoryService.getAllCategoryBuildDtos());
-		pager.setSortName("p.id");
-		pager.setSortWay(ToolConstants.DESC);
 		List<ProductCmsDto> productCmsDtos = productService.getProductCmsDtosByPage(pager,
 				productParam);
 		model.addAttribute("products", productCmsDtos);

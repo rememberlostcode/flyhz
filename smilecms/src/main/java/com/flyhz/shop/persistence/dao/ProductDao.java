@@ -7,6 +7,7 @@ import com.flyhz.framework.lang.page.Pager;
 import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.dto.ProductCmsDto;
+import com.flyhz.shop.dto.ProductPageDto;
 import com.flyhz.shop.persistence.entity.ProductModel;
 
 /**
@@ -65,10 +66,25 @@ public interface ProductDao extends GenericDao<ProductModel> {
 	 * 分页查询产品DTO列表
 	 * 
 	 * @param pager
-	 * @param productModel
 	 * @return list
 	 */
-	public List<ProductCmsDto> getPageProductCmsDtos(Pager pager, ProductModel productModel);
+	public List<ProductCmsDto> getPageProductCmsDtos(Pager pager);
+
+	/**
+	 * 分页查询产品DTO列表
+	 * 
+	 * @param productPageDto
+	 * @return list
+	 */
+	public List<ProductCmsDto> getProductCmsDtosPage(ProductPageDto productPageDto);
+
+	/**
+	 * 根据条件查询产品数量
+	 * 
+	 * @param productPageDto
+	 * @return int
+	 */
+	public int getProductCmsDtosPageCount(ProductPageDto productPageDto);
 
 	/**
 	 * 查询最大自定义款号
@@ -77,4 +93,12 @@ public interface ProductDao extends GenericDao<ProductModel> {
 	 * @return
 	 */
 	public int getMaxStyle();
+
+	/**
+	 * 查询产品数量
+	 * 
+	 * @param
+	 * @return int
+	 */
+	public int getProductCount();
 }

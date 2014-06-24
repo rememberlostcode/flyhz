@@ -111,7 +111,8 @@
 		       p.sizedesc
 		  from product p where p.id=#{id}
     </select>
-    <select id="getPagedProducts" resultType="ProductModel" parameterType="ProductModel">
+    
+    <select id="getPagedProducts" resultType="ProductModel">
     	select p.id,
 		       p.name,
 		       p.gmt_create gmtCreate,
@@ -134,6 +135,7 @@
 		       p.sizedesc
 		  from product p
     </select>
+    
     <select id="getPageProductCmsDtos" resultType="ProductCmsDto">
     	select p.id,
 		       p.name,
@@ -150,25 +152,65 @@
 		       p.sizedesc 
 		  from product p,brand b,category c 
 		  where p.brand_id = b.id and p.category_id = c.id 
+    </select>
+    
+    <select id="getProductCmsDtosPage" resultType="ProductCmsDto" parameterType="ProductPageDto">
+    	select p.id,
+		       p.name,
+		       p.description,
+		       p.purchasingprice,
+		       p.recommendprice,
+		       p.color,
+		       p.cover,
+		       p.cover_small coverSmall,
+		       c.name cateName,
+		       b.name brandName,
+		       p.brandstyle,
+		       p.off_shelf offShelf,
+		       p.sizedesc 
+		  from product p,brand b,category c 
+		  where p.brand_id = b.id and p.category_id = c.id 
 		  <if test="name != null">
-    		   and name like #{name} 
+    		   and p.name like #{name} 
     	  </if>
     	  <if test="brandstyle != null">
-    		   and brandstyle=#{brandstyle} 
+    		   and p.brandstyle=#{brandstyle} 
     	  </if>
     	  <if test="brandId != null">
-    		   and brand_id=#{brandId} 
+    		   and p.brand_id=#{brandId} 
     	  </if>
     	  <if test="categoryId != null">
-    		   and category_id=#{categoryId} 
+    		   and p.category_id=#{categoryId} 
+    	  </if>
+    	  order by p.id desc limit #{start},#{pagesize}
+    </select>
+    
+    <select id="getProductCmsDtosPageCount" resultType="Integer" parameterType="ProductPageDto">
+    	 select count(1) count 
+    	   from product p,brand b,category c 
+		  where p.brand_id = b.id and p.category_id = c.id 
+		  <if test="name != null">
+    		   and p.name like #{name} 
+    	  </if>
+    	  <if test="brandstyle != null">
+    		   and p.brandstyle=#{brandstyle} 
+    	  </if>
+    	  <if test="brandId != null">
+    		   and p.brand_id=#{brandId} 
+    	  </if>
+    	  <if test="categoryId != null">
+    		   and p.category_id=#{categoryId} 
     	  </if>
     </select>
+    
     <select id="getMaxStyle" resultType="Integer">
     	select max(style) style from product
     </select>
+    
     <delete id="deleteProduct" parameterType="Integer">
     	delete from product where id = #{productId}
     </delete>
+    
     <insert id="addProduct" parameterType="ProductModel">
     	insert into product(id,name,brand_id,category_id,brandstyle,gmt_create,gmt_modify
     	<if test="imgs != null">
@@ -261,6 +303,7 @@
 	        SELECT LAST_INSERT_ID();
 	    </selectKey>
     </insert>
+    
     <update id="editProduct" parameterType="ProductModel">
     	update product set name=#{name},category_id=#{categoryId},brand_id=#{brandId},brandstyle=#{brandstyle},
     	gmt_modify=#{gmtModify},imgs=#{imgs},description=#{description},purchasingprice=#{purchasingprice},
