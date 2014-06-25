@@ -173,7 +173,7 @@ public class BaseActivity extends Activity {
 	 * 设置内容区域
 	 * 
 	 * @param resId
-	 * 资源文件ID
+	 *            资源文件ID
 	 */
 	public void setContentLayout(int resId) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -240,7 +240,7 @@ public class BaseActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
-		
+
 		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		// mobile 3G Data Network
 		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
@@ -254,7 +254,7 @@ public class BaseActivity extends Activity {
 			ToastUtils.showShort(this, "网络异常，请检查网络！");
 			return;
 		}
-		
+
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
 				|| this.getClass().equals(MySmileActivity.class)
@@ -310,7 +310,7 @@ public class BaseActivity extends Activity {
 		if (event.getAction() == KeyEvent.ACTION_DOWN && KeyEvent.KEYCODE_BACK == keyCode) {
 			long currentTime = System.currentTimeMillis();
 			if ((currentTime - touchTime) >= waitTime) {
-				ToastUtils.showShort(context, "再按一次返回键回到桌面！");
+				ToastUtils.showShort(context, "再按一次退出应用！");
 				touchTime = currentTime;
 			} else {
 				/* 与按下HOME键效果一样 begin */
