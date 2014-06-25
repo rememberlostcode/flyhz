@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ public class HtmlUIActivity extends Activity implements OnClickListener {
 
 		webView = (WebView) findViewById(R.id.htmlui);
 		webView.getSettings().setJavaScriptEnabled(true);
+		webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);// 不使用缓存
 		webView.addJavascriptInterface(new JsObject(), "jsObj");
 
 		// String url = "file:///android_asset/index.html";
