@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -220,23 +219,6 @@ public class BaseActivity extends Activity {
 		// contentView.setLayoutParams(layoutParams);
 		// contentView.setBackgroundDrawable(null);
 		if (null != ly_content) {
-			ly_content.addView(contentView);
-		}
-	}
-
-	/***
-	 * 设置搜索内容区域
-	 * 
-	 * @param contentView
-	 */
-	public void setSearchLayoutView() {
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		contentView = inflater.inflate(R.layout.search_goods_view, null);
-		if (null != ly_content) {
-			int width = (int) (MyApplication.getInstance().getScreenWidth() * MyApplication.getInstance()
-																							.getDensity());
-			EditText editText = (EditText) contentView.findViewById(R.id.search_content);
-			editText.setWidth(width - 130);
 			ly_content.addView(contentView);
 		}
 	}
