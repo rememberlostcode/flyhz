@@ -70,7 +70,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, MyOrdersActivity.class);
 				}
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				overridePendingTransition(0, 0);
 				break;
@@ -88,7 +88,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, PersonalSettingsActivity.class);
 				}
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				overridePendingTransition(0, 0);
 				break;

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class BrandAdapter extends BaseAdapter {
 	private List<Brand>		brandList;
 	private Integer			cid;
 	private boolean			mBusy			= false;
+	private LayoutParams para;
 
 	public BrandAdapter(List<Brand> brandList, Integer cid) {
 		this.brandList = brandList;
@@ -91,6 +93,13 @@ public class BrandAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.p.setImageResource(R.drawable.empty_photo);
+		
+		if (para == null) {
+			para = holder.p.getLayoutParams();
+			para.width = MyApplication.getInstance().getScreenWidth();
+			para.height = (int) (para.width / 1.9);
+		}
+        holder.p.setLayoutParams(para);
 
 		if (brandList != null && !brandList.isEmpty()) {
 			final Brand brand = brandList.get(position);

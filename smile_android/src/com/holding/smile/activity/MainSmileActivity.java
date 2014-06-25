@@ -38,7 +38,8 @@ import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
 
-public class MainSmileActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener {
+public class MainSmileActivity extends BaseActivity implements OnClickListener,
+		OnHeaderRefreshListener {
 
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
 	private static final int	WHAT_DID_REFRESH	= 1;
@@ -150,29 +151,16 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 	@Override
 	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getIndexBrands(cid);
-		if (CodeValidator.dealCode(context, rtnValue)) {
-			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-			msg.obj = rtnValue.getIndexBrandsData();
-			msg.sendToTarget();
-		}
-
+		Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
+		msg.obj = rtnValue;
+		msg.sendToTarget();
 	}
 
 	public void onRefresh() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getIndexBrands(cid);
-		if (rtnValue != null) {
-			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
-			msg.obj = rtnValue;
-			msg.sendToTarget();
-		} else {
-			ToastUtils.showShort(context, "暂无数据！");
-		}
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		startTask();
+		Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
+		msg.obj = rtnValue;
+		msg.sendToTarget();
 	}
 
 	@Override
@@ -226,6 +214,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 										+ "/activity/index.html");
 							}
 						}
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						startActivity(intent);
 
 					}
@@ -299,65 +288,73 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
-															recActList.clear();
-															brandList.clear();
-															IndexBrands obj = (IndexBrands) msg.obj;
+															RtnValueDto rvd = (RtnValueDto) msg.obj;
+															if (CodeValidator.dealCode(context, rvd)) {
+																recActList.clear();
+																brandList.clear();
 
-															// 活动区商品
-															List<JActivity> jActList = obj.getActivitys();
-															if (jActList != null
-																	&& !jActList.isEmpty()) {
-																int jSize = jActList.size();
-																for (int i = 0; i < jSize; i++) {
-																	JActivity each = jActList.get(i);
-																	each.setUrl("");
-																	recActList.add(each);
+																IndexBrands obj = rvd.getIndexBrandsData();
+																if (obj != null) {
+																	// 活动区商品
+																	List<JActivity> jActList = obj.getActivitys();
+																	if (jActList != null
+																			&& !jActList.isEmpty()) {
+																		int jSize = jActList.size();
+																		for (int i = 0; i < jSize; i++) {
+																			JActivity each = jActList.get(i);
+																			each.setUrl("");
+																			recActList.add(each);
+																		}
+
+																		addViewPager();// 添加页卡
+																		// 实例化适配器
+																		pagerAdapter = new MyPagerAdapter(
+																				viewList);
+																		mViewPager.setAdapter(pagerAdapter);
+																		mViewPager.setCurrentItem(0); // 设置默认当前页
+																	}
+
+																	// 品牌区
+																	// 品牌区
+																	List<Brand> brands = obj.getBrands();
+																	if (brands != null
+																			&& !brands.isEmpty()) {
+																		int bSize = brands.size();
+																		for (int i = 0; i < bSize; i++) {
+																			Brand each = brands.get(i);
+																			brandList.add(each);
+																		}
+																	}
 																}
-
-																addViewPager();// 添加页卡
-																// 实例化适配器
-																pagerAdapter = new MyPagerAdapter(
-																		viewList);
-																mViewPager.setAdapter(pagerAdapter);
-																mViewPager.setCurrentItem(0); // 设置默认当前页
 															}
-
-															// 品牌区
-															// 品牌区
-															List<Brand> brands = obj.getBrands();
-															if (brands != null && !brands.isEmpty()) {
-																int bSize = brands.size();
-																for (int i = 0; i < bSize; i++) {
-																	Brand each = brands.get(i);
-																	brandList.add(each);
-																}
-															}
+															brandAdapter.notifyDataSetChanged();
+															mPullToRefreshView.onHeaderRefreshComplete();
 														} else {
-															ToastUtils.showShort(context, "暂无数据！");
+															CodeValidator.dealCode(context, null);
 														}
-														brandAdapter.notifyDataSetChanged();
-														mPullToRefreshView.onHeaderRefreshComplete();
 														break;
 													}
 													case WHAT_DID_REFRESH: {
 														brandList.clear();
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj.getIndexBrandsData() != null) {
-																// 品牌区
-																List<Brand> brands = obj.getIndexBrandsData()
-																						.getBrands();
-																if (brands != null
-																		&& !brands.isEmpty()) {
-																	int bSize = brands.size();
-																	for (int i = 0; i < bSize; i++) {
-																		Brand each = brands.get(i);
-																		brandList.add(each);
+															if (CodeValidator.dealCode(context, obj)) {
+																if (obj.getIndexBrandsData() != null) {
+																	// 品牌区
+																	List<Brand> brands = obj.getIndexBrandsData()
+																							.getBrands();
+																	if (brands != null
+																			&& !brands.isEmpty()) {
+																		int bSize = brands.size();
+																		for (int i = 0; i < bSize; i++) {
+																			Brand each = brands.get(i);
+																			brandList.add(each);
+																		}
 																	}
 																}
 															}
 														} else {
-															ToastUtils.showShort(context, "暂无数据！");
+															CodeValidator.dealCode(context, null);
 														}
 														brandAdapter.notifyDataSetChanged();
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -369,12 +366,14 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 															LoginService loginService = MyApplication.getInstance()
 																										.getLoginService();
 															RtnValueDto rvd = loginService.autoLogin(user);
-															if (rvd != null
-																	&& rvd.getUserData() != null) {
-																ToastUtils.showShort(
-																		context,
-																		"自动登录成功！欢迎您,"
-																				+ user.getUsername());
+															if (CodeValidator.dealCode(context, rvd)) {
+																if (rvd != null
+																		&& rvd.getUserData() != null) {
+																	ToastUtils.showShort(
+																			context,
+																			"自动登录成功！欢迎您,"
+																					+ user.getUsername());
+																}
 															}
 														}
 														break;

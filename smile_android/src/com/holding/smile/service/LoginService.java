@@ -24,6 +24,7 @@ import com.holding.smile.activity.MyApplication;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.protocol.PUser;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.NullHostNameVerifier;
 import com.holding.smile.tools.NullX509TrustManager;
@@ -93,6 +94,9 @@ public class LoginService {
 	 * @return
 	 */
 	public RtnValueDto login(SUser iuser) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		param.put("username", iuser.getUsername());
@@ -129,6 +133,9 @@ public class LoginService {
 	}
 
 	public RtnValueDto autoLogin(SUser iuser) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		if (iuser != null && iuser.getUsername() != null && iuser.getToken() != null) {
 			HashMap<String, String> param = new HashMap<String, String>();
@@ -271,6 +278,9 @@ public class LoginService {
 	}
 
 	public RtnValueDto register(SUser iuser) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		if (iuser != null && iuser.getUsername() != null && iuser.getToken() != null) {
 			HashMap<String, String> param = new HashMap<String, String>();

@@ -73,4 +73,8 @@ public class StrUtils {
 		}
 		return flag;
 	}
+	
+	public static void main(String[] args){
+		System.out.println(checkEmail("hd1111@sina.com"));
+	}
 }

@@ -23,6 +23,7 @@ import com.holding.smile.protocol.POrderList;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.protocol.PUser;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.StrUtils;
@@ -79,6 +80,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIndexListInit(Integer cid) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = getIndexJGoods(cid);
 		return obj;
 	}
@@ -88,7 +92,10 @@ public class DataService {
 	 * 
 	 * @return
 	 */
-	public RtnValueDto getRecommendBrandsListInit(Integer cid) {
+	public RtnValueDto getRecommendBrandsListInit(Integer cid){
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = getRecommendBrands(cid);
 		return obj;
 	}
@@ -99,6 +106,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getBrandJGoodsListInit(Integer bid, Integer cid, String seqorderType) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, null);
 		return obj;
 	}
@@ -114,6 +124,9 @@ public class DataService {
 	 */
 	public List<SortType> getSortTypeList() {
 		List<SortType> results = new ArrayList<SortType>();
+		if(CodeValidator.isNetworkError()){
+			return results;
+		}
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sorttype_url, null);
 		if (StrUtils.isNotEmpty(rStr)) {
 			PSortTypes pst = JSONUtil.getJson2Entity(rStr, PSortTypes.class);
@@ -134,6 +147,9 @@ public class DataService {
 	 */
 	public RtnValueDto getBrandJGoodsListMore(Integer bid, Integer cid, String seqorderType,
 			Integer seqorderValue) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, seqorderValue);
 		return obj;
 	}
@@ -146,6 +162,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSearchListInit(String keywords) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
 			obj = searchGoods(keywords, null, null);
@@ -163,6 +182,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSearchListRefresh(String keywords,String seqorderType) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
 			obj = searchGoods(keywords, seqorderType, null);
@@ -182,6 +204,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSearchListMore(String keywords, String seqorderType, Integer seqorderValue) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
 			obj = searchGoods(keywords, seqorderType, seqorderValue);
@@ -195,6 +220,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIndexJGoods(Integer cid) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
@@ -228,6 +256,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIndexBrands(Integer cid) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
@@ -261,6 +292,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getRecommendBrands(Integer cid) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
@@ -300,6 +334,9 @@ public class DataService {
 
 	public RtnValueDto getBrandGoods(Integer bid, Integer cid, String seqorderType,
 			Integer seqorderValue) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String url = this.prefix_url;
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -348,6 +385,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto searchGoods(String keywords, String seqorderType, Integer seqorderValue) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String url = prefix_url;
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -392,6 +432,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getCategorys() {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_cate_url, null);
 
@@ -417,6 +460,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getSortList() {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sort_url, null);
 
@@ -446,6 +492,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSortList(String sortUrl) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = "";
 		if (StrUtils.isNotEmpty(sortUrl)) {
@@ -479,6 +528,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getGoodsDetail(String bs) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String url = this.prefix_url + this.jGoods_detail_url;
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -508,6 +560,9 @@ public class DataService {
 	}
 
 	public RtnValueDto getUserInfo() {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String url = prefix_url + user_info;
 
@@ -539,6 +594,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIdcardsList() {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String url = prefix_url + idcard_list;
 		String rStr = URLUtil.getStringByGet(url, null);
@@ -566,6 +624,9 @@ public class DataService {
 	}
 
 	public RtnValueDto getOrdersList(String status) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -602,6 +663,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getOrderStatus(String number) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -637,6 +701,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getCartItemList() {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_list_url, null);
 		if (rvdString != null) {

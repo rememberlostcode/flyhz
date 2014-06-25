@@ -154,6 +154,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																			Intent intent = new Intent(
 																					context,
 																					LoginActivity.class);
+																			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 																			startActivity(intent);
 																			finish();
 																		}

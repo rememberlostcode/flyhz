@@ -114,12 +114,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 								Intent intent = new Intent(context, WebViewActivity.class);
 								intent.putExtra("number", order.getNumber());
 								intent.putExtra("amount", order.getTotal());
-								intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 								context.startActivity(intent);
 							} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(order.getStatus())) {
 								Intent intent = new Intent();
 								intent.setClass(context, IdcardManagerActivity.class);
-								intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 								context.startActivity(intent);
 							}
 						}
