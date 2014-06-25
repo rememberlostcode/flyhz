@@ -140,6 +140,12 @@ public class CodeValidator {
 					case 888888:
 						ToastUtils.showShort(context, "网络异常，请检查网络设置！");
 						break;
+					case 888889:
+						ToastUtils.showShort(context, "连接超时，请稍候重试！");
+						break;
+					case 999999:
+						ToastUtils.showShort(context, "连接异常，请稍候重试！");
+						break;
 					default:
 						ToastUtils.showShort(context, "程序异常！");
 						break;

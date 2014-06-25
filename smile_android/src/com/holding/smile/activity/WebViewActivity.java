@@ -48,15 +48,15 @@ public class WebViewActivity extends Activity implements OnClickListener {
 			Intent intent = this.getIntent();
 			number = intent.getExtras().getString("number");
 			amount = (BigDecimal) intent.getExtras().getSerializable("amount");
+			WebView web = (WebView) findViewById(R.id.webView);
 
 			if (StrUtils.isNotEmpty(number) && amount != null) {
 				//headerNum.setText(number + "");
 				//headerAmount.setText(amount.doubleValue() + "");
 
 				// 获取webView控件
-				if (TbUtil.getWebView() == null) {
-					TbUtil.setWebView((WebView) findViewById(R.id.webView));
-				}
+				TbUtil.setWebView(web);
+				
 				WebSettings webSettings = TbUtil.getWebView().getSettings();
 				// 允许使用JavaScript
 				webSettings.setJavaScriptEnabled(true);
@@ -83,7 +83,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
 							TbUtil.setWebView(view);
-							view.reload();
+							TbUtil.getWebView().reload();
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
@@ -119,7 +119,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							//jsStringBuffer.append("document.getElementsByTagName('section')[3].style.display='none';");
 						}
 						jsStringBuffer.append("};");
-						view.loadUrl(jsStringBuffer.toString());
+						TbUtil.getWebView().loadUrl(jsStringBuffer.toString());
 					}
 
 					@Override
@@ -128,11 +128,12 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						super.onReceivedError(view, errorCode, description, failingUrl);
 					}
 				});
-				// TbUtil.cshTb();
-				TbUtil.getWebView()
-						.loadUrl(
-								"http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
-										+ amount.intValue());
+				TbUtil.setNumber(amount.intValue());
+				TbUtil.cshTb();
+//				TbUtil.getWebView()
+//						.loadUrl(
+//								"http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
+//										+ amount.intValue());
 			} else {
 				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
 				setResult(RESULT_CANCELED, null);

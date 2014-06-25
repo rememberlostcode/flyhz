@@ -4,6 +4,7 @@ package com.holding.smile.tools;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
@@ -58,14 +59,18 @@ public class URLUtil {
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
 			if (MyApplication.getInstance().getSessionId() != null)
 				conn.setRequestProperty("Cookie", MyApplication.getInstance().getSessionId());
-			conn.connect();
-			if (conn.getResponseCode() == 200) {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(
-						conn.getInputStream(), "UTF-8"));
-				String lines;
-				while ((lines = reader.readLine()) != null) {
-					result.append(lines);
+			try{
+				conn.connect();
+				if (conn.getResponseCode() == 200) {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(
+							conn.getInputStream(), "UTF-8"));
+					String lines;
+					while ((lines = reader.readLine()) != null) {
+						result.append(lines);
+					}
 				}
+			} catch (ConnectException e) {
+				result.append("{\"code\":\"888889\"}");
 			}
 		} catch (SocketException e) {
 			result.delete(0, result.length());

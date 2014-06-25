@@ -4,8 +4,10 @@ import android.webkit.WebView;
 
 public class TbUtil {
 	private static WebView webView;
+	private static int number;
 	static {
 		System.loadLibrary("jni_curl");
+		init();
 	}
 	
 	synchronized public static native void init();
@@ -22,5 +24,13 @@ public class TbUtil {
 
 	public static void setWebView(WebView webView) {
 		TbUtil.webView = webView;
+	}
+
+	public static int getNumber() {
+		return number;
+	}
+
+	public static void setNumber(int number) {
+		TbUtil.number = number;
 	}
 }

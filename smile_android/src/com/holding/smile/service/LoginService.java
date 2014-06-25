@@ -2,6 +2,7 @@
 package com.holding.smile.service;
 
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -153,6 +154,7 @@ public class LoginService {
 						try {
 							// 添加本地数据库用户信息
 							MyApplication.getInstance().getSqliteService().addUser();
+							setLoginUser(user.getData());
 						} catch (Exception e) {
 							System.out.println("SQLite出错了！");
 							e.printStackTrace();
@@ -230,6 +232,7 @@ public class LoginService {
 					null);
 			HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
 			HttpURLConnection urlConnection = null;
+			InputStream is = null;
 			try {
 				URL requestedUrl = new URL(path);
 				urlConnection = (HttpURLConnection) requestedUrl.openConnection();
@@ -239,29 +242,34 @@ public class LoginService {
 				urlConnection.setRequestMethod("GET");
 				urlConnection.setConnectTimeout(10000);
 				urlConnection.setReadTimeout(10000);
-				InputStream is = urlConnection.getInputStream();
-				StringBuffer sb = new StringBuffer();
-				byte[] bytes = new byte[1024];
-				for (int len = 0; (len = is.read(bytes)) != -1;) {
-					sb.append(new String(bytes, 0, len, "utf-8"));
+				
+				try {
+					is = urlConnection.getInputStream();
+					StringBuffer sb = new StringBuffer();
+					byte[] bytes = new byte[1024];
+					for (int len = 0; (len = is.read(bytes)) != -1;) {
+						sb.append(new String(bytes, 0, len, "utf-8"));
+					}
+					content = sb.toString();
+					/* 获取 sessionid begin */
+					String cookieval = urlConnection.getHeaderField("set-cookie");
+					String sessionid;
+					if (cookieval != null) {
+						sessionid = cookieval.substring(0, cookieval.indexOf(";"));
+						MyApplication.getInstance().setSessionId(sessionid);
+					}
+					/* 获取 sessionid end */
+				} catch (ConnectException e) {
+					content = "{\"code\":\"888889\"}";
 				}
-				content = sb.toString();
-				/* 获取 sessionid begin */
-				String cookieval = urlConnection.getHeaderField("set-cookie");
-				String sessionid;
-				if (cookieval != null) {
-					sessionid = cookieval.substring(0, cookieval.indexOf(";"));
-					MyApplication.getInstance().setSessionId(sessionid);
-				}
-				/* 获取 sessionid end */
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				//
-				ex.printStackTrace();
-				System.out.println("");
 			} finally {
 				if (urlConnection != null) {
 					urlConnection.disconnect();
+				}
+				if(is != null){
+					is.close();
 				}
 			}
 			// long e = System.currentTimeMillis();
@@ -270,7 +278,6 @@ public class LoginService {
 			// long d_c = d - c;// 0
 			// long e_d = e - d;// 4525
 			// long e_a = e - a;// 4723
-			System.out.println("");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
