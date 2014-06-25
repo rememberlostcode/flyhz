@@ -13,6 +13,7 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -71,7 +72,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.search_goods_view);
-
 		ImageView backBtn = (ImageView) findViewById(R.id.back_normal);
 		backBtn.setOnClickListener(this);
 
@@ -308,6 +308,18 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	}
 
 	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			if (getCurrentFocus() != null && getCurrentFocus().getWindowToken() != null) {
+				InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
+			}
+		}
+		return super.onTouchEvent(event);
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		editText = null;
@@ -356,8 +368,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 			rGoods = MyApplication.getInstance().getDataService().getJGoodsSearchListInit(keywords);
 			mseeageWhat = WHAT_DID_LOAD_DATA;
 		} else if (optNum == 1) {
-			rGoods = MyApplication.getInstance()
-									.getDataService()
+			rGoods = MyApplication.getInstance().getDataService()
 									.getJGoodsSearchListRefresh(keywords, null);
 			mseeageWhat = WHAT_DID_REFRESH;
 		} else if (optNum == 2) {
@@ -370,10 +381,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 			if (obj != null) {
 				seq = ((JGoods) obj).getSeq();
 			}
-			rGoods = MyApplication.getInstance()
-									.getDataService()
-									.getJGoodsSearchListMore(keywords, null,
-											seq);
+			rGoods = MyApplication.getInstance().getDataService()
+									.getJGoodsSearchListMore(keywords, null, seq);
 			mseeageWhat = WHAT_DID_MORE;
 		}
 		if (rGoods == null) {
