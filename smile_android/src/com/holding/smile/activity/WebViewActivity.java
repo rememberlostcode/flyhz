@@ -40,8 +40,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.web_view);
 		ImageView backBtn = (ImageView) findViewById(R.id.btn_back);
-		//TextView headerNum = (TextView) findViewById(R.id.number);
-		//TextView headerAmount = (TextView) findViewById(R.id.amount);
+		// TextView headerNum = (TextView) findViewById(R.id.number);
+		// TextView headerAmount = (TextView) findViewById(R.id.amount);
 		backBtn.setOnClickListener(this);
 
 		try {
@@ -51,12 +51,12 @@ public class WebViewActivity extends Activity implements OnClickListener {
 			WebView web = (WebView) findViewById(R.id.webView);
 
 			if (StrUtils.isNotEmpty(number) && amount != null) {
-				//headerNum.setText(number + "");
-				//headerAmount.setText(amount.doubleValue() + "");
+				// headerNum.setText(number + "");
+				// headerAmount.setText(amount.doubleValue() + "");
 
 				// 获取webView控件
 				TbUtil.setWebView(web);
-				
+
 				WebSettings webSettings = TbUtil.getWebView().getSettings();
 				// 允许使用JavaScript
 				webSettings.setJavaScriptEnabled(true);
@@ -83,7 +83,14 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
 							TbUtil.setWebView(view);
-							TbUtil.getWebView().reload();
+							view.reload();
+						} else if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
+							// 设置返回和刷新按钮不显示
+							view.loadUrl("javascript:document.getElementsByTagName('section')[1].style.display='none';");
+							view.loadUrl("javascript:document.getElementsByTagName('section')[3].style.display='none';");
+						} else if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
+							// 设置首页按钮不显示
+							view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
@@ -92,34 +99,31 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					public void onPageFinished(WebView view, String url) {
 						super.onPageFinished(view, url);
 						TbUtil.setWebView(view);
-						//加载js
+						// 加载js
 						StringBuffer jsStringBuffer = new StringBuffer();
-						jsStringBuffer.append("javascript:window.onload = function(){");
+						jsStringBuffer.append("javascript:$(document).ready(function(){$('.c-btn-aw').eq(0).css('display','none');});");
+						jsStringBuffer.append("javascript:$(document).ready(function(){");
+						jsStringBuffer.append("setTimeout(function(){");
 						// 给卖家留言设置订单编号和数量
-						if (url.indexOf("buyNow=true") > -1) {
+						if (url.indexOf("buyNow=true&v=0&skuId=&quantity=") > -1) {
 							// 设置隐藏返回按钮
-							jsStringBuffer.append("document.getElementsByClassName('c-btn-aw')[0].style.display='none';");
-							//设置返回和刷新按钮不显示
-							//jsStringBuffer.append("document.getElementsByClassName('back')[0].style.display='none';");
-							//jsStringBuffer.append("document.getElementsByClassName('fn_btns')[0].style.display='none';");
-							// 立即购买:卖家留言设置订单编号
-							jsStringBuffer.append("document.getElementsByClassName('c-form-txt-normal')[1].setAttribute('value','");
-							jsStringBuffer.append(number);
-							jsStringBuffer.append("');");
-							// 设置卖家留言属性值为空
-							jsStringBuffer.append("document.getElementsByClassName('c-form-txt-normal')[1].setAttribute('placeholder','');");
-							// 设置卖家留言框只读，不能修改
-							jsStringBuffer.append("document.getElementsByClassName('c-form-txt-normal')[1].setAttribute('readonly','readonly');");
+							jsStringBuffer.append("$('.c-btn-aw').eq(0).css('display','none');");
 							// 设置数量只读，不能修改
-							jsStringBuffer.append("document.getElementsByClassName('c-form-txt-normal')[0].setAttribute('readonly','readonly');");
-						}else if(url.indexOf("http://login.m.taobao.com/login.htm") > -1){
-							//设置首页按钮不显示
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(0).attr('readonly','readonly');");
+							// 立即购买:卖家留言设置订单编号
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('value','"
+									+ number + "');");
+							// 设置卖家留言属性值为空
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('placeholder','');");
+							// 设置卖家留言框只读，不能修改
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('readonly','readonly');");
+						} else if (url.indexOf("http://login.m.taobao.com/login.htm") > -1) {
+							// 设置首页按钮不显示
 							jsStringBuffer.append("document.getElementsByClassName('back')[0].style.display='none';");
-							//jsStringBuffer.append("document.getElementsByTagName('section')[1].style.display='none';");
-							//jsStringBuffer.append("document.getElementsByTagName('section')[3].style.display='none';");
 						}
-						jsStringBuffer.append("};");
-						TbUtil.getWebView().loadUrl(jsStringBuffer.toString());
+						jsStringBuffer.append("},1000);");
+						jsStringBuffer.append("});");
+						view.loadUrl(jsStringBuffer.toString());
 					}
 
 					@Override
@@ -130,10 +134,10 @@ public class WebViewActivity extends Activity implements OnClickListener {
 				});
 				TbUtil.setNumber(amount.intValue());
 				TbUtil.cshTb();
-//				TbUtil.getWebView()
-//						.loadUrl(
-//								"http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
-//										+ amount.intValue());
+				// TbUtil.getWebView()
+				// .loadUrl(
+				// "http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
+				// + amount.intValue());
 			} else {
 				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
 				setResult(RESULT_CANCELED, null);
