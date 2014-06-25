@@ -498,17 +498,13 @@ public class UserServiceImpl implements UserService {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void findPwd(Integer userid, String username) throws ValidateException {
+	public void findPwd(String username) throws ValidateException {
 		UserModel userModel = null;
 		// 用户ID不能为空
-		if (userid == null) {
-			if (StringUtils.isNotBlank(username)) {
-				throw new ValidateException(101002);
-			} else {
-				userModel = userDao.getUserByName(username);
-			}
+		if (StringUtils.isBlank(username)) {
+			throw new ValidateException(101002);
 		} else {
-			userModel = userDao.getModelById(userid);
+			userModel = userDao.getUserByName(username);
 		}
 		// 用户ID不能为空
 		if (userModel == null) {

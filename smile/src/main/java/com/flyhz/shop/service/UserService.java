@@ -156,10 +156,9 @@ public interface UserService {
 	/**
 	 * 找回密码
 	 * 
-	 * @param userid
 	 * @param username
 	 * @throws ValidateException
 	 * @return
 	 */
-	public void findPwd(Integer userid, String username) throws ValidateException;
+	public void findPwd(String username) throws ValidateException;
 }
