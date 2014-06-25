@@ -18,11 +18,21 @@ function productSave(){
 	var recommendprice = $("#recommendprice").val();
 	if(checkStr('name',name,128) & checkStr('brandstyle',brandstyle,16) 
 	    && checkPrice('foreighprice',foreighprice) && checkPrice('recommendprice',recommendprice)){
+		if(foreighprice == '请填写数字'){
+			 $("#foreighprice").val("");
+		}
+		if(recommendprice == '请填写数字'){
+			 $("#recommendprice").val("");
+		}
 		$("#addProduct").submit();
 	}
 }
 
 function checkPrice(type,str){
+	//如果提示未填写数字
+	if(str.replace(/^\s*/, '') == '请填写数字'){
+		return true;
+	}
 	//如果未填写价格，不校验
 	if(str.replace(/^\s*/, '') == ''){
 		if(type == 'foreighprice'){
@@ -98,7 +108,7 @@ function chooseImg(fileId,filetxtId){
 	$('input[id=' + fileId + ']').click();
 	$('input[id=' + fileId + ']').change(function() {
        $('#'+ filetxtId).val($(this).val());
-    })
+    });
 }
 
 function closeAddPage(){

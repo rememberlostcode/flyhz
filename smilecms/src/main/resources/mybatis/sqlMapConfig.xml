@@ -32,6 +32,7 @@
         <typeAlias alias="CategoryModel" type="com.flyhz.shop.persistence.entity.CategoryModel"/>
         <typeAlias alias="SalesvolumeModel" type="com.flyhz.shop.persistence.entity.SalesvolumeModel"/>
         <typeAlias alias="IdcardModel" type="com.flyhz.shop.persistence.entity.IdcardModel"/>
+        <typeAlias alias="ProductLogModel" type="com.flyhz.shop.persistence.entity.ProductLogModel"/>
         
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>

@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -41,11 +42,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 
 	private static final int		WHAT_DID_LOAD_DATA		= 0;
 	private static final int		WHAT_DID_UPDATE_DATA	= 1;
-	private static final int		WHAT_PROGRESS_STATE		= 2;
 	private static final int		WHAT_DID_SELECT_DATA	= 3;
 	private static final int		WHAT_DID_DEL_DATA		= 4;
-	// private ProgressDialog pDialog;
-	// private int mProgress;
 	private TextView				editBtn;
 	private MyListView				listView;
 	private MyShoppingCartAdapter	cartAdapter;
@@ -124,31 +122,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		msg.sendToTarget();
 	}
 
-	/**
-	 * 进度条初始化
-	 */
-	// private void initPDialog() {
-	// pDialog = new ProgressDialog(this);
-	// // pDialog.setTitle("");
-	// // pDialog.closeOptionsMenu();
-	// pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-	// // pDialog.setMax(100);
-	// pDialog.setMessage("正在加载...");
-	// pDialog.setIndeterminate(false);
-	// pDialog.setCanceledOnTouchOutside(true);
-	// // pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "右键",
-	// // new DialogInterface.OnClickListener() {
-	// // @Override
-	// // public void onClick(DialogInterface dialog, int which) {
-	// //
-	// // }
-	// // });
-	// pDialog.setProgress(0);
-	// mProgress = 0;
-	// // 当要显示进度效果时，再给handler发送一个空消息
-	// // mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
-	// }
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -204,6 +177,14 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	protected void onStart() {
 		super.onStart();
 		startTask();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (returnDesktop(keyCode, event)) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -351,22 +332,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 													case WHAT_DID_SELECT_DATA: {
 														// 计算总金额
 														calculateTotal();
-														break;
-													}
-													case WHAT_PROGRESS_STATE: {
-														// if (mProgress >= 100)
-														// {
-														// // pDialog.dismiss();
-														// mProgress = 0;
-														// } else {
-														// mProgress++;
-														// // ProgressBar进度值加1
-														// pDialog.incrementProgressBy(1);
-														// // 延迟100毫秒后发送空消息
-														// mUIHandler.sendEmptyMessageDelayed(
-														// WHAT_PROGRESS_STATE,
-														// 100);
-														// }
 														break;
 													}
 												}

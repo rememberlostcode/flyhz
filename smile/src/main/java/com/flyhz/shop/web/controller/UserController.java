@@ -393,10 +393,10 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "user/findPwd", method = RequestMethod.GET)
-	public void findPwd(Integer userid, String username, Model model) {
+	public void findPwd(String username, Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			userService.findPwd(userid, username);
+			userService.findPwd(username);
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());

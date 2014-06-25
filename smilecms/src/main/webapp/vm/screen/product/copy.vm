@@ -1,6 +1,6 @@
 <form action="$server_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
     <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
-		<input type="hidden" name="creator" value= "$!u"/>
+		<!--<input type="hidden" name="creator" value= "$!u"/>-->
 		<input type="hidden" name="dataSrc" value= "manual"/>
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>

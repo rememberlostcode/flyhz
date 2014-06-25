@@ -274,6 +274,20 @@ public class BaseActivity extends Activity {
 		super.onResume();
 		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
 
+		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		// mobile 3G Data Network
+		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+		State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+		// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态 则进入Network Setting界面 由用户配置网络连接
+		if (mobile == State.CONNECTED || mobile == State.CONNECTING || wifi == State.CONNECTED
+				|| wifi == State.CONNECTING) {
+			MyApplication.setHasNetwork(true);
+		} else {
+			MyApplication.setHasNetwork(false);
+			ToastUtils.showShort(this, "网络异常，请检查网络！");
+			return;
+		}
+
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
 				|| this.getClass().equals(MySmileActivity.class)
@@ -323,24 +337,30 @@ public class BaseActivity extends Activity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// if (event.getAction() == KeyEvent.ACTION_DOWN &&
-		// KeyEvent.KEYCODE_BACK == keyCode) {
-		// long currentTime = System.currentTimeMillis();
-		// if ((currentTime - touchTime) >= waitTime) {
-		// ToastUtils.showShort(context, "再按一次返回键回到桌面！");
-		// touchTime = currentTime;
-		// } else {
-		// /* 与按下HOME键效果一样 begin */
-		// Intent intent = new Intent(Intent.ACTION_MAIN);
-		// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
-		// intent.addCategory(Intent.CATEGORY_HOME);
-		// this.startActivity(intent);
-		// /* 与按下HOME键效果一样 end */
-		// return true;
-		// }
+		// if (returnDesktop(keyCode, event)) {
 		// return true;
 		// }
 		return super.onKeyDown(keyCode, event);
+	}
+
+	public boolean returnDesktop(int keyCode, KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN && KeyEvent.KEYCODE_BACK == keyCode) {
+			long currentTime = System.currentTimeMillis();
+			if ((currentTime - touchTime) >= waitTime) {
+				ToastUtils.showShort(context, "再按一次退出应用！");
+				touchTime = currentTime;
+			} else {
+				/* 与按下HOME键效果一样 begin */
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
+				intent.addCategory(Intent.CATEGORY_HOME);
+				this.startActivity(intent);
+				/* 与按下HOME键效果一样 end */
+				return true;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	/**

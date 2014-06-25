@@ -1,18 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-	<head>  
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>   
-    </head>  
-    <body>  
-        <h5>  
-			欢迎您：$!username  
-        </h5>  
-        <h5>     
-			您已注册成功，感谢您的关注和支持！  
-        </h5>       
-		--------------------------------------------------------------------  
-        <h5>     
-			请勿直接回复本邮件，如有任何疑问，联系客服人员  
-        </h5>    
-    </body>  
-</html> 
+欢迎您：$!username  
+
+您已注册成功，感谢您的关注和支持！  
+
+--------------------------------------------------------------------  
+请勿直接回复本邮件，如有任何疑问，联系客服人员  

@@ -8,6 +8,7 @@ import com.flyhz.shop.build.solr.SolrPage;
 import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.dto.ProductCmsDto;
 import com.flyhz.shop.dto.ProductPageDto;
+import com.flyhz.shop.persistence.entity.ProductLogModel;
 import com.flyhz.shop.persistence.entity.ProductModel;
 
 /**
@@ -101,4 +102,12 @@ public interface ProductDao extends GenericDao<ProductModel> {
 	 * @return int
 	 */
 	public int getProductCount();
+
+	/**
+	 * 保存产品操作日志
+	 * 
+	 * @param productLogModel
+	 * @return int
+	 */
+	public int addProductLog(ProductLogModel productLogModel);
 }

@@ -202,8 +202,9 @@
 							#end
 						</td>
                 		<td>
-							<button onclick="showProduct('$!product.id')" type="button">编辑</button>
-							<button onclick="delProduct('$!product.id')" type="button">删除</button>
+							<button onclick="showProduct('$!product.id')" type="button" style="width:60px;">编辑</button>
+							<br/><br/>
+							<button onclick="delProduct('$!product.id')" type="button" style="width:60px;">删除</button>
 						</td>
         		   </tr>
         		#end
