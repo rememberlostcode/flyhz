@@ -19,6 +19,7 @@ import com.holding.smile.protocol.PCartItemDetail;
 import com.holding.smile.protocol.POrder;
 import com.holding.smile.protocol.PProduct;
 import com.holding.smile.protocol.PUser;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.FileUtils;
 import com.holding.smile.tools.JSONUtil;
@@ -71,6 +72,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto passwordReset(String oldPwd, String newPwd) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		if (oldPwd == null || newPwd == null || "".equals(oldPwd) || "".equals(newPwd)) {
 			return null;
 		}
@@ -110,6 +114,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto setUserInfo(String field, String value) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		if (field == null || value == null || "".equals(field)) {
 			return null;
 		}
@@ -150,6 +157,9 @@ public class SubmitService {
 	 * @throws Exception
 	 */
 	public RtnValueDto idcardSave(Idcard idcard, String filePath) throws Exception {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		if (idcard == null) {
 			return null;
 		}
@@ -195,6 +205,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto idcardRemove(Integer dicadrId) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		if (dicadrId == null) {
 			return null;
 		}
@@ -231,6 +244,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto register(SUser iuser) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		if (iuser != null && iuser.getUsername() != null && iuser.getPassword() != null) {
 			HashMap<String, String> param = new HashMap<String, String>();
@@ -264,6 +280,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto getOrderInform(String pidQty, List<String> cartIds, Integer addressId) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		List<String> listParam = new ArrayList<String>();
 		HashMap<String, List<String>> param = new HashMap<String, List<String>>();
@@ -313,6 +332,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto updateOrderQty(Integer pid, short qty) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (pid != null) {
@@ -355,6 +377,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto confirmOrder(String pidQty, List<String> cartIds, Integer addressId) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		List<String> listParam = new ArrayList<String>();
 		HashMap<String, List<String>> param = new HashMap<String, List<String>>();
@@ -402,6 +427,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto addCart(Integer pid, short qty) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (pid != null) {
@@ -430,6 +458,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto removeCart(Integer itemId) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (itemId != null) {
@@ -455,6 +486,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto updateCartQty(Integer itemId, short qty) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (itemId != null) {
@@ -476,6 +510,9 @@ public class SubmitService {
 	}
 
 	public RtnValueDto closeOrder(Integer orderId) {
+		if(CodeValidator.isNetworkError()){
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (orderId != null) {

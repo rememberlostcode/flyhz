@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
+import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.page.Pager;
 import com.flyhz.framework.lang.page.Pagination;
@@ -60,9 +61,10 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public String deleteProduct(@RequestParam(value = "productId") Integer productId, Model model) {
+	public String deleteProduct(@Identify Integer userId,
+			@RequestParam(value = "productId") Integer productId, Model model) {
 		try {
-			productService.deleteProduct(productId);
+			productService.deleteProduct(userId, productId);
 			model.addAttribute("message", "操作成功");
 		} catch (ValidateException e) {
 			model.addAttribute("message", e.getMessage());
@@ -71,9 +73,10 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/batchdel", method = RequestMethod.POST)
-	public String deleteProducts(@RequestParam(value = "productIds") String productIds, Model model) {
+	public String deleteProducts(@Identify Integer userId,
+			@RequestParam(value = "productIds") String productIds, Model model) {
 		try {
-			productService.batchDelProducts(productIds);
+			productService.batchDelProducts(userId, productIds);
 			model.addAttribute("message", "操作成功");
 		} catch (ValidateException e) {
 			model.addAttribute("message", e.getMessage());
@@ -128,9 +131,10 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(ProductParamDto product, HttpServletRequest request, Model model) {
+	public String add(@Identify Integer userId, ProductParamDto product,
+			HttpServletRequest request, Model model) {
 		try {
-			productService.addProduct(product);
+			productService.addProduct(userId, product);
 			model.addAttribute("message", "操作成功");
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
@@ -139,9 +143,9 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
-	public String editProduct(ProductParamDto product, Model model) {
+	public String editProduct(@Identify Integer userId, ProductParamDto product, Model model) {
 		try {
-			productService.editProduct(product);
+			productService.editProduct(userId, product);
 			model.addAttribute("message", "操作成功");
 		} catch (ValidateException e) {
 			model.addAttribute("message", e.getMessage());

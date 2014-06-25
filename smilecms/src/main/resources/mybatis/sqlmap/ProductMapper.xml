@@ -311,4 +311,25 @@
     	foreighprice=#{foreighprice},recommendprice=#{recommendprice},off_shelf=#{offShelf},
     	sizedesc=#{sizedesc} where id=#{id}
     </update>
+    
+    <insert id="addProductLog" parameterType="ProductLogModel">
+    	insert into product_log(id,product_id,user_id,operate,gmt_modify
+    	<if test="beforeInfo != null">
+    		,before_info
+    	</if>
+    	<if test="afterInfo != null">
+    		,after_info
+    	</if>
+    	) values(#{id},#{productId},#{userId},#{operate},#{gmtModify}
+    	<if test="beforeInfo != null">
+    		,#{beforeInfo}
+    	</if>
+    	<if test="afterInfo != null">
+    		,#{afterInfo}
+    	</if>
+    	)
+    	<selectKey resultType="Integer" keyProperty="id">
+	        SELECT LAST_INSERT_ID();
+	    </selectKey>
+    </insert>
 </mapper>

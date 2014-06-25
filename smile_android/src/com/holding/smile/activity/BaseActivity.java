@@ -2,8 +2,10 @@
 package com.holding.smile.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
@@ -35,39 +37,70 @@ import com.holding.smile.tools.ToastUtils;
  */
 public class BaseActivity extends Activity {
 
-	public static final int	CATE_CODE			= 8;
-	public static final int	MORE_CODE			= 9;
-	public static final int	SEARCH_CODE			= 10;
-	public static final int	UPLOAD_IMAGE_CODE	= 11;
+	public static final int		CATE_CODE			= 8;
+	public static final int		MORE_CODE			= 9;
+	public static final int		SEARCH_CODE			= 10;
+	public static final int		UPLOAD_IMAGE_CODE	= 11;
 	/**
 	 * 编辑邮箱操作代码
 	 */
-	public static final int	EMAIL_CODE			= 13;
+	public static final int		EMAIL_CODE			= 13;
 	/**
 	 * 编辑手机号码操作代码
 	 */
-	public static final int	PHONE_CODE			= 14;
+	public static final int		PHONE_CODE			= 14;
 	/**
 	 * 选择身份证照片操作代码
 	 */
-	public static final int	SELECT_PHOTO_IMAGE	= 15;
+	public static final int		SELECT_PHOTO_IMAGE	= 15;
 	/**
 	 * 选择身份证照片编辑身份证操作代码
 	 */
-	public static final int	IDCARD_EDIT_CODE	= 16;
+	public static final int		IDCARD_EDIT_CODE	= 16;
 	/**
 	 * 订单代码
 	 */
-	public static final int	ORDER_CODE			= 17;
+	public static final int		ORDER_CODE			= 17;
 
-	public Context			context;
+	public Context				context;
 
-	private LinearLayout	ly_content;
+	private LinearLayout		ly_content;
 	// 内容区域的布局
-	private View			contentView;
-	protected int			reqCode				= 0;
-	protected String		filepath;
-	protected ProgressBar	progressBar;
+	private View				contentView;
+	protected int				reqCode				= 0;
+	protected String			filepath;
+	protected ProgressBar		progressBar;
+
+	protected BroadcastReceiver	connectionReceiver	= new BroadcastReceiver() {
+														@Override
+														public void onReceive(Context context,
+																Intent intent) {
+															ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+															// mobile 3G Data
+															// Network
+															State mobile = conMan.getNetworkInfo(
+																	ConnectivityManager.TYPE_MOBILE)
+																					.getState();
+															State wifi = conMan.getNetworkInfo(
+																	ConnectivityManager.TYPE_WIFI)
+																				.getState();
+
+															// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
+															// 则进入Network
+															// Setting界面
+															// 由用户配置网络连接
+															if (mobile == State.CONNECTED
+																	|| mobile == State.CONNECTING
+																	|| wifi == State.CONNECTED
+																	|| wifi == State.CONNECTING) {
+																MyApplication.setHasNetwork(true);
+															} else {
+																MyApplication.setHasNetwork(false);
+																ToastUtils.showShort(context,
+																		"网络异常，请检查网络！");
+															}
+														}
+													};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +131,10 @@ public class BaseActivity extends Activity {
 			MyApplication.getInstance().setDensity(density);
 		}
 
+		// 注册网络监听
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		registerReceiver(connectionReceiver, filter);
 	}
 
 	public void setVisible(int id) {
@@ -236,10 +273,6 @@ public class BaseActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void onClick(View v) {
-
-	}
-
 	// 01-菜单-end
 	@Override
 	protected void onStart() {
@@ -309,6 +342,10 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if (connectionReceiver != null) {
+			// 取消监听
+			unregisterReceiver(connectionReceiver);
+		}
 		// MyApplication.getInstance().finishActivity(this);
 		// Log.e(MyApplication.LOG_TAG, "start onDestroy~~~");
 	}
@@ -357,10 +394,14 @@ public class BaseActivity extends Activity {
 		});
 	}
 
+	public void onClick(View v) {
+	}
+
 	/**
 	 * LoadTask调用的默认方法
 	 */
 	public synchronized void loadData() {
+		System.out.println("-------------------空方法-------------------");
 	}
 
 	public View displayFooterMain(int idNow) {

@@ -221,6 +221,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 										+ "/activity/index.html");
 							}
 						}
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						startActivity(intent);
 
 					}

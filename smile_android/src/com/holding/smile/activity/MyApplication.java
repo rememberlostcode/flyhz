@@ -69,7 +69,7 @@ public class MyApplication extends Application {
 	/** 任务线程池 */
 	private static ExecutorService	threadPool;
 	
-	private static boolean isHasNetwork = false;
+	private static boolean isHasNetwork = true;
 
 	@Override
 	public void onCreate() {

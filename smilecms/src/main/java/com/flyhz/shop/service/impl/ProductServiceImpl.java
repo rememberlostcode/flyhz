@@ -25,20 +25,24 @@ import com.flyhz.shop.dto.ProductPageDto;
 import com.flyhz.shop.dto.ProductParamDto;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
+import com.flyhz.shop.persistence.entity.ProductLogModel;
 import com.flyhz.shop.persistence.entity.ProductModel;
 import com.flyhz.shop.service.ProductService;
 
 public class ProductServiceImpl implements ProductService {
 	@Resource
-	private ProductDao		productDao;
+	private ProductDao			productDao;
 	@Resource
-	private BrandDao		brandDao;
+	private BrandDao			brandDao;
 	@Resource
-	private FileRepository	fileRepository;
+	private FileRepository		fileRepository;
 	@Resource
-	private SolrData		solrData;
+	private SolrData			solrData;
 
-	private String			pathFileUpload;
+	private String				pathFileUpload;
+	private static final String	OPERATE_ADD		= "add";
+	private static final String	OPERATE_EDIT	= "edit";
+	private static final String	OPERATE_DELETE	= "delete";
 
 	public String getPathFileUpload() {
 		return pathFileUpload;
@@ -55,15 +59,16 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void addProduct(ProductParamDto productParamDto) throws ValidateException {
+	public void addProduct(Integer userId, ProductParamDto productParamDto)
+			throws ValidateException {
+		if (userId == null) {
+			throw new ValidateException("您尚未登录");
+		}
 		if (productParamDto == null || StringUtils.isBlank(productParamDto.getName())) {
 			throw new ValidateException("产品名称为空");
 		}
 		if (StringUtil.stringLength(productParamDto.getName()) > 128) {
 			throw new ValidateException("产品名称过长");
-		}
-		if (StringUtils.isBlank(productParamDto.getCreator())) {
-			throw new ValidateException("您尚未登录");
 		}
 		if (productParamDto.getBrandId() == null) {
 			throw new ValidateException("产品品牌为空");
@@ -90,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setBrandstyle(productParamDto.getBrandstyle().trim());
 		productModel.setCategoryId(productParamDto.getCategoryId());
 		productModel.setColor(productParamDto.getColor());
-		productModel.setCreator(productParamDto.getCreator());
+		productModel.setCreator(String.valueOf(userId));
 		productModel.setDataSrc(productParamDto.getDataSrc());
 		productModel.setOffShelf(productParamDto.getOffShelf());
 		productModel.setSizedesc(productParamDto.getSizedesc());
@@ -117,44 +122,80 @@ public class ProductServiceImpl implements ProductService {
 		// 处理商品图片
 		dispostProductImgs(productParamDto.getImgs(), productModel, brandName);
 		productDao.addProduct(productModel);
+		// 记录产品操作日志
+		ProductLogModel productLogModel = new ProductLogModel();
+		productLogModel.setProductId(productModel.getId());
+		productLogModel.setUserId(userId);
+		productLogModel.setOperate(OPERATE_ADD);
+		productLogModel.setGmtModify(new Date());
+		productLogModel.setAfterInfo(JSONUtil.getEntity2Json(productModel));
+		productDao.addProductLog(productLogModel);
 		// builder数据到Solr中
 		ProductBuildDto productBuildDto = productDao.getProductBuildDtoById(productModel.getId());
 		solrData.submitProduct(productBuildDto);
 	}
 
 	@Override
-	public void deleteProduct(Integer productId) throws ValidateException {
+	public void deleteProduct(Integer userId, Integer productId) throws ValidateException {
 		if (productId == null) {
 			throw new ValidateException("产品不存在");
 		}
-		productDao.deleteProduct(productId);
-		// 删除索引中的产品
-		solrData.removeProduct(String.valueOf(productId));
+		if (userId == null) {
+			throw new ValidateException("您尚未登录");
+		}
+		ProductModel productModel = productDao.getModelById(productId);
+		if (productModel != null) {
+			productDao.deleteProduct(productId);
+			// 记录产品操作日志
+			ProductLogModel productLogModel = new ProductLogModel();
+			productLogModel.setProductId(productId);
+			productLogModel.setUserId(userId);
+			productLogModel.setOperate(OPERATE_DELETE);
+			productLogModel.setGmtModify(new Date());
+			productLogModel.setBeforeInfo(JSONUtil.getEntity2Json(productModel));
+			productDao.addProductLog(productLogModel);
+			// 删除索引中的产品
+			solrData.removeProduct(String.valueOf(productId));
+		}
 	}
 
 	@Override
-	public void batchDelProducts(String productIds) throws ValidateException {
+	public void batchDelProducts(Integer userId, String productIds) throws ValidateException {
 		if (StringUtils.isBlank(productIds)) {
 			throw new ValidateException("产品不存在");
+		}
+		if (userId == null) {
+			throw new ValidateException("您尚未登录");
 		}
 		String[] productIdsArray = productIds.split(",");
 		for (int i = 0; i < productIdsArray.length; i++) {
 			Integer productId = Integer.parseInt(productIdsArray[i]);
 			if (productId != null) {
-				productDao.deleteProduct(productId);
-				// 删除索引中的产品
-				solrData.removeProduct(String.valueOf(productId));
+				ProductModel productModel = productDao.getModelById(productId);
+				if (productModel != null) {
+					productDao.deleteProduct(productId);
+					// 记录产品操作日志
+					ProductLogModel productLogModel = new ProductLogModel();
+					productLogModel.setProductId(productId);
+					productLogModel.setUserId(userId);
+					productLogModel.setOperate(OPERATE_DELETE);
+					productLogModel.setGmtModify(new Date());
+					productLogModel.setBeforeInfo(JSONUtil.getEntity2Json(productModel));
+					productDao.addProductLog(productLogModel);
+					// 删除索引中的产品
+					solrData.removeProduct(String.valueOf(productId));
+				}
 			}
 		}
 	}
 
 	@Override
-	public void editProduct(ProductParamDto productParamDto) throws ValidateException {
-		if (productParamDto == null || productParamDto.getId() == null) {
-			throw new ValidateException("产品不存在");
+	public void editProduct(Integer userId, ProductParamDto productParamDto)
+			throws ValidateException {
+		if (userId == null) {
+			throw new ValidateException("您尚未登录");
 		}
-		ProductModel productModel = productDao.getModelById(productParamDto.getId());
-		if (productModel == null) {
+		if (productParamDto == null || productParamDto.getId() == null) {
 			throw new ValidateException("产品不存在");
 		}
 		if (StringUtils.isBlank(productParamDto.getName())) {
@@ -181,6 +222,13 @@ public class ProductServiceImpl implements ProductService {
 		if (StringUtil.stringLength(productParamDto.getColor()) > 32) {
 			throw new ValidateException("产品颜色过长");
 		}
+		ProductModel productModel = productDao.getModelById(productParamDto.getId());
+		if (productModel == null) {
+			throw new ValidateException("产品不存在");
+		}
+		// 存储未更改前product数据
+		ProductLogModel productLogModel = new ProductLogModel();
+		productLogModel.setBeforeInfo(JSONUtil.getEntity2Json(productModel));
 		// 生成产品Model对象
 		productModel.setName(productParamDto.getName().trim());
 		productModel.setBrandId(productParamDto.getBrandId());
@@ -209,6 +257,13 @@ public class ProductServiceImpl implements ProductService {
 		// 处理商品图片
 		dispostProductImgs(productParamDto.getImgs(), productModel, productParamDto, brandName);
 		productDao.editProduct(productModel);
+		// 记录产品操作日志
+		productLogModel.setProductId(productModel.getId());
+		productLogModel.setUserId(userId);
+		productLogModel.setOperate(OPERATE_EDIT);
+		productLogModel.setGmtModify(new Date());
+		productLogModel.setAfterInfo(JSONUtil.getEntity2Json(productModel));
+		productDao.addProductLog(productLogModel);
 		// builder数据到Solr中
 		ProductBuildDto productBuildDto = productDao.getProductBuildDtoById(productModel.getId());
 		solrData.submitProduct(productBuildDto);

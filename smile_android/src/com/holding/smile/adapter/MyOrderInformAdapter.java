@@ -143,6 +143,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						intent.putExtra("gid", jGoods.getId());
 						intent.putExtra("bs", jGoods.getBrandstyle());
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						((Activity) parent.getContext()).startActivity(intent);
 					} else {
 						notifyDataSetChanged();

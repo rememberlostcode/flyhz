@@ -137,6 +137,9 @@ public class CodeValidator {
 					case 140007:
 						ToastUtils.showShort(context, "用户验证码不能为空！");
 						break;
+					case 888888:
+						ToastUtils.showShort(context, "网络异常，请检查网络设置！");
+						break;
 					default:
 						ToastUtils.showShort(context, "程序异常！");
 						break;
@@ -144,6 +147,23 @@ public class CodeValidator {
 			}
 		}
 		return res;
+	}
+	
+	/**
+	 * 判断是否网络异常
+	 * @return
+	 */
+	public static boolean isNetworkError(){
+		return !MyApplication.isHasNetwork();
+	}
+	/**
+	 * 获得网络异常时的RtnValueDto
+	 * @return
+	 */
+	public static RtnValueDto getNetworkErrorRtnValueDto(){
+		RtnValueDto rtnValueDto = new RtnValueDto();
+		rtnValueDto.setCode(888888);
+		return rtnValueDto;
 	}
 
 	public static void main(String[] args) {

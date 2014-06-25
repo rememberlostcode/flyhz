@@ -171,8 +171,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				}
 				intent.putExtra("number", numberString);
 				intent.putExtra("amount", total);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
 				break;
 			}
 		}
