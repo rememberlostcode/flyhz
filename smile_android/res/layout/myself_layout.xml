@@ -14,6 +14,6 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textColor="@drawable/navigation_textcolor"
-        android:textSize="18sp" />
+        android:textSize="15sp" />
 
 </LinearLayout>

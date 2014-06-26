@@ -1051,7 +1051,7 @@ function goodsdetail(query,response) {
         response.write( '{"code":111112}');
         response.end();
     }
-    var urlPath = "/solr/smile_product/select?&sort=sf+desc&q=bs%3A"+encodeURIComponent(bs);
+    var urlPath = "/solr/smile_product/select?&sort=sf+desc&rows=30&q=bs%3A"+encodeURIComponent(bs);
 
     //console.log("Got urlPath: " + urlPath);
     var options = {
