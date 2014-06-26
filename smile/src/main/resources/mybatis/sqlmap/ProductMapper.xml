@@ -1,73 +1,63 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.flyhz.shop.persistence.dao.ProductDao">
-    
-    <select id="getCountOfAll" resultType="Integer">
-		select count(1) count from product t where t.off_shelf = 'n'
-    </select>
-    
-    <select id="findAll" parameterType="SolrPage" resultType="ProductBuildDto">
-		select t.*, @rownum := @rownum + 1 sj
-			from (select t.*, @rownum := @rownum + 1 sy	  
-			from (select t.*, @rownum := @rownum + 1 ss
-		  	from (select t.*, @rownum := @rownum + 1 sd
-		          from (select p.id,
-		                       p.name n,
-		                       p.brandstyle bs,
-		                       date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,
-		                       p.imgs,
-		                       p.cover_small p,
-		                       p.cover bp,
-		                       p.description d,
-		                       p.purchasingprice pp,
-		                       p.localprice lp,
-		                       p.brand_id bid,
-		                       b.name be,
-		                       p.category_id cid,
-		                       p.color c,
-				       		   p.colorimg ci,
-				       		   p.foreighprice,
-		                       c.name ce,
-		                       p.localprice - p.purchasingprice sp,
-		                       @rownum := @rownum + 1 st,
-		                       (select sum(s.totalnumber)
-		                          from salesvolume s
-		                         where s.product_id = p.id) sn,
-		                       (select sum(s.totalnumber)
-		                          from salesvolume s
-		                         where s.product_id = p.id
-		                           and s.gmt_modify >=date_format(now(),'%Y-%m')) zsn
-		                  from (select @rownum := 0) r,
-		                       product p,
-		                       brand b,
-		                       category c
-		                 where p.brand_id = b.id
-		                   and p.category_id = c.id
-		                   and p.off_shelf = 'n'
-		                 order by p.gmt_modify asc) t,
-		               (select @rownum := 0) r
-		         order by t.sp asc) t,
-		       		   (select @rownum := 0) r
-				 order by t.sn asc) t,
-				       (select @rownum := 0) r
-				 order by t.zsn asc) t,
-				       (select @rownum := 0) r
-				 order by t.pp asc limit #{start}, #{num}
-    </select>
-    <select id="getModelById" parameterType="Integer" resultType="ProductModel">
+
+	<select id="getCountOfAll" resultType="Integer">
+		select count(1) count from
+		product t where t.off_shelf = 'n'
+	</select>
+
+	<select id="findAll" parameterType="SolrPage" resultType="ProductBuildDto">
 		select p.id,
-		       p.name,
-		       p.brandstyle,
-		       date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') gmtModify,
-		       p.cover_small imgs,
-		       p.description,
-		       p.purchasingprice,
-		       p.localprice,
-		       p.brand_id brandId,
-		       p.category_id categoryId,
-		       p.color,
-		       p.colorimg
-		  from product p
-		 where p.id = #{id}
-    </select>
+		p.name n,
+		p.brandstyle bs,
+		date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') t,
+		p.imgs,
+		p.cover_small p,
+		p.cover bp,
+		p.description d,
+		p.purchasingprice pp,
+		p.localprice lp,
+		p.brand_id bid,
+		b.name be,
+		p.category_id cid,
+		p.color c,
+		p.colorimg ci,
+		p.foreighprice,
+		c.name ce,
+		p.localprice - p.purchasingprice sp,
+		@rownum := @rownum + 1 st,
+		(select sum(s.totalnumber)
+		from salesvolume s
+		where s.product_id = p.id) sn,
+		(select sum(s.totalnumber)
+		from salesvolume s
+		where s.product_id = p.id
+		and s.gmt_modify >=date_format(now(),'%Y-%m')) zsn
+		from (select @rownum := 0) r,
+		product p,
+		brand b,
+		category c
+		where p.brand_id = b.id
+		and p.category_id = c.id
+		and p.off_shelf = 'n' limit #{start}, #{num}
+	</select>
+	<select id="getModelById" parameterType="Integer" resultType="ProductModel">
+		select p.id,
+		p.name,
+		p.brandstyle,
+		date_format(p.gmt_modify, '%Y-%m-%d
+		%H:%i:%s') gmtModify,
+		p.cover_small imgs,
+		p.description,
+		p.purchasingprice,
+		p.localprice,
+		p.brand_id brandId,
+		p.category_id
+		categoryId,
+		p.color,
+		p.colorimg
+		from product p
+		where p.id = #{id}
+	</select>
 </mapper>

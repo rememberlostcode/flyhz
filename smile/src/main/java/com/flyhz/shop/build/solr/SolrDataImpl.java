@@ -163,11 +163,11 @@ public class SolrDataImpl implements SolrData {
 		doc.addField("ci", productBuildDto.getCi());// 颜色图片
 
 		doc.addField("sf", productFraction.getProductFraction(productBuildDto));// 分数
-		doc.addField("st", productBuildDto.getSt());// 时间排序值
+		/*doc.addField("st", productBuildDto.getSt());// 时间排序值
 		doc.addField("sd", productBuildDto.getSd());// 折扣排序值
 		doc.addField("ss", productBuildDto.getSs());// 总销售量排序值
 		doc.addField("sy", productBuildDto.getSy());// 月销售量排序值
-		doc.addField("sj", productBuildDto.getSj());// 价格排序值
+		doc.addField("sj", productBuildDto.getSj());// 价格排序值*/
 
 		doc.addField("sn", productBuildDto.getSn() != null ? productBuildDto.getSn() : 0);// 销售量
 		doc.addField("zsn", productBuildDto.getZsn() != null ? productBuildDto.getZsn() : 0);// 当月销售量

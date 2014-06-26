@@ -2,6 +2,8 @@
 package com.flyhz.framework.util;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.taobao.api.internal.tmc.Message;
 import com.taobao.api.internal.tmc.MessageHandler;
@@ -10,7 +12,7 @@ import com.taobao.api.internal.tmc.TmcClient;
 import com.taobao.top.link.LinkException;
 
 public class TaobaoSdkMessage {
-
+	private static Logger	log			= LoggerFactory.getLogger(TaobaoSdkMessage.class);
 	/**
 	 * 是否在运行中
 	 */
@@ -22,23 +24,23 @@ public class TaobaoSdkMessage {
 			client.setMessageHandler(new MessageHandler() {
 				public void onMessage(Message message, MessageStatus status) {
 					try {
-						System.out.println(message.getContent());// {"buyer_nick":"sandbox_cilai_c","payment":"120.00","oid":192364827791084,"tid":192364827791084,"type":"guarantee_trade","seller_nick":"sandbox_c_20"}
-						System.out.println(message.getTopic());// taobao_trade_TradeCreate
+						log.info(message.getContent());// {"buyer_nick":"sandbox_cilai_c","payment":"120.00","oid":192364827791084,"tid":192364827791084,"type":"guarantee_trade","seller_nick":"sandbox_c_20"}
+						log.info(message.getTopic());// taobao_trade_TradeCreate
 						if ("taobao_item_ItemUpshelf".equals(message.getTopic())) {
 							JSONObject jobject = new JSONObject(message.getContent());
-							System.out.println("有商品上架了,id=" + jobject.getString("num_iid"));
+							log.info("有商品上架了,id=" + jobject.getString("num_iid"));
 						} else if ("taobao_item_ItemDownshelf".equals(message.getTopic())) {
 							JSONObject jobject = new JSONObject(message.getContent());
-							System.out.println("有商品下架了,id=" + jobject.getString("num_iid"));
+							log.info("有商品下架了,id=" + jobject.getString("num_iid"));
 						} else if ("taobao_trade_TradeBuyerPay".equals(message.getTopic())) {
 							JSONObject jobject = new JSONObject(message.getContent());
-							System.out.println("买家付完款，或万人团买家付完尾款,tid=" + jobject.getString("tid"));
+							log.info("买家付完款，或万人团买家付完尾款,tid=" + jobject.getString("tid"));
 						} else if ("taobao_trade_TradeSuccess".equals(message.getTopic())) {
 							JSONObject jobject = new JSONObject(message.getContent());
-							System.out.println("交易成功消息,tid=" + jobject.getString("tid"));
+							log.info("交易成功消息,tid=" + jobject.getString("tid"));
 						}
 
-						System.out.println("一次消息结束");
+						log.info("一次消息结束");
 						// 默认不抛出异常则认为消息处理成功
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -67,22 +69,22 @@ public class TaobaoSdkMessage {
 		client.setMessageHandler(new MessageHandler() {
 			public void onMessage(Message message, MessageStatus status) {
 				try {
-					System.out.println(message.getContent());// {"buyer_nick":"sandbox_cilai_c","payment":"120.00","oid":192364827791084,"tid":192364827791084,"type":"guarantee_trade","seller_nick":"sandbox_c_20"}
-					System.out.println(message.getTopic());// taobao_trade_TradeCreate
+					log.info(message.getContent());// {"buyer_nick":"sandbox_cilai_c","payment":"120.00","oid":192364827791084,"tid":192364827791084,"type":"guarantee_trade","seller_nick":"sandbox_c_20"}
+					log.info(message.getTopic());// taobao_trade_TradeCreate
 					if ("taobao_item_ItemUpshelf".equals(message.getTopic())) {
 						JSONObject jobject = new JSONObject(message.getContent());
-						System.out.println("有商品上架了,id=" + jobject.getString("num_iid"));
+						log.info("有商品上架了,id=" + jobject.getString("num_iid"));
 					} else if ("taobao_item_ItemDownshelf".equals(message.getTopic())) {
 						JSONObject jobject = new JSONObject(message.getContent());
-						System.out.println("有商品下架了,id=" + jobject.getString("num_iid"));
+						log.info("有商品下架了,id=" + jobject.getString("num_iid"));
 					} else if ("taobao_trade_TradeBuyerPay".equals(message.getTopic())) {
 						JSONObject jobject = new JSONObject(message.getContent());
-						System.out.println("买家付完款，或万人团买家付完尾款,tid=" + jobject.getString("tid"));
+						log.info("买家付完款，或万人团买家付完尾款,tid=" + jobject.getString("tid"));
 					} else if ("taobao_trade_TradeSuccess".equals(message.getTopic())) {
 						JSONObject jobject = new JSONObject(message.getContent());
-						System.out.println("交易成功消息,tid=" + jobject.getString("tid"));
+						log.info("交易成功消息,tid=" + jobject.getString("tid"));
 					}
-					System.out.println("一次消息结束");
+					log.info("一次消息结束");
 					// 默认不抛出异常则认为消息处理成功
 				} catch (Exception e) {
 					e.printStackTrace();

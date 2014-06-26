@@ -15,11 +15,15 @@ import java.util.Set;
 import java.util.Timer;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.flyhz.shop.persistence.TaobaoDataImpl;
 import com.taobao.api.internal.util.WebUtils;
 
 public class TaobaoTokenUtil {
+	private static Logger					log							= LoggerFactory.getLogger(TaobaoTokenUtil.class);
+
 	private static String					taobaoPropertiesFilePath	= "C:/Users/silvermoon/taobao.properties";
 	private static String					appKey;
 	private static String					appSecret;
@@ -46,6 +50,8 @@ public class TaobaoTokenUtil {
 			if (file.exists()) {
 				is = new FileInputStream(file);
 				props.load(is);
+			} else {
+				log.info("淘宝配置文件不存在，请添加taobao.properties");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,7 +71,7 @@ public class TaobaoTokenUtil {
 				config.put(key, value);
 				sb.append("" + key + "=" + value + "\n");
 			}
-			System.out.println(taobaoPropertiesFilePath + ":\n{\n" + sb.toString() + "}");
+			log.info(taobaoPropertiesFilePath + ":\n{\n" + sb.toString() + "}");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,7 +100,7 @@ public class TaobaoTokenUtil {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(getTaobaoAccessToken());
+		log.info(getTaobaoAccessToken());
 	}
 
 	public static String getTaobaoAccessToken() {
@@ -106,7 +112,7 @@ public class TaobaoTokenUtil {
 				long intervalTime = nowTime - lastTime;
 				long expiresTime = Long.parseLong(expiresIn);
 				if (expiresTime > intervalTime) {
-					System.out.println("accessToken还没有失效!");
+					log.info("accessToken还没有失效!");
 					return accessToken;
 				}
 			} catch (NumberFormatException e) {
@@ -115,18 +121,19 @@ public class TaobaoTokenUtil {
 		}
 		if (refreshToken == null || "".equals(refreshToken.trim())) {
 			// 如果refreshToken为空，则通过初始授权码获取refreshToken
-			if(accessToken!=null){
+			if (accessToken != null) {
 				getRefreshTokenByAccessToken();
 			} else {
-				System.out.println("初始授权码和刷新授权码都为空，无法刷新!");
+				log.info("初始授权码和刷新授权码都为空，无法刷新!");
 			}
-			
+
 			if (refreshToken == null || "".equals(refreshToken.trim())) {
-				System.out.println("通过初始授权码获取refreshToken失败!");
+				log.info("通过初始授权码获取refreshToken失败!");
 				return null;
 			}
 		}
 		// 通过refreshToken获取授权码accessToken(即session)和refreshToken(new)
+		log.info("accessToken已失效，将要刷新!");
 		getAccessTokenAndRefreshTokenByRefreshToken();
 		if (refreshToken != null && !"".equals(refreshToken.trim())) {
 			// 将accessToken和refreshToken写入taobao.properties
@@ -136,7 +143,7 @@ public class TaobaoTokenUtil {
 			config.put("lastModifyTime", (new Date().getTime()) / 1000 + "");
 			boolean writeResult = writeFile(config);
 			if (!writeResult) {
-				System.out.println("将accessToken和refreshToken写入taobao.properties失败!");
+				log.info("将accessToken和refreshToken写入taobao.properties失败!");
 				return null;
 			}
 		}
@@ -182,15 +189,15 @@ public class TaobaoTokenUtil {
 			param.put("state", state);
 			String responseJson = WebUtils.doPost(tbPostSessionUrl, param, connectTimeout,
 					readTimeout);
-			// System.out.println("responseJson:" + responseJson);
+			// log.info("responseJson:" + responseJson);
 			JSONObject jsonObj = new JSONObject(responseJson);
 			accessToken = jsonObj.getString("access_token");
 			refreshToken = jsonObj.getString("refresh_token");
 			expiresIn = jsonObj.getString("expires_in");
-			System.out.println("获取到新的token：");
-			System.out.println("accessToken=" + accessToken);
-			System.out.println("refreshToken=" + refreshToken);
-			System.out.println("expiresIn=" + expiresIn);
+			log.info("获取到新的token：");
+			log.info("accessToken=" + accessToken);
+			log.info("refreshToken=" + refreshToken);
+			log.info("expiresIn=" + expiresIn);
 
 		} catch (Exception e) {
 			e.printStackTrace();
