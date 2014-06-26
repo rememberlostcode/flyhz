@@ -17,6 +17,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
@@ -33,6 +34,7 @@ import com.holding.smile.tools.TbUtil;
 public class WebViewActivity extends Activity implements OnClickListener {
 	private String		number; // 订单号
 	private BigDecimal	amount; // 总额
+	private String      tbOrder;//淘宝订单号
 
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
@@ -84,19 +86,23 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
 							TbUtil.setWebView(view);
 							view.reload();
-						} else if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
+						} 
+						if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
 							// 设置返回和刷新按钮不显示
 							view.loadUrl("javascript:document.getElementsByTagName('section')[1].style.display='none';");
 							view.loadUrl("javascript:document.getElementsByTagName('section')[3].style.display='none';");
-						} else if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
+						} 
+						if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
 							// 设置首页按钮不显示
-							view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
+							//view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
 
 					@Override
 					public void onPageFinished(WebView view, String url) {
+						TextView showVurl = (TextView) findViewById(R.id.show_vurl);
+						showVurl.setText(url);
 						super.onPageFinished(view, url);
 						TbUtil.setWebView(view);
 						// 加载js

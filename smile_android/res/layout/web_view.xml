@@ -24,6 +24,16 @@
             android:layout_gravity="left|center_vertical"
             android:src="@drawable/btn_back_bg" />
 
+        <EditText  
+            android:layout_toRightOf="@+id/btn_back"
+		    android:id="@+id/show_vurl"    
+		    android:layout_width="fill_parent"   
+		    android:layout_height="wrap_content"
+		    android:singleLine="true"
+		    android:focusable="false"
+		    android:text="@string/showurl"
+		    />
+        
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
