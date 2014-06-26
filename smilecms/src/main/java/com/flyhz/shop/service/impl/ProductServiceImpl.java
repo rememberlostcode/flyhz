@@ -452,8 +452,14 @@ public class ProductServiceImpl implements ProductService {
 								bigImgUrls.add(File.separatorChar + bigPath);
 							}
 							// 处理物品小图
-							String litPath = ImageUtil.createSquareImage(pathFileUpload
-									+ File.separatorChar + bigPath, 300, "lit");
+							String litPath = null;
+							if(productModel.getBrandId().equals(9)){
+								litPath = ImageUtil.createSquareImage(pathFileUpload
+										+ File.separatorChar + bigPath, 300, "lit",ImageUtil.TYPE_BOTTOM);
+							} else {
+								litPath = ImageUtil.createSquareImage(pathFileUpload
+										+ File.separatorChar + bigPath, 300, "lit");
+							}
 							if (StringUtils.isNotBlank(litPath)) {
 								litImgUrls.add(File.separatorChar + brandName + File.separatorChar
 										+ litPath.replace("_lit", ""));

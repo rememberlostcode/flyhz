@@ -8,6 +8,8 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.flyhz.framework.lang.SolrData;
@@ -34,12 +36,17 @@ import com.taobao.api.response.TradeGetResponse;
 import com.taobao.api.response.TradesSoldGetResponse;
 
 public class TaobaoDataImpl implements TaobaoData {
-	private final String	url	= "http://gw.api.taobao.com/router/rest";
+	private Logger			log			= LoggerFactory.getLogger(TaobaoDataImpl.class);
+
+	private final String	url			= "http://gw.api.taobao.com/router/rest";
 	private String			appkey;
 	private String			appSecret;
 	private String			sessionKey;
 	private String			sellerNick;
-	private static String					propertiesFilePath	= "C:/Users/silvermoon/taobao.properties";
+	/**
+	 * 淘宝配置文件全路径，taobao.properties
+	 */
+	private static String	propertiesFilePath;
 
 	@Resource
 	@Value(value = "${smile.taobao.file}")
@@ -56,47 +63,51 @@ public class TaobaoDataImpl implements TaobaoData {
 	private OrderDao		orderDao;
 	@Resource
 	private LogisticsDao	logisticsDao;
-	
-	private final Long PAGE_SIZE = 100L;
+
+	private final Long		PAGE_SIZE	= 100L;
 
 	/**
-	 * 初始化参数	
+	 * 初始化参数
 	 */
 	private void init() {
-		if("1".equals(taobaoFlag)){//判断是否打开淘宝接口调用
-			propertiesFilePath = taobaoPropertiesFilePath;
+		if ("1".equals(taobaoFlag)) {// 判断是否打开淘宝接口调用
+			if (StringUtils.isBlank(propertiesFilePath)) {
+				propertiesFilePath = taobaoPropertiesFilePath;
+			}
+
 			appkey = TaobaoTokenUtil.getAppKey();
 			appSecret = TaobaoTokenUtil.getAppSecret();
 			sessionKey = TaobaoTokenUtil.getAccessToken();
 			sellerNick = TaobaoTokenUtil.getSellerNick();
-			
+
 			TaobaoSdkMessage.startMessageHandler(appkey, appSecret);
 		}
 	}
 
 	public void synchronizationLogistics() {
-		if("1".equals(taobaoFlag)){
+		if ("1".equals(taobaoFlag)) {
 			init();
-			
+
 			Long page = 1L;
 			Long totalPage = 1L;
 
 			while (page <= totalPage) {
-				System.out.println("第" + page + "页");
+				log.info("第" + page + "页");
 				TaobaoClient client = new DefaultTaobaoClient(url, appkey, appSecret);
 				TradesSoldGetRequest req = new TradesSoldGetRequest();
 				req.setFields("status,tid,receiver_address,receiver_city,receiver_district,receiver_mobile,receiver_name,receiver_state,receiver_zip");
 				req.setPageSize(PAGE_SIZE);
-		
+
 				try {
 					TradesSoldGetResponse response = client.execute(req, sessionKey);
 					List<Trade> trades = response.getTrades();
-					totalPage = response.getTotalResults()/PAGE_SIZE + 1L;
-		
+					totalPage = response.getTotalResults() / PAGE_SIZE + 1L;
+
 					boolean isAdd = true;
 					String buyerMessage = null;
 					String[] numbers = null;
-					// for (int i = 0; shippings != null && i < shippings.size(); i++) {
+					// for (int i = 0; shippings != null && i <
+					// shippings.size(); i++) {
 					// Long tid = shippings.get(i).getTid();
 					for (int i = 0; trades != null && i < trades.size(); i++) {
 						Long tid = trades.get(i).getTid();
@@ -104,7 +115,7 @@ public class TaobaoDataImpl implements TaobaoData {
 						// 先获取买家留言
 						buyerMessage = getOrderNumber(client, tid);
 						if (StringUtils.isNotBlank(buyerMessage)) {
-							//详细收货地址
+							// 详细收货地址
 							StringBuilder address = new StringBuilder(30);
 							address.append(trades.get(i).getReceiverState());
 							address.append(trades.get(i).getReceiverCity());
@@ -112,19 +123,22 @@ public class TaobaoDataImpl implements TaobaoData {
 							address.append(trades.get(i).getReceiverAddress());
 							address.append(" " + trades.get(i).getReceiverName());
 							address.append(" " + trades.get(i).getReceiverZip());
-							
+
 							// 通过留言获得smile订单号
 							numbers = buyerMessage.split(",");
 							/*****************************
-							 * 处理订单状态 start*********************************** 交易状态：
-							 * TRADE_NO_CREATE_PAY(没有创建支付宝交易) WAIT_BUYER_PAY(等待买家付款)
+							 * 处理订单状态 start***********************************
+							 * 交易状态： TRADE_NO_CREATE_PAY(没有创建支付宝交易)
+							 * WAIT_BUYER_PAY(等待买家付款)
 							 * WAIT_SELLER_SEND_GOODS(等待卖家发货,即:买家已付款)
 							 * SELLER_CONSIGNED_PART（卖家部分发货）
 							 * WAIT_BUYER_CONFIRM_GOODS(等待买家确认收货,即:卖家已发货)
-							 * TRADE_BUYER_SIGNED(买家已签收,货到付款专用) TRADE_FINISHED(交易成功)
-							 * TRADE_CLOSED(交易关闭) TRADE_CLOSED_BY_TAOBAO(交易被淘宝关闭)
-							 * ALL_WAIT_PAY(包含：WAIT_BUYER_PAY、TRADE_NO_CREATE_PAY)
-							 * ALL_CLOSED(包含：TRADE_CLOSED、TRADE_CLOSED_BY_TAOBAO)
+							 * TRADE_BUYER_SIGNED(买家已签收,货到付款专用)
+							 * TRADE_FINISHED(交易成功) TRADE_CLOSED(交易关闭)
+							 * TRADE_CLOSED_BY_TAOBAO(交易被淘宝关闭)
+							 * ALL_WAIT_PAY(包含：WAIT_BUYER_PAY
+							 * 、TRADE_NO_CREATE_PAY) ALL_CLOSED(包含：TRADE_CLOSED、
+							 * TRADE_CLOSED_BY_TAOBAO)
 							 * WAIT_PRE_AUTH_CONFIRM(余额宝0元购合约中)/
 							 */
 							OrderModel orderModel = new OrderModel();
@@ -199,9 +213,9 @@ public class TaobaoDataImpl implements TaobaoData {
 							} else {
 								continue;
 							}
-		
+
 							/***************************** 处理订单状态 end ***********************************/
-		
+
 							/***************************** 处理物流 start *************************************/
 							for (int j = 0; j < numbers.length; j++) {
 								OrderSimpleDto orderDto = orderService.getOrderDtoByNumber(numbers[j]);
@@ -219,29 +233,32 @@ public class TaobaoDataImpl implements TaobaoData {
 											llist.add(traceList.get(k).getStatusTime() + " "
 													+ traceList.get(k).getStatusDesc());
 										}
-		
+
 										if (orderDto.getLogisticsDto() == null) {
 											orderDto.setLogisticsDto(new LogisticsDto());
 											isAdd = true;
 										} else {
 											isAdd = false;
 										}
-		
+
 										orderDto.getLogisticsDto().setNumber(numbers[j]);
-										orderDto.getLogisticsDto().setCompanyName(res.getCompanyName());
+										orderDto.getLogisticsDto().setCompanyName(
+												res.getCompanyName());
 										orderDto.getLogisticsDto().setTid(res.getTid());
-										orderDto.getLogisticsDto().setLogisticsStatus(res.getStatus());
+										orderDto.getLogisticsDto().setLogisticsStatus(
+												res.getStatus());
 										orderDto.getLogisticsDto().setTransitStepInfoList(llist);
 										orderDto.getLogisticsDto().setAddress(address.toString());
-		
+
 										StringBuilder content = new StringBuilder(50);
-										for (String c : orderDto.getLogisticsDto().getTransitStepInfoList()) {
+										for (String c : orderDto.getLogisticsDto()
+																.getTransitStepInfoList()) {
 											content.append(c);
 											content.append("@#@");
 										}
 										content.delete(content.length() - 3, content.length());
 										orderDto.getLogisticsDto().setContent(content.toString());
-		
+
 										if (isAdd) {
 											Date date = new Date();
 											orderDto.getLogisticsDto().setGmtCreate(date);
@@ -260,15 +277,15 @@ public class TaobaoDataImpl implements TaobaoData {
 							/***************************** 处理物流 end ***********************************/
 						}
 					}
-		
+
 				} catch (ApiException e) {
-					System.out.println("淘宝同步物流信息失败！");
+					log.info("淘宝同步物流信息失败！");
 					e.printStackTrace();
 				}
-				page ++;
+				page++;
 			}
 		} else {
-			System.out.println("淘宝接口没有打开，已忽略调用！");
+			log.info("淘宝接口没有打开，已忽略调用！");
 			return;
 		}
 	}
@@ -312,31 +329,28 @@ public class TaobaoDataImpl implements TaobaoData {
 	}
 
 	public static void main(String[] args) throws ApiException {
-		TaobaoDataImpl tb = new TaobaoDataImpl();
-		tb.synchronizationLogistics();
-		System.exit(1);
 	}
 
 	public static String getPropertiesFilePath() {
 		return propertiesFilePath;
 	}
-	
-	public Trade getTradeByTid(Long tid){
+
+	public Trade getTradeByTid(Long tid) {
 		Trade trade = null;
-		if("1".equals(taobaoFlag)){
+		if ("1".equals(taobaoFlag)) {
 			init();
-			TaobaoClient client=new DefaultTaobaoClient(url, appkey, appSecret);
-			TradeGetRequest req=new TradeGetRequest();
+			TaobaoClient client = new DefaultTaobaoClient(url, appkey, appSecret);
+			TradeGetRequest req = new TradeGetRequest();
 			req.setFields("status,payment,post_fee,buyer_nick,buyer_message");
 			req.setTid(tid);
 			try {
-				TradeGetResponse response = client.execute(req , sessionKey);
+				TradeGetResponse response = client.execute(req, sessionKey);
 				trade = response.getTrade();
 			} catch (ApiException e) {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("淘宝接口没有打开，已忽略调用！");
+			log.info("淘宝接口没有打开，已忽略调用！");
 		}
 		return trade;
 	}

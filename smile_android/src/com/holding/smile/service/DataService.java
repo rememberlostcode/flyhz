@@ -142,15 +142,15 @@ public class DataService {
 	 * @param bid品牌ID
 	 * @param cid分类ID
 	 * @param seqorderType排序类型
-	 * @param seqorderValue序号
+	 * @param start序号（即当前页面总记录数）
 	 * @return
 	 */
 	public RtnValueDto getBrandJGoodsListMore(Integer bid, Integer cid, String seqorderType,
-			Integer seqorderValue) {
+			Integer start) {
 		if(CodeValidator.isNetworkError()){
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
-		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, seqorderValue);
+		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, start);
 		return obj;
 	}
 
@@ -195,21 +195,18 @@ public class DataService {
 	/**
 	 * 搜索物品更多
 	 * 
-	 * @param keywords
-	 *            关键词
-	 * @param jGoodsLast
-	 *            最后一个物品
-	 * @param mLocation
-	 *            经纬度
+	 * @param keywords关键词
+	 * @param seqorderType排序方式
+	 * @param start序号（即当前页面总记录数）
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListMore(String keywords, String seqorderType, Integer seqorderValue) {
+	public RtnValueDto getJGoodsSearchListMore(String keywords, String seqorderType, Integer start) {
 		if(CodeValidator.isNetworkError()){
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
-			obj = searchGoods(keywords, seqorderType, seqorderValue);
+			obj = searchGoods(keywords, seqorderType, start);
 		}
 		return obj;
 	}
@@ -328,12 +325,12 @@ public class DataService {
 	 * @param bid
 	 * @param cid
 	 * @param seqorderType
-	 * @param seqorderValue
+	 * @param start序号（即当前页面总记录数）
 	 * @return
 	 */
 
 	public RtnValueDto getBrandGoods(Integer bid, Integer cid, String seqorderType,
-			Integer seqorderValue) {
+			Integer start) {
 		if(CodeValidator.isNetworkError()){
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
@@ -346,8 +343,8 @@ public class DataService {
 			param.put("cid", String.valueOf(cid));
 		if (StrUtils.isNotEmpty(seqorderType))
 			param.put("seqorderType", seqorderType.trim());
-		if (seqorderValue != null) {
-			param.put("seqorderValue", String.valueOf(seqorderValue));
+		if (start != null) {
+			param.put("start", String.valueOf(start));
 			url += this.jGoods_brand_more_url;
 		} else {
 			url += this.jGoods_brand_url;
@@ -381,10 +378,10 @@ public class DataService {
 	 * @param keywords
 	 *            关键词
 	 * @param seqorderType
-	 * @param seqorderValue
+	 * @param start序号（即当前页面总记录数）
 	 * @return
 	 */
-	public RtnValueDto searchGoods(String keywords, String seqorderType, Integer seqorderValue) {
+	public RtnValueDto searchGoods(String keywords, String seqorderType, Integer start) {
 		if(CodeValidator.isNetworkError()){
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
@@ -397,8 +394,8 @@ public class DataService {
 		if (StrUtils.isNotEmpty(seqorderType)) {
 			param.put("seqorderType", seqorderType.trim());
 		}
-		if (seqorderValue != null) {
-			param.put("seqorderValue", String.valueOf(seqorderValue));
+		if (start != null) {
+			param.put("start", String.valueOf(start));
 			url += this.jGoods_search_more_url;
 		} else {
 			url += this.jGoods_search_url;

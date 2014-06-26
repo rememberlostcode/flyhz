@@ -372,17 +372,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 									.getJGoodsSearchListRefresh(keywords, null);
 			mseeageWhat = WHAT_DID_REFRESH;
 		} else if (optNum == 2) {
-			Integer seq = null;
-			Object obj = null;
-			Integer i = mListView.getLastVisiblePosition();
-			if (i >= 0) {
-				obj = mListView.getItemAtPosition(i);
-			}
-			if (obj != null) {
-				seq = ((JGoods) obj).getSeq();
-			}
 			rGoods = MyApplication.getInstance().getDataService()
-									.getJGoodsSearchListMore(keywords, null, seq);
+									.getJGoodsSearchListMore(keywords, null, mStrings.size());
 			mseeageWhat = WHAT_DID_MORE;
 		}
 		if (rGoods == null) {
