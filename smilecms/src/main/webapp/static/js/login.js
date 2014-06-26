@@ -163,12 +163,12 @@ function check() {
     }
 }
 
-function KeyDown(){
-　　if (event.keyCode == 13){
-　　　　event.returnValue=false;
-　　　　event.cancel = true;
-　　　　loginclose();
-　　}
+function KeyDown() {
+	if (event.keyCode == 13) {
+		event.returnValue = false;
+		event.cancel = true;
+		loginclose();
+	}
 }	
 
 function loginclose(){

@@ -253,21 +253,19 @@ function brand(query,response) {
     var param = '';
     var seqorderType = query.seqorderType;
     if(seqorderType!=null && seqorderType!=''){
-        if(seqorderType=='time'){
-            param += "&sort=st+desc";
-        } else if(seqorderType=='discount'){
-            param += "&sort=sd+desc";
+        if(seqorderType=='discount'){
+            param += "&sort=sp+desc";
         } else if(seqorderType=='sales'){
-            param += "&sort=ss+desc";
+            param += "&sort=sn+desc";
         } else if(seqorderType=='monthsales'){
-            param += "&sort=sy+desc";
+            param += "&sort=zsn+desc";
         } else if(seqorderType=='price'){
-            param += "&sort=sj+asc";
+            param += "&sort=pp+asc";
         } else {
-            param += "&sort=ss+desc";
+            param += "&sort=sf+desc";
         }
     } else {
-        param += "&sort=ss+desc";
+        param += "&sort=sf+desc";
     }
 
     var bcparam = '';
@@ -336,20 +334,6 @@ function brand(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
-                        result += ',\"seq\":';
-                        if(seqorderType=='discount'){
-                            result += JSON.stringify(docs[i].sd);
-                        } else if(seqorderType=='time'){
-                            result += JSON.stringify(docs[i].st);
-                        } else if(seqorderType=='sales'){
-                            result += JSON.stringify(docs[i].ss);
-                        } else if(seqorderType=='monthsales'){
-                            result += JSON.stringify(docs[i].sy);
-                        } else if(seqorderType=='price'){
-                            result += JSON.stringify(docs[i].sj);
-                        } else {
-                            result += JSON.stringify(docs[i].ss);
-                        }
                         result += '}';
                     }
 
@@ -382,47 +366,27 @@ function brandmore(query,response) {
     var param = '';
     var seqorderType = query.seqorderType;
     if(seqorderType!=null && seqorderType!=''){
-        if(seqorderType=='time'){
-            param += "&sort=st+desc";
-        } else if(seqorderType=='discount'){
-            param += "&sort=sd+desc";
+        if(seqorderType=='discount'){
+            param += "&sort=sp+desc";
         } else if(seqorderType=='sales'){
-            param += "&sort=ss+desc";
+            param += "&sort=sn+desc";
         } else if(seqorderType=='monthsales'){
-            param += "&sort=sy+desc";
+            param += "&sort=zsn+desc";
         } else if(seqorderType=='price'){
-            param += "&sort=sj+asc";
+            param += "&sort=pp+asc";
         } else {
-            param += "&sort=ss+desc";
+            param += "&sort=sf+desc";
         }
     } else {
-        param += "&sort=ss+desc";
-    }
-
-    var seqorderValue = query.seqorderValue;
-    if(seqorderValue!=null && seqorderValue!=''){
-        if(seqorderType=='time'){
-            param += "&fq=st%3A%5B*+"+(seqorderValue-1)+"%5D";
-        } else if(seqorderType=='discount'){
-            param += "&fq=sd%3A%5B*+"+(seqorderValue-1)+"%5D";
-        } else if(seqorderType=='sales'){
-            param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
-        } else if(seqorderType=='monthsales'){
-            param += "&fq=sy%3A%5B*+"+(seqorderValue-1)+"%5D";
-        } else if(seqorderType=='price'){
-            param += "&fq=sj%3A%5B"+(seqorderValue-(-1))+"+*%5D";
-        } else {
-            param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
-        }
-    } else {
-        //param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
+        param += "&sort=sf+desc";
     }
 
     var bcparam ='';
+
     var bid = query.bid;
     if(bid==null || bid==''){
         response.writeHead(200, headContentObject);
-        response.write('Bid can not empty!');
+        response.write('{"code":"600001"}');
         response.end();
     } else {
         bcparam += 'q=bid%3A'+bid;
@@ -431,6 +395,15 @@ function brandmore(query,response) {
     var cid = query.cid;
     if(cid!=null && cid!=''){
         bcparam += '+cid%3A'+cid;
+    }
+
+    var start = query.start;
+    if(start){
+        bcparam += '&start='+start;
+    } else {
+        response.writeHead(200, headContentObject);
+        response.write('{"code":"600002"}');
+        response.end();
     }
 
     var urlPath = "/solr/smile_product/select?"+bcparam+param;
@@ -479,20 +452,6 @@ function brandmore(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
-                        result += ',\"seq\":';
-                        if(seqorderType=='discount'){
-                            result += JSON.stringify(docs[i].sd);
-                        } else if(seqorderType=='time'){
-                            result += JSON.stringify(docs[i].st);
-                        } else if(seqorderType=='sales'){
-                            result += JSON.stringify(docs[i].ss);
-                        } else if(seqorderType=='monthsales'){
-                            result += JSON.stringify(docs[i].sy);
-                        } else if(seqorderType=='price'){
-                            result += JSON.stringify(docs[i].sj);
-                        } else {
-                            result += JSON.stringify(docs[i].ss);
-                        }
                         result += '}';
                     }
 
@@ -584,7 +543,7 @@ function sort(query,response) {
  * @param response
  */
 function rankingsales(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=ss+desc&rows=100";
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sn+desc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -658,7 +617,7 @@ function rankingsales(query,response) {
  * @param response
  */
 function rankingmonthsales(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sy+desc&rows=100";
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=zsn+desc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -731,7 +690,7 @@ function rankingmonthsales(query,response) {
  * @param response
  */
 function rankingdiscount(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sd+desc&rows=100";
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sp+desc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -803,7 +762,7 @@ function rankingdiscount(query,response) {
  * @param response
  */
 function rankingprice(query,response) {
-    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=sj+asc&rows=100";
+    var urlPath = "/solr/smile_product/select?q=*%3A*&sort=pp+asc&rows=100";
     var options = {
         host: solr_server_host,
         port: solr_server_port,
@@ -880,22 +839,21 @@ function search(query,response) {
     var param = '';
     var seqorderType = query.seqorderType;
     if(seqorderType!=null && seqorderType!=''){
-        if(seqorderType=='time'){
-            param += "&sort=st+desc";
-        } else if(seqorderType=='discount'){
-            param += "&sort=sd+desc";
+        if(seqorderType=='discount'){
+            param += "&sort=sp+desc";
         } else if(seqorderType=='sales'){
-            param += "&sort=ss+desc";
+            param += "&sort=sn+desc";
         } else if(seqorderType=='monthsales'){
-            param += "&sort=sy+desc";
+            param += "&sort=zsn+desc";
         } else if(seqorderType=='price'){
-            param += "&sort=sj+asc";
+            param += "&sort=pp+asc";
         } else {
-            param += "&sort=ss+desc";
+            param += "&sort=sf+desc";
         }
     } else {
-        param += "&sort=ss+desc";
+        param += "&sort=sf+desc";
     }
+
     //param += "&rows=5";
     var keywords = query.keywords;
     if(keywords==null || keywords==''){
@@ -947,20 +905,6 @@ function search(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
-                        result += ',\"seq\":';
-                        if(seqorderType=='discount'){
-                            result += JSON.stringify(docs[i].sd);
-                        } else if(seqorderType=='time'){
-                            result += JSON.stringify(docs[i].st);
-                        } else if(seqorderType=='sales'){
-                            result += JSON.stringify(docs[i].ss);
-                        } else if(seqorderType=='monthsales'){
-                            result += JSON.stringify(docs[i].sy);
-                        } else if(seqorderType=='price'){
-                            result += JSON.stringify(docs[i].sj);
-                        } else {
-                            result += JSON.stringify(docs[i].ss);
-                        }
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += '}';
@@ -995,41 +939,30 @@ function searchmore(query,response) {
     var param = '';
     var seqorderType = query.seqorderType;
     if(seqorderType!=null && seqorderType!=''){
-        if(seqorderType=='time'){
-            param += "&sort=st+desc";
-        } else if(seqorderType=='discount'){
-            param += "&sort=sd+desc";
+        if(seqorderType=='discount'){
+            param += "&sort=sp+desc";
         } else if(seqorderType=='sales'){
-            param += "&sort=ss+desc";
+            param += "&sort=sn+desc";
         } else if(seqorderType=='monthsales'){
-            param += "&sort=sy+desc";
+            param += "&sort=zsn+desc";
         } else if(seqorderType=='price'){
-            param += "&sort=sj+asc";
+            param += "&sort=pp+asc";
         } else {
-            param += "&sort=ss+desc";
+            param += "&sort=sf+desc";
         }
     } else {
-        param += "&sort=ss+desc";
+        param += "&sort=sf+desc";
     }
 
-    var seqorderValue = query.seqorderValue;
-    if(seqorderValue!=null && seqorderValue!=''){
-        if(seqorderType=='time'){
-            param += "&fq=st%3A%5B*+"+(seqorderValue-1)+"%5D";
-        } else if(seqorderType=='discount'){
-            param += "&fq=sd%3A%5B*+"+(seqorderValue-1)+"%5D";
-        } else if(seqorderType=='sales'){
-            param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
-        } else if(seqorderType=='monthsales'){
-            param += "&fq=sy%3A%5B*+"+(seqorderValue-1)+"%5D";
-        } else if(seqorderType=='price'){
-            param += "&fq=sj%3A%5B"+(seqorderValue-(-1))+"+*%5D";
-        } else {
-            param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
-        }
+    var start = query.start;
+    if(start){
+        param += "&start="+start;
     } else {
-        //param += "&fq=ss%3A%5B*+"+(seqorderValue-1)+"%5D";
+        response.writeHead(200, headContentObject);
+        response.write('{"code":"600002"}');
+        response.end();
     }
+
     //param += "&rows=5";
     var keywords = query.keywords;
     if(keywords==null || keywords==''){
@@ -1079,20 +1012,6 @@ function searchmore(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
-                        result += ',\"seq\":';
-                        if(seqorderType=='discount'){
-                            result += JSON.stringify(docs[i].sd);
-                        } else if(seqorderType=='time'){
-                            result += JSON.stringify(docs[i].st);
-                        } else if(seqorderType=='sales'){
-                            result += JSON.stringify(docs[i].ss);
-                        } else if(seqorderType=='monthsales'){
-                            result += JSON.stringify(docs[i].sy);
-                        } else if(seqorderType=='price'){
-                            result += JSON.stringify(docs[i].sj);
-                        } else {
-                            result += JSON.stringify(docs[i].ss);
-                        }
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += '}';
@@ -1176,28 +1095,11 @@ function goodsdetail(query,response) {
                         result += JSON.stringify(docs[i].pp?docs[i].pp:0);
                         result += ',\"lp\":';
                         result += JSON.stringify(docs[i].lp?docs[i].lp:0);
-                        /*result += ',\"sp\":';
-                        result += JSON.stringify(docs[i].sp?docs[i].sp:0);*/
+                        result += ',\"sp\":';
+                        result += JSON.stringify(docs[i].sp?docs[i].sp:0);
                         result += ',\"be\":';
                         result += JSON.stringify(docs[i].ce);
 
-                        /*if(i==0){
-                            result += ',\"c\":"黄色",\"ci\":"/color/00000.jpg"';
-                        } else if(i==1){
-                            result += ',\"c\":"黑色",\"ci\":"/color/00001.jpg"';
-                        } else if(i==2){
-                            result += ',\"c\":"中性粉色",\"ci\":"/color/00002.jpg"';
-                        } else if(i==3){
-                            result += ',\"c\":"大红色",\"ci\":"/color/00003.jpg"';
-                        } else if(i==4){
-                            result += ',\"c\":"黄褐色",\"ci\":"/color/00004.jpg"';
-                        } else if(i==5){
-                            result += ',\"c\":"米白色",\"ci\":"/color/00005.jpg"';
-                        } else if(i==6){
-                            result += ',\"c\":"矢车菊色",\"ci\":"/color/00006.jpg"';
-                        } else if(i==7){
-                            result += ',\"c\":"海军蓝",\"ci\":"/color/00007.jpg"';
-                        }*/
 
                         result += ',\"c\":';
                         result += JSON.stringify(docs[i].c?docs[i].c:null);
