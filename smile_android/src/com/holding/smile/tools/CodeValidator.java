@@ -146,6 +146,14 @@ public class CodeValidator {
 					case 999999:
 						ToastUtils.showShort(context, "连接异常，请稍候重试！");
 						break;
+					case 600001:
+						//nodejs 缺少bid参数导致的
+						ToastUtils.showShort(context, "未获取当前的品牌，请点击后退键，重新打开！");
+						break;
+					case 600002:
+						//nodejs 缺少start参数导致的
+						ToastUtils.showShort(context, "未获取当前的商品数量，请点击后退键，重新打开！");
+						break;
 					default:
 						ToastUtils.showShort(context, "程序异常！");
 						break;

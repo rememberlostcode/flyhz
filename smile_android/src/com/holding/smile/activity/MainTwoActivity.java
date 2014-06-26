@@ -201,19 +201,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	}
 
 	public void onLoadMore() {
-		JGoods jGoodsLast = null;
-		Object obj = null;
-		Integer i = mListView.getLastVisiblePosition();
-		if (i >= 0) {
-			obj = mListView.getItemAtPosition(i);
-		}
-		if (obj != null) {
-			jGoodsLast = (JGoods) obj;
-		}
 		RtnValueDto rGoods = MyApplication.getInstance()
 											.getDataService()
 											.getBrandJGoodsListMore(bid, cid, seqorderType,
-													jGoodsLast.getSeq());
+													mStrings.size());
 		if (CodeValidator.dealCode(context, rGoods)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_MORE);
 			msg.obj = rGoods;
