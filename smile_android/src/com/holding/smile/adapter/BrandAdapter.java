@@ -124,6 +124,7 @@ public class BrandAdapter extends BaseAdapter {
 						Intent intent = new Intent(context, MainTwoActivity.class);
 						intent.putExtra("bid", brand.getId());
 						intent.putExtra("cid", cid);
+						intent.putExtra("bn", brand.getName());
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						Activity activity = (Activity) context;
 						activity.startActivityForResult(intent, BaseActivity.MORE_CODE);

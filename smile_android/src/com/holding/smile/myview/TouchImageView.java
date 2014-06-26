@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.util.FloatMath;
 import android.view.MotionEvent;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 
 import com.holding.smile.activity.MyApplication;
@@ -42,12 +43,24 @@ public class TouchImageView extends ImageView {
 	int							widthScreen		= MyApplication.getInstance().getScreenWidth();
 	int							heightScreen	= MyApplication.getInstance().getScreenHeight();
 
-	Bitmap						gintama;
+	private Bitmap				gintama;
 
 	public TouchImageView(Context context, String imagePath) {
 		super(context);
 		gintama = MyApplication.getImageLoader().getBitmap(imagePath, true);// true是取原图
 		matrix = new Matrix();
+		setLayoutParams(new LayoutParams(widthScreen, LayoutParams.MATCH_PARENT));
+		setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+	}
+
+	@Override
+	public void setLayoutParams(LayoutParams params) {
+		super.setLayoutParams(params);
+	}
+
+	@Override
+	public void setScaleType(ScaleType scaleType) {
+		super.setScaleType(scaleType);
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -88,7 +101,6 @@ public class TouchImageView extends ImageView {
 					matrix1.set(savedMatrix);
 					matrix1.postTranslate(event.getX() - x_down, event.getY() - y_down);// 平移
 					matrixCheck = matrixCheck();
-					matrixCheck = matrixCheck();
 					if (matrixCheck == false) {
 						matrix.set(matrix1);
 						invalidate();
@@ -101,6 +113,10 @@ public class TouchImageView extends ImageView {
 				break;
 		}
 		return true;
+	}
+
+	public void initImageView() {
+		matrix1.postTranslate(0, 0);
 	}
 
 	private boolean matrixCheck() {

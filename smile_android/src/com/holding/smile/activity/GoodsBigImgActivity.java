@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +18,6 @@ import android.widget.LinearLayout;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.BigImgPagerAdapter;
-import com.holding.smile.myview.MyViewPager;
 import com.holding.smile.myview.TouchImageView;
 
 /**
@@ -29,7 +29,7 @@ import com.holding.smile.myview.TouchImageView;
  */
 public class GoodsBigImgActivity extends BaseActivity implements OnClickListener {
 
-	private MyViewPager			mViewPager;
+	private ViewPager			mViewPager;
 	private List<View>			viewList	= new ArrayList<View>();
 	private BigImgPagerAdapter	pagerAdapter;
 	// 装点点的ImageView数组
@@ -58,7 +58,7 @@ public class GoodsBigImgActivity extends BaseActivity implements OnClickListener
 		if (picList != null && !picList.isEmpty()) {
 			setContentLayout(R.layout.big_pic_pager);
 			if (mViewPager == null)
-				mViewPager = (MyViewPager) findViewById(R.id.mypicpager);
+				mViewPager = (ViewPager) findViewById(R.id.mypicpager);
 
 			addViewPager();// 添加页卡
 			if (pagerAdapter == null) {
@@ -131,6 +131,7 @@ public class GoodsBigImgActivity extends BaseActivity implements OnClickListener
 			@Override
 			public void onPageSelected(int arg0) {
 				setImageBackground(arg0 % picList.size());
+				pagerAdapter.notifyDataSetChanged();
 			}
 
 			@Override
