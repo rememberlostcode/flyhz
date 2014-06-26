@@ -6,6 +6,7 @@ import java.util.List;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 
 import com.holding.smile.R;
@@ -20,8 +21,9 @@ import com.holding.smile.cache.ImageLoader;
  * 
  */
 public class MyPagerAdapter extends PagerAdapter {
-	private ImageLoader	mImageLoader	= MyApplication.getImageLoader();
-	private List<View>	mListViews;
+	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
+	private List<View>		mListViews;
+	private LayoutParams	para;
 
 	public MyPagerAdapter(List<View> mListViews) {
 		this.mListViews = mListViews;// 构造方法，参数是我们的页卡，这样比较方便。
@@ -44,6 +46,13 @@ public class MyPagerAdapter extends PagerAdapter {
 			view = mListViews.get(position);
 			ImageView im = (ImageView) view.findViewById(R.id.good_pic);
 			if (im != null) {
+				if (para == null) {
+					para = im.getLayoutParams();
+					para.width = MyApplication.getInstance().getScreenWidth();
+					para.height = para.width;
+				}
+				im.setLayoutParams(para);
+				im.setImageResource(R.drawable.empty_photo);
 				String url = im.getTag().toString();
 				mImageLoader.DisplayImage(url, im, false);
 			}
@@ -54,7 +63,9 @@ public class MyPagerAdapter extends PagerAdapter {
 
 	@Override
 	public int getCount() {
-		return mListViews.size();// 返回页卡的数量
+		if (mListViews != null)
+			return mListViews.size();// 返回页卡的数量
+		return 0;
 	}
 
 	@Override

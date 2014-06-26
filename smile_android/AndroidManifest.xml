@@ -53,6 +53,11 @@
             android:finishOnTaskLaunch="true" >
         </activity>
         <activity
+            android:name="com.holding.smile.activity.GoodsBigImgActivity"
+            android:screenOrientation="portrait"
+            android:finishOnTaskLaunch="true" >
+        </activity>
+        <activity
             android:name="com.holding.smile.activity.OrderInformActivity"
             android:screenOrientation="portrait"
             android:finishOnTaskLaunch="true" >
