@@ -3,6 +3,7 @@ package com.holding.smile.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,6 +14,8 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,6 +47,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 	private ImageView	imageView;
 
 	private int			optNum	= 1;
+	private LayoutParams para;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,11 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					idcardNumber.setText(idcard.getNumber());
 					if (idcard.getUrl() != null && !"".equals(idcard.getUrl())) {
 						imageView.setVisibility(View.VISIBLE);
+						if (para == null) {
+							para = imageView.getLayoutParams();
+							para.height = MyApplication.getInstance().getScreenHeight()/3;
+						}
+						imageView.setLayoutParams(para);
 						MyApplication.getImageLoader().DisplayImage(
 								MyApplication.jgoods_img_url + idcard.getUrl(), imageView, false);
 					}
@@ -128,6 +137,9 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
+				InputMethodManager imm = (InputMethodManager) idcardName.getContext().getSystemService(
+								Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(idcardName.getWindowToken(), 0);
 				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
@@ -200,6 +212,12 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			picturePath = cursor.getString(columnIndex);
 			cursor.close();
+			
+			if (para == null) {
+				para = imageView.getLayoutParams();
+				para.height = MyApplication.getInstance().getScreenHeight()/3;
+			}
+			imageView.setLayoutParams(para);
 			// imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 			imageView.setImageBitmap(BitmapUtils.decodeFile(picturePath, 500, 500));
 			imageView.setVisibility(View.VISIBLE);

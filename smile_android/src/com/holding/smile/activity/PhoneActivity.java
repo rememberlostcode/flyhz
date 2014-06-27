@@ -1,10 +1,12 @@
 
 package com.holding.smile.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,6 +61,10 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
+				InputMethodManager imm = (InputMethodManager) phoneEditText.getContext()
+						.getSystemService(
+								Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(phoneEditText.getWindowToken(), 0);
 				setResult(RESULT_CANCELED, null);
 				finish();
 				break;

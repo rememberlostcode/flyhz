@@ -1,10 +1,12 @@
 
 package com.holding.smile.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,7 +39,7 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 		backBtn.setOnClickListener(this);
 
 		TextView textView = displayHeaderDescription();
-		textView.setText("邮箱设置");
+		textView.setText("邮件地址");
 
 		emailEditText = (EditText) findViewById(R.id.email_address);
 		saveButton = (Button) findViewById(R.id.email_save);
@@ -71,6 +73,10 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
+				InputMethodManager imm = (InputMethodManager) emailEditText.getContext()
+						.getSystemService(
+								Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(emailEditText.getWindowToken(), 0);
 				setResult(RESULT_CANCELED, null);
 				finish();
 				break;

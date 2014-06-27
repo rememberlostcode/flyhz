@@ -10,7 +10,7 @@
         android:id="@+id/mysmile_myorders_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5.0dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -36,7 +36,7 @@
         android:id="@+id/mysmile_mycoupon_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5.0dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -62,7 +62,7 @@
         android:id="@+id/mysmile_setting_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5.0dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -87,7 +87,7 @@
         android:id="@+id/mysmile_clearcache_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5.0dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
