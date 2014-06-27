@@ -95,7 +95,7 @@ public class GoodsBigImgActivity extends BaseActivity implements OnClickListener
 			for (int i = 0; i < size; i++) {
 				// View view = inflater.inflate(R.layout.pager_pic_item, null);
 				String imagePath = MyApplication.jgoods_img_url + picList.get(i);
-				TouchImageView imageView = new TouchImageView(context, imagePath);
+				TouchImageView imageView = new TouchImageView(this, imagePath);
 				// ImageView imageView = (ImageView)
 				// view.findViewById(R.id.good_pic);
 				imageView.setTag(imagePath);
@@ -131,17 +131,14 @@ public class GoodsBigImgActivity extends BaseActivity implements OnClickListener
 			@Override
 			public void onPageSelected(int arg0) {
 				setImageBackground(arg0 % picList.size());
-				pagerAdapter.notifyDataSetChanged();
 			}
 
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
-
 			}
 
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
-
 			}
 
 			/**
@@ -155,10 +152,14 @@ public class GoodsBigImgActivity extends BaseActivity implements OnClickListener
 						tips[i].setBackgroundResource(R.drawable.page_indicator_focused);
 					} else {
 						tips[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+						TouchImageView imageView = (TouchImageView) viewList.get(i);
+						if (imageView != null)
+							imageView.initImageView();
 					}
 				}
 			}
 		});
+
 	}
 
 	@Override

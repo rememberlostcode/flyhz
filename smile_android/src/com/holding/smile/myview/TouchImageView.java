@@ -1,18 +1,20 @@
 
 package com.holding.smile.myview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.FloatMath;
 import android.view.MotionEvent;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 
 import com.holding.smile.activity.MyApplication;
+import com.holding.smile.tools.BitmapUtils;
 
 /**
  * 
@@ -25,6 +27,7 @@ public class TouchImageView extends ImageView {
 
 	float						x_down			= 0;
 	float						y_down			= 0;
+	private Paint				paint			= new Paint();										// 初始化点
 	PointF						start			= new PointF();
 	PointF						mid				= new PointF();
 	float						oldDist			= 1f;
@@ -42,30 +45,32 @@ public class TouchImageView extends ImageView {
 
 	int							widthScreen		= MyApplication.getInstance().getScreenWidth();
 	int							heightScreen	= MyApplication.getInstance().getScreenHeight();
-
+	private String				imagePath;
 	private Bitmap				gintama;
+	private Context				context;
 
 	public TouchImageView(Context context, String imagePath) {
 		super(context);
+		this.context = context;
+		this.imagePath = imagePath;
 		gintama = MyApplication.getImageLoader().getBitmap(imagePath, true);// true是取原图
+		gintama = BitmapUtils.resizeBitmap(gintama, widthScreen, heightScreen);
+		initImageView();
+	}
+
+	/**
+	 * 还原初始化
+	 */
+	public void initImageView() {
 		matrix = new Matrix();
-		setLayoutParams(new LayoutParams(widthScreen, LayoutParams.MATCH_PARENT));
-		setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-	}
-
-	@Override
-	public void setLayoutParams(LayoutParams params) {
-		super.setLayoutParams(params);
-	}
-
-	@Override
-	public void setScaleType(ScaleType scaleType) {
-		super.setScaleType(scaleType);
+		int midX = (widthScreen - gintama.getWidth()) / 2;
+		int midY = (heightScreen - gintama.getWidth()) / 2;
+		matrix.setTranslate(midX, midY);
 	}
 
 	protected void onDraw(Canvas canvas) {
 		canvas.save();
-		canvas.drawBitmap(gintama, matrix, null);
+		canvas.drawBitmap(gintama, matrix, paint);
 		canvas.restore();
 	}
 
@@ -108,15 +113,18 @@ public class TouchImageView extends ImageView {
 				}
 				break;
 			case MotionEvent.ACTION_UP:
+				float x = Math.abs(event.getX() - x_down);
+				float y = Math.abs(event.getY() - y_down);
+				if (x < 3 && y < 3) {
+					Activity act = (Activity) context;
+					act.finish();
+					return false;
+				}
 			case MotionEvent.ACTION_POINTER_UP:
 				mode = NONE;
 				break;
 		}
 		return true;
-	}
-
-	public void initImageView() {
-		matrix1.postTranslate(0, 0);
 	}
 
 	private boolean matrixCheck() {
