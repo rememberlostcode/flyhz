@@ -406,8 +406,8 @@ public class BaseActivity extends Activity {
 							intent.setClass(context, MainSmileActivity.class);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
-							finish();
 							overridePendingTransition(0, 0);
+							finish();
 						}
 					});
 				} else if (o == R.id.mainfooter_two) {// 排行榜

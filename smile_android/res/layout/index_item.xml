@@ -38,6 +38,6 @@
         android:layout_height="wrap_content"
         android:contentDescription="@null"
         android:paddingTop="5dp"
-        android:scaleType="fitXY" />
+        android:scaleType="center" />
 
 </LinearLayout>

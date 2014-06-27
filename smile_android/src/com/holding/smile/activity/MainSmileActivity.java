@@ -21,6 +21,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.BrandAdapter;
@@ -215,13 +216,16 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 						if (StrUtils.isNotEmpty(jAct.getUrl())) {
 							intent.putExtra("url", jAct.getUrl());
 						} else {
-							if (jAct.getId().equals(2)) {
-								intent.putExtra("url", MyApplication.jgoods_img_url
-										+ "/activity/index2.html");
-							} else {
-								intent.putExtra("url", MyApplication.jgoods_img_url
-										+ "/activity/index.html");
-							}
+							Toast.makeText(context, "该活动已结束了！", Toast.LENGTH_SHORT).show();
+							// if (jAct.getId().equals(2)) {
+							// intent.putExtra("url",
+							// MyApplication.jgoods_img_url
+							// + "/activity/index2.html");
+							// } else {
+							// intent.putExtra("url",
+							// MyApplication.jgoods_img_url
+							// + "/activity/index.html");
+							// }
 						}
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						startActivity(intent);
