@@ -26,8 +26,8 @@ import com.holding.smile.service.SubmitService;
  */
 public class MyApplication extends Application {
 
-	private static Date sessionTime;
-	public static final String		LOG_TAG	= "smile";
+	private static Date				sessionTime;
+	public static final String		LOG_TAG			= "smile";
 	private static MyApplication	singleton;
 
 	private static ImageLoader		mImageLoader;
@@ -65,11 +65,11 @@ public class MyApplication extends Application {
 
 	// JSESSIONID=6CCC2F179859F7D98D2F8E35CEBD5CF4
 	private String					sessionId;
-	
+
 	/** 任务线程池 */
 	private static ExecutorService	threadPool;
-	
-	private static boolean isHasNetwork = true;
+
+	private static boolean			isHasNetwork	= true;
 
 	@Override
 	public void onCreate() {

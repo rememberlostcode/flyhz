@@ -391,7 +391,6 @@ public class BaseActivity extends Activity {
 		int id = R.id.mainfooter;
 		LinearLayout view = (LinearLayout) findViewById(id);
 		setVisible(id);
-
 		int count = view.getChildCount();
 		for (int i = 0; i < count; i++) {
 			int o = view.getChildAt(i).getId();

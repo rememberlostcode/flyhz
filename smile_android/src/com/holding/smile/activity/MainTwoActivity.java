@@ -85,7 +85,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	 */
 	private void initView() {
 		setContentLayout(R.layout.activity_main);
-		displayFooterMain(0);
+		displayFooterMain(R.id.mainfooter_one);
 		setSortTypeLayout();// 设置排序标签
 
 		adapter = new MyJGoodsAdapter(context, mStrings);
@@ -189,6 +189,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	}
 
 	public void onRefresh() {
+		mStrings.clear();
+		adapter.notifyDataSetInvalidated();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (CodeValidator.dealCode(context, rGoods)) {
@@ -268,9 +270,9 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 													progressBar.setVisibility(View.GONE);
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
+															mStrings.clear();
 															initView();// 初始化View
 															if (msg.obj != null) {
-																mStrings.clear();
 																RtnValueDto obj = (RtnValueDto) msg.obj;
 																List<JGoods> strings = obj.getData();
 																if (strings != null
@@ -279,15 +281,15 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																		JGoods each = strings.get(i);
 																		mStrings.add(each);
 																	}
-																	adapter.notifyDataSetChanged();
 																}
 															}
+															adapter.notifyDataSetChanged();
 															mPullToRefreshView.onHeaderRefreshComplete();
 															break;
 														}
 														case WHAT_DID_REFRESH: {
+															mStrings.clear();
 															if (msg.obj != null) {
-																mStrings.clear();
 																RtnValueDto obj = (RtnValueDto) msg.obj;
 																if (obj.getValidate() != null) {
 																	String option = obj.getValidate()
@@ -317,8 +319,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																		}
 																	}
 																}
-																adapter.notifyDataSetChanged();
 															}
+															adapter.notifyDataSetChanged();
 															mPullToRefreshView.onHeaderRefreshComplete();
 															break;
 														}
@@ -348,8 +350,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																		JGoods each = strings.get(i);
 																		mStrings.add(each);
 																	}
-																	adapter.notifyDataSetChanged();
 																}
+																adapter.notifyDataSetChanged();
 															}
 															mPullToRefreshView.onFooterRefreshComplete();
 															break;
