@@ -498,7 +498,7 @@ public class UserServiceImpl implements UserService {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void findPwd(String username) throws ValidateException {
+	public String findPwd(String username) throws ValidateException {
 		UserModel userModel = null;
 		// 用户ID不能为空
 		if (StringUtils.isBlank(username)) {
@@ -529,5 +529,23 @@ public class UserServiceImpl implements UserService {
 		modelMap.put("password", password);
 		mailRepository.sendWithTemplate(email, "找回密码成功", "velocity/mailvm/find_password.vm",
 				modelMap);
+		// 邮箱替换
+		return replaceEmail(email);
+	}
+
+	// 邮箱@前面超过3位替换为*g
+	private String replaceEmail(String email) {
+		if (StringUtils.isNotBlank(email) && RegexUtils.checkEmail(email)) {
+			String userName = email.substring(0, email.indexOf("@"));
+			if (userName.length() < 4) {
+				return email;
+			}
+			StringBuilder sb = new StringBuilder(userName);
+			for (int i = 3; i < userName.length(); i++) {
+				sb.setCharAt(i, '*');
+			}
+			return sb.append(email.substring(email.indexOf("@"))).toString();
+		}
+		return null;
 	}
 }

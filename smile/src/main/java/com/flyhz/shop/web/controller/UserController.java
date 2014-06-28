@@ -396,7 +396,7 @@ public class UserController {
 	public void findPwd(String username, Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			userService.findPwd(username);
+			protocol.setData(userService.findPwd(username));
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());

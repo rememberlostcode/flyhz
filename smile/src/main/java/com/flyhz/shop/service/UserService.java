@@ -158,7 +158,7 @@ public interface UserService {
 	 * 
 	 * @param username
 	 * @throws ValidateException
-	 * @return
+	 * @return String
 	 */
-	public void findPwd(String username) throws ValidateException;
+	public String findPwd(String username) throws ValidateException;
 }
