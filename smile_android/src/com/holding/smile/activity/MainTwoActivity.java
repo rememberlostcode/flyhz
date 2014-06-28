@@ -179,6 +179,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 	@Override
 	public synchronized void loadData() {
+		mStrings.clear();
+		adapter.notifyDataSetChanged();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (CodeValidator.dealCode(context, rGoods)) {
@@ -190,7 +192,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 	public void onRefresh() {
 		mStrings.clear();
-		adapter.notifyDataSetInvalidated();
+		adapter.notifyDataSetChanged();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (CodeValidator.dealCode(context, rGoods)) {
