@@ -207,7 +207,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setContentDescription(jAct.getId() + "");
 				imageView.setTag(MyApplication.jgoods_img_url + jAct.getP());
-				imageView.setContentDescription(jAct.getUrl());
+				imageView.setContentDescription(MyApplication.jgoods_img_url + jAct.getUrl());
 				imageView.setOnClickListener(new View.OnClickListener() {
 
 					@Override
