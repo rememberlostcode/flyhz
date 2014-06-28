@@ -180,7 +180,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	@Override
 	public synchronized void loadData() {
 		mStrings.clear();
-		adapter.notifyDataSetChanged();
+		if (adapter != null) {
+			adapter.notifyDataSetInvalidated();
+			adapter.notifyDataSetChanged();
+		}
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (CodeValidator.dealCode(context, rGoods)) {
@@ -192,7 +195,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 	public void onRefresh() {
 		mStrings.clear();
-		adapter.notifyDataSetChanged();
+		if (adapter != null) {
+			adapter.notifyDataSetInvalidated();
+			adapter.notifyDataSetChanged();
+		}
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (CodeValidator.dealCode(context, rGoods)) {
@@ -223,16 +229,19 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		sorttypeList = null;
 		mStrings.clear();
 		mStrings = null;
-		mPullToRefreshView.destroyDrawingCache();
-		mPullToRefreshView = null;
-		mListView.destroyDrawingCache();
-		mListView = null;
+		if (mPullToRefreshView != null) {
+			mPullToRefreshView.destroyDrawingCache();
+			mPullToRefreshView = null;
+		}
+		if (mListView != null) {
+			mListView.destroyDrawingCache();
+			mListView = null;
+		}
 		if (adapter != null) {
 			adapter.notifyDataSetChanged();
 			adapter.notifyDataSetInvalidated();
 			adapter = null;
 		}
-		setResult(MORE_CODE, null);
 	};
 
 	OnScrollListener		mScrollListener	= new OnScrollListener() {

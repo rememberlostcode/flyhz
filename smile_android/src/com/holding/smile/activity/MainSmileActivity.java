@@ -207,14 +207,17 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setContentDescription(jAct.getId() + "");
 				imageView.setTag(MyApplication.jgoods_img_url + jAct.getP());
+				imageView.setContentDescription(jAct.getUrl());
 				imageView.setOnClickListener(new View.OnClickListener() {
 
 					@Override
-					public void onClick(View arg0) {
-
-						Intent intent = new Intent(context, HtmlUIActivity.class);
-						if (StrUtils.isNotEmpty(jAct.getUrl())) {
-							intent.putExtra("url", jAct.getUrl());
+					public void onClick(View v) {
+						String url = v.getContentDescription().toString();
+						if (StrUtils.isNotEmpty(url)) {
+							Intent intent = new Intent(context, HtmlUIActivity.class);
+							intent.putExtra("url", url);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							startActivity(intent);
 						} else {
 							Toast.makeText(context, "该活动已结束了！", Toast.LENGTH_SHORT).show();
 							// if (jAct.getId().equals(2)) {
@@ -227,9 +230,6 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 							// + "/activity/index.html");
 							// }
 						}
-						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-						startActivity(intent);
-
 					}
 				});
 				viewList.add(view);
@@ -315,7 +315,6 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 																		int jSize = jActList.size();
 																		for (int i = 0; i < jSize; i++) {
 																			JActivity each = jActList.get(i);
-																			each.setUrl("");
 																			recActList.add(each);
 																		}
 

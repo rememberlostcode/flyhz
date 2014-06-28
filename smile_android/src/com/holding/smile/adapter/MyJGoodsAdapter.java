@@ -40,12 +40,16 @@ public class MyJGoodsAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return jGoodsList.size();
+		if (jGoodsList != null)
+			return jGoodsList.size();
+		return 0;
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return jGoodsList.get(position);
+		if (jGoodsList != null && !jGoodsList.isEmpty())
+			return jGoodsList.get(position);
+		return null;
 	}
 
 	@Override

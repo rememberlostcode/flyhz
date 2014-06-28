@@ -122,8 +122,6 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public synchronized void loadData() {
-		mStrings.clear();
-		adapter.notifyDataSetInvalidated();
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getJGoodsSortList(sortUrl);
 
@@ -158,8 +156,10 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 		jSortList = null;
 		mStrings.clear();
 		mStrings = null;
-		mListView.destroyDrawingCache();
-		mListView = null;
+		if (mListView != null) {
+			mListView.destroyDrawingCache();
+			mListView = null;
+		}
 		if (adapter != null) {
 			adapter.notifyDataSetChanged();
 			adapter.notifyDataSetInvalidated();
