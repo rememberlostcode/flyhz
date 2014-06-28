@@ -85,14 +85,13 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		CartitemModel cartitemModel = new CartitemModel();
 		cartitemModel.setUserId(userId);
 		List<CartitemModel> cartItems = cartItemDao.getCartItemList(cartitemModel);
+		List<CartItemDto> cartItemDtos = new ArrayList<CartItemDto>();
 		if (cartItems != null && !cartItems.isEmpty()) {
-			List<CartItemDto> cartItemDtos = new ArrayList<CartItemDto>();
 			for (CartitemModel cartitemModelIte : cartItems) {
 				cartItemDtos.add(getCartItemDto(cartitemModelIte));
 			}
-			return cartItemDtos;
 		}
-		return null;
+		return cartItemDtos;
 	}
 
 	/**

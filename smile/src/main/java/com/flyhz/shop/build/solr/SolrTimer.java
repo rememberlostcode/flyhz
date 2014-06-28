@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
-
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -33,7 +31,6 @@ public class SolrTimer extends QuartzJobBean {
 	private SalesvolumeDao	salesvolumeDao;
 	private OrderDao		orderDao;
 	private TaobaoData		taobaoData;
-	@Resource
 	private BuildService	buildService;
 
 	@Override
