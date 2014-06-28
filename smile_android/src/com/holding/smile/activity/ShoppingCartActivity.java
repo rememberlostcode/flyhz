@@ -28,7 +28,6 @@ import com.holding.smile.entity.CartItem;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
-import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
 
 /**
@@ -247,16 +246,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 															RtnValueDto obj = (RtnValueDto) msg.obj;
 															if(CodeValidator.dealCode(context, obj)){
 																List<CartItem> cartItems = obj.getCartListData();
-																if (cartItems == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		ToastUtils.showShort(context, obj.getValidate()
-																					.getMessage());
-																	} else {
-																		ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
-																	}
-																} else {
 																	if (cartItems != null
 																			&& !cartItems.isEmpty()) {
 																		for (CartItem cart : cartItems) {
@@ -264,8 +253,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																				cartItemList.add(cart);
 																			}
 																		}
+																	} else {
+																		ToastUtils.showShort(context, "暂无数据！");
 																	}
-																}
 															}
 														}
 
@@ -276,26 +266,11 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
 															if (obj != null) {
-																CartItem itemData = obj.getCartData();
-																if (itemData == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		Toast.makeText(
-																				context,
-																				obj.getValidate()
-																					.getMessage(),
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	} else {
-																		Toast.makeText(
-																				context,
-																				Constants.MESSAGE_NET,
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	}
-																} else {
-																	if (cartItemList != null
+																if (CodeValidator.dealCode(context,
+																		obj)) {
+																	CartItem itemData = obj.getCartData();
+																	if (itemData != null
+																			&& cartItemList != null
 																			&& !cartItemList.isEmpty()) {
 																		for (CartItem item : cartItemList) {
 																			if (item.getId()
@@ -309,10 +284,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																	}
 																}
 															}
-														} else {
-															Toast.makeText(context,
-																	Constants.MESSAGE_NET,
-																	Toast.LENGTH_SHORT).show();
 														}
 														break;
 													}
