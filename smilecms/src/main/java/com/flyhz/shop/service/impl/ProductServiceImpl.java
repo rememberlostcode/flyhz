@@ -40,9 +40,10 @@ public class ProductServiceImpl implements ProductService {
 	private SolrData			solrData;
 
 	private String				pathFileUpload;
-	private static final String	OPERATE_ADD		= "add";
-	private static final String	OPERATE_EDIT	= "edit";
-	private static final String	OPERATE_DELETE	= "delete";
+	private static final String	OPERATE_ADD			= "add";
+	private static final String	OPERATE_EDIT		= "edit";
+	private static final String	OPERATE_DELETE		= "delete";
+	private static final String	COVER_SMALL_IS_DEL	= "1";
 
 	public String getPathFileUpload() {
 		return pathFileUpload;
@@ -388,7 +389,7 @@ public class ProductServiceImpl implements ProductService {
 			List<String> bigImgUrls = new ArrayList<String>();
 			List<String> litImgUrls = new ArrayList<String>();
 			try {
-				// int count = 0;
+				int count = 0;
 				for (MultipartFile multipartFile : files) {
 					String origName = multipartFile.getOriginalFilename();
 					if (StringUtils.isNotBlank(origName)) {
@@ -404,22 +405,30 @@ public class ProductServiceImpl implements ProductService {
 							bigImgUrls.add(File.separatorChar + bigPath);
 						}
 						// 处理物品小图
-						String litPath = ImageUtil.createSquareImage(pathFileUpload
-								+ File.separatorChar + bigPath, 300, "lit");
-						if (StringUtils.isNotBlank(litPath)) {
+						if (count == 0) {
+							String litPath = disposeLitImgs(productModel.getBrandId(),
+									pathFileUpload + File.separatorChar + bigPath);
+							List<String> coverSmall = new ArrayList<String>();
+							if (StringUtils.isNotBlank(litPath)) {
+								coverSmall.add(litPath);
+							}
+							productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
+						}
+						// 缩放图片
+						String scalePath = ImageUtil.zoomInScale(pathFileUpload
+								+ File.separatorChar + bigPath, 500, "scale");
+						if (StringUtils.isNotBlank(scalePath)) {
 							litImgUrls.add(File.separatorChar + brandName + File.separatorChar
-									+ litPath.replace("_lit", ""));
+									+ scalePath);
 						}
 					}
+					count++;
 				}
 				if (bigImgUrls != null && !bigImgUrls.isEmpty()) {
 					productModel.setImgs(JSONUtil.getEntity2Json(bigImgUrls));
 				}
 				if (litImgUrls != null && !litImgUrls.isEmpty()) {
 					productModel.setCover(JSONUtil.getEntity2Json(litImgUrls));
-					List<String> coverSmall = new ArrayList<String>();
-					coverSmall.add(litImgUrls.get(0).replace("_cut", "_cut_lit"));
-					productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -436,7 +445,7 @@ public class ProductServiceImpl implements ProductService {
 					: productParamDto.getProductImgs();
 			try {
 				if (files != null && !files.isEmpty()) {
-					// int count = 0;
+					int count = 0;
 					for (MultipartFile multipartFile : files) {
 						String origName = multipartFile.getOriginalFilename();
 						if (StringUtils.isNotBlank(origName)) {
@@ -452,19 +461,30 @@ public class ProductServiceImpl implements ProductService {
 								bigImgUrls.add(File.separatorChar + bigPath);
 							}
 							// 处理物品小图
-							String litPath = null;
-							if(productModel.getBrandId().equals(9)){
-								litPath = ImageUtil.createSquareImage(pathFileUpload
-										+ File.separatorChar + bigPath, 300, "lit",ImageUtil.TYPE_BOTTOM);
-							} else {
-								litPath = ImageUtil.createSquareImage(pathFileUpload
-										+ File.separatorChar + bigPath, 300, "lit");
+							if (count == 0
+									&& COVER_SMALL_IS_DEL.equals(productParamDto.getCoverSmallDel())) {
+								String filePath = null;
+								if (bigImgUrls != null && !bigImgUrls.isEmpty()) {
+									filePath = pathFileUpload + bigImgUrls.get(0);
+								} else {
+									filePath = pathFileUpload + File.separatorChar + bigPath;
+								}
+								String litPath = disposeLitImgs(productModel.getBrandId(), filePath);
+								List<String> coverSmall = new ArrayList<String>();
+								if (StringUtils.isNotBlank(litPath)) {
+									coverSmall.add(litPath);
+								}
+								productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 							}
-							if (StringUtils.isNotBlank(litPath)) {
+							// 缩放图片
+							String scalePath = ImageUtil.zoomInScale(pathFileUpload
+									+ File.separatorChar + bigPath, 500, "scale");
+							if (StringUtils.isNotBlank(scalePath)) {
 								litImgUrls.add(File.separatorChar + brandName + File.separatorChar
-										+ litPath.replace("_lit", ""));
+										+ scalePath);
 							}
 						}
+						count++;
 					}
 				}
 				if (bigImgUrls != null && !bigImgUrls.isEmpty()) {
@@ -472,13 +492,29 @@ public class ProductServiceImpl implements ProductService {
 				}
 				if (litImgUrls != null && !litImgUrls.isEmpty()) {
 					productModel.setCover(JSONUtil.getEntity2Json(litImgUrls));
-					List<String> coverSmall = new ArrayList<String>();
-					coverSmall.add(litImgUrls.get(0).replace("_cut", "_cut_lit"));
-					productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	// 处理产品封面图片截图
+	private String disposeLitImgs(Integer brandId, String filePath) {
+		if (StringUtils.isNotBlank(filePath)) {
+			String litPath = null;
+			try {
+				if (brandId != null && brandId.equals(9)) {
+					litPath = ImageUtil.createSquareImage(filePath, 300, "lit",
+							ImageUtil.TYPE_BOTTOM);
+				} else {
+					litPath = ImageUtil.createSquareImage(filePath, 300, "lit");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return litPath;
+		}
+		return null;
 	}
 }
