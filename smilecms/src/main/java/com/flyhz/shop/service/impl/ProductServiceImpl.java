@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -114,7 +115,12 @@ public class ProductServiceImpl implements ProductService {
 		productModel.setForeighprice(productParamDto.getForeighprice());
 		productModel.setRecommendprice(productParamDto.getRecommendprice());
 		// productModel.setLocalprice(productParamDto.getForeighprice());
-		productModel.setPurchasingprice(productParamDto.getRecommendprice());
+		if (productParamDto.getForeighprice() != null) {
+			productModel.setPurchasingprice(productParamDto.getForeighprice().multiply(
+					new BigDecimal(9)));
+		} else {
+			productModel.setPurchasingprice(productParamDto.getRecommendprice());
+		}
 		int maxStyle = productDao.getMaxStyle();
 		productModel.setStyle(String.valueOf(maxStyle + 1));
 		// 获得品牌名称
@@ -251,7 +257,12 @@ public class ProductServiceImpl implements ProductService {
 		// productModel.setLocalprice(productParamDto.getForeighprice());
 		productModel.setForeighprice(productParamDto.getForeighprice());
 		productModel.setRecommendprice(productParamDto.getRecommendprice());
-		productModel.setPurchasingprice(productParamDto.getRecommendprice());
+		if (productParamDto.getForeighprice() != null) {
+			productModel.setPurchasingprice(productParamDto.getForeighprice().multiply(
+					new BigDecimal(9)));
+		} else {
+			productModel.setPurchasingprice(productParamDto.getRecommendprice());
+		}
 		// 获得品牌名称
 		String brandName = null;
 		if (productParamDto.getBrandId() != null) {
