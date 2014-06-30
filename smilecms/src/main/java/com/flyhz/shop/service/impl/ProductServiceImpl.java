@@ -434,6 +434,7 @@ public class ProductServiceImpl implements ProductService {
 			List<String> litImgUrls = new ArrayList<String>();
 			try {
 				int count = 0;
+				String prefix = File.separatorChar + brandName + File.separatorChar;
 				for (MultipartFile multipartFile : files) {
 					String origName = multipartFile.getOriginalFilename();
 					if (StringUtils.isNotBlank(origName)) {
@@ -454,7 +455,7 @@ public class ProductServiceImpl implements ProductService {
 									pathFileUpload + File.separatorChar + bigPath);
 							List<String> coverSmall = new ArrayList<String>();
 							if (StringUtils.isNotBlank(litPath)) {
-								coverSmall.add(litPath);
+								coverSmall.add(prefix + litPath);
 							}
 							productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 						}
@@ -462,8 +463,7 @@ public class ProductServiceImpl implements ProductService {
 						String scalePath = ImageUtil.zoomInScale(pathFileUpload
 								+ File.separatorChar + bigPath, 500, "scale");
 						if (StringUtils.isNotBlank(scalePath)) {
-							litImgUrls.add(File.separatorChar + brandName + File.separatorChar
-									+ scalePath);
+							litImgUrls.add(prefix + scalePath);
 						}
 						count++;
 					}
@@ -488,6 +488,7 @@ public class ProductServiceImpl implements ProductService {
 			List<String> litImgUrls = productParamDto.getProductImgs() == null ? new ArrayList<String>()
 					: productParamDto.getProductImgs();
 			try {
+				String prefix = File.separatorChar + brandName + File.separatorChar;
 				if (files != null && !files.isEmpty()) {
 					int count = 0;
 					for (MultipartFile multipartFile : files) {
@@ -516,7 +517,7 @@ public class ProductServiceImpl implements ProductService {
 								String litPath = disposeLitImgs(productModel.getBrandId(), filePath);
 								List<String> coverSmall = new ArrayList<String>();
 								if (StringUtils.isNotBlank(litPath)) {
-									coverSmall.add(litPath);
+									coverSmall.add(prefix + litPath);
 								}
 								productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 							}
@@ -524,8 +525,7 @@ public class ProductServiceImpl implements ProductService {
 							String scalePath = ImageUtil.zoomInScale(pathFileUpload
 									+ File.separatorChar + bigPath, 500, "scale");
 							if (StringUtils.isNotBlank(scalePath)) {
-								litImgUrls.add(File.separatorChar + brandName + File.separatorChar
-										+ scalePath);
+								litImgUrls.add(prefix + scalePath);
 							}
 							count++;
 						}
@@ -569,6 +569,7 @@ public class ProductServiceImpl implements ProductService {
 			List<String> productSrcImgs = JSONUtil.getJson2EntityList(productModel.getImgs(),
 					ArrayList.class, String.class);
 			try {
+				String prefix = File.separatorChar + brandName + File.separatorChar;
 				if (productSrcImgs != null && !productSrcImgs.isEmpty()) {
 					List<String> bigImgUrls = new ArrayList<String>();
 					List<String> litImgUrls = new ArrayList<String>();
@@ -599,7 +600,7 @@ public class ProductServiceImpl implements ProductService {
 											pathFileUpload + File.separatorChar + bigPath);
 									List<String> coverSmall = new ArrayList<String>();
 									if (StringUtils.isNotBlank(litPath)) {
-										coverSmall.add(litPath);
+										coverSmall.add(prefix + litPath);
 									}
 									productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 								}
@@ -607,8 +608,7 @@ public class ProductServiceImpl implements ProductService {
 								String scalePath = ImageUtil.zoomInScale(pathFileUpload
 										+ File.separatorChar + bigPath, 500, "scale");
 								if (StringUtils.isNotBlank(scalePath)) {
-									litImgUrls.add(File.separatorChar + brandName
-											+ File.separatorChar + scalePath);
+									litImgUrls.add(prefix + scalePath);
 								}
 								count++;
 
