@@ -110,4 +110,12 @@ public interface ProductDao extends GenericDao<ProductModel> {
 	 * @return int
 	 */
 	public int addProductLog(ProductLogModel productLogModel);
+
+	/**
+	 * 查询起始ID到结束ID之间的产品
+	 * 
+	 * @param productPageDto
+	 * @return list
+	 */
+	public List<ProductModel> getProductsByStartAndEnd(ProductPageDto productPageDto);
 }

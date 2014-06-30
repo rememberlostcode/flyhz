@@ -4,6 +4,7 @@
 		<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.oldColorimg"/>
 		<input type="hidden" id="oldImgs" name="oldImgs" value="$!product.oldImgs"/>
 		<input type="hidden" id="coverSmallDel" name="coverSmallDel" value="$!product.coverSmallDel"/>
+		<input type="hidden" id="dataSrc" name="dataSrc" value="$!product.dataSrc"/>
 		<!--<input type="hidden" name="creator" value= "$!u"/>-->
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>

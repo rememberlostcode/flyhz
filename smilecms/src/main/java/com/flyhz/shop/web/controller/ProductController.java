@@ -152,4 +152,10 @@ public class ProductController {
 		}
 		return UrlBasedViewResolver.REDIRECT_URL_PREFIX + "/product/list";
 	}
+
+	@RequestMapping(value = "/reDisposeImgs", method = RequestMethod.GET)
+	public String disposeImgs(@Identify Integer userId, Integer start, Integer end, Model model) {
+		productService.refreshProductImgs(userId, start, end);
+		return UrlBasedViewResolver.REDIRECT_URL_PREFIX + "/product/list";
+	}
 }

@@ -91,4 +91,14 @@ public interface ProductService {
 	 * @return list
 	 */
 	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager);
+
+	/**
+	 * 重新处理和缩放图片
+	 * 
+	 * @param userId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public void refreshProductImgs(Integer userId, Integer start, Integer end);
 }

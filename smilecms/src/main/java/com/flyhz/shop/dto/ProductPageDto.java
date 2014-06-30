@@ -12,7 +12,8 @@ public class ProductPageDto {
 	private Integer	categoryId; // 分类ID
 	private String	name;		// 产品名称
 	private Integer	start;		// 分页开始位置
-	private Integer	pagesize;	// 分页结束位置
+	private Integer	end;		// 分页结束位置
+	private Integer	pagesize;	// 每页产品数量
 
 	public Integer getBrandId() {
 		return brandId;
@@ -52,6 +53,14 @@ public class ProductPageDto {
 
 	public void setStart(Integer start) {
 		this.start = start;
+	}
+
+	public Integer getEnd() {
+		return end;
+	}
+
+	public void setEnd(Integer end) {
+		this.end = end;
 	}
 
 	public Integer getPagesize() {
