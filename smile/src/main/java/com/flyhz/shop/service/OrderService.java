@@ -7,6 +7,7 @@ import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.OrderPayDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
+import com.flyhz.shop.persistence.entity.OrderModel;
 
 public interface OrderService {
 
@@ -63,20 +64,35 @@ public interface OrderService {
 	public void closeOrder(Integer userId, Integer id) throws ValidateException;
 
 	public OrderPayDto getOrderPay(OrderPayDto orderPayDto);
-	
+
 	/**
 	 * 通过订单号获取订单
+	 * 
 	 * @param number
 	 * @return
 	 */
 	public OrderSimpleDto getOrderDtoByNumber(String number);
-	
+
+	/**
+	 * 订单支付成功后发送邮件
+	 * 
+	 * @param number
+	 */
+	public void sendPaySuccess(String number);
+
 	/**
 	 * 通过淘宝订单号获取付款状态
+	 * 
 	 * @param orderId
 	 * @param tid
 	 * @return
 	 */
-	public String getOrderPayStatusByTid(Integer orderId,Long tid);
+	public String getOrderPayStatusByTid(Integer orderId, Long tid);
+	
+	/**
+	 * 通过订单编号修改状态
+	 * @param orderModel
+	 */
+	public void updateStatusByNumber(OrderModel orderModel);
 
 }

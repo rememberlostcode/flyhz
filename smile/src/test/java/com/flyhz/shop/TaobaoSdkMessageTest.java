@@ -1,5 +1,5 @@
 
-package com.flyhz.framework.util;
+package com.flyhz.shop;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -11,8 +11,8 @@ import com.taobao.api.internal.tmc.MessageStatus;
 import com.taobao.api.internal.tmc.TmcClient;
 import com.taobao.top.link.LinkException;
 
-public class TaobaoSdkMessage {
-	private static Logger	log			= LoggerFactory.getLogger(TaobaoSdkMessage.class);
+public class TaobaoSdkMessageTest {
+	private static Logger	log			= LoggerFactory.getLogger(TaobaoSdkMessageTest.class);
 	/**
 	 * 是否在运行中
 	 */
@@ -52,7 +52,7 @@ public class TaobaoSdkMessage {
 				client.connect();
 				isRunning = true;
 			} catch (LinkException e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 	}

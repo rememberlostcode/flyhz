@@ -4,14 +4,14 @@
 	<select id="getLogisticsByOrderNumber" parameterType="String"
 		resultType="LogisticsModel">
 		select id,company_name companyName,gmt_modify
-		gmtModify,content,logistics_status logisticsStatus,tid
+		gmtModify,content,logistics_status logisticsStatus,tid,address 
 		from logistics
 		where number = #{number}
 	</select>
 
 	<insert id="insertLogistics" parameterType="LogisticsDto">
-		insert into logistics (number,company_name,content,logistics_status,tid,gmt_create,gmt_modify)
-		values (#{number},#{companyName},#{content},#{logisticsStatus},#{tid},#{gmtCreate},#{gmtModify})
+		insert into logistics (number,company_name,content,logistics_status,tid,gmt_create,gmt_modify,address)
+		values (#{number},#{companyName},#{content},#{logisticsStatus},#{tid},#{gmtCreate},#{gmtModify},#{address})
 	</insert>
 
 	<update id="updateLogistics" parameterType="LogisticsDto">
@@ -27,6 +27,9 @@
 		</if>
 		<if test="tid != null">
 			, tid = #{tid}
+		</if>
+		<if test="address != null and address!=''">
+			, address = #{address}
 		</if>
 		where number = #{number}
 	</update>

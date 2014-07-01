@@ -21,6 +21,11 @@ import org.slf4j.LoggerFactory;
 import com.flyhz.shop.persistence.TaobaoDataImpl;
 import com.taobao.api.internal.util.WebUtils;
 
+/**
+ * 淘宝session key获取工具
+ * @author zhangb
+ *
+ */
 public class TaobaoTokenUtil {
 	private static Logger					log							= LoggerFactory.getLogger(TaobaoTokenUtil.class);
 
@@ -88,7 +93,7 @@ public class TaobaoTokenUtil {
 		/* 定时任务，每隔一段时间获取授权码 */
 		Timer timer = new Timer();
 		long delay = 60 * 1000;// 在豪秒后执行此任务
-		long period = 12 * 60 * 60 * 1000;// 每次间隔豪秒
+		long period = 60 * 60 * 1000;// 每次间隔豪秒
 		timer.schedule(new MyTask(), delay, period);
 	}
 
@@ -112,7 +117,7 @@ public class TaobaoTokenUtil {
 				long intervalTime = nowTime - lastTime;
 				long expiresTime = Long.parseLong(expiresIn);
 				if (expiresTime > intervalTime) {
-					log.info("accessToken还没有失效!");
+					log.info("accessToken还没有失效，不需要刷新token!");
 					return accessToken;
 				}
 			} catch (NumberFormatException e) {
@@ -204,6 +209,11 @@ public class TaobaoTokenUtil {
 		}
 	}
 
+	/**
+	 * 把map中的淘宝信息写入文件
+	 * @param map
+	 * @return
+	 */
 	public static boolean writeFile(HashMap<String, String> map) {
 		boolean result = false;
 		FileWriter fw = null;

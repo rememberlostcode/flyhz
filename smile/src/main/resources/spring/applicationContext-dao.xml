@@ -5,7 +5,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/context  
 http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-	<!-- this is the dao object -->
+
 	<bean id="cartItemDao" name="cartItemDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.CartItemDao"></property>
 	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
