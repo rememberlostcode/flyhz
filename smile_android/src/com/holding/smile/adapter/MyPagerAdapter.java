@@ -36,7 +36,9 @@ public class MyPagerAdapter extends PagerAdapter {
 
 	@Override
 	public void destroyItem(ViewGroup container, int position, Object object) {
-		container.removeView(mListViews.get(position));// 删除页卡
+		if (getCount() > 0) {
+			container.removeView(mListViews.get(position));// 删除页卡
+		}
 	}
 
 	@Override
@@ -44,6 +46,7 @@ public class MyPagerAdapter extends PagerAdapter {
 		View view = null;
 		if (mListViews != null && !mListViews.isEmpty()) {
 			view = mListViews.get(position);
+			String key = "imRecord" + position;
 			ImageView im = (ImageView) view.findViewById(R.id.good_pic);
 			if (im != null) {
 				if (para == null) {
