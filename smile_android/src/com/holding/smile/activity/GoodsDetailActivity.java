@@ -177,6 +177,15 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				mViewPager.setAdapter(pagerAdapter);
 			} else {
 				pagerAdapter.setListViews(viewList);
+				int size = picList.size();
+				for (int i = 0; i < size; i++) {
+					View view = mViewPager.findViewWithTag("imRecord" + i);
+					if (view != null) {
+						pagerAdapter.disposeItem(view,
+								MyApplication.jgoods_img_url + picList.get(i));
+					}
+				}
+
 			}
 			mViewPager.setCurrentItem(0); // 设置默认当前页
 		}
@@ -191,13 +200,13 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 		// 处理同款颜色
 		for (JGoods g : details) {
+			JColor jcolor = new JColor();
+			jcolor.setId(g.getId());
 			if (g.getC() != null) {
-				JColor jcolor = new JColor();
-				jcolor.setId(g.getId());
 				jcolor.setC(g.getC());
 				jcolor.setCi(g.getCi());
-				colorList.add(jcolor);
 			}
+			colorList.add(jcolor);
 		}
 
 		final MyLinearLayout colorLayout = (MyLinearLayout) findViewById(R.id.color_list);

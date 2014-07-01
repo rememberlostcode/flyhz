@@ -136,12 +136,6 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		startTask();
-	}
-
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (returnDesktop(keyCode, event)) {
 			return true;

@@ -47,6 +47,7 @@ public class MyPagerAdapter extends PagerAdapter {
 		if (mListViews != null && !mListViews.isEmpty()) {
 			view = mListViews.get(position);
 			String key = "imRecord" + position;
+			view.setTag(key);
 			ImageView im = (ImageView) view.findViewById(R.id.good_pic);
 			if (im != null) {
 				if (para == null) {
@@ -64,6 +65,21 @@ public class MyPagerAdapter extends PagerAdapter {
 		return view;
 	}
 
+	/**
+	 * 处理页卡Item
+	 * 
+	 * @param view
+	 */
+	public void disposeItem(View view, String imgPath) {
+		ImageView im = (ImageView) view.findViewById(R.id.good_pic);
+		if (im != null) {
+			im.setTag(imgPath);
+			im.setImageResource(R.drawable.empty_photo);
+			String url = im.getTag().toString();
+			mImageLoader.DisplayImage(url, im, false);
+		}
+	}
+
 	@Override
 	public int getCount() {
 		if (mListViews != null)
@@ -74,6 +90,12 @@ public class MyPagerAdapter extends PagerAdapter {
 	@Override
 	public boolean isViewFromObject(View arg0, Object arg1) {
 		return arg0 == arg1;// 官方提示这样写
+	}
+
+	@Override
+	public void startUpdate(ViewGroup container) {
+		// TODO Auto-generated method stub
+		super.startUpdate(container);
 	}
 
 }
