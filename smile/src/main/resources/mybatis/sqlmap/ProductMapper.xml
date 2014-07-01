@@ -46,8 +46,7 @@
 		select p.id,
 		p.name,
 		p.brandstyle,
-		date_format(p.gmt_modify, '%Y-%m-%d
-		%H:%i:%s') gmtModify,
+		date_format(p.gmt_modify, '%Y-%m-%d %H:%i:%s') gmtModify,
 		p.cover_small imgs,
 		p.description,
 		p.purchasingprice,
