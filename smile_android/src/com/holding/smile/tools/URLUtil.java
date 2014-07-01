@@ -59,7 +59,7 @@ public class URLUtil {
 			conn.setRequestProperty("Charset", "UTF-8"); // 设置编码
 			if (MyApplication.getInstance().getSessionId() != null)
 				conn.setRequestProperty("Cookie", MyApplication.getInstance().getSessionId());
-			try{
+			try {
 				conn.connect();
 				if (conn.getResponseCode() == 200) {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(
