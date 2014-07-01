@@ -87,67 +87,90 @@ public class SolrDataImpl implements SolrData {
 	public void reBuildOrder() {
 		UrlUtil.sendGet(solr_url + ORDER_URL + "/dataimport?full-import&commit=y&clean=y");
 	}
-
-	public void submitProduct(ProductBuildDto product) {
-		SolrInputDocument doc = null;
-
+	
+	/**
+	 * 通过商品对象获得SolrInputDocument
+	 * 
+	 * @param productBuildDto
+	 * @return
+	 */
+	private SolrInputDocument getDocumentByProduct(ProductBuildDto productBuildDto) {
+		SolrInputDocument doc = new SolrInputDocument();
 		String[] pictures = null;
-		doc = new SolrInputDocument();
-		doc.addField("id", product.getId());// ID
-		doc.addField("n", product.getN());// 名称
-		doc.addField("d", product.getD());// 说明
-		doc.addField("bs", product.getBs());// 款号
+		doc.addField("id", productBuildDto.getId());// ID
+		doc.addField("n", productBuildDto.getN());// 名称
+		doc.addField("d", productBuildDto.getD());// 说明
+		doc.addField("bs", productBuildDto.getBs());// 款号
 
 		// 调整本地价格及计算差价（即折扣）
-		if (product.getLp() != null && product.getPp() != null) {
-			doc.addField("sp", product.getLp().subtract(product.getPp()));
+		if (productBuildDto.getLp() != null && productBuildDto.getPp() != null) {
+			doc.addField("sp", productBuildDto.getLp().subtract(productBuildDto.getPp()));
 		} else {
-			if (product.getPp() == null) {
+			if (productBuildDto.getPp() == null) {
+				log.error("商品ID为" + productBuildDto.getId() + "的商品的代购价为空，不可build到solr");
+				return null;
 			} else {
-				product.setLp(BigDecimal.valueOf(product.getPp().doubleValue() * 2 + 1000));
-				doc.addField("sp", product.getLp().subtract(product.getPp()));
+				if(productBuildDto.getForeighprice()==null){
+					productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getPp().doubleValue() * 2 + 1000));
+				} else {
+					if(Constants.dollarExchangeRate == null){
+						log.info("获取美元汇率...");
+						Constants.dollarExchangeRate = getDollarExchangeRate();
+						log.info("获取美元汇率完成，汇率为"+Constants.dollarExchangeRate);
+					}
+					productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getForeighprice().doubleValue() * Constants.dollarExchangeRate * 2 + 1000));
+					
+				}
+				doc.addField("sp", productBuildDto.getLp().subtract(productBuildDto.getPp()));
 			}
 		}
-		doc.addField("lp", product.getLp());// 本地价格
-		doc.addField("pp", product.getPp());// 代购价格
+		doc.addField("lp", productBuildDto.getLp().intValue());// 本地价格
+		doc.addField("pp", productBuildDto.getPp().intValue());// 代购价格
 
 		// 原图封面
-		if (product.getImgs() != null) {
-			pictures = product.getImgs().replace("[", "").replace("]", "").replace("\"", "")
-								.split(",");
+		if (productBuildDto.getImgs() != null) {
+			pictures = productBuildDto.getImgs().replace("[", "").replace("]", "")
+										.replace("\"", "").split(",");
 			for (int k = 0; k < pictures.length; k++) {
 				doc.addField("imgs", pictures[k]);
 			}
 		}
 		// 大图封面
-		if (product.getBp() != null) {
-			pictures = product.getBp().replace("[", "").replace("]", "").replace("\"", "")
-								.split(",");
+		if (productBuildDto.getBp() != null) {
+			pictures = productBuildDto.getBp().replace("[", "").replace("]", "").replace("\"", "")
+										.split(",");
 			for (int k = 0; k < pictures.length; k++) {
 				doc.addField("bp", pictures[k]);
 			}
 		}
 		// 小图封面
-		if (product.getP() != null) {
-			pictures = product.getP().replace("[", "").replace("]", "").replace("\"", "")
-								.split(",");
+		if (productBuildDto.getP() != null) {
+			pictures = productBuildDto.getP().replace("[", "").replace("]", "").replace("\"", "")
+										.split(",");
 			for (int k = 0; k < pictures.length; k++) {
 				doc.addField("p", pictures[k]);
 			}
 		}
 
-		doc.addField("t", DateUtil.strToDateLong(product.getT()));// 时间
-		doc.addField("bid", product.getBid());// 品牌ID
-		doc.addField("be", product.getBe());// 品牌名称
-		doc.addField("cid", product.getCid());// 分类ID
-		doc.addField("ce", product.getCe());// 分类名称
+		doc.addField("t", DateUtil.strToDateLong(productBuildDto.getT()));// 时间
+		doc.addField("bid", productBuildDto.getBid());// 品牌ID
+		doc.addField("be", productBuildDto.getBe());// 品牌名称
+		doc.addField("cid", productBuildDto.getCid());// 分类ID
+		doc.addField("ce", productBuildDto.getCe());// 分类名称
 
-		doc.addField("sf", productFraction.getProductFraction(product));// 分数
-		doc.addField("st", product.getSt());// 时间排序值
-		doc.addField("sd", product.getSd());// 折扣排序值
-		doc.addField("ss", product.getSs());// 销售量排序值
-		doc.addField("sn", product.getSn());// 销售量
-		doc.addField("zsn", product.getZsn());// 一周销售量
+		doc.addField("c", productBuildDto.getC());// 颜色名称
+		doc.addField("ci", productBuildDto.getCi());// 颜色图片
+
+		doc.addField("sf", productFraction.getProductFraction(productBuildDto));// 分数
+
+		doc.addField("sn", productBuildDto.getSn() != null ? productBuildDto.getSn() : 0);// 销售量
+		doc.addField("zsn", productBuildDto.getZsn() != null ? productBuildDto.getZsn() : 0);// 当月销售量
+
+		return doc;
+	}
+
+	public void submitProduct(ProductBuildDto product) {
+		SolrInputDocument doc = getDocumentByProduct(product);
 
 		// 提交到solr
 		HttpSolrServer solrServer = getServer(PRODUCT_URL);
@@ -166,69 +189,10 @@ public class SolrDataImpl implements SolrData {
 	public void submitProductList(List<ProductBuildDto> productList) {
 		Collection<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
 
-		ProductBuildDto product = null;
 		SolrInputDocument doc = null;
 
-		String[] pictures = null;
 		for (int i = 0; i < productList.size(); i++) {
-			product = productList.get(i);
-			doc = new SolrInputDocument();
-			doc.addField("id", product.getId());// ID
-			doc.addField("n", product.getN());// 名称
-			doc.addField("d", product.getD());// 说明
-			doc.addField("bs", product.getBs());// 款号
-
-			// 调整本地价格及计算差价（即折扣）
-			if (product.getLp() != null && product.getPp() != null) {
-				doc.addField("sp", product.getLp().subtract(product.getPp()));
-			} else {
-				if (product.getPp() == null) {
-					continue;
-				} else {
-					product.setLp(BigDecimal.valueOf(product.getPp().doubleValue() * 2 + 1000));
-					doc.addField("sp", product.getLp().subtract(product.getPp()));
-				}
-			}
-			doc.addField("lp", product.getLp());// 本地价格
-			doc.addField("pp", product.getPp());// 代购价格
-
-			// 原图封面
-			if (product.getImgs() != null) {
-				pictures = product.getImgs().replace("[", "").replace("]", "").replace("\"", "")
-									.split(",");
-				for (int k = 0; k < pictures.length; k++) {
-					doc.addField("imgs", pictures[k]);
-				}
-			}
-			// 大图封面
-			if (product.getBp() != null) {
-				pictures = product.getBp().replace("[", "").replace("]", "").replace("\"", "")
-									.split(",");
-				for (int k = 0; k < pictures.length; k++) {
-					doc.addField("bp", pictures[k]);
-				}
-			}
-			// 小图封面
-			if (product.getP() != null) {
-				pictures = product.getP().replace("[", "").replace("]", "").replace("\"", "")
-									.split(",");
-				for (int k = 0; k < pictures.length; k++) {
-					doc.addField("p", pictures[k]);
-				}
-			}
-
-			doc.addField("t", DateUtil.strToDateLong(product.getT()));// 时间
-			doc.addField("bid", product.getBid());// 品牌ID
-			doc.addField("be", product.getBe());// 品牌名称
-			doc.addField("cid", product.getCid());// 分类ID
-			doc.addField("ce", product.getCe());// 分类名称
-
-			doc.addField("sf", productFraction.getProductFraction(product));// 分数
-			doc.addField("st", product.getSt());// 时间排序值
-			doc.addField("sd", product.getSd());// 折扣排序值
-			doc.addField("ss", product.getSs());// 销售量排序值
-			doc.addField("sn", product.getSn());// 销售量
-			doc.addField("zsn", product.getZsn());// 一周销售量
+			doc = getDocumentByProduct(productList.get(i));
 			docs.add(doc);
 		}
 
@@ -382,5 +346,25 @@ public class SolrDataImpl implements SolrData {
 			log.error(e.getMessage());
 		}
 		return list;
+	}
+	
+	public double getDollarExchangeRate() {
+		log.info("开始获取美元汇率...");
+		double dollarExchangeRate = 6.50;
+		String response = UrlUtil.sendGet("http://download.finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s=USDCNY=x");
+		if (StringUtil.isNotBlank(response)) {
+			String[] responses = response.split(",");
+			for (int i = 0; i < responses.length; i++) {
+				log.info(responses[i]);
+			}
+			try {
+				dollarExchangeRate = Double.parseDouble(responses[1]);
+				log.info("当前美元汇率为" + dollarExchangeRate);
+			} catch (Exception e) {
+				log.error("获取美元汇率失败！！！" + e.getLocalizedMessage());
+			}
+		}
+		log.info("获取美元汇率结束");
+		return dollarExchangeRate;
 	}
 }
