@@ -66,4 +66,6 @@ public class Constants {
 			this.code = code;
 		}
 	}
+	
+	public static Double dollarExchangeRate;
 }
