@@ -101,6 +101,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 	public synchronized void loadData() {
 		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
+			progressBar.setVisibility(View.VISIBLE);
 			String pidQty = "";
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
@@ -111,7 +112,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rtnValue;
 			msg.sendToTarget();
-			waitCloseProgressBar();
 		} else {
 			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 			finish();
@@ -229,6 +229,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																}
 															}
 														}
+														waitCloseProgressBar();
 														break;
 													}
 													case WHAT_DID_UPDATE_DATA: {
@@ -335,9 +336,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																}
 															}
 														}
-														break;
-													}
-													case WHAT_PROGRESS_STATE: {
 														break;
 													}
 												}
