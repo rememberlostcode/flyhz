@@ -198,8 +198,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		if (adapter != null) {
 			mListView.removeAllViewsInLayout();
 			mListView.destroyDrawingCache();
-			adapter = new MyJGoodsAdapter(context, mStrings);
-			mListView.setAdapter(adapter);
+			adapter.notifyDataSetInvalidated();
+			adapter.notifyDataSetChanged();
 		}
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
@@ -296,8 +296,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																	}
 																}
 															}
-															adapter.notifyDataSetChanged();
-															mPullToRefreshView.onHeaderRefreshComplete();
+															if (adapter != null) {
+																adapter.notifyDataSetChanged();
+																mPullToRefreshView.onHeaderRefreshComplete();
+															}
 															break;
 														}
 														case WHAT_DID_REFRESH: {
@@ -333,8 +335,10 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																	}
 																}
 															}
-															adapter.notifyDataSetChanged();
-															mPullToRefreshView.onHeaderRefreshComplete();
+															if (adapter != null) {
+																adapter.notifyDataSetChanged();
+																mPullToRefreshView.onHeaderRefreshComplete();
+															}
 															break;
 														}
 
@@ -366,7 +370,9 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																}
 																adapter.notifyDataSetChanged();
 															}
-															mPullToRefreshView.onFooterRefreshComplete();
+															if (mPullToRefreshView != null) {
+																mPullToRefreshView.onFooterRefreshComplete();
+															}
 															break;
 														}
 													}
