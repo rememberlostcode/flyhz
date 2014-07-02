@@ -86,11 +86,13 @@ public interface OrderService {
 	 * @param orderId
 	 * @param tid
 	 * @return
+	 * @throws ValidateException
 	 */
-	public String getOrderPayStatusByTid(Integer orderId, Long tid);
-	
+	public String getOrderPayStatusByTid(Integer orderId, Long tid) throws ValidateException;
+
 	/**
 	 * 通过订单编号修改状态
+	 * 
 	 * @param orderModel
 	 */
 	public void updateStatusByNumber(OrderModel orderModel);

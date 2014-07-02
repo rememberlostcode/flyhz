@@ -296,45 +296,62 @@ public class OrderServiceImpl implements OrderService {
 		}
 	}
 
-	public String getOrderPayStatusByTid(Integer orderId, Long tid) {
+	public String getOrderPayStatusByTid(Integer orderId, Long tid) throws ValidateException {
+		if(orderId==null){
+			throw new ValidateException(201002);
+		}
+		if(tid == null){
+			throw new ValidateException(700001);
+		}
 		OrderModel orderModel = orderDao.getModelById(orderId);
 		String smileStatus = "10";
 		if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())
-				|| Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {// 如果状态已经是已付款/卖家已发货则直接返回状态
+				|| Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())
+				|| Constants.OrderStateCode.HAS_BEEN_COMPLETED.code.equals(orderModel.getStatus())
+				|| Constants.OrderStateCode.HAVE_BEEN_CLOSED.code.equals(orderModel.getStatus())) {// 如果状态已经是已付款/卖家已发货则直接返回状态
 			return orderModel.getStatus();
 		} else {// mysql显示未付款时，需要调用淘宝接口查看
 			Trade trade = taobaoData.getTradeByTid(tid);
 			if (trade == null) {
-				smileStatus = "400000";
+				throw new ValidateException(400000);
 			} else {
-				String status = trade.getStatus();
-				if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
-					// 未付款
-					smileStatus = Constants.OrderStateCode.FOR_PAYMENT.code;
-				} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
-					// 已付款
-					smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
-
-					// 买家已付款，需要验证身份证是否存在
-					IdcardModel im = new IdcardModel();
-					im.setUserId(orderModel.getUserId());
-					List<IdcardModel> list = idcardDao.getModelList(im);
-					if (list == null || list.size() == 0) {
-						// 缺失身份证
-						smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
+				BigDecimal Payment = new BigDecimal(trade.getPayment());
+				if(orderModel.getTotal().equals(Payment)){
+					String status = trade.getStatus();
+					if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
+						// 未付款
+						smileStatus = Constants.OrderStateCode.FOR_PAYMENT.code;
+					} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
+						// 已付款
+						smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
+	
+						// 买家已付款，需要验证身份证是否存在
+						IdcardModel im = new IdcardModel();
+						im.setUserId(orderModel.getUserId());
+						List<IdcardModel> list = idcardDao.getModelList(im);
+						if (list == null || list.size() == 0) {
+							// 缺失身份证
+							smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
+						} else {
+							// 等待发货
+							smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
+						}
+					} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
+						// 已发货
+						smileStatus = Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code;
+					} else if ("TRADE_FINISHED".equals(status)) {// 交易成功
+						smileStatus = Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;
 					} else {
-						// 等待发货
-						smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
+						// 未知状态
+						throw new ValidateException(400000);
 					}
-				} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
-					// 已发货
-					smileStatus = Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code;
 				} else {
-					// 未知状态
-					smileStatus = "400000";
+					throw new ValidateException(400001);
 				}
 			}
 		}
+		orderModel.setStatus(smileStatus);
+		orderDao.updateStatusByNumber(orderModel);
 		return smileStatus;
 	}
 

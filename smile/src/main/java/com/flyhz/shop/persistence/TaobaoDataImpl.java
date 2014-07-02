@@ -86,7 +86,7 @@ public class TaobaoDataImpl implements TaobaoData {
 			sessionKey = TaobaoTokenUtil.getAccessToken();
 			sellerNick = TaobaoTokenUtil.getSellerNick();
 
-			startMessageHandler();
+//			startMessageHandler();
 		}
 	}
 

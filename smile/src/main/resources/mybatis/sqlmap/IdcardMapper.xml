@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.flyhz.shop.persistence.dao.IdcardDao">
 	<insert id="insertIdcard" parameterType="IdcardModel">
-		insert into idcard (name,number,url,user_id,gmt_create,gmt_modify)
-		values (#{name},#{number},#{url},#{userId},#{gmtCreate},#{gmtModify})
+		insert into idcard (name,number,url,back_url,user_id,gmt_create,gmt_modify)
+		values (#{name},#{number},#{url},#{back_url},#{userId},#{gmtCreate},#{gmtModify})
 		<selectKey resultType="int" keyProperty="id">
             <![CDATA[SELECT LAST_INSERT_ID() AS id ]]>
         </selectKey>
@@ -14,7 +14,7 @@
 	    where id = #{id} and user_id = #{userId}
 	</select>
 	<select id="getModelList" parameterType="IdcardModel" resultType="IdcardModel">
-	    select id,name,number,url,user_id,gmt_create,gmt_modify,user_id
+	    select id,name,number,url,back_url,user_id,gmt_create,gmt_modify,user_id
 	    from idcard
 	    where user_id = #{userId} and is_del = '0'
 	</select>
@@ -34,6 +34,9 @@
 	    </if>
 	    <if test="url != null and url != ''">
 	        , url = #{url}
+	    </if>
+	    <if test="back_url != null and back_url != ''">
+	        , back_url = #{back_url}
 	    </if>
 	    where user_id = #{userId} and id = #{id}
 	</update>

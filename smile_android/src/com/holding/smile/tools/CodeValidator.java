@@ -137,6 +137,12 @@ public class CodeValidator {
 					case 140007:
 						ToastUtils.showShort(context, "用户验证码不能为空！");
 						break;
+					case 400000:
+						ToastUtils.showShort(context, "等待淘宝订单查询中，请稍候！");
+						break;
+					case 400001:
+						ToastUtils.showShort(context, "淘宝支付金额与订单金额不符，请联系客服！");
+						break;
 					case 888888:
 						ToastUtils.showShort(context, "网络异常，请检查网络设置！");
 						break;
@@ -153,6 +159,9 @@ public class CodeValidator {
 					case 600002:
 						//nodejs 缺少start参数导致的
 						ToastUtils.showShort(context, "未获取当前的商品数量，请点击后退键，重新打开！");
+						break;
+					case 200001:
+						ToastUtils.showShort(context, "操作失败，请稍候重试！");
 						break;
 					default:
 						ToastUtils.showShort(context, "程序异常！");

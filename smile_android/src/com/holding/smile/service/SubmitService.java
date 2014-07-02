@@ -72,7 +72,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto passwordReset(String oldPwd, String newPwd) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		if (oldPwd == null || newPwd == null || "".equals(oldPwd) || "".equals(newPwd)) {
@@ -114,7 +114,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto setUserInfo(String field, String value) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		if (field == null || value == null || "".equals(field)) {
@@ -153,11 +153,14 @@ public class SubmitService {
 	 *            身份证信息
 	 * @param filePath
 	 *            身份证图片
+	 * @param backFilePath
+	 *            身份证背面图片
 	 * @return
 	 * @throws Exception
 	 */
-	public RtnValueDto idcardSave(Idcard idcard, String filePath) throws Exception {
-		if(CodeValidator.isNetworkError()){
+	public RtnValueDto idcardSave(Idcard idcard, String filePath, String backFilePath)
+			throws Exception {
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		if (idcard == null) {
@@ -177,22 +180,18 @@ public class SubmitService {
 
 		String url = "";
 		url = prefix_url + idcard_save;
-		// String rStr = URLUtil.getStringByGet(url, param);
-		String rStr = FileUtils.uploadIdcardPhoto(url, params, filePath);
+		String rStr = FileUtils.uploadIdcardPhoto(url, params, filePath, backFilePath);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
+		}
+		if(rvd == null){
+			rvd = new RtnValueDto();
+			rvd.setCode(200001);
 		}
 		return rvd;
 	}
@@ -205,7 +204,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto idcardRemove(Integer dicadrId) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		if (dicadrId == null) {
@@ -224,14 +223,11 @@ public class SubmitService {
 				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
+		}
+		if(rvd == null){
+			rvd = new RtnValueDto();
+			rvd.setCode(200001);
 		}
 		return rvd;
 	}
@@ -244,7 +240,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto register(SUser iuser) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = null;
@@ -280,7 +276,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto getOrderInform(String pidQty, List<String> cartIds, Integer addressId) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = new RtnValueDto();
@@ -304,11 +300,11 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
-				if (pc != null){
+				if (pc != null) {
 					rvd.setOrderData(pc.getData());
 					rvd.setCode(pc.getCode());
 				}
-					
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -332,7 +328,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto updateOrderQty(Integer pid, short qty) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = new RtnValueDto();
@@ -348,7 +344,7 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PProduct pc = JSONUtil.getJson2Entity(rStr, PProduct.class);
-				if (pc != null){
+				if (pc != null) {
 					rvd.setCode(pc.getCode());
 					rvd.setProductData(pc.getData());
 				}
@@ -377,7 +373,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto confirmOrder(String pidQty, List<String> cartIds, Integer addressId) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = new RtnValueDto();
@@ -401,7 +397,7 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
-				if (pc != null){
+				if (pc != null) {
 					rvd.setCode(pc.getCode());
 					rvd.setOrderData(pc.getData());
 				}
@@ -427,7 +423,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto addCart(Integer pid, short qty) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = null;
@@ -458,7 +454,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto removeCart(Integer itemId) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = null;
@@ -486,7 +482,7 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto updateCartQty(Integer itemId, short qty) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = null;
@@ -510,7 +506,7 @@ public class SubmitService {
 	}
 
 	public RtnValueDto closeOrder(Integer orderId) {
-		if(CodeValidator.isNetworkError()){
+		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = null;

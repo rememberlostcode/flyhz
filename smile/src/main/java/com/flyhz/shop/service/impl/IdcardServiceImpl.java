@@ -32,24 +32,34 @@ public class IdcardServiceImpl implements IdcardService {
 	}
 
 	@Override
-	public void saveIdcard(IdcardModel idcardModel, MultipartFile multipartFile)
+	public void saveIdcard(IdcardModel idcardModel, MultipartFile photo,MultipartFile backPhoto)
 			throws ValidateException {
 		if (idcardModel == null) {
 			throw new ValidateException(111110);
 		}
 		// 保存收件人地址身份证照片
 		try {
-			if (idcardModel.getId() == null && multipartFile == null) {
+			if (idcardModel.getId() == null && photo == null) {
 				throw new ValidateException(120002);
 			}
-			if (multipartFile != null) {
+			if (photo != null) {
 				// 生成新文件名
-				String origName = multipartFile.getOriginalFilename();
+				String origName = photo.getOriginalFilename();
 				origName = "idcard/" + File.separatorChar + DateUtil.dateToStrMSec(new Date())
 						+ origName.substring(origName.lastIndexOf("."));
-				fileRepository.saveToTemp(multipartFile.getInputStream(), origName);
+				fileRepository.saveToTemp(photo.getInputStream(), origName);
 				// 更新收件人地址中身份证照片路径
 				idcardModel.setUrl("/" + origName);
+			}
+			
+			if (backPhoto != null) {
+				// 生成新文件名
+				String origName = backPhoto.getOriginalFilename();
+				origName = "idcard/" + File.separatorChar + DateUtil.dateToStrMSec(new Date())
+						+ origName.substring(origName.lastIndexOf("."));
+				fileRepository.saveToTemp(backPhoto.getInputStream(), origName);
+				// 更新收件人地址中身份证照片路径
+				idcardModel.setBack_url("/" + origName);
 			}
 
 		} catch (Exception e) {

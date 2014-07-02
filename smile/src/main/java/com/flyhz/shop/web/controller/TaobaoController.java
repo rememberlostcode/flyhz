@@ -11,7 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.flyhz.framework.auth.Identify;
+import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.TaobaoData;
+import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.shop.dto.OrderPayDto;
 import com.flyhz.shop.service.OrderService;
 
 /**
@@ -50,7 +54,7 @@ public class TaobaoController {
 	}
 
 	@RequestMapping(value = "/paymentStatus")
-	public void paymentStatus(Model model, Integer orderId, Long tid, HttpServletResponse response) {
+	public void paymentStatus(@Identify Integer userId,Model model, Integer orderId, Long tid) {
 		String result = "0";
 		try {
 			result = orderService.getOrderPayStatusByTid(orderId, tid);
@@ -58,16 +62,26 @@ public class TaobaoController {
 			e.printStackTrace();
 			result = "获取淘宝订单付款状态失败！！！";
 		}
+		
+		Protocol protocol = new Protocol();
+		Integer code = 200000;
 		try {
-			PrintWriter writer = response.getWriter();
-			response.reset();
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("text/html");
-			writer.println(result);
-			return;
-		} catch (IOException e) {
-			e.printStackTrace();
+			if (userId == null) {
+				code = 100000;
+			} else {
+				result = orderService.getOrderPayStatusByTid(orderId, tid);
+				OrderPayDto orderPayDto = new OrderPayDto();
+				orderPayDto.setId(orderId);
+				orderPayDto.setStatus(result);
+				protocol.setData(orderPayDto);
+			}
+		} catch (ValidateException e) {
+			code = e.getCode();
+		} catch (Exception e) {
+			code = 400000;
 		}
+		protocol.setCode(code);
+		model.addAttribute("protocol", protocol);
 	}
 
 }

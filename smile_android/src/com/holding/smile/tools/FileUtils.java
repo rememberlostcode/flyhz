@@ -417,7 +417,7 @@ public class FileUtils {
 	 * @throws Exception
 	 */
 	public static String uploadIdcardPhoto(String requestUrl, List<NameValuePair> params,
-			String filePath) throws Exception {
+			String filePath,String backFilePath) throws Exception {
 
 		HttpParams httpParams = new BasicHttpParams();
 		// 连接超时
@@ -457,6 +457,23 @@ public class FileUtils {
 				bos.flush();
 			} catch (Exception e) {
 				reqEntity.addPart("file", new StringBody("image error"));
+			}
+			bos.close();
+		}
+		
+		if (backFilePath != null && !backFilePath.equals("")) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ByteArrayBody bab = null;
+			// 先压缩图片再上传
+			try {
+				bos = BitmapUtils.getCompressBitmap(backFilePath, 500, 500, 50);
+				byte[] data = bos.toByteArray();
+				bab = new ByteArrayBody(data, backFilePath.substring(backFilePath.lastIndexOf("/") + 1));
+				reqEntity.addPart("backfile", bab);
+				bos.reset();// 清空
+				bos.flush();
+			} catch (Exception e) {
+				reqEntity.addPart("backfile", new StringBody("image error"));
 			}
 			bos.close();
 		}

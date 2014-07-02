@@ -69,11 +69,11 @@ public class IdcardController {
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public void save(@Identify Integer userId, Model model, IdcardModel idcardModel,
-			MultipartFile file) {
+			MultipartFile file,MultipartFile backfile) {
 		Protocol protocol = new Protocol();
 		try {
 			idcardModel.setUserId(userId);
-			idcardService.saveIdcard(idcardModel, file);
+			idcardService.saveIdcard(idcardModel, file,backfile);
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());

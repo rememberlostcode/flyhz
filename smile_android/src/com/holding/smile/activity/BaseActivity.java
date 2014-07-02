@@ -53,6 +53,10 @@ public class BaseActivity extends Activity {
 	 */
 	public static final int		SELECT_PHOTO_IMAGE	= 15;
 	/**
+	 * 选择身份证照片操作代码
+	 */
+	public static final int		SELECT_PHOTO_IMAGE_BACK	= 150;
+	/**
 	 * 选择身份证照片编辑身份证操作代码
 	 */
 	public static final int		IDCARD_EDIT_CODE	= 16;
