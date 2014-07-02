@@ -198,8 +198,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		if (adapter != null) {
 			mListView.removeAllViewsInLayout();
 			mListView.destroyDrawingCache();
-			adapter = new MyJGoodsAdapter(context, mStrings);
-			mListView.setAdapter(adapter);
+			adapter.notifyDataSetInvalidated();
+			adapter.notifyDataSetChanged();
 		}
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
