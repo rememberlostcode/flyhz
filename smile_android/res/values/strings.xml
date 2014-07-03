@@ -14,7 +14,8 @@
     <string name="choose_color">选择颜色：</string>
     <string name="good_desc">物品描述</string>
     <string name="shopping_cart">购物车</string>
-    <string name="more">更多</string>
+    <!-- <string name="more">更多</string> -->
+    <string name="more">我</string>
     <string name="order_inform">确认订单信息</string>
     <string name="buy_qty">购买数量</string>
     <string name="color_cate">颜色分类</string>
