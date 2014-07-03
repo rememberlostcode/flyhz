@@ -15,6 +15,7 @@ import com.holding.smile.entity.SortType;
 import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.protocol.PCartItem;
 import com.holding.smile.protocol.PCategory;
+import com.holding.smile.protocol.PFindPwd;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexBrands;
@@ -54,6 +55,7 @@ public class DataService {
 	private String			order_list_url;
 	private String			cart_list_url;
 	private String			order_status_url;
+	private String			user_find_backpwd_url;
 
 	public DataService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
@@ -73,6 +75,7 @@ public class DataService {
 		order_list_url = context.getString(R.string.order_list_url);
 		cart_list_url = context.getString(R.string.cart_list_url);
 		order_status_url = context.getString(R.string.order_status_url);
+		user_find_backpwd_url = context.getString(R.string.user_find_backpwd_url);
 	}
 
 	/**
@@ -686,6 +689,32 @@ public class DataService {
 			if (pc != null) {
 				rvd = new RtnValueDto();
 				rvd.setCartListData(pc.getData());
+				rvd.setCode(pc.getCode());
+			}
+		}
+		return rvd;
+	}
+
+	/**
+	 * 找回密码
+	 * 
+	 * @param username
+	 * @return
+	 */
+	public RtnValueDto findBackPwd(String username) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("username", username);
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.user_find_backpwd_url,
+				param);
+		if (rvdString != null) {
+			PFindPwd pc = JSONUtil.getJson2Entity(rvdString, PFindPwd.class);
+			if (pc != null) {
+				rvd = new RtnValueDto();
+				rvd.setAtData(pc.getData());
 				rvd.setCode(pc.getCode());
 			}
 		}

@@ -100,6 +100,11 @@
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>
         <activity
+            android:name="com.holding.smile.activity.FindBackPwdActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" >
+        </activity>
+        <activity
             android:name="com.holding.smile.activity.RegisterActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

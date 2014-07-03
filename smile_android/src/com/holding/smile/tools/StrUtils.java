@@ -64,7 +64,7 @@ public class StrUtils {
 	public static boolean checkEmail(String email) {
 		boolean flag = false;
 		try {
-			String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+			String check = "^([a-z0-9A-Z_]+[-|\\.]?)+[a-z0-9A-Z_]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
 			Pattern regex = Pattern.compile(check);
 			Matcher matcher = regex.matcher(email);
 			flag = matcher.matches();
@@ -73,8 +73,8 @@ public class StrUtils {
 		}
 		return flag;
 	}
-	
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		System.out.println(checkEmail("hd1111@sina.com"));
 	}
 }
