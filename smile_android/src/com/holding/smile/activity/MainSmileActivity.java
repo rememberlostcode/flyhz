@@ -338,13 +338,13 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 																			brandList.add(each);
 																		}
 																	}
+																	brandAdapter.notifyDataSetChanged();
 																}
 															}
-															brandAdapter.notifyDataSetChanged();
-															mPullToRefreshView.onHeaderRefreshComplete();
 														} else {
 															CodeValidator.dealCode(context, null);
 														}
+														mPullToRefreshView.onHeaderRefreshComplete();
 														break;
 													}
 													case WHAT_DID_REFRESH: {
