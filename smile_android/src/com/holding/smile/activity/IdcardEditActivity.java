@@ -1,6 +1,9 @@
 
 package com.holding.smile.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -234,11 +237,42 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				break;
 			}
 			case R.id.idcard_idcard_img: {
-				ToastUtils.showShort(this, "查看大图!");
+				if (picturePath == null && idcard.getUrl() == null) {
+					ToastUtils.showShort(this, "您还未上传身份证!");
+				} else {
+					Intent intent = new Intent(this, GoodsBigImgActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					List<String> picList = new ArrayList<String>();
+					if(picturePath == null){
+						picList.add(idcard.getUrl());
+					} else {
+						picList.add(picturePath);
+					}
+					int position = 0;
+					intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
+					intent.putExtra("position", position);
+					startActivity(intent);
+				}
 				break;
 			}
 			case R.id.idcard_idcard_back_img: {
-				ToastUtils.showShort(this, "查看大图!");
+				if (backPicturePath == null && idcard.getBack_url() == null) {
+					ToastUtils.showShort(this, "您还未上传身份证!");
+				} else {
+					Intent intent = new Intent(this, GoodsBigImgActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					List<String> picList = new ArrayList<String>();
+					if(backPicturePath == null){
+						picList.add(idcard.getBack_url());
+					} else {
+						picList.add(backPicturePath);
+					}
+					
+					int position = 0;
+					intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
+					intent.putExtra("position", position);
+					startActivity(intent);
+				}
 				break;
 			}
 		}
