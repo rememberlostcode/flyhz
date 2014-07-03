@@ -521,7 +521,7 @@ public class UserServiceImpl implements UserService {
 		}
 		// 更新用户密码
 		String password = RandomString.generateRandomString8();
-		userModel.setPassword(password);
+		userModel.setPassword(MD5.getMD5(password));
 		userDao.updatePwd(userModel);
 		// 发送含新密码邮件
 		Map modelMap = new HashMap();

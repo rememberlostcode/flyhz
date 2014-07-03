@@ -114,6 +114,9 @@
 		<beans:property name="port">
 			<beans:value>${smile.mail.port}</beans:value>
 		</beans:property>
+		<beans:property name="defaultEncoding">
+			<beans:value>${smile.mail.encode}</beans:value>
+		</beans:property>
 		<beans:property name="javaMailProperties">
 			<beans:props>
 				<beans:prop key="mail.smtp.auth">${mail.smtp.auth}</beans:prop>
