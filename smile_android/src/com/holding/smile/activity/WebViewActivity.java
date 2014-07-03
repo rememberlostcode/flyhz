@@ -32,9 +32,9 @@ import com.holding.smile.tools.TbUtil;
  * 
  */
 public class WebViewActivity extends Activity implements OnClickListener {
-	private String		number; // 订单号
-	private BigDecimal	amount; // 总额
-	private String      tbOrder;//淘宝订单号
+	private String		number;	// 订单号
+	private BigDecimal	amount;	// 总额
+	private String		tbOrder;	// 淘宝订单号
 
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
@@ -42,8 +42,6 @@ public class WebViewActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.web_view);
 		ImageView backBtn = (ImageView) findViewById(R.id.btn_back);
-		// TextView headerNum = (TextView) findViewById(R.id.number);
-		// TextView headerAmount = (TextView) findViewById(R.id.amount);
 		backBtn.setOnClickListener(this);
 
 		try {
@@ -53,12 +51,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 			WebView web = (WebView) findViewById(R.id.webView);
 
 			if (StrUtils.isNotEmpty(number) && amount != null) {
-				// headerNum.setText(number + "");
-				// headerAmount.setText(amount.doubleValue() + "");
-
 				// 获取webView控件
 				TbUtil.setWebView(web);
-
 				WebSettings webSettings = TbUtil.getWebView().getSettings();
 				// 允许使用JavaScript
 				webSettings.setJavaScriptEnabled(true);
@@ -74,6 +68,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 				webSettings.setDomStorageEnabled(true);
 				// 设置滚动条样式
 				TbUtil.getWebView().setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+				// 绑定webview接口
+				TbUtil.getWebView().addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
 				// 网页链接不以浏览器方式打开
 				TbUtil.getWebView().setWebViewClient(new WebViewClient() {
 					@Override
@@ -86,15 +82,15 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
 							TbUtil.setWebView(view);
 							view.reload();
-						} 
+						}
 						if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
 							// 设置返回和刷新按钮不显示
 							view.loadUrl("javascript:document.getElementsByTagName('section')[1].style.display='none';");
 							view.loadUrl("javascript:document.getElementsByTagName('section')[3].style.display='none';");
-						} 
+						}
 						if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
 							// 设置首页按钮不显示
-							//view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
+							// view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
@@ -126,6 +122,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						} else if (url.indexOf("http://login.m.taobao.com/login.htm") > -1) {
 							// 设置首页按钮不显示
 							jsStringBuffer.append("document.getElementsByClassName('back')[0].style.display='none';");
+						} else if (url.indexOf("https://mclient.alipay.com/cashierPay.htm?awid=") > -1) {
+							// jsStringBuffer.append("javascript:window.local_obj.showSource('document.getElementsByTagName('html')[0].innerHTML');");
 						}
 						jsStringBuffer.append("},1000);");
 						jsStringBuffer.append("});");
@@ -186,5 +184,11 @@ public class WebViewActivity extends Activity implements OnClickListener {
 			TbUtil.setWebView(null);
 		}
 		super.onDestroy();
+	}
+
+	final class InJavaScriptLocalObj {
+		public void showSource(String html) {
+			Log.d("HTML", html);
+		}
 	}
 }

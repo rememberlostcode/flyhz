@@ -2,6 +2,7 @@
 package com.flyhz.framework.lang.mail;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -24,12 +25,17 @@ public class MailRepositoryImpl implements MailRepository {
 	private VelocityEngine	velocityEngine;
 	@Value(value = "${smile.mail.username}")
 	private String			from;
+	@Value(value = "${smile.mail.chname}")
+	private String			chname;
 
 	@SuppressWarnings("rawtypes")
 	public void sendWithTemplate(String to, String subject, String templateName, Map model) {
+		StringBuffer fromEmail = new StringBuffer();
+		fromEmail.append(chname).append("<").append(from).append(">");
+
 		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 		simpleMailMessage.setTo(to);
-		simpleMailMessage.setFrom(from);
+		simpleMailMessage.setFrom(fromEmail.toString());
 		simpleMailMessage.setSubject(subject);
 		String result = null;
 		try {
@@ -43,8 +49,11 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 
 	public void sendText(String to, String subject, String text) {
+		StringBuffer fromEmail = new StringBuffer();
+		fromEmail.append(chname).append("<").append(from).append(">");
+
 		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-		simpleMailMessage.setFrom(from);
+		simpleMailMessage.setFrom(fromEmail.toString());
 		simpleMailMessage.setTo(to);
 		simpleMailMessage.setSubject(subject);
 		simpleMailMessage.setText(text);
@@ -52,11 +61,14 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 
 	public void sendHtml(String to, String subject, String text) {
+		StringBuffer fromEmail = new StringBuffer();
+		fromEmail.append(chname).append("<").append(from).append(">");
+
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
 		try {
 			messageHelper.setTo(to);
-			messageHelper.setFrom(from);
+			messageHelper.setFrom(fromEmail.toString());
 			messageHelper.setSubject(subject);
 			messageHelper.setText(text, true);
 		} catch (MessagingException e) {
@@ -66,11 +78,14 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 
 	public void sendHtmlWithImage(String to, String subject, String text, String imagePath) {
+		StringBuffer fromEmail = new StringBuffer();
+		fromEmail.append(chname).append("<").append(from).append(">");
+
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
 			messageHelper.setTo(to);
-			messageHelper.setFrom(from);
+			messageHelper.setFrom(fromEmail.toString());
 			messageHelper.setSubject(subject);
 			messageHelper.setText(text, true);
 			// Content="<html><head></head><body><img src=\"cid:image\"/></body></html>";
@@ -84,11 +99,14 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 
 	public void sendHtmlWithAttachment(String to, String subject, String text, String filePath) {
+		StringBuffer fromEmail = new StringBuffer();
+		fromEmail.append(chname).append("<").append(from).append(">");
+
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
 			messageHelper.setTo(to);
-			messageHelper.setFrom(from);
+			messageHelper.setFrom(fromEmail.toString());
 			messageHelper.setSubject(subject);
 			messageHelper.setText(text, true);
 			FileSystemResource file = new FileSystemResource(new File(filePath));
@@ -102,14 +120,17 @@ public class MailRepositoryImpl implements MailRepository {
 	public static void main(String[] args) {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setPassword("syqf1027");
-		mailSender.setUsername("hgkf@tiantianhaigou.com");
+		mailSender.setUsername("service@tiantianhaigou.com");
 		mailSender.setHost("smtp.ym.163.com");
+		mailSender.setDefaultEncoding("utf-8");
 		mailSender.setPort(25);
 		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-		simpleMailMessage.setFrom("hgkf@tiantianhaigou.com");
+		// simpleMailMessage.setFrom("service@tiantianhaigou.com");
+		simpleMailMessage.setFrom("天天海狗<service@tiantianhaigou.com>");
 		simpleMailMessage.setTo("syqf1027@yeah.net");
-		simpleMailMessage.setSubject("testEmail");
+		simpleMailMessage.setSubject("测试邮件");
 		simpleMailMessage.setText("testEmail");
+		simpleMailMessage.setSentDate(new Date());
 		mailSender.send(simpleMailMessage);
 	}
 }

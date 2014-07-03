@@ -314,7 +314,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 																addViewPager();// 添加页卡
 																// 实例化适配器
 																pagerAdapter = new MyPagerAdapter(
-																		viewList);
+																		viewList, true);
 																mViewPager.setAdapter(pagerAdapter);
 																mViewPager.setCurrentItem(0); // 设置默认当前页
 															}

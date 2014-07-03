@@ -17,6 +17,7 @@
     <string name="jGoods_search_refresh_url">/smile/node/search</string>
     <string name="jGoods_search_more_url">/smile/node/search/more</string>
     
+    <string name="user_find_backpwd_url">/smile/user/findPwd.json</string>
     <string name="register_url">/smile/saveRegister.json</string>
     <string name="user_info">/smile/user/getPInfo.json</string>
     <string name="reset_password">/smile/user/resetPwd.json</string>

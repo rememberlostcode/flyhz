@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/input_username"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:hint="请输入要找回密码的用户名"
+            android:imeOptions="actionDone"
+            android:inputType="phone"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_margin="10.0dp"
+            android:background="@drawable/lvse"
+            android:text="@string/confirm_btn"
+            android:textColor="@drawable/baise"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -24,9 +24,11 @@ public class MyPagerAdapter extends PagerAdapter {
 	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private List<View>		mListViews;
 	private LayoutParams	para;
+	private boolean			imgFlag			= false;							// true为按长宽比1.9:1显示图片
 
-	public MyPagerAdapter(List<View> mListViews) {
+	public MyPagerAdapter(List<View> mListViews, boolean imgFlag) {
 		this.mListViews = mListViews;// 构造方法，参数是我们的页卡，这样比较方便。
+		this.imgFlag = imgFlag;
 	}
 
 	public void setListViews(List<View> mListViews) {
@@ -53,7 +55,11 @@ public class MyPagerAdapter extends PagerAdapter {
 				if (para == null) {
 					para = im.getLayoutParams();
 					para.width = MyApplication.getInstance().getScreenWidth();
-					para.height = para.width;
+					if (imgFlag) {
+						para.height = (int) (para.width / 1.9);
+					} else {
+						para.height = para.width;
+					}
 				}
 				im.setLayoutParams(para);
 				im.setImageResource(R.drawable.empty_photo);
