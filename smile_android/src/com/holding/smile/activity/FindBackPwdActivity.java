@@ -60,7 +60,7 @@ public class FindBackPwdActivity extends BaseActivity implements OnClickListener
 	}
 
 	@Override
-	public void onClick(View v) {
+	public synchronized void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
 				InputMethodManager imm = (InputMethodManager) editText.getContext()

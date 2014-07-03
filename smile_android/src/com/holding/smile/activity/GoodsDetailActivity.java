@@ -173,7 +173,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			addViewPager();// 添加页卡
 			if (pagerAdapter == null) {
 				// 实例化适配器
-				pagerAdapter = new MyPagerAdapter(viewList);
+				pagerAdapter = new MyPagerAdapter(viewList, false);
 				mViewPager.setAdapter(pagerAdapter);
 			} else {
 				pagerAdapter.setListViews(viewList);

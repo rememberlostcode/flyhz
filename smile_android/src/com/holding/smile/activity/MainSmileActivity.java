@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,6 +33,7 @@ import com.holding.smile.entity.IndexBrands;
 import com.holding.smile.entity.JActivity;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyListView;
+import com.holding.smile.myview.MyViewPager;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 import com.holding.smile.service.LoginService;
@@ -48,7 +49,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 	private static final int	AUTO_LOGIN			= 2;
 
 	private PullToRefreshView	mPullToRefreshView;
-	private ViewPager			mViewPager;
+	private MyViewPager			mViewPager;
 	private List<View>			viewList;
 	private MyPagerAdapter		pagerAdapter;
 	// 装点点的ImageView数组
@@ -92,16 +93,16 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 	}
 
 	private void initView() {
-		LinearLayout indexViewLayout = (LinearLayout) LayoutInflater.from(context).inflate(
+		FrameLayout indexViewLayout = (FrameLayout) LayoutInflater.from(context).inflate(
 				R.layout.index_recommend, null);
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
 		listView = (MyListView) findViewById(R.id.list_view);
 		listView.addHeaderView(indexViewLayout);// 添加子View
 
-		mViewPager = (ViewPager) indexViewLayout.findViewById(R.id.viewpager);
+		mViewPager = (MyViewPager) indexViewLayout.findViewById(R.id.viewpager);
+		mViewPager.setImgFlag(true);
 		brandAdapter = new BrandAdapter(brandList, cid);
 		listView.setAdapter(brandAdapter);
-
 		mPullToRefreshView.setOnHeaderRefreshListener(this);
 		mPullToRefreshView.setMoreFlag(false);
 	}
@@ -321,7 +322,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 																		addViewPager();// 添加页卡
 																		// 实例化适配器
 																		pagerAdapter = new MyPagerAdapter(
-																				viewList);
+																				viewList, true);
 																		mViewPager.setAdapter(pagerAdapter);
 																		mViewPager.setCurrentItem(0); // 设置默认当前页
 																	}
