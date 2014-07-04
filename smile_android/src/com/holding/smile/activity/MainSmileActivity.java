@@ -205,6 +205,13 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 		recActList = null;
 	};
 
+	// 当按HOME键时，然后再次启动应用时，我们要恢复先前状态
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		startTask();
+	}
+
 	/**
 	 * 添加页卡
 	 */
@@ -351,12 +358,12 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 																		}
 																	}
 																	brandAdapter.notifyDataSetChanged();
+																	mPullToRefreshView.onHeaderRefreshComplete();
 																}
 															}
 														} else {
 															CodeValidator.dealCode(context, null);
 														}
-														mPullToRefreshView.onHeaderRefreshComplete();
 														break;
 													}
 													case WHAT_DID_REFRESH: {
@@ -422,8 +429,10 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 
 																if (!version.equals(jversion.getVersionNew())) {
 																	// 这里来检测版本是否需要更新
-																	UpdateManager mUpdateManager = new UpdateManager(MainSmileActivity.this);
-																	mUpdateManager.setApkUrl(MyApplication.jgoods_img_url + jversion.getVersionApk());
+																	UpdateManager mUpdateManager = new UpdateManager(
+																			MainSmileActivity.this);
+																	mUpdateManager.setApkUrl(MyApplication.jgoods_img_url
+																			+ jversion.getVersionApk());
 																	mUpdateManager.checkUpdateInfo();
 																}
 															} catch (NameNotFoundException e) {
