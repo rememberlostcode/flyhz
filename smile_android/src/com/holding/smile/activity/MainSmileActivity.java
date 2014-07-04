@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,7 +93,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 	}
 
 	private void initView() {
-		FrameLayout indexViewLayout = (FrameLayout) LayoutInflater.from(context).inflate(
+		RelativeLayout indexViewLayout = (RelativeLayout) LayoutInflater.from(context).inflate(
 				R.layout.index_recommend, null);
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
 		listView = (MyListView) findViewById(R.id.list_view);
