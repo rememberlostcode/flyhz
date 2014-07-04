@@ -58,9 +58,9 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 
 		setSortLayout();// 设置排序标签
 
-		adapter = new MyJGoodsAdapter(context, mStrings);
 		mListView = (ListView) findViewById(R.id.goods_list_view);
-		mListView.setAdapter(adapter);
+		// adapter = new MyJGoodsAdapter(context, mStrings);
+		// mListView.setAdapter(adapter);
 		mListView.setOnScrollListener(mScrollListener);
 
 		startTask();
@@ -198,6 +198,10 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
 															mStrings.clear();
+															adapter = new MyJGoodsAdapter(context,
+																	mStrings);
+															mListView.setAdapter(adapter);
+
 															if (msg.obj != null) {
 																RtnValueDto obj = (RtnValueDto) msg.obj;
 																List<JGoods> strings = obj.getData();

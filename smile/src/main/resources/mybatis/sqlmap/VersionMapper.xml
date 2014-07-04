@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.VersionDao">
+    <insert id="insert" parameterType="VersionModel">
+    	insert into version(version,version_apk,version_log,gmt_create,gmt_modify) values(#{versionNew},#{versionApk},#{versionLog},#{gmtCreate},#{gmtModify})
+    </insert>
+    
+    <select id="getLastestModel" resultType="VersionModel">
+    	select id,version versionNow,version_apk versionApk,version_log versionLog 
+    	from version order by gmt_modify desc limit 1
+    </select>
+</mapper>

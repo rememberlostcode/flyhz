@@ -1,6 +1,9 @@
 
 package com.holding.smile.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,9 +15,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +51,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 	private Button		idcardDelete;
 	private ImageView	imageView;
 	private ImageView	imageBackView;
+	private ImageView	imageViewButton;
+	private ImageView	imageBackViewButton;
 
 	private int			optNum	= 1;
 
@@ -65,6 +72,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 		idcardDelete = (Button) findViewById(R.id.idcard_delete);
 		imageView = (ImageView) findViewById(R.id.idcard_idcard_img);
 		imageBackView = (ImageView) findViewById(R.id.idcard_idcard_back_img);
+		imageViewButton = (ImageView) findViewById(R.id.idcard_idcard_img_upload);
+		imageBackViewButton = (ImageView) findViewById(R.id.idcard_idcard_back_img_upload);
 
 		idcardName.setOnClickListener(this);
 		idcardNumber.setOnClickListener(this);
@@ -72,6 +81,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 		idcardDelete.setOnClickListener(this);
 		imageView.setOnClickListener(this);
 		imageBackView.setOnClickListener(this);
+		imageViewButton.setOnClickListener(this);
+		imageBackViewButton.setOnClickListener(this);
 		
 		try {
 			Intent intent = getIntent();
@@ -83,7 +94,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					if (idcard.getUrl() != null && !"".equals(idcard.getUrl())) {
 						imageView.setVisibility(View.VISIBLE);
 						LayoutParams para = imageView.getLayoutParams();
-						para.height = MyApplication.getInstance().getScreenHeight() / 3;
+						para.height = MyApplication.getInstance().getScreenHeight() / 4;
 						imageView.setLayoutParams(para);
 						MyApplication.getImageLoader().DisplayImage(
 								MyApplication.jgoods_img_url + idcard.getUrl(), imageView, false);
@@ -92,7 +103,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					if (idcard.getBack_url() != null && !"".equals(idcard.getBack_url())) {
 						imageBackView.setVisibility(View.VISIBLE);
 						LayoutParams paraBak = imageBackView.getLayoutParams();
-						paraBak.height = MyApplication.getInstance().getScreenHeight()/3;
+						paraBak.height = MyApplication.getInstance().getScreenHeight()/4;
 						imageBackView.setLayoutParams(paraBak);
 						MyApplication.getImageLoader().DisplayImage(
 								MyApplication.jgoods_img_url + idcard.getBack_url(), imageBackView, false);
@@ -107,6 +118,21 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			idcard = new Idcard();
 			idcardDelete.setVisibility(View.GONE);
 		}
+		
+		idcardNumber.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_DONE
+						|| actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+					InputMethodManager imm = (InputMethodManager) idcardNumber.getContext()
+																			.getSystemService(
+																					Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(idcardNumber.getWindowToken(), 0);
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override
@@ -198,16 +224,55 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 														}).setNegativeButton("取消", null).show();
 				break;
 			}
-			case R.id.idcard_idcard_img: {
+			case R.id.idcard_idcard_img_upload: {
 				Intent i = new Intent(Intent.ACTION_PICK,
 						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(i, SELECT_PHOTO_IMAGE);
 				break;
 			}
-			case R.id.idcard_idcard_back_img: {
+			case R.id.idcard_idcard_back_img_upload: {
 				Intent i = new Intent(Intent.ACTION_PICK,
 						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(i, SELECT_PHOTO_IMAGE_BACK);
+				break;
+			}
+			case R.id.idcard_idcard_img: {
+				if (picturePath == null && idcard.getUrl() == null) {
+					ToastUtils.showShort(this, "您还未上传身份证!");
+				} else {
+					Intent intent = new Intent(this, GoodsBigImgActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					List<String> picList = new ArrayList<String>();
+					if(picturePath == null){
+						picList.add(idcard.getUrl());
+					} else {
+						picList.add(picturePath);
+					}
+					int position = 0;
+					intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
+					intent.putExtra("position", position);
+					startActivity(intent);
+				}
+				break;
+			}
+			case R.id.idcard_idcard_back_img: {
+				if (backPicturePath == null && idcard.getBack_url() == null) {
+					ToastUtils.showShort(this, "您还未上传身份证!");
+				} else {
+					Intent intent = new Intent(this, GoodsBigImgActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					List<String> picList = new ArrayList<String>();
+					if(backPicturePath == null){
+						picList.add(idcard.getBack_url());
+					} else {
+						picList.add(backPicturePath);
+					}
+					
+					int position = 0;
+					intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
+					intent.putExtra("position", position);
+					startActivity(intent);
+				}
 				break;
 			}
 		}
@@ -229,7 +294,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			cursor.close();
 			
 			LayoutParams para = imageView.getLayoutParams();
-			para.height = MyApplication.getInstance().getScreenHeight()/3;
+			para.height = MyApplication.getInstance().getScreenHeight()/4;
 			
 			imageView.setLayoutParams(para);
 			imageView.setImageBitmap(BitmapUtils.decodeFile(picturePath, 500, 500));
@@ -248,7 +313,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			cursor.close();
 			
 			LayoutParams paraBak = imageBackView.getLayoutParams();
-			paraBak.height = MyApplication.getInstance().getScreenHeight()/3;
+			paraBak.height = MyApplication.getInstance().getScreenHeight()/4;
 			
 			imageBackView.setLayoutParams(paraBak);
 			imageBackView.setImageBitmap(BitmapUtils.decodeFile(backPicturePath, 500, 500));

@@ -21,36 +21,53 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="vertical" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
-                    android:text="*"
+                    android:text="根据国家海关规定，清关需提供收件人身份证正反面照片，请您输入真实的收件人信息，以确保顺利清关！"
                     android:textColor="@drawable/red"
-                    android:textSize="18sp" />
+                    android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="80dp"
+                <LinearLayout
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="姓名"
-                    android:textColor="@drawable/shenhuise"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/idcard_name"
-                    android:layout_width="0dp"
-                    android:layout_height="42dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="8dp"
-                    android:layout_weight="1"
+                    android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
-                    android:hint="请输入身份证姓名"
-                    android:inputType="text"
-                    android:maxLength="25"
-                    android:textSize="18sp" />
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:text="*"
+                        android:textColor="@drawable/red"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="姓名"
+                        android:textColor="@drawable/shenhuise"
+                        android:textSize="15sp" />
+
+                    <EditText
+                        android:id="@+id/idcard_name"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="8dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:hint="请输入身份证姓名"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLength="25"
+                        android:textSize="15sp" />
+                </LinearLayout>
             </LinearLayout>
 
             <View
@@ -71,15 +88,15 @@
                     android:layout_marginLeft="6dp"
                     android:text="*"
                     android:textColor="@drawable/red"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="身份证号"
+                    android:text="身份证"
                     android:textColor="@drawable/shenhuise"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
 
                 <EditText
                     android:id="@+id/idcard_number"
@@ -91,15 +108,24 @@
                     android:digits="1234567890x"
                     android:gravity="center_vertical"
                     android:hint="请输入身份证号"
+                    android:imeOptions="actionDone"
                     android:inputType="text"
                     android:maxLength="18"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1.0dp"
                 android:background="@drawable/qianhuise" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="110dp"
+                android:text="点击照片查看大图效果"
+                android:textColor="@drawable/lvse"
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -120,7 +146,7 @@
                         android:layout_marginLeft="6dp"
                         android:text="*"
                         android:textColor="@drawable/red"
-                        android:textSize="18sp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="80dp"
@@ -128,15 +154,27 @@
                         android:layout_margin="8dp"
                         android:text="证件正面"
                         android:textColor="@drawable/shenhuise"
-                        android:textSize="18sp" />
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:id="@+id/idcard_idcard_img"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="2dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
                         android:contentDescription="@string/my_idcards"
-                        android:src="@drawable/zwtp" />
+                        android:src="@drawable/zwtp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/idcard_idcard_img_upload"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="10dp"
+                        android:contentDescription="@string/my_idcards"
+                        android:src="@drawable/upload_image" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -152,7 +190,7 @@
                         android:layout_marginLeft="6dp"
                         android:text="*"
                         android:textColor="@drawable/red"
-                        android:textSize="18sp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="80dp"
@@ -160,15 +198,27 @@
                         android:layout_margin="8dp"
                         android:text="证件背面"
                         android:textColor="@drawable/shenhuise"
-                        android:textSize="18sp" />
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:id="@+id/idcard_idcard_back_img"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="2dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
                         android:contentDescription="@string/my_idcards"
-                        android:src="@drawable/zwtp" />
+                        android:src="@drawable/zwtp"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/idcard_idcard_back_img_upload"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="10dp"
+                        android:contentDescription="@string/my_idcards"
+                        android:src="@drawable/upload_image" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -187,7 +237,7 @@
                 android:background="@drawable/dahong"
                 android:text="删除"
                 android:textColor="@drawable/baise"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
 
             <Button
                 android:id="@+id/idcard_add_save"
@@ -197,7 +247,7 @@
                 android:background="@drawable/lvse"
                 android:text="保存"
                 android:textColor="@drawable/baise"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 

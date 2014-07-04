@@ -39,6 +39,17 @@ function category(query,response) {
         response.end();
     });
 }
+
+function version(query,response) {
+    var key ='smile@version';
+    client.get(key, function(err, res) {
+        //console.log(res);
+        var versionJsonStr = JSON.parse(res);
+        response.writeHead(200, headContentObject);
+        response.write(addData(JSON.stringify(versionJsonStr)));
+        response.end();
+    });
+}
 /**
  * 首页活动推荐
  * @param query
@@ -325,7 +336,7 @@ function brand(query,response) {
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].p);
+                        result += docs[i].p?JSON.stringify(docs[i].p):'[]';
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:0);
 						result += ',\"lp\":';
@@ -443,7 +454,7 @@ function brandmore(query,response) {
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].p);
+                        result += docs[i].p?JSON.stringify(docs[i].p):'[]';
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
 						result += ',\"lp\":';
@@ -578,7 +589,7 @@ function rankingsales(query,response) {
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].p);
+                        result += docs[i].p?JSON.stringify(docs[i].p):'[]';
                         result += ',\"sn\":';
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"pp\":';
@@ -652,7 +663,7 @@ function rankingmonthsales(query,response) {
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].p);
+                        result += docs[i].p?JSON.stringify(docs[i].p):'[]';
                         result += ',\"sn\":';
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"pp\":';
@@ -725,7 +736,7 @@ function rankingdiscount(query,response) {
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].p);
+                        result += docs[i].p?JSON.stringify(docs[i].p):'[]';
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
 						result += ',\"lp\":';
@@ -797,7 +808,7 @@ function rankingprice(query,response) {
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].p);
+                        result += docs[i].p?JSON.stringify(docs[i].p):'[]';
                         result += ',\"sn\":';
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"pp\":';
@@ -896,7 +907,7 @@ function search(query,response) {
 						result += ',\"d\":';
                         result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].p);
+                        result += docs[i].p?JSON.stringify(docs[i].p):'[]';
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
 						result += ',\"lp\":';
@@ -1003,7 +1014,7 @@ function searchmore(query,response) {
 						result += ',\"d\":';
                         result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].p);
+                        result += docs[i].p?JSON.stringify(docs[i].p):'[]';
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:null);
 						result += ',\"lp\":';
@@ -1088,9 +1099,9 @@ function goodsdetail(query,response) {
 						result += ',\"d\":';
                         result += JSON.stringify(docs[i].d);
                         result += ',\"p\":';
-                        result += JSON.stringify(docs[i].bp);
+                        result += docs[i].bp?JSON.stringify(docs[i].bp):'[]';
                         result += ',\"bp\":';
-                        result += JSON.stringify(docs[i].imgs);
+                        result += docs[i].imgs?JSON.stringify(docs[i].imgs):'[]';
                         result += ',\"pp\":';
                         result += JSON.stringify(docs[i].pp?docs[i].pp:0);
                         result += ',\"lp\":';
@@ -1098,7 +1109,7 @@ function goodsdetail(query,response) {
                         result += ',\"sp\":';
                         result += JSON.stringify(docs[i].sp?docs[i].sp:0);
                         result += ',\"be\":';
-                        result += JSON.stringify(docs[i].ce);
+                        result += JSON.stringify(docs[i].be);
 
 
                         result += ',\"c\":';
@@ -1136,6 +1147,7 @@ function goodsdetail(query,response) {
     req.end();
 }
 
+exports.version = version;
 exports.index = index;
 exports.indexsingle = indexsingle;
 exports.recommendbrand = recommendbrand;

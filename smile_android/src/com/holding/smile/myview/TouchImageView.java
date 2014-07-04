@@ -1,4 +1,3 @@
-
 package com.holding.smile.myview;
 
 import android.app.Activity;
@@ -53,7 +52,12 @@ public class TouchImageView extends ImageView {
 		super(context);
 		this.context = context;
 		this.imagePath = imagePath;
-		gintama = MyApplication.getImageLoader().getBitmap(imagePath, true);// true是取原图
+		if(this.imagePath.indexOf("http://") > -1) {
+			gintama = MyApplication.getImageLoader().getBitmap(this.imagePath, true);// true是取原图
+		} else {
+			gintama = BitmapUtils.decodeFile(this.imagePath, 500, 500);
+		}
+		
 		gintama = BitmapUtils.resizeBitmap(gintama, widthScreen, heightScreen);
 		initImageView();
 	}
