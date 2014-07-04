@@ -96,9 +96,9 @@ public class GoodsBigImgActivity extends BaseActivity implements OnClickListener
 				// View view = inflater.inflate(R.layout.pager_pic_item, null);
 				String imagePath = null;
 				if(picList.get(i).indexOf("/idcard") > -1){
-					imagePath = MyApplication.jgoods_img_url + picList.get(i);
-				} else {
 					imagePath = picList.get(i);
+				} else {
+					imagePath = MyApplication.jgoods_img_url + picList.get(i);
 				}
 				TouchImageView imageView = new TouchImageView(this, imagePath);
 				// ImageView imageView = (ImageView)
