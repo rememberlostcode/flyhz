@@ -18,7 +18,7 @@
             android:gravity="center_vertical"
             android:hint="请输入要找回密码的用户名"
             android:imeOptions="actionDone"
-            android:inputType="phone"
+            android:inputType="textEmailAddress"
             android:textSize="18sp" />
     </LinearLayout>
 
