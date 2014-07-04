@@ -39,6 +39,17 @@ function category(query,response) {
         response.end();
     });
 }
+
+function version(query,response) {
+    var key ='smile@version';
+    client.get(key, function(err, res) {
+        //console.log(res);
+        var versionJsonStr = JSON.parse(res);
+        response.writeHead(200, headContentObject);
+        response.write(addData(JSON.stringify(versionJsonStr)));
+        response.end();
+    });
+}
 /**
  * 首页活动推荐
  * @param query
@@ -1136,6 +1147,7 @@ function goodsdetail(query,response) {
     req.end();
 }
 
+exports.version = version;
 exports.index = index;
 exports.indexsingle = indexsingle;
 exports.recommendbrand = recommendbrand;

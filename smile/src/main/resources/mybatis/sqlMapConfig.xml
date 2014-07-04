@@ -34,6 +34,7 @@
         <typeAlias alias="IdcardModel" type="com.flyhz.shop.persistence.entity.IdcardModel"/>
         <typeAlias alias="ActivityModel" type="com.flyhz.shop.persistence.entity.ActivityModel"/>
         <typeAlias alias="LogisticsModel" type="com.flyhz.shop.persistence.entity.LogisticsModel"/>
+        <typeAlias alias="VersionModel" type="com.flyhz.shop.persistence.entity.VersionModel"/>
         
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>

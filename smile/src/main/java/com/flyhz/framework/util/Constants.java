@@ -38,6 +38,10 @@ public class Constants {
 	 * 所有品牌KEY，类型为map<brandId,brandJson>
 	 */
 	public static final String	REDIS_KEY_BRANDS				= "smile@brands@all";
+	/**
+	 * APK版本KEY
+	 */
+	public static final String	REDIS_KEY_VERSION				= "smile@version";
 	/***************************** redis end *************************/
 
 	public static final String	MESSAGE_NODATA					= "暂无更新";
@@ -66,8 +70,8 @@ public class Constants {
 			this.code = code;
 		}
 	}
-	
-	public static final String TB_URL = "http://211.149.175.138/smile/build/url";
-	
-	public static Double dollarExchangeRate;
+
+	public static final String	TB_URL	= "http://211.149.175.138/smile/build/url";
+
+	public static Double		dollarExchangeRate;
 }
