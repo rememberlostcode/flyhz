@@ -6,6 +6,9 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,6 +32,7 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JActivity;
 import com.holding.smile.entity.JIndexJGoods;
+import com.holding.smile.entity.JVersion;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.myview.PullToRefreshView;
@@ -43,6 +47,7 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
 	private static final int	WHAT_DID_REFRESH	= 1;
 	private static final int	AUTO_LOGIN			= 2;
+	private static final int	CHECK_VERSION		= 3;
 
 	private PullToRefreshView	mPullToRefreshView;
 	private ViewPager			mViewPager;
@@ -72,7 +77,6 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		displayFooterMain(R.id.mainfooter_one);
 
 		initView();
-		startTask();
 
 		/* 自动登录另起一个线程 */
 		mUIHandler.postDelayed(new Runnable() {
@@ -88,8 +92,26 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 					msg.sendToTarget();
 				}
 			}
-		}, 200);
+		}, 500);
+		
+		mUIHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				startTask();Message msg = mUIHandler.obtainMessage(CHECK_VERSION);
+				msg.sendToTarget();
+			}
+		}, 2000);
 
+	}
+	
+	@Override
+	public void loadData() {
+		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getIndexJGoods(cid);
+		if (CodeValidator.dealCode(context, rGoods)) {
+			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
+			msg.obj = rGoods.getIndexData();
+			msg.sendToTarget();
+		}
 	}
 
 	private void initView() {
@@ -149,16 +171,6 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 				loadData();
 			}
 		}, 1000);
-	}
-
-	@Override
-	public void loadData() {
-		RtnValueDto rGoods = MyApplication.getInstance().getDataService().getIndexJGoods(cid);
-		if (CodeValidator.dealCode(context, rGoods)) {
-			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-			msg.obj = rGoods.getIndexData();
-			msg.sendToTarget();
-		}
 	}
 
 	public void onRefresh() {
@@ -292,7 +304,6 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
@@ -371,7 +382,36 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 														}
 														break;
 													}
+													case CHECK_VERSION: {
+														RtnValueDto rvd = MyApplication.getInstance()
+																						.getDataService()
+																						.getLastestVersion();
+														if (CodeValidator.dealCode(context, rvd)) {
+
+															try {
+																// 获取packagemanager的实例
+																PackageManager packageManager = getPackageManager();
+																// getPackageName()是你当前类的包名，0代表是获取版本信息
+																PackageInfo packInfo;
+																packInfo = packageManager.getPackageInfo(
+																		getPackageName(), 0);
+																String version = packInfo.versionName;
+
+																JVersion jversion = rvd.getVersionData();
+																ToastUtils.showShort(
+																		context,
+																		"当前版本为"
+																				+ version
+																				+ "，有新的版本APK，版本为"
+																				+ jversion.getVersionNew());
+															} catch (NameNotFoundException e) {
+																e.printStackTrace();
+															}
+														}
+														break;
+													}
 												}
+												progressBar.setVisibility(View.GONE);
 											}
 										};
 

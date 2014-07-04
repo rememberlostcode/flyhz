@@ -25,6 +25,7 @@ import com.holding.smile.protocol.POrderList;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.protocol.PUser;
+import com.holding.smile.protocol.PVersion;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
@@ -40,6 +41,7 @@ public class DataService {
 
 	private String			prefix_url;
 	private String			jGoods_index_url;
+	private String			jGoods_version_url;
 	private String			jGoods_index_single_url;
 	private String			jGoods_recommend_url;
 	private String			jGoods_cate_url;
@@ -60,6 +62,7 @@ public class DataService {
 	public DataService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
 		jGoods_index_url = context.getString(R.string.jGoods_index_url);
+		jGoods_version_url = context.getString(R.string.jGoods_version_url);
 		jGoods_index_single_url = context.getString(R.string.jGoods_index_single_url);
 		jGoods_recommend_url = context.getString(R.string.jGoods_recommend_url);
 		jGoods_cate_url = context.getString(R.string.jGoods_cate_url);
@@ -716,6 +719,24 @@ public class DataService {
 				rvd = new RtnValueDto();
 				rvd.setAtData(pc.getData());
 				rvd.setCode(pc.getCode());
+			}
+		}
+		return rvd;
+	}
+	
+	public RtnValueDto getLastestVersion() {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.jGoods_version_url,
+				null);
+		if (rvdString != null) {
+			PVersion pv = JSONUtil.getJson2Entity(rvdString, PVersion.class);
+			if (pv != null) {
+				rvd = new RtnValueDto();
+				rvd.setVersionData(pv.getData());
+				rvd.setCode(pv.getCode());
 			}
 		}
 		return rvd;
