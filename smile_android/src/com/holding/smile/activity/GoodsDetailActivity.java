@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -49,6 +50,8 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	private TextView		b;										// 品牌名
 	private TextView		n;										// 商品名
 	private TextView		pp;									// 价格
+	private TextView		lp;									// 原价格
+	private TextView		sn;									// 销售量
 	private TextView		d;										// 描述
 	private TextView		scolor;								// 选择的颜色
 	private List<JGoods>	details		= new ArrayList<JGoods>();
@@ -93,6 +96,8 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			b = (TextView) findViewById(R.id.b);
 			n = (TextView) findViewById(R.id.n);
 			pp = (TextView) findViewById(R.id.pp);
+			lp = (TextView) findViewById(R.id.lp);
+			sn = (TextView) findViewById(R.id.sn);
 			d = (TextView) findViewById(R.id.d);
 			scolor = (TextView) findViewById(R.id.select_color);
 			initGoods();
@@ -140,13 +145,15 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			if (jGoods.getPp() != null) {
 				pp.setText("￥" + jGoods.getPp());
 			}
-			// if (jGoods.getLp() != null) {
-			// po.setText("￥" + jGoods.getLp());
-			// po.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
-			// }
-			// if (jGoods.getSp() != null) {
-			// save.setText("省￥" + jGoods.getSp());
-			// }
+			if (jGoods.getLp() != null) {
+				lp.setText("￥" + jGoods.getLp());
+				lp.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
+			}
+			if (jGoods.getSn() != null) {
+				sn.setText("已售 " + jGoods.getSn() + " 件");
+			} else {
+				sn.setText("已售 0 件");
+			}
 			if (jGoods.getD() != null && !"".equals(jGoods.getD().trim())) {
 				d.setText(jGoods.getD().trim());
 			}
@@ -166,10 +173,19 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			addViewPager();// 添加页卡
 			if (pagerAdapter == null) {
 				// 实例化适配器
-				pagerAdapter = new MyPagerAdapter(viewList);
+				pagerAdapter = new MyPagerAdapter(viewList, false);
 				mViewPager.setAdapter(pagerAdapter);
 			} else {
 				pagerAdapter.setListViews(viewList);
+				int size = picList.size();
+				for (int i = 0; i < size; i++) {
+					View view = mViewPager.findViewWithTag("imRecord" + i);
+					if (view != null) {
+						pagerAdapter.disposeItem(view,
+								MyApplication.jgoods_img_url + picList.get(i));
+					}
+				}
+
 			}
 			mViewPager.setCurrentItem(0); // 设置默认当前页
 		}
@@ -184,13 +200,13 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 		// 处理同款颜色
 		for (JGoods g : details) {
+			JColor jcolor = new JColor();
+			jcolor.setId(g.getId());
 			if (g.getC() != null) {
-				JColor jcolor = new JColor();
-				jcolor.setId(g.getId());
 				jcolor.setC(g.getC());
 				jcolor.setCi(g.getCi());
-				colorList.add(jcolor);
 			}
+			colorList.add(jcolor);
 		}
 
 		final MyLinearLayout colorLayout = (MyLinearLayout) findViewById(R.id.color_list);
@@ -268,8 +284,20 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			int size = picList.size();
 			for (int i = 0; i < size; i++) {
 				View view = inflater.inflate(R.layout.pager_pic_item, null);
+				final int position = i;
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setTag(MyApplication.jgoods_img_url + picList.get(i));
+				imageView.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						Intent intent = new Intent(context, GoodsBigImgActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+						intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
+						intent.putExtra("position", position);
+						startActivity(intent);
+					}
+				});
 				viewList.add(view);
 			}
 
@@ -353,7 +381,6 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case 0: {
 														if (msg.obj != null) {
@@ -364,8 +391,10 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 																	if (obj.getValidate() != null
 																			&& StrUtils.isNotEmpty(obj.getValidate()
 																										.getMessage())) {
-																		ToastUtils.showShort(context, obj.getValidate()
-																				.getMessage());
+																		ToastUtils.showShort(
+																				context,
+																				obj.getValidate()
+																					.getMessage());
 																	}
 																} else {
 																	initView();
@@ -375,6 +404,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 										};
 

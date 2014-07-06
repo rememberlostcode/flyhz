@@ -17,9 +17,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_marginRight="4dp"
+        android:contentDescription="@string/gu"
         android:src="@drawable/btn_back_bg" />
 
     <LinearLayout
+        android:id="@+id/search_content_frame"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -53,12 +55,11 @@
         android:id="@+id/search_pic_content_del"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="4dp"
         android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
         android:contentDescription="@string/delete"
         android:src="@drawable/clear_click" />
-    
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1px"

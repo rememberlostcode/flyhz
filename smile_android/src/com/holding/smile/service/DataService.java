@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
@@ -14,6 +15,7 @@ import com.holding.smile.entity.SortType;
 import com.holding.smile.protocol.PBrandJGoods;
 import com.holding.smile.protocol.PCartItem;
 import com.holding.smile.protocol.PCategory;
+import com.holding.smile.protocol.PFindPwd;
 import com.holding.smile.protocol.PGoods;
 import com.holding.smile.protocol.PIdcards;
 import com.holding.smile.protocol.PIndexBrands;
@@ -23,6 +25,8 @@ import com.holding.smile.protocol.POrderList;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.protocol.PUser;
+import com.holding.smile.protocol.PVersion;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.JSONUtil;
 import com.holding.smile.tools.StrUtils;
@@ -37,6 +41,7 @@ public class DataService {
 
 	private String			prefix_url;
 	private String			jGoods_index_url;
+	private String			jGoods_version_url;
 	private String			jGoods_index_single_url;
 	private String			jGoods_recommend_url;
 	private String			jGoods_cate_url;
@@ -52,10 +57,12 @@ public class DataService {
 	private String			order_list_url;
 	private String			cart_list_url;
 	private String			order_status_url;
+	private String			user_find_backpwd_url;
 
 	public DataService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
 		jGoods_index_url = context.getString(R.string.jGoods_index_url);
+		jGoods_version_url = context.getString(R.string.jGoods_version_url);
 		jGoods_index_single_url = context.getString(R.string.jGoods_index_single_url);
 		jGoods_recommend_url = context.getString(R.string.jGoods_recommend_url);
 		jGoods_cate_url = context.getString(R.string.jGoods_cate_url);
@@ -71,6 +78,7 @@ public class DataService {
 		order_list_url = context.getString(R.string.order_list_url);
 		cart_list_url = context.getString(R.string.cart_list_url);
 		order_status_url = context.getString(R.string.order_status_url);
+		user_find_backpwd_url = context.getString(R.string.user_find_backpwd_url);
 	}
 
 	/**
@@ -79,6 +87,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIndexListInit(Integer cid) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = getIndexJGoods(cid);
 		return obj;
 	}
@@ -89,6 +100,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getRecommendBrandsListInit(Integer cid) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = getRecommendBrands(cid);
 		return obj;
 	}
@@ -99,6 +113,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getBrandJGoodsListInit(Integer bid, Integer cid, String seqorderType) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, null);
 		return obj;
 	}
@@ -114,6 +131,9 @@ public class DataService {
 	 */
 	public List<SortType> getSortTypeList() {
 		List<SortType> results = new ArrayList<SortType>();
+		if (CodeValidator.isNetworkError()) {
+			return results;
+		}
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sorttype_url, null);
 		if (StrUtils.isNotEmpty(rStr)) {
 			PSortTypes pst = JSONUtil.getJson2Entity(rStr, PSortTypes.class);
@@ -129,12 +149,16 @@ public class DataService {
 	 * @param bid品牌ID
 	 * @param cid分类ID
 	 * @param seqorderType排序类型
-	 * @param seqorderValue序号
+	 * @param start序号
+	 *            （即当前页面总记录数）
 	 * @return
 	 */
 	public RtnValueDto getBrandJGoodsListMore(Integer bid, Integer cid, String seqorderType,
-			Integer seqorderValue) {
-		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, seqorderValue);
+			Integer start) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto obj = getBrandGoods(bid, cid, seqorderType, start);
 		return obj;
 	}
 
@@ -146,6 +170,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSearchListInit(String keywords) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
 			obj = searchGoods(keywords, null, null);
@@ -162,7 +189,10 @@ public class DataService {
 	 *            排序方式
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListRefresh(String keywords,String seqorderType) {
+	public RtnValueDto getJGoodsSearchListRefresh(String keywords, String seqorderType) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
 			obj = searchGoods(keywords, seqorderType, null);
@@ -173,18 +203,19 @@ public class DataService {
 	/**
 	 * 搜索物品更多
 	 * 
-	 * @param keywords
-	 *            关键词
-	 * @param jGoodsLast
-	 *            最后一个物品
-	 * @param mLocation
-	 *            经纬度
+	 * @param keywords关键词
+	 * @param seqorderType排序方式
+	 * @param start序号
+	 *            （即当前页面总记录数）
 	 * @return
 	 */
-	public RtnValueDto getJGoodsSearchListMore(String keywords, String seqorderType, Integer seqorderValue) {
+	public RtnValueDto getJGoodsSearchListMore(String keywords, String seqorderType, Integer start) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto obj = null;
 		if (keywords != null && !"".equals(keywords.trim())) {
-			obj = searchGoods(keywords, seqorderType, seqorderValue);
+			obj = searchGoods(keywords, seqorderType, start);
 		}
 		return obj;
 	}
@@ -195,6 +226,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIndexJGoods(Integer cid) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
@@ -204,7 +238,7 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PIndexJGoods indexJGoods = JSONUtil.getJson2Entity(rStr, PIndexJGoods.class);
-				if (indexJGoods != null){
+				if (indexJGoods != null) {
 					rvd.setIndexData(indexJGoods.getData());
 					rvd.setCode(indexJGoods.getCode());
 				}
@@ -228,7 +262,10 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIndexBrands(Integer cid) {
-		RtnValueDto rvd = new RtnValueDto();
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
 			param.put("cid", String.valueOf(cid));
@@ -237,20 +274,15 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PIndexBrands indexBrands = JSONUtil.getJson2Entity(rStr, PIndexBrands.class);
-				if (indexBrands != null){
+				if (indexBrands != null) {
+					rvd = new RtnValueDto();
 					rvd.setIndexBrandsData(indexBrands.getData());
 					rvd.setCode(indexBrands.getCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
+				Log.e("dataService", e.getMessage());
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
 		}
 		return rvd;
 	}
@@ -261,7 +293,10 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getRecommendBrands(Integer cid) {
-		RtnValueDto rvd = new RtnValueDto();
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (cid != null)
 			param.put("cid", String.valueOf(cid));
@@ -270,20 +305,15 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PBrandJGoods brandJGoods = JSONUtil.getJson2Entity(rStr, PBrandJGoods.class);
-				if (brandJGoods != null){
+				if (brandJGoods != null) {
+					rvd = new RtnValueDto();
 					rvd.setBrandData(brandJGoods.getData());
 					rvd.setCode(brandJGoods.getCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
+				Log.e("dataService", e.getMessage());
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
 		}
 		return rvd;
 	}
@@ -294,13 +324,16 @@ public class DataService {
 	 * @param bid
 	 * @param cid
 	 * @param seqorderType
-	 * @param seqorderValue
+	 * @param start序号
+	 *            （即当前页面总记录数）
 	 * @return
 	 */
 
-	public RtnValueDto getBrandGoods(Integer bid, Integer cid, String seqorderType,
-			Integer seqorderValue) {
-		RtnValueDto rvd = new RtnValueDto();
+	public RtnValueDto getBrandGoods(Integer bid, Integer cid, String seqorderType, Integer start) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
 		String url = this.prefix_url;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (bid != null)
@@ -309,8 +342,8 @@ public class DataService {
 			param.put("cid", String.valueOf(cid));
 		if (StrUtils.isNotEmpty(seqorderType))
 			param.put("seqorderType", seqorderType.trim());
-		if (seqorderValue != null) {
-			param.put("seqorderValue", String.valueOf(seqorderValue));
+		if (start != null) {
+			param.put("start", String.valueOf(start));
 			url += this.jGoods_brand_more_url;
 		} else {
 			url += this.jGoods_brand_url;
@@ -320,20 +353,15 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
-				if(pst != null){
+				if (pst != null) {
+					rvd = new RtnValueDto();
 					rvd.setData(pst.getData());
 					rvd.setCode(pst.getCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
+				Log.e("DataService", e.getMessage());
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
 		}
 		return rvd;
 	}
@@ -344,11 +372,15 @@ public class DataService {
 	 * @param keywords
 	 *            关键词
 	 * @param seqorderType
-	 * @param seqorderValue
+	 * @param start序号
+	 *            （即当前页面总记录数）
 	 * @return
 	 */
-	public RtnValueDto searchGoods(String keywords, String seqorderType, Integer seqorderValue) {
-		RtnValueDto rvd = new RtnValueDto();
+	public RtnValueDto searchGoods(String keywords, String seqorderType, Integer start) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
 		String url = prefix_url;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (StrUtils.isNotEmpty(keywords)) {
@@ -357,8 +389,8 @@ public class DataService {
 		if (StrUtils.isNotEmpty(seqorderType)) {
 			param.put("seqorderType", seqorderType.trim());
 		}
-		if (seqorderValue != null) {
-			param.put("seqorderValue", String.valueOf(seqorderValue));
+		if (start != null) {
+			param.put("start", String.valueOf(start));
 			url += this.jGoods_search_more_url;
 		} else {
 			url += this.jGoods_search_url;
@@ -368,20 +400,15 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PGoods pst = JSONUtil.getJson2Entity(rStr, PGoods.class);
-				if(pst != null) {
+				if (pst != null) {
+					rvd = new RtnValueDto();
 					rvd.setData(pst.getData());
 					rvd.setCode(pst.getCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
+				Log.e("DataService", e.getMessage());
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
 		}
 		return rvd;
 	}
@@ -392,6 +419,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getCategorys() {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_cate_url, null);
 
@@ -399,7 +429,7 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				pc = JSONUtil.getJson2Entity(rStr, PCategory.class);
-				if(pc!=null){
+				if (pc != null) {
 					rvd.setCode(pc.getCode());
 					rvd.setCateData(pc.getData());
 				}
@@ -407,7 +437,7 @@ public class DataService {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return rvd;
 	}
 
@@ -417,25 +447,22 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getSortList() {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = URLUtil.getStringByGet(this.prefix_url + this.jGoods_sort_url, null);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PSort pc = JSONUtil.getJson2Entity(rStr, PSort.class);
-				if (pc != null){
+				if (pc != null) {
 					rvd.setSortData(pc.getData());
 					rvd.setCode(pc.getCode());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
 		}
 		return rvd;
 	}
@@ -446,6 +473,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getJGoodsSortList(String sortUrl) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String rStr = "";
 		if (StrUtils.isNotEmpty(sortUrl)) {
@@ -479,6 +509,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getGoodsDetail(String bs) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String url = this.prefix_url + this.jGoods_detail_url;
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -489,7 +522,7 @@ public class DataService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PGoods details = JSONUtil.getJson2Entity(rStr, PGoods.class);
-				if (details != null){
+				if (details != null) {
 					rvd.setData(details.getData());
 					rvd.setCode(details.getCode());
 				}
@@ -508,6 +541,9 @@ public class DataService {
 	}
 
 	public RtnValueDto getUserInfo() {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String url = prefix_url + user_info;
 
@@ -539,6 +575,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getIdcardsList() {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		String url = prefix_url + idcard_list;
 		String rStr = URLUtil.getStringByGet(url, null);
@@ -566,6 +605,9 @@ public class DataService {
 	}
 
 	public RtnValueDto getOrdersList(String status) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -602,6 +644,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getOrderStatus(String number) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 
 		HashMap<String, String> param = new HashMap<String, String>();
@@ -637,6 +682,9 @@ public class DataService {
 	 * @return
 	 */
 	public RtnValueDto getCartItemList() {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_list_url, null);
 		if (rvdString != null) {
@@ -645,6 +693,50 @@ public class DataService {
 				rvd = new RtnValueDto();
 				rvd.setCartListData(pc.getData());
 				rvd.setCode(pc.getCode());
+			}
+		}
+		return rvd;
+	}
+
+	/**
+	 * 找回密码
+	 * 
+	 * @param username
+	 * @return
+	 */
+	public RtnValueDto findBackPwd(String username) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("username", username);
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.user_find_backpwd_url,
+				param);
+		if (rvdString != null) {
+			PFindPwd pc = JSONUtil.getJson2Entity(rvdString, PFindPwd.class);
+			if (pc != null) {
+				rvd = new RtnValueDto();
+				rvd.setAtData(pc.getData());
+				rvd.setCode(pc.getCode());
+			}
+		}
+		return rvd;
+	}
+	
+	public RtnValueDto getLastestVersion() {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.jGoods_version_url,
+				null);
+		if (rvdString != null) {
+			PVersion pv = JSONUtil.getJson2Entity(rvdString, PVersion.class);
+			if (pv != null) {
+				rvd = new RtnValueDto();
+				rvd.setVersionData(pv.getData());
+				rvd.setCode(pv.getCode());
 			}
 		}
 		return rvd;

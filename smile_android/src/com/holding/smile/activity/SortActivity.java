@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,8 +58,8 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 
 		setSortLayout();// 设置排序标签
 
-		adapter = new MyJGoodsAdapter(context, mStrings);
 		mListView = (ListView) findViewById(R.id.goods_list_view);
+		adapter = new MyJGoodsAdapter(context, mStrings);
 		mListView.setAdapter(adapter);
 		mListView.setOnScrollListener(mScrollListener);
 
@@ -89,7 +90,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 				public void onClick(View v) {
 					jSortLayout.setBackgroundBtn(v.getId());
 					sortUrl = v.getTag().toString();
-					loadData();
+					startTask();
 				}
 			});
 		}
@@ -123,14 +124,22 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 	public synchronized void loadData() {
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getJGoodsSortList(sortUrl);
-
 		if (rGoods != null) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rGoods;
 			msg.sendToTarget();
 		} else {
 			ToastUtils.showShort(context, "暂无数据！");
+			waitCloseProgressBar();
 		}
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (returnDesktop(keyCode, event)) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -140,8 +149,10 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 		jSortList = null;
 		mStrings.clear();
 		mStrings = null;
-		mListView.destroyDrawingCache();
-		mListView = null;
+		if (mListView != null) {
+			mListView.destroyDrawingCache();
+			mListView = null;
+		}
 		if (adapter != null) {
 			adapter.notifyDataSetChanged();
 			adapter.notifyDataSetInvalidated();
@@ -183,11 +194,13 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 
 												@Override
 												public void handleMessage(Message msg) {
-													progressBar.setVisibility(View.GONE);
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
+															mStrings.clear();
+															adapter = new MyJGoodsAdapter(context,
+																	mStrings);
+															mListView.setAdapter(adapter);
 															if (msg.obj != null) {
-																mStrings.clear();
 																RtnValueDto obj = (RtnValueDto) msg.obj;
 																List<JGoods> strings = obj.getData();
 																if (strings != null
@@ -196,12 +209,13 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 																		JGoods each = strings.get(i);
 																		mStrings.add(each);
 																	}
-																	adapter.notifyDataSetChanged();
 																}
 															}
+															adapter.notifyDataSetChanged();
 															break;
 														}
 													}
+													waitCloseProgressBar();
 												}
 											};
 

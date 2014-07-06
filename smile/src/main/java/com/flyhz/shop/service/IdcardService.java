@@ -12,7 +12,7 @@ public interface IdcardService {
 
 	public List<IdcardModel> getAllIdcardsByUserId(Integer userId) throws ValidateException;
 
-	public void saveIdcard(IdcardModel idcardModel, MultipartFile multipartFile)
+	public void saveIdcard(IdcardModel idcardModel, MultipartFile photo,MultipartFile backPhoto)
 			throws ValidateException;
 
 	public void deleteIdcard(Integer id, Integer userId) throws ValidateException;

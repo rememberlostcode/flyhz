@@ -45,6 +45,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 	private PullToRefreshView	mPullToRefreshView;
 	private ListView			mListView;
+	private ImageView			cateBtn				= null;
 	private Integer				bid					= null;						// 品牌ID
 	private Integer				cid					= null;						// 分类ID
 	private String				seqorderType		= null;						// 选中的排序类型
@@ -55,8 +56,8 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
-		TextView cateBtn = displayHeaderRight();
-		cateBtn.setText(R.string.category);
+		cateBtn = displayHeaderRightBtn();
+		cateBtn.setImageResource(R.drawable.leibie);
 		cateBtn.setOnClickListener(this);
 
 		try {
@@ -84,7 +85,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	 */
 	private void initView() {
 		setContentLayout(R.layout.activity_main);
-		displayFooterMain(0);
+		displayFooterMain(R.id.mainfooter_one);
 		setSortTypeLayout();// 设置排序标签
 
 		adapter = new MyJGoodsAdapter(context, mStrings);
@@ -109,6 +110,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			v.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					progressBar.setVisibility(View.VISIBLE);
 					sortTypeLayout.setBackgroundBtn(v.getId());
 					seqorderType = v.getTag().toString();
 					onRefresh();
@@ -124,10 +126,11 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 				finish();
 				break;
 			}
-			case R.id.header_right: {
+			case R.id.header_right_btn: {
 				Intent intent = new Intent(this, CategoryActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivityForResult(intent, CATE_CODE);
+				cateBtn.setImageResource(R.drawable.leibie2);
 				break;
 			}
 		}
@@ -139,6 +142,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			if (data != null) {
 				Category cate = (Category) data.getExtras().getSerializable("cate");
 				if (cate != null) {
+					progressBar.setVisibility(View.VISIBLE);
 					cid = cate.getId();
 					onRefresh();
 				}
@@ -175,6 +179,11 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 	@Override
 	public synchronized void loadData() {
+		mStrings.clear();
+		if (adapter != null) {
+			adapter.notifyDataSetInvalidated();
+			adapter.notifyDataSetChanged();
+		}
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (CodeValidator.dealCode(context, rGoods)) {
@@ -185,29 +194,29 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	}
 
 	public void onRefresh() {
+		mStrings.clear();
+		if (adapter != null) {
+			mListView.removeAllViewsInLayout();
+			mListView.destroyDrawingCache();
+			adapter.notifyDataSetInvalidated();
+			adapter.notifyDataSetChanged();
+		}
 		RtnValueDto rGoods = MyApplication.getInstance().getDataService()
 											.getBrandJGoodsListInit(bid, cid, seqorderType);
 		if (CodeValidator.dealCode(context, rGoods)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
 			msg.obj = rGoods;
 			msg.sendToTarget();
+		} else {
+			waitCloseProgressBar();
 		}
 	}
 
 	public void onLoadMore() {
-		JGoods jGoodsLast = null;
-		Object obj = null;
-		Integer i = mListView.getLastVisiblePosition();
-		if (i >= 0) {
-			obj = mListView.getItemAtPosition(i);
-		}
-		if (obj != null) {
-			jGoodsLast = (JGoods) obj;
-		}
 		RtnValueDto rGoods = MyApplication.getInstance()
 											.getDataService()
 											.getBrandJGoodsListMore(bid, cid, seqorderType,
-													jGoodsLast.getSeq());
+													mStrings.size());
 		if (CodeValidator.dealCode(context, rGoods)) {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_MORE);
 			msg.obj = rGoods;
@@ -222,16 +231,19 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 		sorttypeList = null;
 		mStrings.clear();
 		mStrings = null;
-		mPullToRefreshView.destroyDrawingCache();
-		mPullToRefreshView = null;
-		mListView.destroyDrawingCache();
-		mListView = null;
+		if (mPullToRefreshView != null) {
+			mPullToRefreshView.destroyDrawingCache();
+			mPullToRefreshView = null;
+		}
+		if (mListView != null) {
+			mListView.destroyDrawingCache();
+			mListView = null;
+		}
 		if (adapter != null) {
 			adapter.notifyDataSetChanged();
 			adapter.notifyDataSetInvalidated();
 			adapter = null;
 		}
-		setResult(MORE_CODE, null);
 	};
 
 	OnScrollListener		mScrollListener	= new OnScrollListener() {
@@ -271,9 +283,9 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 													progressBar.setVisibility(View.GONE);
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
+															mStrings.clear();
 															initView();// 初始化View
 															if (msg.obj != null) {
-																mStrings.clear();
 																RtnValueDto obj = (RtnValueDto) msg.obj;
 																List<JGoods> strings = obj.getData();
 																if (strings != null
@@ -282,15 +294,17 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																		JGoods each = strings.get(i);
 																		mStrings.add(each);
 																	}
-																	adapter.notifyDataSetChanged();
 																}
 															}
-															mPullToRefreshView.onHeaderRefreshComplete();
+															if (adapter != null) {
+																adapter.notifyDataSetChanged();
+																mPullToRefreshView.onHeaderRefreshComplete();
+															}
 															break;
 														}
 														case WHAT_DID_REFRESH: {
+															mStrings.clear();
 															if (msg.obj != null) {
-																mStrings.clear();
 																RtnValueDto obj = (RtnValueDto) msg.obj;
 																if (obj.getValidate() != null) {
 																	String option = obj.getValidate()
@@ -320,9 +334,11 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																		}
 																	}
 																}
-																adapter.notifyDataSetChanged();
 															}
-															mPullToRefreshView.onHeaderRefreshComplete();
+															if (adapter != null) {
+																adapter.notifyDataSetChanged();
+																mPullToRefreshView.onHeaderRefreshComplete();
+															}
 															break;
 														}
 
@@ -351,10 +367,12 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																		JGoods each = strings.get(i);
 																		mStrings.add(each);
 																	}
-																	adapter.notifyDataSetChanged();
 																}
+																adapter.notifyDataSetChanged();
 															}
-															mPullToRefreshView.onFooterRefreshComplete();
+															if (mPullToRefreshView != null) {
+																mPullToRefreshView.onFooterRefreshComplete();
+															}
 															break;
 														}
 													}

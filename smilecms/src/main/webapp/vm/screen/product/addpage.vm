@@ -1,6 +1,6 @@
 <form action="$server_name/product/add" method="post" enctype="multipart/form-data" id="addProduct" target="_parent">
     <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
-		<input type="hidden" name="creator" value= "$!u"/>
+		<!--<input type="hidden" name="creator" value= "$!u"/>-->
     	<input type="hidden" name="dataSrc" value= "manual"/>
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>
@@ -41,6 +41,19 @@
 					<font id="brandstyleMessage" color="red"  size="2"></font>
 				</td>
 			</tr>
+			<!--
+			<tr>
+				<td>尺码描述</td>
+                <td>
+					<select id="sizedesc" name="sizedesc" class="addpage">
+						<option value ="">不选</option>
+						<option value ="S,M,L,XL,XLL">S,M,L,XL,XLL</option>
+    					<option value ="小号,中号,大号,加大号">小号,中号,大号,加大号</option>
+						<option value ="1,2,3,4,5">1,2,3,4,5</option>
+            		</select>
+				</td>
+			</tr>
+			-->
             <tr>
 				<td>是否下架</td>
                 <td>
@@ -107,7 +120,8 @@
                     <font color="red">
 						1、*代表必填项.<br/>
 						2、国外价格和推荐价格：填写大于1.00且小于99999999.99的数字<br/>&nbsp;
-						&nbsp;，小数点后最多2位
+						&nbsp;，小数点后最多2位<br/>
+						3、请上传大于100K的产品图片
 					</font>
 				</td>
             </tr>

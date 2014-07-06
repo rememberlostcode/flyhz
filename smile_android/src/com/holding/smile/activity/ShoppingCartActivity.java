@@ -9,12 +9,12 @@ import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -28,7 +28,6 @@ import com.holding.smile.entity.CartItem;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
-import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
 
 /**
@@ -42,11 +41,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 
 	private static final int		WHAT_DID_LOAD_DATA		= 0;
 	private static final int		WHAT_DID_UPDATE_DATA	= 1;
-	private static final int		WHAT_PROGRESS_STATE		= 2;
 	private static final int		WHAT_DID_SELECT_DATA	= 3;
 	private static final int		WHAT_DID_DEL_DATA		= 4;
-	private ProgressDialog			pDialog;
-	private int						mProgress;
 	private TextView				editBtn;
 	private MyListView				listView;
 	private MyShoppingCartAdapter	cartAdapter;
@@ -110,9 +106,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		totalNumber.setText(allQty + "");
 		totalMoney.setText(allTotal.doubleValue() + "");
 
-		initPDialog();// 初始化进度条
+		// initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.cart_list);
-		cartAdapter = new MyShoppingCartAdapter(context, cartItemList, pDialog, mUIHandler);
+		cartAdapter = new MyShoppingCartAdapter(context, cartItemList, progressBar, mUIHandler);
 		listView.setAdapter(cartAdapter);
 	}
 
@@ -123,31 +119,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 		msg.obj = rtnValue;
 		msg.sendToTarget();
-	}
-
-	/**
-	 * 进度条初始化
-	 */
-	private void initPDialog() {
-		pDialog = new ProgressDialog(this);
-		// pDialog.setTitle("");
-		// pDialog.closeOptionsMenu();
-		pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		// pDialog.setMax(100);
-		pDialog.setMessage("正在加载...");
-		pDialog.setIndeterminate(false);
-		pDialog.setCanceledOnTouchOutside(true);
-		// pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "右键",
-		// new DialogInterface.OnClickListener() {
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		//
-		// }
-		// });
-		pDialog.setProgress(0);
-		mProgress = 0;
-		// 当要显示进度效果时，再给handler发送一个空消息
-		// mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
 	}
 
 	@Override
@@ -199,6 +170,20 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		startTask();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (returnDesktop(keyCode, event)) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -254,7 +239,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														cartItemList.clear();
@@ -262,16 +246,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 															RtnValueDto obj = (RtnValueDto) msg.obj;
 															if(CodeValidator.dealCode(context, obj)){
 																List<CartItem> cartItems = obj.getCartListData();
-																if (cartItems == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		ToastUtils.showShort(context, obj.getValidate()
-																					.getMessage());
-																	} else {
-																		ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
-																	}
-																} else {
 																	if (cartItems != null
 																			&& !cartItems.isEmpty()) {
 																		for (CartItem cart : cartItems) {
@@ -279,8 +253,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																				cartItemList.add(cart);
 																			}
 																		}
+																	} else {
+																		ToastUtils.showShort(context, "暂无数据！");
 																	}
-																}
 															}
 														}
 
@@ -291,26 +266,11 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
 															if (obj != null) {
-																CartItem itemData = obj.getCartData();
-																if (itemData == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		Toast.makeText(
-																				context,
-																				obj.getValidate()
-																					.getMessage(),
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	} else {
-																		Toast.makeText(
-																				context,
-																				Constants.MESSAGE_NET,
-																				Toast.LENGTH_SHORT)
-																				.show();
-																	}
-																} else {
-																	if (cartItemList != null
+																if (CodeValidator.dealCode(context,
+																		obj)) {
+																	CartItem itemData = obj.getCartData();
+																	if (itemData != null
+																			&& cartItemList != null
 																			&& !cartItemList.isEmpty()) {
 																		for (CartItem item : cartItemList) {
 																			if (item.getId()
@@ -324,12 +284,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																	}
 																}
 															}
-														} else {
-															Toast.makeText(context,
-																	Constants.MESSAGE_NET,
-																	Toast.LENGTH_SHORT).show();
 														}
-														pDialog.dismiss();
 														break;
 													}
 													case WHAT_DID_DEL_DATA: {
@@ -343,7 +298,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																	Constants.MESSAGE_NET,
 																	Toast.LENGTH_SHORT).show();
 														}
-														pDialog.dismiss();
 														break;
 													}
 													case WHAT_DID_SELECT_DATA: {
@@ -351,21 +305,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														calculateTotal();
 														break;
 													}
-													case WHAT_PROGRESS_STATE: {
-														if (mProgress >= 100) {
-															// pDialog.dismiss();
-															mProgress = 0;
-														} else {
-															mProgress++;
-															// ProgressBar进度值加1
-															pDialog.incrementProgressBy(1);
-															// 延迟100毫秒后发送空消息
-															mUIHandler.sendEmptyMessageDelayed(
-																	WHAT_PROGRESS_STATE, 100);
-														}
-														break;
-													}
 												}
+												waitCloseProgressBar();
 											}
 										};
 
@@ -376,7 +317,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 												new DialogInterface.OnClickListener() {
 													public void onClick(DialogInterface dialog,
 															int which) {
-
+														progressBar.setVisibility(View.VISIBLE);
 														RtnValueDto rtnValue = MyApplication.getInstance()
 																							.getSubmitService()
 																							.removeCart(
@@ -400,7 +341,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														} else {
 															ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 														}
-
+														waitCloseProgressBar();
 													}
 												}).setNegativeButton("取消", null).show();
 	}

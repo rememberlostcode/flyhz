@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.tools.ClickUtil;
 import com.holding.smile.tools.ToastUtils;
 
 /**
@@ -23,10 +25,26 @@ import com.holding.smile.tools.ToastUtils;
  */
 public class MySmileActivity extends BaseActivity implements OnClickListener {
 
+	/**
+	 * 我的订单
+	 */
 	private LinearLayout	myOrdersLayout;
+	/**
+	 * 优惠券
+	 */
 	private LinearLayout	myCouponLayout;
+	/**
+	 * 个人设置
+	 */
 	private LinearLayout	settingLayout;
+	/**
+	 * 清除缓存
+	 */
 	private LinearLayout	clearCacheLayout;
+	/**
+	 * 联系我们
+	 */
+	private LinearLayout	contactUsLayoutLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +64,13 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 		myCouponLayout.setVisibility(View.GONE);
 		settingLayout = (LinearLayout) findViewById(R.id.mysmile_setting_layout);
 		clearCacheLayout = (LinearLayout) findViewById(R.id.mysmile_clearcache_layout);
+		contactUsLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_contact_us_layout);
 
 		myOrdersLayout.setOnClickListener(this);
 		myCouponLayout.setOnClickListener(this);
 		settingLayout.setOnClickListener(this);
 		clearCacheLayout.setOnClickListener(this);
+		contactUsLayoutLayout.setOnClickListener(this);
 	}
 
 	@Override
@@ -70,7 +90,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, MyOrdersActivity.class);
 				}
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				overridePendingTransition(0, 0);
 				break;
@@ -88,7 +108,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, PersonalSettingsActivity.class);
 				}
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				overridePendingTransition(0, 0);
 				break;
@@ -97,8 +117,20 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				alert();
 				break;
 			}
+			case R.id.mysmile_contact_us_layout: {
+				ClickUtil.sendEmail(this);
+				break;
+			}
 		}
 		super.onClick(v);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (returnDesktop(keyCode, event)) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private void alert() {

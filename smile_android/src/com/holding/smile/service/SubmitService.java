@@ -19,6 +19,7 @@ import com.holding.smile.protocol.PCartItemDetail;
 import com.holding.smile.protocol.POrder;
 import com.holding.smile.protocol.PProduct;
 import com.holding.smile.protocol.PUser;
+import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.FileUtils;
 import com.holding.smile.tools.JSONUtil;
@@ -71,6 +72,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto passwordReset(String oldPwd, String newPwd) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		if (oldPwd == null || newPwd == null || "".equals(oldPwd) || "".equals(newPwd)) {
 			return null;
 		}
@@ -110,6 +114,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto setUserInfo(String field, String value) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		if (field == null || value == null || "".equals(field)) {
 			return null;
 		}
@@ -146,10 +153,16 @@ public class SubmitService {
 	 *            身份证信息
 	 * @param filePath
 	 *            身份证图片
+	 * @param backFilePath
+	 *            身份证背面图片
 	 * @return
 	 * @throws Exception
 	 */
-	public RtnValueDto idcardSave(Idcard idcard, String filePath) throws Exception {
+	public RtnValueDto idcardSave(Idcard idcard, String filePath, String backFilePath)
+			throws Exception {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		if (idcard == null) {
 			return null;
 		}
@@ -167,22 +180,18 @@ public class SubmitService {
 
 		String url = "";
 		url = prefix_url + idcard_save;
-		// String rStr = URLUtil.getStringByGet(url, param);
-		String rStr = FileUtils.uploadIdcardPhoto(url, params, filePath);
+		String rStr = FileUtils.uploadIdcardPhoto(url, params, filePath, backFilePath);
 
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
+		}
+		if(rvd == null){
+			rvd = new RtnValueDto();
+			rvd.setCode(200001);
 		}
 		return rvd;
 	}
@@ -195,6 +204,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto idcardRemove(Integer dicadrId) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		if (dicadrId == null) {
 			return null;
 		}
@@ -211,14 +223,11 @@ public class SubmitService {
 				rvd = JSONUtil.getJson2Entity(rStr, RtnValueDto.class);
 			} catch (Exception e) {
 				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
-				rvd.setValidate(vd);
 			}
-		} else {
-			ValidateDto vd = new ValidateDto();
-			vd.setMessage(Constants.MESSAGE_NET);
-			rvd.setValidate(vd);
+		}
+		if(rvd == null){
+			rvd = new RtnValueDto();
+			rvd.setCode(200001);
 		}
 		return rvd;
 	}
@@ -231,18 +240,22 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto register(SUser iuser) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		if (iuser != null && iuser.getUsername() != null && iuser.getPassword() != null) {
 			HashMap<String, String> param = new HashMap<String, String>();
 			param.put("username", iuser.getUsername());
 			param.put("password", iuser.getPassword());
+			param.put("email", iuser.getEmail());
 			String rvdString = URLUtil.getStringByGet(prefix_url + register_url, param);
 			if (rvdString != null) {
 				PUser user = JSONUtil.getJson2Entity(rvdString, PUser.class);
 				rvd = new RtnValueDto();
 				if (user != null && user.getData() != null && user.getCode() == 200000) {
 					rvd.setUserData(user.getData());
-					rvd.setCode(200000);
+					rvd.setCode(user.getCode());
 				} else {
 					rvd.setCode(user.getCode());
 				}
@@ -263,6 +276,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto getOrderInform(String pidQty, List<String> cartIds, Integer addressId) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		List<String> listParam = new ArrayList<String>();
 		HashMap<String, List<String>> param = new HashMap<String, List<String>>();
@@ -284,8 +300,11 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
-				if (pc != null)
+				if (pc != null) {
 					rvd.setOrderData(pc.getData());
+					rvd.setCode(pc.getCode());
+				}
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -309,6 +328,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto updateOrderQty(Integer pid, short qty) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (pid != null) {
@@ -322,8 +344,10 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				PProduct pc = JSONUtil.getJson2Entity(rStr, PProduct.class);
-				if (pc != null)
+				if (pc != null) {
+					rvd.setCode(pc.getCode());
 					rvd.setProductData(pc.getData());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -349,6 +373,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto confirmOrder(String pidQty, List<String> cartIds, Integer addressId) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = new RtnValueDto();
 		List<String> listParam = new ArrayList<String>();
 		HashMap<String, List<String>> param = new HashMap<String, List<String>>();
@@ -370,8 +397,10 @@ public class SubmitService {
 		if (rStr != null && !"".equals(rStr)) {
 			try {
 				POrder pc = JSONUtil.getJson2Entity(rStr, POrder.class);
-				if (pc != null)
+				if (pc != null) {
+					rvd.setCode(pc.getCode());
 					rvd.setOrderData(pc.getData());
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				ValidateDto vd = new ValidateDto();
@@ -394,6 +423,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto addCart(Integer pid, short qty) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (pid != null) {
@@ -422,6 +454,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto removeCart(Integer itemId) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (itemId != null) {
@@ -433,7 +468,7 @@ public class SubmitService {
 			if (pc != null && pc.getCode() == 200000) {
 				rvd = new RtnValueDto();
 				rvd.setCartData(pc.getData());
-				rvd.setCode(200000);
+				rvd.setCode(pc.getCode());
 			}
 		}
 		return rvd;
@@ -447,6 +482,9 @@ public class SubmitService {
 	 * @return
 	 */
 	public RtnValueDto updateCartQty(Integer itemId, short qty) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (itemId != null) {
@@ -461,13 +499,16 @@ public class SubmitService {
 			if (pc != null && pc.getCode() == 200000) {
 				rvd = new RtnValueDto();
 				rvd.setCartData(pc.getData());
-				rvd.setCode(200000);
+				rvd.setCode(pc.getCode());
 			}
 		}
 		return rvd;
 	}
 
 	public RtnValueDto closeOrder(Integer orderId) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
 		if (orderId != null) {

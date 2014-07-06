@@ -171,8 +171,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				}
 				intent.putExtra("number", numberString);
 				intent.putExtra("amount", total);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
 				break;
 			}
 		}
@@ -192,7 +192,6 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case 1: {
 														if (status == null) {
@@ -227,6 +226,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 													}
 
 												}
+												waitCloseProgressBar();
 											}
 										};
 }

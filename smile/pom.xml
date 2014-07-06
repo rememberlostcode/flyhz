@@ -233,6 +233,10 @@
 			<groupId>com.taobao</groupId>
 			<artifactId>taobao-sdk</artifactId>
 		</dependency>
+		<dependency>
+		  <groupId>org.json</groupId>
+		  <artifactId>json</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -768,7 +772,7 @@
 			<dependency>
 				<groupId>org.lost</groupId>
 				<artifactId>lost-image</artifactId>
-				<version>2.1.30</version>
+				<version>20140626</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.solr</groupId>
@@ -778,7 +782,12 @@
 			<dependency>
 				<groupId>com.taobao</groupId>
 				<artifactId>taobao-sdk</artifactId>
-				<version>20140508</version>
+				<version>20140701</version>
+			</dependency>
+			<dependency>
+			  <groupId>org.json</groupId>
+			  <artifactId>json</artifactId>
+			  <version>20080701</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

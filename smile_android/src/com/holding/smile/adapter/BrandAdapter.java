@@ -9,12 +9,12 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.holding.smile.R;
-import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.MainTwoActivity;
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.cache.ImageLoader;
@@ -37,6 +37,7 @@ public class BrandAdapter extends BaseAdapter {
 	private List<Brand>		brandList;
 	private Integer			cid;
 	private boolean			mBusy			= false;
+	private LayoutParams	para;
 
 	public BrandAdapter(List<Brand> brandList, Integer cid) {
 		this.brandList = brandList;
@@ -92,6 +93,13 @@ public class BrandAdapter extends BaseAdapter {
 		}
 		holder.p.setImageResource(R.drawable.empty_photo);
 
+		if (para == null) {
+			para = holder.p.getLayoutParams();
+			para.width = MyApplication.getInstance().getScreenWidth();
+			para.height = (int) (para.width / 1.9);
+		}
+		holder.p.setLayoutParams(para);
+
 		if (brandList != null && !brandList.isEmpty()) {
 			final Brand brand = brandList.get(position);
 			if (brand != null) {
@@ -115,9 +123,10 @@ public class BrandAdapter extends BaseAdapter {
 						Intent intent = new Intent(context, MainTwoActivity.class);
 						intent.putExtra("bid", brand.getId());
 						intent.putExtra("cid", cid);
+						intent.putExtra("bn", brand.getName());
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						Activity activity = (Activity) context;
-						activity.startActivityForResult(intent, BaseActivity.MORE_CODE);
+						activity.startActivity(intent);
 						activity.overridePendingTransition(0, 0);
 					} else {
 						ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);

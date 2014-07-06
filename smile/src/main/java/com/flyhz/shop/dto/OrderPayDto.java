@@ -22,7 +22,7 @@ public class OrderPayDto {
 	private Date		gmtCreate;
 	@JsonIgnore
 	private Date		gmtModify;
-	private Character	status;
+	private String		status;
 	private BigDecimal	total;
 	@JsonIgnore
 	private Integer		userId;
@@ -70,11 +70,11 @@ public class OrderPayDto {
 		this.gmtModify = gmtModify;
 	}
 
-	public Character getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(Character status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

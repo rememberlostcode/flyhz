@@ -32,6 +32,7 @@
         <typeAlias alias="CategoryModel" type="com.flyhz.shop.persistence.entity.CategoryModel"/>
         <typeAlias alias="SalesvolumeModel" type="com.flyhz.shop.persistence.entity.SalesvolumeModel"/>
         <typeAlias alias="IdcardModel" type="com.flyhz.shop.persistence.entity.IdcardModel"/>
+        <typeAlias alias="ProductLogModel" type="com.flyhz.shop.persistence.entity.ProductLogModel"/>
         
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>
@@ -42,6 +43,7 @@
         <typeAlias alias="ConsigneeDetailDto" type="com.flyhz.shop.dto.ConsigneeDetailDto"/>
         <typeAlias alias="CartItemParamDto" type="com.flyhz.shop.dto.CartItemParamDto"/>
         <typeAlias alias="ProductCmsDto" type="com.flyhz.shop.dto.ProductCmsDto"/>
+        <typeAlias alias="ProductPageDto" type="com.flyhz.shop.dto.ProductPageDto"/>
         <!-- 配置build Dto别名 -->
         <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
         <typeAlias alias="CategoryBuildDto" type="com.flyhz.shop.dto.CategoryBuildDto"/>
@@ -50,7 +52,7 @@
     <plugins>
 		<plugin interceptor="com.flyhz.shop.persistence.SqlPlugin">
 			<property name="dialect" value="mysql"/>
-			<property name="pageSqlId" value=".*.*"/><!-- 分页拦截,配置以*getPaged*开始的Id-->
+			<property name="pageSqlId" value=".*.getPaged*"/><!-- 分页拦截,配置以*getPaged*开始的Id-->
 		</plugin>
 	</plugins>
 </configuration>  

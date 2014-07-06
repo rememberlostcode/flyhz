@@ -6,11 +6,14 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -19,7 +22,9 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.BrandAdapter;
@@ -29,23 +34,28 @@ import com.holding.smile.entity.Brand;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.IndexBrands;
 import com.holding.smile.entity.JActivity;
+import com.holding.smile.entity.JVersion;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyListView;
+import com.holding.smile.myview.MyViewPager;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 import com.holding.smile.service.LoginService;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
+import com.holding.smile.tools.UpdateManager;
 
-public class MainSmileActivity extends BaseActivity implements OnClickListener, OnHeaderRefreshListener {
+public class MainSmileActivity extends BaseActivity implements OnClickListener,
+		OnHeaderRefreshListener {
 
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
 	private static final int	WHAT_DID_REFRESH	= 1;
 	private static final int	AUTO_LOGIN			= 2;
+	private static final int	CHECK_VERSION		= 3;
 
 	private PullToRefreshView	mPullToRefreshView;
-	private ViewPager			mViewPager;
+	private MyViewPager			mViewPager;
 	private List<View>			viewList;
 	private MyPagerAdapter		pagerAdapter;
 	// 装点点的ImageView数组
@@ -85,20 +95,26 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 				}
 			}
 		}, 200);
-
+		mUIHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				Message msg = mUIHandler.obtainMessage(CHECK_VERSION);
+				msg.sendToTarget();
+			}
+		}, 2000);
 	}
 
 	private void initView() {
-		LinearLayout indexViewLayout = (LinearLayout) LayoutInflater.from(context).inflate(
+		RelativeLayout indexViewLayout = (RelativeLayout) LayoutInflater.from(context).inflate(
 				R.layout.index_recommend, null);
 		mPullToRefreshView = (PullToRefreshView) findViewById(R.id.main_pull_refresh_view);
 		listView = (MyListView) findViewById(R.id.list_view);
 		listView.addHeaderView(indexViewLayout);// 添加子View
 
-		mViewPager = (ViewPager) indexViewLayout.findViewById(R.id.viewpager);
+		mViewPager = (MyViewPager) indexViewLayout.findViewById(R.id.viewpager);
+		mViewPager.setImgFlag(true);
 		brandAdapter = new BrandAdapter(brandList, cid);
 		listView.setAdapter(brandAdapter);
-
 		mPullToRefreshView.setOnHeaderRefreshListener(this);
 		mPullToRefreshView.setMoreFlag(false);
 	}
@@ -150,23 +166,24 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 	@Override
 	public synchronized void loadData() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getIndexBrands(cid);
-		if (CodeValidator.dealCode(context, rtnValue)) {
-			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-			msg.obj = rtnValue.getIndexBrandsData();
-			msg.sendToTarget();
-		}
-
+		Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
+		msg.obj = rtnValue;
+		msg.sendToTarget();
 	}
 
 	public void onRefresh() {
 		RtnValueDto rtnValue = MyApplication.getInstance().getDataService().getIndexBrands(cid);
-		if (rtnValue != null) {
-			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
-			msg.obj = rtnValue;
-			msg.sendToTarget();
-		} else {
-			ToastUtils.showShort(context, "暂无数据！");
+		Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
+		msg.obj = rtnValue;
+		msg.sendToTarget();
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (returnDesktop(keyCode, event)) {
+			return true;
 		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -188,6 +205,13 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 		recActList = null;
 	};
 
+	// 当按HOME键时，然后再次启动应用时，我们要恢复先前状态
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		startTask();
+	}
+
 	/**
 	 * 添加页卡
 	 */
@@ -203,25 +227,29 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setContentDescription(jAct.getId() + "");
 				imageView.setTag(MyApplication.jgoods_img_url + jAct.getP());
+				imageView.setContentDescription(MyApplication.jgoods_img_url + jAct.getUrl());
 				imageView.setOnClickListener(new View.OnClickListener() {
 
 					@Override
-					public void onClick(View arg0) {
-
-						Intent intent = new Intent(context, HtmlUIActivity.class);
-						if (StrUtils.isNotEmpty(jAct.getUrl())) {
-							intent.putExtra("url", jAct.getUrl());
+					public void onClick(View v) {
+						String url = v.getContentDescription().toString();
+						if (StrUtils.isNotEmpty(url)) {
+							Intent intent = new Intent(context, HtmlUIActivity.class);
+							intent.putExtra("url", url);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							startActivity(intent);
 						} else {
-							if (jAct.getId().equals(2)) {
-								intent.putExtra("url", MyApplication.jgoods_img_url
-										+ "/activity/index2.html");
-							} else {
-								intent.putExtra("url", MyApplication.jgoods_img_url
-										+ "/activity/index.html");
-							}
+							Toast.makeText(context, "该活动已结束了！", Toast.LENGTH_SHORT).show();
+							// if (jAct.getId().equals(2)) {
+							// intent.putExtra("url",
+							// MyApplication.jgoods_img_url
+							// + "/activity/index2.html");
+							// } else {
+							// intent.putExtra("url",
+							// MyApplication.jgoods_img_url
+							// + "/activity/index.html");
+							// }
 						}
-						startActivity(intent);
-
 					}
 				});
 				viewList.add(view);
@@ -290,69 +318,75 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
-															recActList.clear();
-															brandList.clear();
-															IndexBrands obj = (IndexBrands) msg.obj;
+															RtnValueDto rvd = (RtnValueDto) msg.obj;
+															if (CodeValidator.dealCode(context, rvd)) {
+																recActList.clear();
+																brandList.clear();
 
-															// 活动区商品
-															List<JActivity> jActList = obj.getActivitys();
-															if (jActList != null
-																	&& !jActList.isEmpty()) {
-																int jSize = jActList.size();
-																for (int i = 0; i < jSize; i++) {
-																	JActivity each = jActList.get(i);
-																	each.setUrl("");
-																	recActList.add(each);
-																}
+																IndexBrands obj = rvd.getIndexBrandsData();
+																if (obj != null) {
+																	// 活动区商品
+																	List<JActivity> jActList = obj.getActivitys();
+																	if (jActList != null
+																			&& !jActList.isEmpty()) {
+																		int jSize = jActList.size();
+																		for (int i = 0; i < jSize; i++) {
+																			JActivity each = jActList.get(i);
+																			recActList.add(each);
+																		}
 
-																addViewPager();// 添加页卡
-																// 实例化适配器
-																pagerAdapter = new MyPagerAdapter(
-																		viewList);
-																mViewPager.setAdapter(pagerAdapter);
-																mViewPager.setCurrentItem(0); // 设置默认当前页
-															}
+																		addViewPager();// 添加页卡
+																		// 实例化适配器
+																		pagerAdapter = new MyPagerAdapter(
+																				viewList, true);
+																		mViewPager.setAdapter(pagerAdapter);
+																		mViewPager.setCurrentItem(0); // 设置默认当前页
+																	}
 
-															// 品牌区
-															// 品牌区
-															List<Brand> brands = obj.getBrands();
-															if (brands != null && !brands.isEmpty()) {
-																int bSize = brands.size();
-																for (int i = 0; i < bSize; i++) {
-																	Brand each = brands.get(i);
-																	brandList.add(each);
+																	// 品牌区
+																	// 品牌区
+																	List<Brand> brands = obj.getBrands();
+																	if (brands != null
+																			&& !brands.isEmpty()) {
+																		int bSize = brands.size();
+																		for (int i = 0; i < bSize; i++) {
+																			Brand each = brands.get(i);
+																			brandList.add(each);
+																		}
+																	}
+																	brandAdapter.notifyDataSetChanged();
+																	mPullToRefreshView.onHeaderRefreshComplete();
 																}
 															}
 														} else {
-															ToastUtils.showShort(context, "暂无数据！");
+															CodeValidator.dealCode(context, null);
 														}
-														brandAdapter.notifyDataSetChanged();
-														mPullToRefreshView.onHeaderRefreshComplete();
 														break;
 													}
 													case WHAT_DID_REFRESH: {
 														brandList.clear();
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj.getIndexBrandsData() != null) {
-																// 品牌区
-																List<Brand> brands = obj.getIndexBrandsData()
-																						.getBrands();
-																if (brands != null
-																		&& !brands.isEmpty()) {
-																	int bSize = brands.size();
-																	for (int i = 0; i < bSize; i++) {
-																		Brand each = brands.get(i);
-																		brandList.add(each);
+															if (CodeValidator.dealCode(context, obj)) {
+																if (obj.getIndexBrandsData() != null) {
+																	// 品牌区
+																	List<Brand> brands = obj.getIndexBrandsData()
+																							.getBrands();
+																	if (brands != null
+																			&& !brands.isEmpty()) {
+																		int bSize = brands.size();
+																		for (int i = 0; i < bSize; i++) {
+																			Brand each = brands.get(i);
+																			brandList.add(each);
+																		}
 																	}
 																}
 															}
 														} else {
-															ToastUtils.showShort(context, "暂无数据！");
+															CodeValidator.dealCode(context, null);
 														}
 														brandAdapter.notifyDataSetChanged();
 														mPullToRefreshView.onHeaderRefreshComplete();
@@ -364,17 +398,51 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener, 
 															LoginService loginService = MyApplication.getInstance()
 																										.getLoginService();
 															RtnValueDto rvd = loginService.autoLogin(user);
-															if (rvd != null
-																	&& rvd.getUserData() != null) {
-																ToastUtils.showShort(
-																		context,
-																		"自动登录成功！欢迎您,"
-																				+ user.getUsername());
+															if (CodeValidator.dealCode(context, rvd)) {
+																if (rvd != null
+																		&& rvd.getUserData() != null) {
+																	ToastUtils.showShort(
+																			context,
+																			"自动登录成功！欢迎您,"
+																					+ user.getUsername());
+																}
+															}
+														}
+														break;
+													}
+													case CHECK_VERSION: {
+														RtnValueDto rvd = MyApplication.getInstance()
+																						.getDataService()
+																						.getLastestVersion();
+														if (CodeValidator.dealCode(context, rvd)) {
+
+															try {
+																// 获取packagemanager的实例
+																PackageManager packageManager = getPackageManager();
+																// getPackageName()是你当前类的包名，0代表是获取版本信息
+																PackageInfo packInfo;
+																packInfo = packageManager.getPackageInfo(
+																		getPackageName(), 0);
+																String version = packInfo.versionName;
+
+																JVersion jversion = rvd.getVersionData();
+
+																if (!version.equals(jversion.getVersionNew())) {
+																	// 这里来检测版本是否需要更新
+																	UpdateManager mUpdateManager = new UpdateManager(
+																			MainSmileActivity.this);
+																	mUpdateManager.setApkUrl(MyApplication.jgoods_img_url
+																			+ jversion.getVersionApk());
+																	mUpdateManager.checkUpdateInfo();
+																}
+															} catch (NameNotFoundException e) {
+																e.printStackTrace();
 															}
 														}
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 										};
 

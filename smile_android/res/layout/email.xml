@@ -17,6 +17,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
             android:hint="请输入邮件地址"
+            android:imeOptions="actionDone"
             android:inputType="textEmailAddress"
             android:textSize="18sp" />
     </LinearLayout>
@@ -33,7 +34,7 @@
             android:layout_width="fill_parent"
             android:layout_height="40dp"
             android:layout_margin="10.0dp"
-            android:background="@drawable/juhuang"
+            android:background="@drawable/lvse"
             android:text="绑定"
             android:textSize="18sp" />
 
@@ -42,9 +43,9 @@
             android:layout_width="fill_parent"
             android:layout_height="40dp"
             android:layout_margin="10.0dp"
-            android:background="@drawable/lvse"
-            android:textColor="@drawable/baise"
+            android:background="@drawable/red"
             android:text="解除"
+            android:textColor="@drawable/baise"
             android:textSize="18sp" />
     </LinearLayout>
 

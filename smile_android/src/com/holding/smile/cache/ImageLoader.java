@@ -69,7 +69,7 @@ public class ImageLoader {
 		if (bitmap != null) {
 			return bitmap;
 		} else {
-			bitmap = getBitmap(url);
+			bitmap = getBitmap(url, false);
 			if (bitmap != null)
 				memoryCache.put(url, bitmap);
 			return bitmap;
@@ -81,10 +81,23 @@ public class ImageLoader {
 		executorService.submit(new PhotosLoader(p));
 	}
 
-	private Bitmap getBitmap(String url) {
-		float density = MyApplication.getInstance().getDensity();
-		int maxWidth = (int) (MyApplication.getInstance().getScreenWidth() * density);
-		File f = fileCache.getFile(url);
+	/**
+	 * 
+	 * @param url
+	 * @param bigFlag
+	 *            为true取原图，false按比例取图片
+	 * @return
+	 */
+	public Bitmap getBitmap(String url, boolean bigFlag) {
+		int maxWidth = 0;
+		File f = null;
+		if (bigFlag) {
+			f = fileCache.getFile(url + "big");
+		} else {
+			float density = MyApplication.getInstance().getDensity();
+			maxWidth = (int) (MyApplication.getInstance().getScreenWidth() * density);
+			f = fileCache.getFile(url);
+		}
 
 		// 先从文件缓存中查找是否有
 		Bitmap b = null;
@@ -184,7 +197,7 @@ public class ImageLoader {
 		public void run() {
 			if (imageViewReused(photoToLoad))
 				return;
-			Bitmap bmp = getBitmap(photoToLoad.url);
+			Bitmap bmp = getBitmap(photoToLoad.url, false);
 			memoryCache.put(photoToLoad.url, bmp);
 			if (imageViewReused(photoToLoad))
 				return;

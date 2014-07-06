@@ -6,6 +6,7 @@
     
     <string name="img_static_url">/smile/static</string>
     <string name="jGoods_index_url">/smile/node/index</string>
+    <string name="jGoods_version_url">/smile/node/version</string>
     <string name="jGoods_index_single_url">/smile/node/index/single</string>
     <string name="jGoods_recommend_url">/smile/node/recommend/brand</string>
     <string name="jGoods_cate_url">/smile/node/category</string>
@@ -17,6 +18,7 @@
     <string name="jGoods_search_refresh_url">/smile/node/search</string>
     <string name="jGoods_search_more_url">/smile/node/search/more</string>
     
+    <string name="user_find_backpwd_url">/smile/user/findPwd.json</string>
     <string name="register_url">/smile/saveRegister.json</string>
     <string name="user_info">/smile/user/getPInfo.json</string>
     <string name="reset_password">/smile/user/resetPwd.json</string>

@@ -11,6 +11,7 @@ import com.holding.smile.entity.IndexBrands;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JIndexJGoods;
 import com.holding.smile.entity.JSort;
+import com.holding.smile.entity.JVersion;
 import com.holding.smile.entity.SUser;
 
 /**
@@ -39,6 +40,7 @@ public class RtnValueDto {
 	private CartItem			cartData;			// 购物车数据
 	private List<CartItem>		cartListData;		// 购物车列表数据
 	private IndexBrands			indexBrandsData;	// 返回首页品牌数据
+	private JVersion			versionData;		// 版本信息数据
 
 	public Integer getCode() {
 		return code;
@@ -190,6 +192,14 @@ public class RtnValueDto {
 
 	public void setIndexBrandsData(IndexBrands indexBrandsData) {
 		this.indexBrandsData = indexBrandsData;
+	}
+
+	public JVersion getVersionData() {
+		return versionData;
+	}
+
+	public void setVersionData(JVersion versionData) {
+		this.versionData = versionData;
 	}
 
 }

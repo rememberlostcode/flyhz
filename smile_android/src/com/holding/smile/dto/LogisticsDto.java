@@ -13,7 +13,10 @@ import java.util.List;
 public class LogisticsDto implements Serializable {
 
 	private static final long	serialVersionUID	= 5774993847067316875L;
-
+	/**
+	 * 详细地址
+	 */
+	protected String			address;
 	/**
 	 * 快递公司
 	 */
@@ -46,6 +49,14 @@ public class LogisticsDto implements Serializable {
 
 	public String getCompanyName() {
 		return companyName;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public void setCompanyName(String companyName) {

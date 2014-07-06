@@ -1,0 +1,16 @@
+#if($!result)
+	$!result
+	<form id="versionForm" action = "$server_name/version" method="post">
+		<input type="submit" value="重新上传" /><br/>
+    </form>
+#else
+	<form id="versionForm" action = "$server_name/versionUpdate" method="post" enctype="multipart/form-data">
+		当前版本号：<input type="text" name="versionNow" id="versionNow" value="$!versionModel.versionNow"/><br/>
+		<font color="red">*</font>新版本号：<input type="text" name="versionNew" id="versionNew"/><br/>
+		<font color="red">*</font>新版本apk：<input type="file" name="file" id="versionApk"/><br/>
+		<font color="red">*</font>新版本说明：<input type="text" name="versionLog" id="versionApk"/><br/>
+		<input type="submit" value="提交" /><br/>
+        <font color="red">注：不能上传和以前相同版本号的版本</font>
+    </form>
+#end
+

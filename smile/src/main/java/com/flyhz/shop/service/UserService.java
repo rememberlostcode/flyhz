@@ -152,4 +152,13 @@ public interface UserService {
 	 * @param newpwd
 	 */
 	public void resetpwd(Integer userId, String oldpwd, String newpwd) throws ValidateException;
+
+	/**
+	 * 找回密码
+	 * 
+	 * @param username
+	 * @throws ValidateException
+	 * @return String
+	 */
+	public String findPwd(String username) throws ValidateException;
 }

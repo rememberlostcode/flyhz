@@ -130,6 +130,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				overridePendingTransition(0, 0);
 				break;
 			}
+			case R.id.login_btn_getbackpwd: {
+				Intent intent = new Intent(context, FindBackPwdActivity.class);
+				String username = userAccount.getText().toString();// 获取用户输入的账号
+				intent.putExtra("username", username);
+				startActivity(intent);
+				overridePendingTransition(0, 0);
+				break;
+			}
 		}
 		super.onClick(v);
 	}
@@ -163,7 +171,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																	LoginService loginService = MyApplication.getInstance()
 																												.getLoginService();
 																	RtnValueDto rvd = loginService.login(user);
-																	if (CodeValidator.dealCode(context, rvd)) {
+																	if (CodeValidator.dealCode(
+																			context, rvd)) {
 																		if (!isClose) {
 																			Intent intent = null;
 																			if (goingActivityClass != null) {
@@ -190,6 +199,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																break;
 															}
 														}
+														waitCloseProgressBar();
 													}
 												};
 

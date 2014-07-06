@@ -17,6 +17,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
             android:hint="请输入手机号码"
+            android:imeOptions="actionDone"
             android:inputType="phone"
             android:textSize="18sp" />
     </LinearLayout>
@@ -34,8 +35,8 @@
             android:layout_height="40dp"
             android:layout_margin="10.0dp"
             android:background="@drawable/lvse"
-            android:textColor="@drawable/baise"
             android:text="保存"
+            android:textColor="@drawable/baise"
             android:textSize="18sp" />
     </LinearLayout>
 

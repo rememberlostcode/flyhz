@@ -49,7 +49,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
 		TextView textView = displayHeaderDescription();
 		textView.setText("订单详情");
-
+		progressBar.setVisibility(View.VISIBLE);
 		listView = (MyListView) findViewById(R.id.order_detail_list_view);
 		orderNumberView = (TextView) findViewById(R.id.order_detail_number);
 		orderTimeView = (TextView) findViewById(R.id.order_detail_time);
@@ -94,6 +94,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 					if (order.getStatus() != null && Integer.parseInt(order.getStatus()) >= 20
 							&& !order.getStatus().equals("50") && order.getLogisticsDto() != null
 							&& order.getLogisticsDto().getTransitStepInfoList() != null) {
+						TextView textViewAddres =  (TextView) findViewById(R.id.order_detail_address);
+						textViewAddres.setText(textViewAddres.getText() + (order.getLogisticsDto().getAddress()!=null?order.getLogisticsDto().getAddress():""));
+						
 						logisticsListView = (MyListView) findViewById(R.id.order_detail_logistics_list);
 						logisticsListView.setAdapter(new ArrayAdapter<String>(this,
 								R.layout.simple_list_text, order.getLogisticsDto()
@@ -111,12 +114,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 								Intent intent = new Intent(context, WebViewActivity.class);
 								intent.putExtra("number", order.getNumber());
 								intent.putExtra("amount", order.getTotal());
-								intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 								context.startActivity(intent);
 							} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(order.getStatus())) {
 								Intent intent = new Intent();
 								intent.setClass(context, IdcardManagerActivity.class);
-								intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 								context.startActivity(intent);
 							}
 						}
@@ -126,6 +129,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		waitCloseProgressBar();
 	}
 
 	@Override

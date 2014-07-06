@@ -10,7 +10,7 @@
         android:id="@+id/mysmile_myorders_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5.0dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -36,7 +36,7 @@
         android:id="@+id/mysmile_mycoupon_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5.0dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -62,7 +62,7 @@
         android:id="@+id/mysmile_setting_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5.0dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -87,7 +87,7 @@
         android:id="@+id/mysmile_clearcache_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5.0dp"
+        android:layout_margin="10dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -98,6 +98,31 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/clear_cache"
+            android:textColor="@drawable/shenhuise"
+            android:textSize="18sp" />
+    </LinearLayout>
+    
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dp"
+        android:background="@drawable/qianhuise" />
+    
+    <!-- 联系我们 -->
+    <LinearLayout
+        android:id="@+id/mysmile_contact_us_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/contact_us"
             android:textColor="@drawable/shenhuise"
             android:textSize="18sp" />
     </LinearLayout>

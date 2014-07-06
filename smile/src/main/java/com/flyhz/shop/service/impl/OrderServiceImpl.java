@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -16,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
+import com.flyhz.framework.lang.TaobaoData;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.lang.mail.MailRepository;
 import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.framework.util.JSONUtil;
@@ -42,7 +46,9 @@ import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.persistence.entity.IdcardModel;
 import com.flyhz.shop.persistence.entity.LogisticsModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
+import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.OrderService;
+import com.taobao.api.domain.Trade;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -63,6 +69,10 @@ public class OrderServiceImpl implements OrderService {
 	private SolrData		solrData;
 	@Resource
 	private LogisticsDao	logisticsDao;
+	@Resource
+	private MailRepository	mailRepository;
+	@Resource
+	private TaobaoData		taobaoData;
 
 	@Override
 	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds,
@@ -249,7 +259,7 @@ public class OrderServiceImpl implements OrderService {
 
 	public OrderSimpleDto getOrderDtoByNumber(String number) {
 		OrderSimpleDto orderDto = orderDao.getOrderByNumber(number);
-		if(orderDto!=null){
+		if (orderDto != null) {
 			LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderNumber(number);
 			if (logisticsModel != null) {
 				LogisticsDto logisticsDto = new LogisticsDto();
@@ -266,4 +276,89 @@ public class OrderServiceImpl implements OrderService {
 		return orderDto;
 	}
 
+	public void sendPaySuccess(String number) {
+		if (StringUtils.isNotBlank(number)) {
+			OrderModel orderModel = new OrderModel();
+			orderModel.setNumber(number);
+			orderModel = orderDao.getModel(orderModel);
+			if (orderModel != null) {
+				UserModel userModel = userDao.getModelById(orderModel.getUserId());
+				// 用户邮箱存在则发送邮件
+				if (userModel != null && StringUtils.isNotBlank(userModel.getEmail())) {
+					Map<String, Object> modelMap = new HashMap<String, Object>();
+					modelMap.put("orderId", orderModel.getNumber());
+					modelMap.put("total", orderModel.getTotal());
+					modelMap.put("username", userModel.getUsername());
+					mailRepository.sendWithTemplate(userModel.getEmail(), "订单支付成功",
+							"velocity/mailvm/pay_success_mail.vm", modelMap);
+				}
+			}
+		}
+	}
+
+	public String getOrderPayStatusByTid(Integer orderId, Long tid) throws ValidateException {
+		if(orderId==null){
+			throw new ValidateException(201002);
+		}
+		if(tid == null){
+			throw new ValidateException(700001);
+		}
+		OrderModel orderModel = orderDao.getModelById(orderId);
+		String smileStatus = "10";
+		if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())
+				|| Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())
+				|| Constants.OrderStateCode.HAS_BEEN_COMPLETED.code.equals(orderModel.getStatus())
+				|| Constants.OrderStateCode.HAVE_BEEN_CLOSED.code.equals(orderModel.getStatus())) {// 如果状态已经是已付款/卖家已发货则直接返回状态
+			return orderModel.getStatus();
+		} else {// mysql显示未付款时，需要调用淘宝接口查看
+			Trade trade = taobaoData.getTradeByTid(tid);
+			if (trade == null) {
+				throw new ValidateException(400000);
+			} else {
+				BigDecimal Payment = new BigDecimal(trade.getPayment());
+				if(orderModel.getTotal().equals(Payment)){
+					String status = trade.getStatus();
+					if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
+						// 未付款
+						smileStatus = Constants.OrderStateCode.FOR_PAYMENT.code;
+					} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
+						// 已付款
+						smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
+	
+						// 买家已付款，需要验证身份证是否存在
+						IdcardModel im = new IdcardModel();
+						im.setUserId(orderModel.getUserId());
+						List<IdcardModel> list = idcardDao.getModelList(im);
+						if (list == null || list.size() == 0) {
+							// 缺失身份证
+							smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
+						} else {
+							// 等待发货
+							smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
+						}
+					} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
+						// 已发货
+						smileStatus = Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code;
+					} else if ("TRADE_FINISHED".equals(status)) {// 交易成功
+						smileStatus = Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;
+					} else {
+						// 未知状态
+						throw new ValidateException(400000);
+					}
+				} else {
+					throw new ValidateException(400001);
+				}
+			}
+		}
+		orderModel.setStatus(smileStatus);
+		orderDao.updateStatusByNumber(orderModel);
+		return smileStatus;
+	}
+
+	public void updateStatusByNumber(OrderModel orderModel) {
+		orderDao.updateStatusByNumber(orderModel);
+		if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
+			sendPaySuccess(orderModel.getNumber());
+		}
+	}
 }

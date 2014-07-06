@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.holding.smile"
     android:versionCode="1"
-    android:versionName="1.2" >
+    android:versionName="1.3.6" >
 
     <uses-sdk android:minSdkVersion="8" />
 
@@ -33,7 +33,6 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.MainTwoActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -49,6 +48,11 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.GoodsDetailActivity"
+            android:screenOrientation="portrait"
+            android:finishOnTaskLaunch="true" >
+        </activity>
+        <activity
+            android:name="com.holding.smile.activity.GoodsBigImgActivity"
             android:screenOrientation="portrait"
             android:finishOnTaskLaunch="true" >
         </activity>
@@ -96,6 +100,11 @@
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>
         <activity
+            android:name="com.holding.smile.activity.FindBackPwdActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" >
+        </activity>
+        <activity
             android:name="com.holding.smile.activity.RegisterActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -131,7 +140,6 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.WebViewActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>

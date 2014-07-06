@@ -1,10 +1,12 @@
 
 package com.holding.smile.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.tools.CodeValidator;
+import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
 
 /**
@@ -36,7 +39,7 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 		backBtn.setOnClickListener(this);
 
 		TextView textView = displayHeaderDescription();
-		textView.setText("邮箱设置");
+		textView.setText("邮件地址");
 
 		emailEditText = (EditText) findViewById(R.id.email_address);
 		saveButton = (Button) findViewById(R.id.email_save);
@@ -70,6 +73,10 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
+				InputMethodManager imm = (InputMethodManager) emailEditText.getContext()
+						.getSystemService(
+								Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(emailEditText.getWindowToken(), 0);
 				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
@@ -77,19 +84,26 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 			case R.id.email_save: {
 				// 设置邮箱
 				email = emailEditText.getText().toString();
-				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
-												.setUserInfo("email", email);
-				
-				if (CodeValidator.dealCode(context, rvd)) {
-					ToastUtils.showShort(this, "保存成功！");
-					Intent intent = new Intent();
-					intent.putExtra("email", email);
-					setResult(RESULT_OK, intent);
-					finish();
+				if(StrUtils.checkEmail(email)){
+					progressBar.setVisibility(View.VISIBLE);
+					RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
+													.setUserInfo("email", email);
+					if (CodeValidator.dealCode(context, rvd)) {
+						ToastUtils.showShort(this, "保存成功！");
+						Intent intent = new Intent();
+						intent.putExtra("email", email);
+						setResult(RESULT_OK, intent);
+						finish();
+					}
+					waitCloseProgressBar();
+				} else {
+					ToastUtils.showShort(this, "邮箱格式不正确！");
+					return;
 				}
 				break;
 			}
 			case R.id.email_canle: {
+				progressBar.setVisibility(View.VISIBLE);
 				// 解除绑定邮箱
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("email", "");
@@ -100,6 +114,7 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 					setResult(RESULT_OK, intent);
 					finish();
 				}
+				waitCloseProgressBar();
 				break;
 			}
 		}

@@ -37,37 +37,52 @@ public interface ProductService {
 	 * 增加产品
 	 * 
 	 * @param productParamDto
+	 * @param userId
 	 * @throws ValidateException
 	 * @return
 	 */
-	public void addProduct(ProductParamDto productParamDto) throws ValidateException;
+	public void addProduct(Integer userId, ProductParamDto productParamDto)
+			throws ValidateException;
 
 	/**
 	 * 编辑产品
 	 * 
 	 * @param productParamDto
+	 * @param userId
 	 * @throws ValidateException
 	 * @return
 	 */
-	public void editProduct(ProductParamDto productParamDto) throws ValidateException;
+	public void editProduct(Integer userId, ProductParamDto productParamDto)
+			throws ValidateException;
 
 	/**
 	 * 删除产品
 	 * 
 	 * @param productId
+	 * @param userId
 	 * @throws ValidateException
 	 * @return
 	 */
-	public void deleteProduct(Integer productId) throws ValidateException;
+	public void deleteProduct(Integer userId, Integer productId) throws ValidateException;
 
 	/**
 	 * 批量删除产品
 	 * 
 	 * @param productIds
+	 * @param userId
 	 * @throws ValidateException
 	 * @return
 	 */
-	public void batchDelProducts(String productIds) throws ValidateException;
+	public void batchDelProducts(Integer userId, String productIds) throws ValidateException;
+
+	/**
+	 * 分页查询产品DTO列表
+	 * 
+	 * @param pager
+	 * @param product
+	 * @return list
+	 */
+	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager, ProductModel product);
 
 	/**
 	 * 分页查询产品DTO列表
@@ -76,4 +91,14 @@ public interface ProductService {
 	 * @return list
 	 */
 	public List<ProductCmsDto> getProductCmsDtosByPage(Pager pager);
+
+	/**
+	 * 重新处理和缩放图片
+	 * 
+	 * @param userId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public void refreshProductImgs(Integer userId, Integer start, Integer end);
 }

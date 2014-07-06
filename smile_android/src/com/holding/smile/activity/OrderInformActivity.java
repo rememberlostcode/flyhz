@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,8 +40,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private static final int		WHAT_DID_UPDATE_DATA		= 1;
 	private static final int		WHAT_PROGRESS_STATE			= 2;
 	private static final int		WHAT_DID_CONFIRMORDER_DATA	= 3;
-	private ProgressDialog			pDialog;
-	private int						mProgress;
 	private MyListView				listView;
 	private MyOrderInformAdapter	orderAdapter;
 	private TextView				confirmBtn;
@@ -95,9 +92,8 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		totalNumber = (TextView) findViewById(R.id.order_inform_total_number);
 		totalMoney = (TextView) findViewById(R.id.order_inform_total_money);
 
-		initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.order_list);
-		orderAdapter = new MyOrderInformAdapter(context, orderDetails, pDialog, mUIHandler,
+		orderAdapter = new MyOrderInformAdapter(context, orderDetails, progressBar, mUIHandler,
 				cartFlag);
 		listView.setAdapter(orderAdapter);
 
@@ -105,47 +101,21 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 	public synchronized void loadData() {
 		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
+			progressBar.setVisibility(View.VISIBLE);
 			String pidQty = "";
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
 			}
 			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.getOrderInform(pidQty, cartIds, addressId);
-			if (CodeValidator.dealCode(context, rtnValue)) {
-				Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
-				msg.obj = rtnValue;
-				msg.sendToTarget();
-			}
+			
+			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
+			msg.obj = rtnValue;
+			msg.sendToTarget();
 		} else {
 			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
-
 			finish();
 		}
-	}
-
-	/**
-	 * 进度条初始化
-	 */
-	private void initPDialog() {
-		pDialog = new ProgressDialog(this);
-		// pDialog.setTitle("");
-		// pDialog.closeOptionsMenu();
-		pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		// pDialog.setMax(100);
-		pDialog.setMessage("正在加载...");
-		pDialog.setIndeterminate(false);
-		pDialog.setCanceledOnTouchOutside(true);
-		// pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "右键",
-		// new DialogInterface.OnClickListener() {
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		//
-		// }
-		// });
-		pDialog.setProgress(0);
-		mProgress = 0;
-		// 当要显示进度效果时，再给handler发送一个空消息
-		// mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
 	}
 
 	/**
@@ -153,20 +123,16 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	 */
 	private void confirmOrder() {
 		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
-			pDialog.show();
-			mUIHandler.sendEmptyMessage(WHAT_PROGRESS_STATE);
-
+			progressBar.setVisibility(View.VISIBLE);
 			String pidQty = "";
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
 			}
 			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.confirmOrder(pidQty, cartIds, addressId);
-			if (CodeValidator.dealCode(context, rtnValue)) {
-				Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);
-				msg.obj = rtnValue;
-				msg.sendToTarget();
-			}
+			Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);
+			msg.obj = rtnValue;
+			msg.sendToTarget();
 		} else {
 			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 		}
@@ -234,12 +200,11 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj != null) {
+															if (CodeValidator.dealCode(context, obj)) {
 																order = obj.getOrderData();
 																if (order == null) {
 																	if (obj.getValidate() != null
@@ -264,12 +229,13 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																}
 															}
 														}
+														waitCloseProgressBar();
 														break;
 													}
 													case WHAT_DID_UPDATE_DATA: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj != null) {
+															if (CodeValidator.dealCode(context, obj)) {
 																ProductDto product = obj.getProductData();
 																if (product == null) {
 																	if (obj.getValidate() != null
@@ -310,14 +276,12 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 															ToastUtils.showShort(context,
 																	Constants.MESSAGE_EXCEPTION);
 														}
-														if (pDialog != null)
-															pDialog.dismiss();
 														break;
 													}
 													case WHAT_DID_CONFIRMORDER_DATA: {
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (obj != null) {
+															if (CodeValidator.dealCode(context, obj)) {
 																order = obj.getOrderData();
 																if (order == null) {
 																	if (obj.getValidate() != null
@@ -372,25 +336,10 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																}
 															}
 														}
-														if (pDialog != null)
-															pDialog.dismiss();
-														break;
-													}
-													case WHAT_PROGRESS_STATE: {
-														if (mProgress >= 100) {
-															// pDialog.dismiss();
-															mProgress = 0;
-														} else {
-															mProgress++;
-															// ProgressBar进度值加1
-															pDialog.incrementProgressBy(1);
-															// 延迟100毫秒后发送空消息
-															mUIHandler.sendEmptyMessageDelayed(
-																	WHAT_PROGRESS_STATE, 100);
-														}
 														break;
 													}
 												}
+												waitCloseProgressBar();
 											}
 
 										};

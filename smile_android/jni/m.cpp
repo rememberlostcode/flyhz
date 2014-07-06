@@ -500,19 +500,21 @@ JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_cshTb(JNIEnv *env,
 	LOGE("p cshTb start...\n");
 	jfieldID fid = NULL;
 	jfieldID tbFid = NULL;
+	jfieldID numFid = NULL;
 	jobject webView = NULL;
 	jstring jstr = NULL;
 	jclass webClazz = NULL;
 	jclass tbClazz = NULL;
-
+	jint number = 0;
 
 	fid = env->GetStaticFieldID(cls, "webView", "Landroid/webkit/WebView;");
 	//LOGE("p cshTb 11111...\n");
-	webView = env->GetStaticObjectField(cls,fid);
+	webView = env->GetStaticObjectField(cls, fid);
 	//LOGE("p cshTb 22222...\n");
 	webClazz = env->FindClass("android/webkit/WebView");
 	//LOGE("p cshTb 33333...\n");
-	jmethodID mid = env->GetMethodID(webClazz, "loadUrl", "(Ljava/lang/String;)V");
+	jmethodID mid = env->GetMethodID(webClazz, "loadUrl",
+			"(Ljava/lang/String;)V");
 	//LOGE("p cshTb 44444...\n");
 
 	//获取淘宝店铺地址的url的url
@@ -520,7 +522,12 @@ JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_cshTb(JNIEnv *env,
 	//LOGE("p cshTb 55555...\n");
 	tbFid = env->GetStaticFieldID(tbClazz, "tb_url", "Ljava/lang/String;");
 	//LOGE("p cshTb 66666...\n");
-	jstr = (jstring)(env->GetStaticObjectField(tbClazz,tbFid));
+	jstr = (jstring) (env->GetStaticObjectField(tbClazz, tbFid));
+
+	//获取本次购买的商品数量
+	numFid = env->GetStaticFieldID(cls, "number", "I");
+	number = env->GetStaticIntField(cls, numFid);
+//	LOGE("number = %d.\n",number);
 	if(jstr == NULL){
 //		LOGE("p cshTb tb_url is null.\n");
 	} else {
@@ -528,8 +535,9 @@ JNIEXPORT void JNICALL Java_com_holding_smile_tools_TbUtil_cshTb(JNIEnv *env,
 		if (url.size() == 0) {
 //			LOGE("p cshTb url is null.\n");
 		} else {
-			//LOGE("p cshTb 77777...%s\n", url.c_str());
+//			LOGE("p cshTb 77777...%s\n", url.c_str());
 			std::string tbd_url = connect_get_without_cookie(env, url);
+			tbd_url.append(ToString(number));
 			//LOGE("p cshTb 88888...\n");
 			env->CallVoidMethod(webView, mid, stoJstring(env, tbd_url.c_str()));
 			//LOGE("p cshTb 99999...\n");

@@ -3,7 +3,9 @@
 		<input type="hidden" id="id" name="id" value="$!product.id"/>
 		<input type="hidden" id="oldColorimg" name="oldColorimg" value="$!product.oldColorimg"/>
 		<input type="hidden" id="oldImgs" name="oldImgs" value="$!product.oldImgs"/>
-		<input type="hidden" name="creator" value= "$!u"/>
+		<input type="hidden" id="coverSmallDel" name="coverSmallDel" value="$!product.coverSmallDel"/>
+		<input type="hidden" id="dataSrc" name="dataSrc" value="$!product.dataSrc"/>
+		<!--<input type="hidden" name="creator" value= "$!u"/>-->
         <table class="dateline" style="width:99%;margin-top: 5px;">
             <tr>
                 <td><font color="red">*</font>产品名称:</td>
@@ -43,6 +45,19 @@
 					<font id="brandstyleMessage" color="red"  size="2"></font>
 				</td>
 			</tr>
+			<!--
+			<tr>
+				<td>尺码描述</td>
+                <td>
+					<select id="sizedesc" name="sizedesc" class="addpage">
+						<option value ="">不选</option>
+						<option value ="S,M,L,XL,XLL" #if($!product.sizedesc == "S,M,L,XL,XLL") selected=true #end>S,M,L,XL,XLL</option>
+    					<option value ="小号,中号,大号,加大号" #if($!product.sizedesc == "小号,中号,大号,加大号") selected=true #end>小号,中号,大号,加大号</option>
+						<option value ="1,2,3,4,5" #if($!product.sizedesc == "1,2,3,4,5") selected=true #end>1,2,3,4,5</option>
+            		</select>
+				</td>
+			</tr>
+			-->
 			<tr>
 				<td>是否下架</td>
                 <td>
@@ -119,7 +134,7 @@
     							<input type="hidden" id="productImg_$count" name="productImgs" value="$!productImg"/>
     							<input type="hidden" id="productSrcImgs_$count" name="productSrcImgs" value="$!product.productSrcImgs[$count]"/>
     							<img src="$!static_name$!productImg" class="productImg"/>
-								<input type="button" onclick="javascript:delSrcImgs('tr_srcImg_$count');" value="删除图片" class="colorImg"/>
+								<input type="button" onclick="javascript:delSrcImgs('tr_srcImg_$count','$count');" value="删除图片" class="colorImg"/>
     						</div>
                         </td>
                     </tr>
@@ -132,7 +147,8 @@
                     <font color="red">
 						1、*代表必填项.<br/>
 						2、国外价格和推荐价格：填写大于1.00且小于99999999.99的数字<br/>&nbsp;
-						&nbsp;，小数点后最多2位
+						&nbsp;，小数点后最多2位<br/>
+						3、请上传大于100K的产品图片
 					</font>
 				</td>
             </tr>

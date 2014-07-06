@@ -33,6 +33,7 @@ public class ProductModel implements Serializable {
 	private String				creator;
 	private String				dataSrc;					// 数据来源：manual--手动；spider--爬虫
 	private String				offShelf;					// 是否下架：y--是；n--否
+	private String				sizedesc;					// 产品尺码描述
 
 	public ProductModel() {
 
@@ -204,5 +205,13 @@ public class ProductModel implements Serializable {
 
 	public void setRecommendprice(BigDecimal recommendprice) {
 		this.recommendprice = recommendprice;
+	}
+
+	public String getSizedesc() {
+		return sizedesc;
+	}
+
+	public void setSizedesc(String sizedesc) {
+		this.sizedesc = sizedesc;
 	}
 }

@@ -391,4 +391,16 @@ public class UserController {
 		}
 		model.addAttribute("protocol", protocol);
 	}
+
+	@RequestMapping(value = "user/findPwd", method = RequestMethod.GET)
+	public void findPwd(String username, Model model) {
+		Protocol protocol = new Protocol();
+		try {
+			protocol.setData(userService.findPwd(username));
+			protocol.setCode(200000);
+		} catch (ValidateException e) {
+			protocol.setCode(e.getCode());
+		}
+		model.addAttribute("protocol", protocol);
+	}
 }

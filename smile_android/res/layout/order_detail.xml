@@ -185,23 +185,39 @@
                 android:textColor="@drawable/dahong"
                 android:textSize="20sp" />
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/order_detail_wuliu"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:gravity="center_vertical"
-                android:text="物流信息："
-                android:textColor="@drawable/shenhuise"
-                android:textSize="15sp" />
-
-            <com.holding.smile.myview.MyListView
-                android:id="@+id/order_detail_logistics_list"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@android:color/transparent"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="1sp" />
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/order_detail_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="收货人地址："
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    android:text="物流信息："
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="15sp" />
+
+                <com.holding.smile.myview.MyListView
+                    android:id="@+id/order_detail_logistics_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@android:color/transparent"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="1sp" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/order_detail_status"

@@ -18,11 +18,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.TbUtil;
-import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -32,8 +32,9 @@ import com.holding.smile.tools.ToastUtils;
  * 
  */
 public class WebViewActivity extends Activity implements OnClickListener {
-	private String		number; // 订单号
-	private BigDecimal	amount; // 总额
+	private String		number;	// 订单号
+	private BigDecimal	amount;	// 总额
+	private String		tbOrder;	// 淘宝订单号
 
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
@@ -41,23 +42,17 @@ public class WebViewActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.web_view);
 		ImageView backBtn = (ImageView) findViewById(R.id.btn_back);
-		TextView headerNum = (TextView) findViewById(R.id.number);
-		TextView headerAmount = (TextView) findViewById(R.id.amount);
 		backBtn.setOnClickListener(this);
 
 		try {
 			Intent intent = this.getIntent();
 			number = intent.getExtras().getString("number");
 			amount = (BigDecimal) intent.getExtras().getSerializable("amount");
+			WebView web = (WebView) findViewById(R.id.webView);
 
 			if (StrUtils.isNotEmpty(number) && amount != null) {
-				headerNum.setText(number + "");
-				headerAmount.setText(amount.doubleValue() + "");
-
 				// 获取webView控件
-				if (TbUtil.getWebView() == null) {
-					TbUtil.setWebView((WebView) findViewById(R.id.webView));
-				}
+				TbUtil.setWebView(web);
 				WebSettings webSettings = TbUtil.getWebView().getSettings();
 				// 允许使用JavaScript
 				webSettings.setJavaScriptEnabled(true);
@@ -73,6 +68,8 @@ public class WebViewActivity extends Activity implements OnClickListener {
 				webSettings.setDomStorageEnabled(true);
 				// 设置滚动条样式
 				TbUtil.getWebView().setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+				// 绑定webview接口
+				TbUtil.getWebView().addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
 				// 网页链接不以浏览器方式打开
 				TbUtil.getWebView().setWebViewClient(new WebViewClient() {
 					@Override
@@ -84,41 +81,53 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
 							TbUtil.setWebView(view);
-							// TbUtil.cshTb();
-							view.loadUrl("http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
-									+ amount.intValue());
+							view.reload();
+						}
+						if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
+							// 设置返回和刷新按钮不显示
+							view.loadUrl("javascript:document.getElementsByTagName('section')[1].style.display='none';");
+							view.loadUrl("javascript:document.getElementsByTagName('section')[3].style.display='none';");
+						}
+						if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
+							// 设置首页按钮不显示
+							// view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
 
 					@Override
 					public void onPageFinished(WebView view, String url) {
+						TextView showVurl = (TextView) findViewById(R.id.show_vurl);
+						showVurl.setText(url);
 						super.onPageFinished(view, url);
 						TbUtil.setWebView(view);
-						// 设置隐藏返回按钮
-						view.loadUrl("javascript:document.getElementsByTagName('li')[1].style.display='none';");
+						// 加载js
+						StringBuffer jsStringBuffer = new StringBuffer();
+						jsStringBuffer.append("javascript:$(document).ready(function(){$('.c-btn-aw').eq(0).css('display','none');});");
+						jsStringBuffer.append("javascript:$(document).ready(function(){");
+						jsStringBuffer.append("setTimeout(function(){");
 						// 给卖家留言设置订单编号和数量
-						if (url.indexOf("buyNow=true") > -1) {
-							StringBuffer jsStringBuffer = new StringBuffer();
-							jsStringBuffer.append("javascript:window.onload = function(){");
-							// 立即购买:卖家留言设置订单编号
-							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('value','");
-							//jsStringBuffer.append(number);
-							//jsStringBuffer.append("');");
-							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('value','");
-							jsStringBuffer.append(number);
-							jsStringBuffer.append("');");
-							// 设置卖家留言属性值为空
-							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('placeholder','');");
-							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('placeholder','');");
-							// 设置卖家留言框只读，不能修改
-							//jsStringBuffer.append("document.getElementsByTagName('input')[2].setAttribute('readonly','readonly');");
-							jsStringBuffer.append("document.getElementsByTagName('section')[5].firstChild.firstChild.setAttribute('readonly','readonly');");
+						if (url.indexOf("buyNow=true&v=0&skuId=&quantity=") > -1) {
+							// 设置隐藏返回按钮
+							jsStringBuffer.append("$('.c-btn-aw').eq(0).css('display','none');");
 							// 设置数量只读，不能修改
-							view.loadUrl("javascript:document.getElementsByName('quantity')[0].setAttribute('readonly','readonly');");
-							jsStringBuffer.append("};");
-							view.loadUrl(jsStringBuffer.toString());
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(0).attr('readonly','readonly');");
+							// 立即购买:卖家留言设置订单编号
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('value','"
+									+ number + "');");
+							// 设置卖家留言属性值为空
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('placeholder','');");
+							// 设置卖家留言框只读，不能修改
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('readonly','readonly');");
+						} else if (url.indexOf("http://login.m.taobao.com/login.htm") > -1) {
+							// 设置首页按钮不显示
+							jsStringBuffer.append("document.getElementsByClassName('back')[0].style.display='none';");
+						} else if (url.indexOf("https://mclient.alipay.com/cashierPay.htm?awid=") > -1) {
+							// jsStringBuffer.append("javascript:window.local_obj.showSource('document.getElementsByTagName('html')[0].innerHTML');");
 						}
+						jsStringBuffer.append("},1000);");
+						jsStringBuffer.append("});");
+						view.loadUrl(jsStringBuffer.toString());
 					}
 
 					@Override
@@ -127,19 +136,20 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						super.onReceivedError(view, errorCode, description, failingUrl);
 					}
 				});
-				// TbUtil.cshTb();
-				TbUtil.getWebView()
-						.loadUrl(
-								"http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
-										+ amount.intValue());
+				TbUtil.setNumber(amount.intValue());
+				TbUtil.cshTb();
+				// TbUtil.getWebView()
+				// .loadUrl(
+				// "http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
+				// + amount.intValue());
 			} else {
-				ToastUtils.showShort(this, "订单号或金额为空！");
+				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
 				setResult(RESULT_CANCELED, null);
 				finish();
 			}
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, "去淘宝支付时出错：" + e.getMessage());
-			ToastUtils.showShort(this, "订单号或金额不能为空！");
+			Toast.makeText(this, "订单号或金额不能为空！", Toast.LENGTH_SHORT).show();
 			setResult(RESULT_CANCELED, null);
 			finish();
 			return;
@@ -174,5 +184,11 @@ public class WebViewActivity extends Activity implements OnClickListener {
 			TbUtil.setWebView(null);
 		}
 		super.onDestroy();
+	}
+
+	final class InJavaScriptLocalObj {
+		public void showSource(String html) {
+			Log.d("HTML", html);
+		}
 	}
 }

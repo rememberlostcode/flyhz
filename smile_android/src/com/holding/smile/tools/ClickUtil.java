@@ -1,6 +1,8 @@
 
 package com.holding.smile.tools;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 
 public class ClickUtil {
@@ -109,5 +111,22 @@ public class ClickUtil {
 				break;
 		}
 		return colorId;
+	}
+	
+	public static void sendEmail(Context context) {
+		Intent email = new Intent(android.content.Intent.ACTION_SEND);
+		email.setType("plain/text");
+		String[] emailReciver = new String[]{"service@tiantianhaigou.com"};
+		String emailSubject = "请输入标题";
+		String emailBody = "请输入内容（疑问、建议、要求等等）";
+
+		//设置邮件默认地址
+		email.putExtra(android.content.Intent.EXTRA_EMAIL, emailReciver);
+		//设置邮件默认标题
+		email.putExtra(android.content.Intent.EXTRA_SUBJECT, emailSubject);
+		//设置要默认发送的内容
+		email.putExtra(android.content.Intent.EXTRA_TEXT, emailBody);
+		//调用系统的邮件系统
+		context.startActivity(Intent.createChooser(email, "请选择邮件发送软件"));
 	}
 }

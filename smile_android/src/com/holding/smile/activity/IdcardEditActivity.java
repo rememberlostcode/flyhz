@@ -1,8 +1,12 @@
 
 package com.holding.smile.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,8 +15,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,13 +43,16 @@ import com.holding.smile.tools.ToastUtils;
 public class IdcardEditActivity extends BaseActivity implements OnClickListener {
 	private Idcard		idcard;
 	private String		picturePath;
+	private String		backPicturePath;
 
 	private EditText	idcardName;
 	private EditText	idcardNumber;
-	private TextView	idcardPhotoButton;
 	private Button		idcardSave;
 	private Button		idcardDelete;
 	private ImageView	imageView;
+	private ImageView	imageBackView;
+	private ImageView	imageViewButton;
+	private ImageView	imageBackViewButton;
 
 	private int			optNum	= 1;
 
@@ -57,17 +68,22 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 		idcardName = (EditText) findViewById(R.id.idcard_name);
 		idcardNumber = (EditText) findViewById(R.id.idcard_number);
-		idcardPhotoButton = (TextView) findViewById(R.id.idcard_photo_button);
 		idcardSave = (Button) findViewById(R.id.idcard_add_save);
 		idcardDelete = (Button) findViewById(R.id.idcard_delete);
 		imageView = (ImageView) findViewById(R.id.idcard_idcard_img);
+		imageBackView = (ImageView) findViewById(R.id.idcard_idcard_back_img);
+		imageViewButton = (ImageView) findViewById(R.id.idcard_idcard_img_upload);
+		imageBackViewButton = (ImageView) findViewById(R.id.idcard_idcard_back_img_upload);
 
 		idcardName.setOnClickListener(this);
 		idcardNumber.setOnClickListener(this);
-		idcardPhotoButton.setOnClickListener(this);
 		idcardSave.setOnClickListener(this);
 		idcardDelete.setOnClickListener(this);
-
+		imageView.setOnClickListener(this);
+		imageBackView.setOnClickListener(this);
+		imageViewButton.setOnClickListener(this);
+		imageBackViewButton.setOnClickListener(this);
+		
 		try {
 			Intent intent = getIntent();
 			if (intent.getExtras() != null && intent.getExtras().getSerializable("idcard") != null) {
@@ -76,9 +92,21 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 					idcardName.setText(idcard.getName());
 					idcardNumber.setText(idcard.getNumber());
 					if (idcard.getUrl() != null && !"".equals(idcard.getUrl())) {
+						imageView.setVisibility(View.VISIBLE);
+						LayoutParams para = imageView.getLayoutParams();
+						para.height = MyApplication.getInstance().getScreenHeight() / 4;
+						imageView.setLayoutParams(para);
 						MyApplication.getImageLoader().DisplayImage(
 								MyApplication.jgoods_img_url + idcard.getUrl(), imageView, false);
-						imageView.setVisibility(View.VISIBLE);
+					}
+					
+					if (idcard.getBack_url() != null && !"".equals(idcard.getBack_url())) {
+						imageBackView.setVisibility(View.VISIBLE);
+						LayoutParams paraBak = imageBackView.getLayoutParams();
+						paraBak.height = MyApplication.getInstance().getScreenHeight()/4;
+						imageBackView.setLayoutParams(paraBak);
+						MyApplication.getImageLoader().DisplayImage(
+								MyApplication.jgoods_img_url + idcard.getBack_url(), imageBackView, false);
 					}
 				}
 			}
@@ -90,6 +118,21 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			idcard = new Idcard();
 			idcardDelete.setVisibility(View.GONE);
 		}
+		
+		idcardNumber.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_DONE
+						|| actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+					InputMethodManager imm = (InputMethodManager) idcardNumber.getContext()
+																			.getSystemService(
+																					Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(idcardNumber.getWindowToken(), 0);
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override
@@ -99,7 +142,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			switch (optNum) {
 				case OPT_CODE_SAVE:
 					rvd = MyApplication.getInstance().getSubmitService()
-										.idcardSave(idcard, picturePath);
+										.idcardSave(idcard, picturePath,backPicturePath);
 					break;
 				case OPT_CODE_REMOVE:
 					if (idcard != null && idcard.getId() != null) {
@@ -116,6 +159,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			Message msg = mUIHandler.obtainMessage(optNum);
 			msg.obj = rvd;
 			msg.sendToTarget();
+		} else {
+			waitCloseProgressBar();
 		}
 	}
 
@@ -126,6 +171,9 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
+				InputMethodManager imm = (InputMethodManager) idcardName.getContext().getSystemService(
+								Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(idcardName.getWindowToken(), 0);
 				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
@@ -151,8 +199,9 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				}
 
 				if (idcard.getId() == null
-						&& (picturePath == null || "".equals(picturePath.trim()))) {
-					ToastUtils.showShort(this, "必须上传身份证!");
+						&& (picturePath == null || "".equals(picturePath.trim()))
+						&& (backPicturePath == null || "".equals(backPicturePath.trim()))) {
+					ToastUtils.showShort(this, "必须上传身份证,正反两面都需要!");
 					break;
 				}
 
@@ -175,10 +224,55 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 														}).setNegativeButton("取消", null).show();
 				break;
 			}
-			case R.id.idcard_photo_button: {
+			case R.id.idcard_idcard_img_upload: {
 				Intent i = new Intent(Intent.ACTION_PICK,
 						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 				startActivityForResult(i, SELECT_PHOTO_IMAGE);
+				break;
+			}
+			case R.id.idcard_idcard_back_img_upload: {
+				Intent i = new Intent(Intent.ACTION_PICK,
+						android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+				startActivityForResult(i, SELECT_PHOTO_IMAGE_BACK);
+				break;
+			}
+			case R.id.idcard_idcard_img: {
+				if (picturePath == null && idcard.getUrl() == null) {
+					ToastUtils.showShort(this, "您还未上传身份证!");
+				} else {
+					Intent intent = new Intent(this, GoodsBigImgActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					List<String> picList = new ArrayList<String>();
+					if(picturePath == null){
+						picList.add(idcard.getUrl());
+					} else {
+						picList.add(picturePath);
+					}
+					int position = 0;
+					intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
+					intent.putExtra("position", position);
+					startActivity(intent);
+				}
+				break;
+			}
+			case R.id.idcard_idcard_back_img: {
+				if (backPicturePath == null && idcard.getBack_url() == null) {
+					ToastUtils.showShort(this, "您还未上传身份证!");
+				} else {
+					Intent intent = new Intent(this, GoodsBigImgActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					List<String> picList = new ArrayList<String>();
+					if(backPicturePath == null){
+						picList.add(idcard.getBack_url());
+					} else {
+						picList.add(backPicturePath);
+					}
+					
+					int position = 0;
+					intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
+					intent.putExtra("position", position);
+					startActivity(intent);
+				}
 				break;
 			}
 		}
@@ -198,9 +292,32 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			// imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+			
+			LayoutParams para = imageView.getLayoutParams();
+			para.height = MyApplication.getInstance().getScreenHeight()/4;
+			
+			imageView.setLayoutParams(para);
 			imageView.setImageBitmap(BitmapUtils.decodeFile(picturePath, 500, 500));
 			imageView.setVisibility(View.VISIBLE);
+		}
+		if (requestCode == SELECT_PHOTO_IMAGE_BACK && resultCode == RESULT_OK) {
+			Uri selectedImage = data.getData();
+			String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+			Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null,
+					null);
+			cursor.moveToFirst();
+
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			backPicturePath = cursor.getString(columnIndex);
+			cursor.close();
+			
+			LayoutParams paraBak = imageBackView.getLayoutParams();
+			paraBak.height = MyApplication.getInstance().getScreenHeight()/4;
+			
+			imageBackView.setLayoutParams(paraBak);
+			imageBackView.setImageBitmap(BitmapUtils.decodeFile(backPicturePath, 500, 500));
+			imageBackView.setVisibility(View.VISIBLE);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -210,7 +327,6 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 											@Override
 											public void handleMessage(Message msg) {
-												progressBar.setVisibility(View.GONE);
 												// if (msg.obj != null) {
 												switch (msg.what) {
 													case OPT_CODE_SAVE: {
@@ -222,7 +338,8 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 															setResult(RESULT_OK, intent);
 															finish();
 														} else {
-															ToastUtils.showShort(context, "保存失败，请重试！");
+															ToastUtils.showShort(context,
+																	"保存失败，请重试！");
 														}
 														break;
 													}
@@ -237,13 +354,15 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 														} else {
 															if (idcard != null
 																	&& idcard.getId() != null) {
-																ToastUtils.showShort(context, "删除失败，请重试!");
+																ToastUtils.showShort(context,
+																		"删除失败，请重试!");
 															}
 															finish();
 														}
 														break;
 													}
 												}
+												waitCloseProgressBar();
 												// }
 											}
 										};

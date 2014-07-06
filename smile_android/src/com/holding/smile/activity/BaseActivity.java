@@ -2,8 +2,10 @@
 package com.holding.smile.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
@@ -34,39 +36,74 @@ import com.holding.smile.tools.ToastUtils;
  */
 public class BaseActivity extends Activity {
 
-	public static final int	CATE_CODE			= 8;
-	public static final int	MORE_CODE			= 9;
-	public static final int	SEARCH_CODE			= 10;
-	public static final int	UPLOAD_IMAGE_CODE	= 11;
+	public static final int		CATE_CODE			= 8;
+	public static final int		MORE_CODE			= 9;
+	public static final int		SEARCH_CODE			= 10;
+	public static final int		UPLOAD_IMAGE_CODE	= 11;
 	/**
 	 * 编辑邮箱操作代码
 	 */
-	public static final int	EMAIL_CODE			= 13;
+	public static final int		EMAIL_CODE			= 13;
 	/**
 	 * 编辑手机号码操作代码
 	 */
-	public static final int	PHONE_CODE			= 14;
+	public static final int		PHONE_CODE			= 14;
 	/**
 	 * 选择身份证照片操作代码
 	 */
-	public static final int	SELECT_PHOTO_IMAGE	= 15;
+	public static final int		SELECT_PHOTO_IMAGE	= 15;
+	/**
+	 * 选择身份证照片操作代码
+	 */
+	public static final int		SELECT_PHOTO_IMAGE_BACK	= 150;
 	/**
 	 * 选择身份证照片编辑身份证操作代码
 	 */
-	public static final int	IDCARD_EDIT_CODE	= 16;
+	public static final int		IDCARD_EDIT_CODE	= 16;
 	/**
 	 * 订单代码
 	 */
-	public static final int	ORDER_CODE			= 17;
+	public static final int		ORDER_CODE			= 17;
 
-	public Context			context;
+	public Context				context;
 
-	private LinearLayout	ly_content;
+	private LinearLayout		ly_content;
 	// 内容区域的布局
-	private View			contentView;
-	protected int			reqCode				= 0;
-	protected String		filepath;
-	protected ProgressBar	progressBar;
+	private View				contentView;
+	protected int				reqCode				= 0;
+	protected String			filepath;
+	protected ProgressBar		progressBar;
+
+	protected BroadcastReceiver	connectionReceiver	= new BroadcastReceiver() {
+														@Override
+														public void onReceive(Context context,
+																Intent intent) {
+															ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+															// mobile 3G Data
+															// Network
+															State mobile = conMan.getNetworkInfo(
+																	ConnectivityManager.TYPE_MOBILE)
+																					.getState();
+															State wifi = conMan.getNetworkInfo(
+																	ConnectivityManager.TYPE_WIFI)
+																				.getState();
+
+															// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
+															// 则进入Network
+															// Setting界面
+															// 由用户配置网络连接
+															if (mobile == State.CONNECTED
+																	|| mobile == State.CONNECTING
+																	|| wifi == State.CONNECTED
+																	|| wifi == State.CONNECTING) {
+																MyApplication.setHasNetwork(true);
+															} else {
+																MyApplication.setHasNetwork(false);
+																ToastUtils.showShort(context,
+																		"网络异常，请检查网络！");
+															}
+														}
+													};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +134,10 @@ public class BaseActivity extends Activity {
 			MyApplication.getInstance().setDensity(density);
 		}
 
+		// 注册网络监听
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		registerReceiver(connectionReceiver, filter);
 	}
 
 	public void setVisible(int id) {
@@ -156,6 +197,19 @@ public class BaseActivity extends Activity {
 		return textView;
 	}
 
+	/**
+	 * 显示头部右边部分
+	 * 
+	 * @return
+	 */
+	public ImageView displayHeaderRightBtn() {
+		setHeadVisible();
+		int id = R.id.header_right_btn;
+		ImageView imageView = (ImageView) findViewById(id);
+		setVisible(id);
+		return imageView;
+	}
+
 	/***
 	 * 设置内容区域
 	 * 
@@ -205,10 +259,6 @@ public class BaseActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void onClick(View v) {
-
-	}
-
 	// 01-菜单-end
 	@Override
 	protected void onStart() {
@@ -227,7 +277,21 @@ public class BaseActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
-		
+
+		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		// mobile 3G Data Network
+		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+		State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+		// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态 则进入Network Setting界面 由用户配置网络连接
+		if (mobile == State.CONNECTED || mobile == State.CONNECTING || wifi == State.CONNECTED
+				|| wifi == State.CONNECTING) {
+			MyApplication.setHasNetwork(true);
+		} else {
+			MyApplication.setHasNetwork(false);
+			ToastUtils.showShort(this, "网络异常，请检查网络！");
+			return;
+		}
+
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
 				|| this.getClass().equals(MySmileActivity.class)
@@ -245,20 +309,6 @@ public class BaseActivity extends Activity {
 				startActivity(intent);
 				overridePendingTransition(0, 0);
 			}
-		}
-		
-		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		// mobile 3G Data Network
-		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-		State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-		// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态 则进入Network Setting界面 由用户配置网络连接
-		if (mobile == State.CONNECTED || mobile == State.CONNECTING || wifi == State.CONNECTED
-				|| wifi == State.CONNECTING) {
-			MyApplication.setHasNetwork(true);
-		} else {
-			MyApplication.setHasNetwork(false);
-			ToastUtils.showShort(this, "网络异常，请检查网络！");
-			return;
 		}
 	}
 
@@ -278,6 +328,10 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if (connectionReceiver != null) {
+			// 取消监听
+			unregisterReceiver(connectionReceiver);
+		}
 		// MyApplication.getInstance().finishActivity(this);
 		// Log.e(MyApplication.LOG_TAG, "start onDestroy~~~");
 	}
@@ -287,24 +341,30 @@ public class BaseActivity extends Activity {
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// if (event.getAction() == KeyEvent.ACTION_DOWN &&
-		// KeyEvent.KEYCODE_BACK == keyCode) {
-		// long currentTime = System.currentTimeMillis();
-		// if ((currentTime - touchTime) >= waitTime) {
-		// ToastUtils.showShort(context, "再按一次返回键回到桌面！");
-		// touchTime = currentTime;
-		// } else {
-		// /* 与按下HOME键效果一样 begin */
-		// Intent intent = new Intent(Intent.ACTION_MAIN);
-		// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
-		// intent.addCategory(Intent.CATEGORY_HOME);
-		// this.startActivity(intent);
-		// /* 与按下HOME键效果一样 end */
-		// return true;
-		// }
+		// if (returnDesktop(keyCode, event)) {
 		// return true;
 		// }
 		return super.onKeyDown(keyCode, event);
+	}
+
+	public boolean returnDesktop(int keyCode, KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN && KeyEvent.KEYCODE_BACK == keyCode) {
+			long currentTime = System.currentTimeMillis();
+			if ((currentTime - touchTime) >= waitTime) {
+				ToastUtils.showShort(context, "再按一次退出应用！");
+				touchTime = currentTime;
+			} else {
+				/* 与按下HOME键效果一样 begin */
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 注意
+				intent.addCategory(Intent.CATEGORY_HOME);
+				this.startActivity(intent);
+				/* 与按下HOME键效果一样 end */
+				return true;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -320,10 +380,14 @@ public class BaseActivity extends Activity {
 		});
 	}
 
+	public void onClick(View v) {
+	}
+
 	/**
 	 * LoadTask调用的默认方法
 	 */
 	public synchronized void loadData() {
+		System.out.println("-------------------空方法-------------------");
 	}
 
 	public View displayFooterMain(int idNow) {
@@ -331,7 +395,6 @@ public class BaseActivity extends Activity {
 		int id = R.id.mainfooter;
 		LinearLayout view = (LinearLayout) findViewById(id);
 		setVisible(id);
-
 		int count = view.getChildCount();
 		for (int i = 0; i < count; i++) {
 			int o = view.getChildAt(i).getId();
@@ -344,11 +407,10 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, MainSmileActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
-							finish();
 							overridePendingTransition(0, 0);
+							finish();
 						}
 					});
 				} else if (o == R.id.mainfooter_two) {// 排行榜
@@ -357,7 +419,6 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, SortActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
@@ -369,7 +430,6 @@ public class BaseActivity extends Activity {
 						public void onClick(View v) {
 							Intent intent = new Intent();
 							intent.setClass(context, SearchGoodsActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
@@ -387,7 +447,6 @@ public class BaseActivity extends Activity {
 							} else {
 								intent.setClass(context, ShoppingCartActivity.class);
 							}
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);
@@ -397,9 +456,14 @@ public class BaseActivity extends Activity {
 					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
+							SUser user = MyApplication.getInstance().getCurrentUser();
 							Intent intent = new Intent();
-							intent.setClass(context, MySmileActivity.class);
-							// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+							if (user == null || MyApplication.getInstance().getSessionId() == null) {
+								intent.putExtra("class", MySmileActivity.class);
+								intent.setClass(context, LoginActivity.class);
+							} else {
+								intent.setClass(context, MySmileActivity.class);
+							}
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 							overridePendingTransition(0, 0);

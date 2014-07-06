@@ -11,6 +11,7 @@ public class IdcardModel implements Serializable {
 	private String				name;
 	private String				number;
 	private String				url;
+	private String				back_url;
 	private Integer				userId;
 	private Date				gmtCreate;
 	private Date				gmtModify;
@@ -45,6 +46,14 @@ public class IdcardModel implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getBack_url() {
+		return back_url;
+	}
+
+	public void setBack_url(String back_url) {
+		this.back_url = back_url;
 	}
 
 	public Integer getUserId() {

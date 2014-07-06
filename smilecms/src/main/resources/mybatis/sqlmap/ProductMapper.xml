@@ -107,9 +107,13 @@
 		       p.brandstyle,
 		       p.cover,
 		       p.cover_small coverSmall,
-		       p.off_shelf offShelf
+		       p.off_shelf offShelf,
+		       p.sizedesc,
+		       p.creator,
+		       p.data_src dataSrc  
 		  from product p where p.id=#{id}
     </select>
+    
     <select id="getPagedProducts" resultType="ProductModel">
     	select p.id,
 		       p.name,
@@ -129,9 +133,13 @@
 		       p.brandstyle,
 		       p.cover,
 		       p.cover_small coverSmall,
-		       p.off_shelf offShelf
+		       p.off_shelf offShelf,
+		       p.sizedesc,
+		       p.creator,
+		       p.data_src dataSrc 
 		  from product p
     </select>
+    
     <select id="getPageProductCmsDtos" resultType="ProductCmsDto">
     	select p.id,
 		       p.name,
@@ -144,16 +152,69 @@
 		       c.name cateName,
 		       b.name brandName,
 		       p.brandstyle,
-		       p.off_shelf offShelf
+		       p.off_shelf offShelf,
+		       p.sizedesc 
 		  from product p,brand b,category c 
 		  where p.brand_id = b.id and p.category_id = c.id 
     </select>
+    
+    <select id="getProductCmsDtosPage" resultType="ProductCmsDto" parameterType="ProductPageDto">
+    	select p.id,
+		       p.name,
+		       p.description,
+		       p.purchasingprice,
+		       p.recommendprice,
+		       p.color,
+		       p.cover,
+		       p.cover_small coverSmall,
+		       c.name cateName,
+		       b.name brandName,
+		       p.brandstyle,
+		       p.off_shelf offShelf,
+		       p.sizedesc 
+		  from product p,brand b,category c 
+		  where p.brand_id = b.id and p.category_id = c.id 
+		  <if test="name != null">
+    		   and p.name like #{name} 
+    	  </if>
+    	  <if test="brandstyle != null">
+    		   and p.brandstyle=#{brandstyle} 
+    	  </if>
+    	  <if test="brandId != null">
+    		   and p.brand_id=#{brandId} 
+    	  </if>
+    	  <if test="categoryId != null">
+    		   and p.category_id=#{categoryId} 
+    	  </if>
+    	  order by p.id desc limit #{start},#{pagesize}
+    </select>
+    
+    <select id="getProductCmsDtosPageCount" resultType="Integer" parameterType="ProductPageDto">
+    	 select count(1) count 
+    	   from product p,brand b,category c 
+		  where p.brand_id = b.id and p.category_id = c.id 
+		  <if test="name != null">
+    		   and p.name like #{name} 
+    	  </if>
+    	  <if test="brandstyle != null">
+    		   and p.brandstyle=#{brandstyle} 
+    	  </if>
+    	  <if test="brandId != null">
+    		   and p.brand_id=#{brandId} 
+    	  </if>
+    	  <if test="categoryId != null">
+    		   and p.category_id=#{categoryId} 
+    	  </if>
+    </select>
+    
     <select id="getMaxStyle" resultType="Integer">
     	select max(style) style from product
     </select>
+    
     <delete id="deleteProduct" parameterType="Integer">
     	delete from product where id = #{productId}
     </delete>
+    
     <insert id="addProduct" parameterType="ProductModel">
     	insert into product(id,name,brand_id,category_id,brandstyle,gmt_create,gmt_modify
     	<if test="imgs != null">
@@ -195,6 +256,12 @@
     	<if test="offShelf != null">
     		,off_shelf
     	</if>
+    	<if test="sizedesc != null">
+    		,sizedesc
+    	</if>
+    	<if test="dataSrc != null">
+    		,data_src
+    	</if>
     	) values(#{id},#{name},#{brandId},#{categoryId},#{brandstyle},#{gmtCreate},#{gmtModify}
     	<if test="imgs != null">
     		,#{imgs}
@@ -235,15 +302,76 @@
     	<if test="offShelf != null">
     		,#{offShelf}
     	</if>
+    	<if test="sizedesc != null">
+    		,#{sizedesc}
+    	</if>
+    	<if test="dataSrc != null">
+    		,#{dataSrc}
+    	</if>
     	)
     	<selectKey resultType="Integer" keyProperty="id">
 	        SELECT LAST_INSERT_ID();
 	    </selectKey>
     </insert>
+    
     <update id="editProduct" parameterType="ProductModel">
     	update product set name=#{name},category_id=#{categoryId},brand_id=#{brandId},brandstyle=#{brandstyle},
     	gmt_modify=#{gmtModify},imgs=#{imgs},description=#{description},purchasingprice=#{purchasingprice},
     	cover_small=#{coverSmall},color=#{color},colorimg=#{colorimg},localprice=#{localprice},cover=#{cover},
-    	foreighprice=#{foreighprice},recommendprice=#{recommendprice},off_shelf=#{offShelf} where id=#{id}
+    	foreighprice=#{foreighprice},recommendprice=#{recommendprice},off_shelf=#{offShelf},data_src=#{dataSrc},
+    	sizedesc=#{sizedesc} where id=#{id}
     </update>
+    
+    <insert id="addProductLog" parameterType="ProductLogModel">
+    	insert into product_log(id,product_id,user_id,operate,gmt_modify
+    	<if test="beforeInfo != null">
+    		,before_info
+    	</if>
+    	<if test="afterInfo != null">
+    		,after_info
+    	</if>
+    	) values(#{id},#{productId},#{userId},#{operate},#{gmtModify}
+    	<if test="beforeInfo != null">
+    		,#{beforeInfo}
+    	</if>
+    	<if test="afterInfo != null">
+    		,#{afterInfo}
+    	</if>
+    	)
+    	<selectKey resultType="Integer" keyProperty="id">
+	        SELECT LAST_INSERT_ID();
+	    </selectKey>
+    </insert>
+    
+    <select id="getProductsByStartAndEnd" resultType="ProductModel" parameterType="ProductPageDto">
+    	select p.id,
+		       p.name,
+		       p.gmt_create gmtCreate,
+		       p.gmt_modify gmtModify,
+		       p.imgs,
+		       p.description,
+		       p.purchasingprice,
+		       p.recommendprice,
+		       p.style,
+		       p.color,
+		       p.colorimg,
+		       p.category_id categoryId,
+		       p.brand_id brandId,
+		       p.localprice,
+		       p.foreighprice,
+		       p.brandstyle,
+		       p.cover,
+		       p.cover_small coverSmall,
+		       p.off_shelf offShelf,
+		       p.sizedesc,
+		       p.creator,
+		       p.data_src dataSrc 
+		  from product p where p.name is not null 
+		  <if test="start != null">
+    		   and p.id &gt;= #{start} 
+    	  </if>
+    	  <if test="end != null">
+    		   and p.id &lt;= #{end} 
+    	  </if>
+    </select>
 </mapper>

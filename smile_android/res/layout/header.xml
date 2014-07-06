@@ -64,6 +64,13 @@
             android:textSize="22sp"
             android:visibility="gone" />
          
+         <ImageView
+            android:id="@+id/header_right_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:contentDescription="@string/gu"/>
+         
     </LinearLayout>
     
     <View
