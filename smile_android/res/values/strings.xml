@@ -54,6 +54,7 @@
 	<string name="my_coupons">我的优惠券</string>
 	<string name="my_idcards">我的身份证</string>
 	<string name="clear_cache">清理缓存</string>
+	<string name="contact_us">联系我们</string>
 	
     <string name="user_info_myaddress">我的收货地址</string>
     <string name="setting_logout">注销</string>

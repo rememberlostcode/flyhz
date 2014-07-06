@@ -210,6 +210,7 @@ public class UpdateManager {
 			return;
 		}
 		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 		i.setDataAndType(Uri.parse("file://" + apkfile.toString()),
 				"application/vnd.android.package-archive");
 		mContext.startActivity(i);
