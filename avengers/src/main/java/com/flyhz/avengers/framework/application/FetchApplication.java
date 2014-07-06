@@ -16,47 +16,42 @@
  * limitations under the License.
  */
 
-package com.flyhz.avengers.framework;
+package com.flyhz.avengers.framework.application;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
+import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
+import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.Credentials;
@@ -64,13 +59,8 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.api.ApplicationConstants.Environment;
-import org.apache.hadoop.yarn.api.ApplicationMasterProtocol;
 import org.apache.hadoop.yarn.api.ContainerManagementProtocol;
-import org.apache.hadoop.yarn.api.protocolrecords.AllocateRequest;
-import org.apache.hadoop.yarn.api.protocolrecords.AllocateResponse;
-import org.apache.hadoop.yarn.api.protocolrecords.FinishApplicationMasterRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterResponse;
-import org.apache.hadoop.yarn.api.protocolrecords.StartContainerRequest;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
@@ -84,7 +74,6 @@ import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
-import org.apache.hadoop.yarn.api.records.ResourceRequest;
 import org.apache.hadoop.yarn.client.api.AMRMClient.ContainerRequest;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.client.api.async.AMRMClientAsync;
@@ -98,77 +87,14 @@ import org.apache.hadoop.yarn.util.Records;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.Fetch;
 import com.google.common.annotations.VisibleForTesting;
 
-/**
- * An AvengersAppMaster for executing shell commands on a set of launched
- * containers using the YARN framework.
- * 
- * <p>
- * This class is meant to act as an example on how to write yarn-based
- * application masters.
- * </p>
- * 
- * <p>
- * The AvengersAppMaster is started on a container by the
- * <code>ResourceManager</code>'s launcher. The first thing that the
- * <code>AvengersAppMaster</code> needs to do is to connect and register itself
- * with the <code>ResourceManager</code>. The registration sets up information
- * within the <code>ResourceManager</code> regarding what host:port the
- * AvengersAppMaster is listening on to provide any form of functionality to a
- * client as well as a tracking url that a client can use to keep track of
- * status/job history if needed. However, in the distributedshell, trackingurl
- * and appMasterHost:appMasterRpcPort are not supported.
- * </p>
- * 
- * <p>
- * The <code>AvengersAppMaster</code> needs to send a heartbeat to the
- * <code>ResourceManager</code> at regular intervals to inform the
- * <code>ResourceManager</code> that it is up and alive. The
- * {@link ApplicationMasterProtocol#allocate} to the
- * <code>ResourceManager</code> from the <code>AvengersAppMaster</code> acts as
- * a heartbeat.
- * 
- * <p>
- * For the actual handling of the job, the <code>AvengersAppMaster</code> has to
- * request the <code>ResourceManager</code> via {@link AllocateRequest} for the
- * required no. of containers using {@link ResourceRequest} with the necessary
- * resource specifications such as node location, computational
- * (memory/disk/cpu) resource requirements. The <code>ResourceManager</code>
- * responds with an {@link AllocateResponse} that informs the
- * <code>AvengersAppMaster</code> of the set of newly allocated containers,
- * completed containers as well as current state of available resources.
- * </p>
- * 
- * <p>
- * For each allocated container, the <code>AvengersAppMaster</code> can then set
- * up the necessary launch context via {@link ContainerLaunchContext} to specify
- * the allocated container id, local resources required by the executable, the
- * environment to be setup for the executable, commands to execute, etc. and
- * submit a {@link StartContainerRequest} to the
- * {@link ContainerManagementProtocol} to launch and execute the defined
- * commands on the given allocated container.
- * </p>
- * 
- * <p>
- * The <code>AvengersAppMaster</code> can monitor the launched container by
- * either querying the <code>ResourceManager</code> using
- * {@link ApplicationMasterProtocol#allocate} to get updates on completed
- * containers or via the {@link ContainerManagementProtocol} by querying for the
- * status of the allocated container's {@link ContainerId}.
- * 
- * <p>
- * After the job has been completed, the <code>AvengersAppMaster</code> has to
- * send a {@link FinishApplicationMasterRequest} to the
- * <code>ResourceManager</code> to inform it that the
- * <code>AvengersAppMaster</code> has been completed.
- */
 @InterfaceAudience.Public
 @InterfaceStability.Unstable
-public class AvengersAppMaster {
+public class FetchApplication {
 
-	private static final Logger					LOG						= LoggerFactory.getLogger(AvengersAppMaster.class);
+	private static final Logger					LOG						= LoggerFactory.getLogger(FetchApplication.class);
 
 	// XConfiguration
 	private Configuration						conf;
@@ -225,22 +151,13 @@ public class AvengersAppMaster {
 	// Launch threads
 	private List<Thread>						launchThreads			= new ArrayList<Thread>();
 
-	private Vector<String>						cmds					= new Vector<String>();
+	private long								batchId;
 
-	private long								version;
+	private Set<String>							urls					= new ConcurrentSkipListSet<String>();
 
-	// 没有超过周期的root集合
-	private Set<String>							domainRootForCrawlSet	= new HashSet<String>();
+	private List<String>						nodeSet					= new ArrayList<String>();
 
-	private String								currentProcess;
-
-	private String								initJarCmd;
-
-	private Set<String>							nodeSet					= new HashSet<String>();
-
-	private AtomicInteger						nodeNum					= new AtomicInteger(0);
-
-	public AvengersAppMaster() {
+	public FetchApplication() {
 		// Set up the configuration
 		conf = new YarnConfiguration();
 		hbaseConf.set("hbase.zookeeper.quorum", "m1,s1,s2");
@@ -254,13 +171,13 @@ public class AvengersAppMaster {
 	public static void main(String[] args) {
 		boolean result = false;
 		try {
-			AvengersAppMaster avengersAppMaster = new AvengersAppMaster();
+			FetchApplication fetchApplication = new FetchApplication();
 			LOG.info("Initializing AvengersAppMaster");
-			boolean doRun = avengersAppMaster.init(args);
+			boolean doRun = fetchApplication.init(args);
 			if (!doRun) {
 				System.exit(0);
 			}
-			result = avengersAppMaster.run();
+			result = fetchApplication.run();
 		} catch (Throwable t) {
 			LOG.error("Error running AvengersAppMaster", t);
 			System.exit(1);
@@ -349,251 +266,12 @@ public class AvengersAppMaster {
 				+ appAttemptID.getApplicationId().getClusterTimestamp() + ", attemptId="
 				+ appAttemptID.getAttemptId());
 
-		initHbase();
-
-		return true;
-	}
-
-	private void initCommon() {
-		done = false;
-		success = false;
-		numTotalContainers = 1;
 		containerMemory = 10;
 		if (numTotalContainers == 0) {
 			throw new IllegalArgumentException("Cannot run distributed shell with no containers");
 		}
 		requestPriority = 0;
-	}
-
-	private void initJar() {
-		LOG.info("initJar");
-		initCommon();
-		this.currentProcess = "initJar";
-		YarnClient yarnClient = YarnClient.createYarnClient();
-		yarnClient.init(conf);
-		yarnClient.start();
-		List<NodeReport> clusterNodeReports;
-		try {
-			clusterNodeReports = yarnClient.getNodeReports(NodeState.RUNNING);
-			LOG.info("Got all node!");
-			for (NodeReport node : clusterNodeReports) {
-				LOG.info("Got node report from ASM for" + ", nodeId=" + node.getNodeId()
-						+ ", nodeAddress" + node.getHttpAddress() + ", nodeRackName"
-						+ node.getRackName() + ", nodeNumContainers" + node.getNumContainers());
-				nodeSet.add(node.getNodeId().getHost());
-			}
-			Vector<CharSequence> vargs = new Vector<CharSequence>(30);
-			String appTempDir = conf.get("hadoop.tmp.dir");
-			FileSystem fs = DistributedFileSystem.get(conf);
-			String hdfsJar = fs.getHomeDirectory() + "/avengers/"
-					+ this.appAttemptID.getApplicationId().getId() + "/AvengersAppMaster.jar";
-			vargs.add("if [ ! -e " + appTempDir + "/"
-					+ this.appAttemptID.getApplicationId().getId() + "/AvengersAppMaster.jar"
-					+ " ];");
-			vargs.add("then");
-			vargs.add("/bin/mkdir -p");
-			vargs.add(appTempDir + "/" + this.appAttemptID.getApplicationId().getId() + ";");
-			vargs.add(Environment.HADOOP_YARN_HOME.$() + "/bin/hadoop");
-			vargs.add("fs");
-			vargs.add("-copyToLocal");
-			vargs.add(hdfsJar);
-			vargs.add(appTempDir + "/" + this.appAttemptID.getApplicationId().getId() + ";");
-			vargs.add("fi");
-			// Add log redirect params
-			vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/Avengers.stdout");
-			vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/Avengers.stderr");
-
-			// Get final commmand
-			StringBuilder command = new StringBuilder();
-			for (CharSequence str : vargs) {
-				command.append(str).append(" ");
-			}
-
-			initJarCmd = command.toString();
-			LOG.info("initJar Completed setting up app master command {}", initJarCmd);
-			numTotalContainers = nodeSet.size();
-			for (int i = 0; i < numTotalContainers; i++) {
-				ContainerRequest containerAsk = setupContainerAskForRM();
-				amRMClient.addContainerRequest(containerAsk);
-			}
-
-			numRequestedContainers.set(numTotalContainers);
-
-			while (!done && (numCompletedContainers.get() != numTotalContainers)) {
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException ex) {
-				}
-			}
-		} catch (YarnException e) {
-			LOG.error("initJarAndClasspath", e);
-		} catch (IOException e) {
-			LOG.error("initJarAndClasspath", e);
-		} finally {
-			try {
-				yarnClient.close();
-			} catch (IOException e) {
-			}
-		}
-	}
-
-	private void crawl() {
-		LOG.info("App crawl");
-		initCommon();
-		currentProcess = "crawl";
-		numTotalContainers = domainRootForCrawlSet.size();
-		LOG.info("initCrawl CLASSPATH -> " + System.getenv("CLASSPATH"));
-		LOG.info("domainRootForCrawlSet.size() > {}", domainRootForCrawlSet.size());
-		if (numTotalContainers > 0) {
-			for (String root : domainRootForCrawlSet) {
-				Vector<CharSequence> vargs = new Vector<CharSequence>(30);
-
-				// Set java executable command
-				LOG.info("Setting up app master command");
-				// Set class name
-				vargs.add("-url " + root);
-				vargs.add("-batchId " + version);
-				// Add log redirect params
-				vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/Crawl.stdout");
-				vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/Crawl.stderr");
-
-				// Get final commmand
-				StringBuilder command = new StringBuilder();
-				for (CharSequence str : vargs) {
-					command.append(str).append(" ");
-				}
-
-				LOG.info("Completed setting up app master command " + command.toString());
-				cmds.add(command.toString());
-			}
-			for (int i = 0; i < numTotalContainers; ++i) {
-				ContainerRequest containerAsk = setupContainerAskForRM();
-				amRMClient.addContainerRequest(containerAsk);
-			}
-			numRequestedContainers.set(numTotalContainers);
-
-			while (!done && (numCompletedContainers.get() != numTotalContainers)) {
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException ex) {
-				}
-			}
-		}
-	}
-
-	private void initHbase() {
-		LOG.info("init hbase");
-		HConnection hConnection = null;
-		HBaseAdmin hbaseAdmin = null;
-		// HTable hVersion = null;
-		HTable hPage = null;
-		HTable hDomain = null;
-		try {
-			hConnection = HConnectionManager.createConnection(hbaseConf);
-			hbaseAdmin = new HBaseAdmin(hConnection);
-			if (hbaseAdmin.tableExists("av_page")) {
-				hbaseAdmin.disableTable("av_page");
-				hbaseAdmin.deleteTable(Bytes.toBytes("av_page"));
-				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_page"));
-				HColumnDescriptor info = new HColumnDescriptor("info");
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
-				tableDesc.addFamily(info);
-				tableDesc.addFamily(preference);
-				hbaseAdmin.createTable(tableDesc);
-			} else {
-				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_page"));
-				HColumnDescriptor info = new HColumnDescriptor("info");
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
-				tableDesc.addFamily(info);
-				tableDesc.addFamily(preference);
-				hbaseAdmin.createTable(tableDesc);
-			}
-
-			if (!hbaseAdmin.tableExists("av_domain")) {
-				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_domain"));
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
-				tableDesc.addFamily(preference);
-				hbaseAdmin.createTable(tableDesc);
-			}
-			if (!hbaseAdmin.tableExists("av_product")) {
-				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_product"));
-				HColumnDescriptor info = new HColumnDescriptor("info");
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
-				tableDesc.addFamily(info);
-				tableDesc.addFamily(preference);
-				hbaseAdmin.createTable(tableDesc);
-			}
-
-			Configuration configuration = HBaseConfiguration.create(hbaseConf);
-
-			configuration.setLong("hbase.rpc.timeout", 600000);
-			// 设置Scan缓存
-			configuration.setLong("hbase.client.scanner.caching", 1000);
-
-			long version = System.currentTimeMillis();
-			this.version = version;
-			this.domainRootForCrawlSet.clear();
-			Map<String, Object> context = XConfiguration.getAvengersContext();
-
-			hDomain = new HTable(hbaseConf, "av_domain");
-			for (String root : context.keySet()) {
-				@SuppressWarnings("unchecked")
-				Map<String, Object> domainMap = (Map<String, Object>) context.get(root);
-				Get hDomainGet = new Get(Bytes.toBytes(root));
-				hDomainGet.addColumn(Bytes.toBytes("preference"), Bytes.toBytes("batchId"));
-				Result result = hDomain.get(hDomainGet);
-				LOG.info("root[{}] result.isEmpty -> {}", root,
-						result == null ? null : result.isEmpty());
-				if (result != null && !result.isEmpty()) {
-					Cell cell = result.rawCells()[0];
-					Calendar calendar = Calendar.getInstance();
-					LOG.info("root[{}] av_domain.version -> ", root,
-							Bytes.toLong(cell.getValueArray()));
-					calendar.setTime(new Date(Bytes.toLong(cell.getValueArray())));
-					// 小时
-					Integer period = (Integer) domainMap.get(XConfiguration.CRAWL_PERIOD);
-					calendar.add(Calendar.HOUR_OF_DAY, period.intValue());
-					LOG.info("root[{}] calendar -> {},current.version -> {}",
-							calendar.getTimeInMillis(), version);
-					if (calendar.after(new Date(version))) {
-						continue;
-					}
-				}
-				Put avDomainPut = new Put(Bytes.toBytes(root));
-				// 开始前先插入version数据，crawl的时候插入info数据
-				avDomainPut.add(Bytes.toBytes("preference"), Bytes.toBytes("batchId"),
-						Bytes.toBytes(version));
-				hDomain.put(avDomainPut);
-				domainRootForCrawlSet.add(root);
-			}
-		} catch (IOException e) {
-			LOG.error("", e);
-		} catch (Throwable e) {
-			LOG.error("", e);
-		} finally {
-			if (hPage != null) {
-				try {
-					hPage.close();
-				} catch (IOException e) {
-					LOG.error("", e);
-				}
-			}
-			if (hbaseAdmin != null) {
-				try {
-					hbaseAdmin.close();
-				} catch (IOException e) {
-					LOG.error("", e);
-				}
-			}
-			if (hConnection != null) {
-				try {
-					hConnection.close();
-				} catch (IOException e) {
-					LOG.error("", e);
-				}
-			}
-		}
-
+		return true;
 	}
 
 	/**
@@ -650,10 +328,6 @@ public class AvengersAppMaster {
 			containerMemory = maxMem;
 		}
 
-		initJar();
-
-		crawl();
-
 		fetch();
 
 		finish();
@@ -668,8 +342,28 @@ public class AvengersAppMaster {
 
 	private void fetch() {
 		LOG.info("initFetch start ......");
-		initCommon();
-		currentProcess = "fetch";
+		YarnClient yarnClient = YarnClient.createYarnClient();
+		yarnClient.init(conf);
+		yarnClient.start();
+		List<NodeReport> clusterNodeReports;
+		try {
+			clusterNodeReports = yarnClient.getNodeReports(NodeState.RUNNING);
+			LOG.info("Got all node!");
+			for (NodeReport node : clusterNodeReports) {
+				nodeSet.add(node.getNodeId().getHost());
+			}
+			numTotalContainers = nodeSet.size();
+
+		} catch (YarnException e) {
+			LOG.error("initJarAndClasspath", e);
+		} catch (IOException e) {
+			LOG.error("initJarAndClasspath", e);
+		} finally {
+			try {
+				yarnClient.close();
+			} catch (IOException e) {
+			}
+		}
 		HConnection hConnection = null;
 		HBaseAdmin hbaseAdmin = null;
 		// HTable hVersion = null;
@@ -680,7 +374,7 @@ public class AvengersAppMaster {
 
 			Configuration configuration = HBaseConfiguration.create(hbaseConf);
 
-			configuration.setLong("hbase.rpc.timeout", 600000);
+			configuration.setLong("hbase.rpc.timeout", 1200000);
 			// 设置Scan缓存
 			configuration.setLong("hbase.client.scanner.caching", 1000);
 
@@ -688,37 +382,45 @@ public class AvengersAppMaster {
 
 			Scan scan = new Scan();
 			scan.addColumn(Bytes.toBytes("preference"), Bytes.toBytes("batchId"));
+
+			AggregationClient ac = new AggregationClient(hbaseConf);
+
+			Long count = ac.rowCount(TableName.valueOf("av_page"), new LongColumnInterpreter(),
+					scan);
+			Integer nodeNum = nodeSet.size();
+			Long pageSize = count % nodeNum == 0 ? count / nodeNum : count / nodeNum + 1;
+			LOG.info("count = {},nodeNum = {},pageSize = {}", count, nodeNum, pageSize);
+			PageFilter pageFilter = new PageFilter(pageSize);
+			scan.setFilter(pageFilter);
 			ResultScanner rs = hPage.getScanner(scan);
-			// 输出结果
-			Set<String> urls = new HashSet<String>();
-			for (Result result : rs) {
-				for (Cell cell : result.rawCells()) {
-					String url = Bytes.toString(cell.getRowArray());
-					String family = Bytes.toString(cell.getFamilyArray());
-					String column = Bytes.toString(cell.getQualifierArray());
-					Long value = Bytes.toLong(cell.getValueArray());
-					LOG.info("rowkey -> {},family -> {},column -> {},value ->{}", url, family,
-							column, value);
-					if ("preference".equals(family) && "batchId".equals(column)
-							&& value.equals(this.version)) {
+			if (rs != null && rs.iterator().hasNext()) {
+				for (Result result : rs) {
+					String url = Bytes.toString(result.getRow());
+					Long value = Bytes.toLong(result.getValue(Bytes.toBytes("preference"),
+							Bytes.toBytes("batchId")));
+					LOG.info("rowkey -> {},batchId ->{}", url, value);
+					if (value.equals(this.batchId)) {
 						urls.add(url);
+						this.numTotalContainers += 1;
+						ContainerRequest containerAsk = setupContainerAskForRM();
+						amRMClient.addContainerRequest(containerAsk);
 					}
-					if (urls.size() == 100) {
-						this.numTotalContainers = 100;
-						for (int i = 0; i < numTotalContainers; ++i) {
-							ContainerRequest containerAsk = setupContainerAskForRM();
-							amRMClient.addContainerRequest(containerAsk);
-						}
-						numRequestedContainers.set(numTotalContainers);
-						while (!done && (numCompletedContainers.get() != numTotalContainers)) {
-							try {
-								Thread.sleep(200);
-							} catch (InterruptedException ex) {
-							}
-						}
+
+				}
+				for (int i = 0; i < numTotalContainers; i++) {
+					ContainerRequest containerAsk = setupContainerAskForRM();
+					amRMClient.addContainerRequest(containerAsk);
+				}
+
+				numRequestedContainers.set(numTotalContainers);
+				while (!done && (numCompletedContainers.get() != numTotalContainers)) {
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException ex) {
 					}
 				}
 			}
+
 		} catch (IOException e) {
 			LOG.error("fetch", e);
 		} catch (Throwable e) {
@@ -858,21 +560,26 @@ public class AvengersAppMaster {
 			numAllocatedContainers.addAndGet(allocatedContainers.size());
 			for (int i = 0; i < allocatedContainers.size(); i++) {
 				Container allocatedContainer = allocatedContainers.get(i);
-				LOG.info("Launching shell command on a new container." + ", containerId="
-						+ allocatedContainer.getId() + ", containerNode="
-						+ allocatedContainer.getNodeId().getHost() + ":"
-						+ allocatedContainer.getNodeId().getPort() + ", containerNodeURI="
-						+ allocatedContainer.getNodeHttpAddress() + ", containerResourceMemory"
-						+ allocatedContainer.getResource().getMemory());
-				LaunchContainerRunnable runnableLaunchContainer = new LaunchContainerRunnable(
-						allocatedContainer, containerListener, currentProcess);
-				Thread launchThread = new Thread(runnableLaunchContainer);
+				Iterator<String> it = urls.iterator();
+				if (it.hasNext()) {
+					LOG.info("Launching shell command on a new container." + ", containerId="
+							+ allocatedContainer.getId() + ", containerNode="
+							+ allocatedContainer.getNodeId().getHost() + ":"
+							+ allocatedContainer.getNodeId().getPort() + ", containerNodeURI="
+							+ allocatedContainer.getNodeHttpAddress() + ", containerResourceMemory"
+							+ allocatedContainer.getResource().getMemory());
+					LaunchContainerRunnable runnableLaunchContainer = new LaunchContainerRunnable(
+							allocatedContainer, containerListener, it.next(), batchId);
+					Thread launchThread = new Thread(runnableLaunchContainer);
+					launchThreads.add(launchThread);
+					launchThread.start();
+					it.remove();
+				}
 
 				// launch and start the container on a separate thread to keep
 				// the main thread unblocked
 				// as all containers may not be allocated at one go.
-				launchThreads.add(launchThread);
-				launchThread.start();
+
 			}
 		}
 
@@ -909,10 +616,10 @@ public class AvengersAppMaster {
 	static class NMCallbackHandler implements NMClientAsync.CallbackHandler {
 
 		private ConcurrentMap<ContainerId, Container>	containers	= new ConcurrentHashMap<ContainerId, Container>();
-		private final AvengersAppMaster					avengersAppMaster;
+		private final FetchApplication					fetchApplication;
 
-		public NMCallbackHandler(AvengersAppMaster avengersAppMaster) {
-			this.avengersAppMaster = avengersAppMaster;
+		public NMCallbackHandler(FetchApplication fetchApplication) {
+			this.fetchApplication = fetchApplication;
 		}
 
 		public void addContainer(ContainerId containerId, Container container) {
@@ -943,7 +650,7 @@ public class AvengersAppMaster {
 			}
 			Container container = containers.get(containerId);
 			if (container != null) {
-				avengersAppMaster.nmClientAsync.getContainerStatusAsync(containerId,
+				fetchApplication.nmClientAsync.getContainerStatusAsync(containerId,
 						container.getNodeId());
 			}
 		}
@@ -953,8 +660,8 @@ public class AvengersAppMaster {
 			LOG.error("onStartContainerError", t);
 			LOG.error("Failed to start Container {} ", containerId);
 			containers.remove(containerId);
-			avengersAppMaster.numCompletedContainers.incrementAndGet();
-			avengersAppMaster.numFailedContainers.incrementAndGet();
+			fetchApplication.numCompletedContainers.incrementAndGet();
+			fetchApplication.numFailedContainers.incrementAndGet();
 		}
 
 		@Override
@@ -980,7 +687,9 @@ public class AvengersAppMaster {
 
 		NMCallbackHandler	containerListener;
 
-		String				process;
+		String				url;
+
+		Long				batchId;
 
 		/**
 		 * @param lcontainer
@@ -989,10 +698,11 @@ public class AvengersAppMaster {
 		 *            Callback handler of the container
 		 */
 		public LaunchContainerRunnable(Container lcontainer, NMCallbackHandler containerListener,
-				String currentProcess) {
+				String url, Long batchId) {
 			this.container = lcontainer;
 			this.containerListener = containerListener;
-			this.process = currentProcess;
+			this.url = url;
+			this.batchId = batchId;
 		}
 
 		@Override
@@ -1002,10 +712,20 @@ public class AvengersAppMaster {
 		 * start request to the CM. 
 		 */
 		public void run() {
-			LOG.info("Setting up container launch container for containerid={},process={}",
-					container.getId(), process);
+			LOG.info("Setting up container launch container for containerid={}", container.getId());
 			ContainerLaunchContext ctx = Records.newRecord(ContainerLaunchContext.class);
+			Map<String, String> env = new HashMap<String, String>();
+			for (Entry<String, String> v : System.getenv().entrySet()) {
+				if (!v.getKey().equals("JAVA_HOME")) {
+					env.put(v.getKey(), v.getValue());
+				}
 
+			}
+			String localJarDir = conf.get("hadoop.tmp.dir") + "/" + batchId + "/avengers.jar";
+
+			env.put("CLASSPATH", System.getenv("CLASSPATH") + ":" + localJarDir);
+
+			ctx.setEnvironment(env);
 			// Set the local resources
 			Map<String, LocalResource> localResources = new HashMap<String, LocalResource>();
 
@@ -1016,46 +736,37 @@ public class AvengersAppMaster {
 			// Set the necessary command to execute on the allocated
 			// container
 			Vector<CharSequence> vargs = new Vector<CharSequence>(30);
-			String appTempDir = conf.get("hadoop.tmp.dir");
-			if (("initJar").equals(process)) {
-				vargs.add(initJarCmd);
-			} else {
-				String mainClassName = null;
-				if (!cmds.isEmpty()) {
-					String cmd = cmds.get(0);
-					cmds.remove(0);
-					if ("crawl".equals(process)) {
-						LOG.info("process for crawl");
-						mainClassName = Crawl.class.getName();
-					} else if ("fetch".equals(currentProcess)) {
-						LOG.info("process for fetch");
-						mainClassName = Fetch.class.getName();
-					}
-					vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
-					// Set Xmx based on am memory size
-					vargs.add("-Xmx" + containerMemory + "m");
-					vargs.add("-classpath");
-					vargs.add("$CLASSPATH:"
-							+ appTempDir
-							+ "/"
-							+ this.container.getId().getApplicationAttemptId().getApplicationId()
-											.getId() + "/AvengersAppMaster.jar");
-					// Set executable command
-					vargs.add(mainClassName);
-					vargs.add(cmd);
-				}
-			}
+			vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+			// Set Xmx based on am memory size
+			vargs.add("-Xmx" + containerMemory + "m");
+			// vargs.add("-classpath");
+			// vargs.add(Environment.CLASSPATH.$() + ":" + localJarDir + ":"
+			// + Environment.HADOOP_YARN_HOME.$() + "/share/hadoop/yarn/lib/*:"
+			// + Environment.HADOOP_CONF_DIR.$() + ":" +
+			// Environment.HADOOP_COMMON_HOME.$()
+			// + "/share/hadoop/common/*" + Environment.HADOOP_COMMON_HOME.$()
+			// + "/share/hadoop/common/lib/*:" +
+			// Environment.HADOOP_COMMON_HOME.$()
+			// + "/share/hadoop/common/lib/*:" +
+			// Environment.HADOOP_HDFS_HOME.$()
+			// + "/share/hadoop/hdfs/*:" + Environment.HADOOP_HDFS_HOME.$()
+			// + "/share/hadoop/hdfs/lib/*:" + Environment.HADOOP_YARN_HOME.$()
+			// + "/share/hadoop/yarn/*:./log4j.properties");
+			// Set executable command
+			vargs.add(Fetch.class.getName());
+			vargs.add("-url");
+			vargs.add(this.url);
+			vargs.add("-batchId");
+			vargs.add(String.valueOf(this.batchId));
 
 			// Get final commmand
 			StringBuilder command = new StringBuilder();
 			for (CharSequence str : vargs) {
-				LOG.info("test -------> {}", str);
 				command.append(str).append(" ");
 			}
 
-			LOG.info("process {}, command > {},run on node {},containerId is {}", process,
-					command.toString(), this.container.getNodeId().getHost(),
-					this.container.getId());
+			LOG.info("command > {},run on node {},containerId is {}", command.toString(),
+					this.container.getNodeId().getHost(), this.container.getId());
 			List<String> commands = new ArrayList<String>();
 			commands.add(command.toString());
 			ctx.setCommands(commands);
@@ -1083,12 +794,7 @@ public class AvengersAppMaster {
 		// For now, only memory is supported so we set memory requirements
 		Resource capability = Records.newRecord(Resource.class);
 		capability.setMemory(containerMemory);
-		String[] node = new String[1];
-		node[0] = nodeSet.toArray()[nodeNum.getAndIncrement()].toString();
-		if (nodeNum.get() >= nodeSet.size()) {
-			nodeNum.set(0);
-		}
-		ContainerRequest request = new ContainerRequest(capability, node, null, pri, false);
+		ContainerRequest request = new ContainerRequest(capability, null, null, pri);
 		LOG.info("Requested container ask: {},request node: {} ", request.toString(),
 				request.getNodes() != null && !request.getNodes().isEmpty() ? request.getNodes()
 																						.get(0)

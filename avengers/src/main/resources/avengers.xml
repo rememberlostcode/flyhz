@@ -2,6 +2,12 @@
 <ave:xDomains  xmlns:ave="http://www.flyhz.com/avengrs"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.flyhz.com/avengrs avengers.xsd ">
+	<proxy>
+		<proxyHost>10.202.37.11</proxyHost>
+		<proxyPort>808</proxyPort>
+		<username>nuaa</username>
+		<password>oHL!_ws1256Fs54</password>
+	</proxy>
 	<domain root="http://www.coach.com/online/handbags/Home-10551-10051-en" encoding="UTF-8" depth="3" period="0">
 		<urlFilterBeforeCrawl>
 			<value>^http://www.coach.com/online/handbags/-handbags_</value>
@@ -34,24 +40,4 @@
 			<template url="" pattern=""></template>
 		</templates>
 	</domain> -->
-	<domain root="http://www.abercrombie.com/shop/hk" period="0">
-		<urlFilterBeforeCrawl>
-			<value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-graphic-tees</value>
-			<value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-tees</value>
-			<value>^http://www.abercrombie.com/shop/hk/mens-polos</value>
-		</urlFilterBeforeCrawl>
-		<urlFilterAfterCrawl>
-		    <value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-graphic-tees/.*\d+$</value>
-			<value>^http://www.abercrombie.com/shop/hk/mens-short-sleeve-tees/.*\d+$</value>
-			<value>^http://www.abercrombie.com/shop/hk/mens-polos/.*\d+$</value>
-		</urlFilterAfterCrawl>
-		<templates>
-			<template url="^http://www.abercrombie.com/shop/hk/mens-short-sleeve-tees/.*\d+$"
-				pattern="com.flyhz.avengers.domains.abercrombie.template.AbercrombieProductTemplateImpl" >
-				<templateApplyEvents>
-					
-				</templateApplyEvents>
-			</template>
-		</templates>
-	</domain>
 </ave:xDomains>

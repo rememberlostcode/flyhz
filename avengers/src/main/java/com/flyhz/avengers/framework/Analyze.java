@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.common.event.TemplateApplyEvent;
+import com.flyhz.avengers.framework.common.event.TemplateApplyEvent;
 import com.flyhz.avengers.framework.config.XConfiguration;
 import com.flyhz.avengers.framework.config.xml.XTemplate;
 import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
@@ -90,14 +90,13 @@ public class Analyze extends AvengersExecutor {
 		// 查询是否有自定义TemplateEvent
 		String url = (String) context.get(ANALYZE_URL);
 		if (StringUtils.isNotBlank(url)) {
-			Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 			// 判断参数URL属于哪个domain
-			if (domains != null && !domains.isEmpty()) {
-				Set<String> domainRoots = domains.keySet();
+			if (context != null && !context.isEmpty()) {
+				Set<String> domainRoots = context.keySet();
 				for (String domainRoot : domainRoots) {
 					if (url.indexOf(domainRoot) > -1) {
 						// 获取匹配domain的templateEvents
-						Map<String, Object> domain = (Map<String, Object>) domains.get(domainRoot);
+						Map<String, Object> domain = (Map<String, Object>) context.get(domainRoot);
 						// 获取匹配domain的templateList
 						if (domain != null && domain.get(XConfiguration.DOMAIN_TEMPLATES) != null) {
 							List<XTemplate> templates = (List<XTemplate>) domain.get(XConfiguration.DOMAIN_TEMPLATES);

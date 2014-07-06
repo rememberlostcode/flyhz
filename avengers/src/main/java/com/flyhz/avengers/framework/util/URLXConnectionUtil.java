@@ -3,15 +3,26 @@ package com.flyhz.avengers.framework.util;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.net.util.Base64;
+
+import com.flyhz.avengers.framework.config.XConfiguration;
 
 /**
  * 
@@ -20,46 +31,36 @@ import java.util.Set;
  * @author robin 2014-3-10下午2:41:02
  * 
  */
-public class UrlUtil {
+public class URLXConnectionUtil {
 
-	/**
-	 * 功能：判断并检测当前URL是否可连接或是否有效, 最多连接网络 3 次, 如果 3 次都不成功，视为该地址不可用
-	 * 
-	 * @param urlStr
-	 *            指定URL网络地址
-	 * @return URL
-	 */
-	public static boolean isConnect(String urlStr) {
-		int counts = 0;
-		boolean retu = false;
-		if (urlStr == null || urlStr.length() <= 0) {
-			return retu;
-		}
-
-		if (urlStr.indexOf("http://") < 0) {
-			urlStr = "http://" + urlStr;
-		}
-
-		// 验证是否是链接
-		if (!RegexUtils.checkURL(urlStr) && !RegexUtils.checkIpAddress(urlStr)) {
-			return retu;
-		}
-
-		while (counts < 3) {
-			try {
-				URL url = new URL(urlStr);
-				HttpURLConnection con = (HttpURLConnection) url.openConnection();
-				int state = con.getResponseCode();
-				if (state == 200) {
-					retu = true;
-					break;
-				}
-			} catch (Exception ex) {
-				counts++;
-				continue;
+	public static HttpURLConnection getXHttpConnection(URL url) throws IOException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> xProxy = (Map<String, Object>) XConfiguration.getAvengersContext().get(
+				XConfiguration.PROXY);
+		if (xProxy.get(XConfiguration.PROXY_USERNAME) != null) {
+			final String username = (String) xProxy.get(XConfiguration.PROXY_USERNAME);
+			final String password = (String) xProxy.get(XConfiguration.PROXY_PASSWORD);
+			if (StringUtil.isNotBlank(username)) {
+				Authenticator.setDefault(new Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(username, password.toCharArray());
+					}
+				});
 			}
+
 		}
-		return retu;
+		String host = (String) xProxy.get(XConfiguration.PROXY_HOST);
+		Integer port = (Integer) xProxy.get(XConfiguration.PROXY_PORT);
+		SocketAddress addr = new InetSocketAddress(host, port);
+		Proxy proxy = new Proxy(Proxy.Type.HTTP, addr);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+		connection.setRequestProperty("accept", "*/*");
+		connection.setRequestProperty("connection", "Keep-Alive");
+		connection.setRequestProperty("user-agent",
+				"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
+		connection.setRequestProperty("Proxy-Authorization",
+				"Basic" + new String(Base64.encodeBase64("nuaa:oHL!_ws1256Fs54".getBytes())));
+		return (HttpURLConnection) connection;
 	}
 
 	/**

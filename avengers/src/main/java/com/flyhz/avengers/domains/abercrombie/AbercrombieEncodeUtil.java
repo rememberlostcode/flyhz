@@ -26,14 +26,13 @@ public class AbercrombieEncodeUtil {
 	public static String getFetchUrlEncode(Map<String, Object> context) {
 		if (context != null && !context.isEmpty()) {
 			String fetchUrl = (String) context.get(Fetch.FETCH_URL);
-			Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 			// 判断参数URL属于哪个domain
-			if (domains != null && !domains.isEmpty()) {
-				Set<String> domainRoots = domains.keySet();
+			if (context != null && !context.isEmpty()) {
+				Set<String> domainRoots = context.keySet();
 				for (String domainRoot : domainRoots) {
 					if (fetchUrl.indexOf(domainRoot) > -1) {
 						// 获取匹配domain的fetchEvents
-						Map<String, Object> domain = (Map<String, Object>) domains.get(domainRoot);
+						Map<String, Object> domain = (Map<String, Object>) context.get(domainRoot);
 						if (domain != null && domain.get(XConfiguration.ENCODING) != null) {
 							return (String) domain.get(XConfiguration.ENCODING);
 						}
@@ -55,14 +54,13 @@ public class AbercrombieEncodeUtil {
 	public static String getAnalyzeUrlEncode(Map<String, Object> context) {
 		if (context != null && !context.isEmpty()) {
 			String analyzeUrl = (String) context.get(Analyze.ANALYZE_URL);
-			Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 			// 判断参数URL属于哪个domain
-			if (domains != null && !domains.isEmpty()) {
-				Set<String> domainRoots = domains.keySet();
+			if (context != null && !context.isEmpty()) {
+				Set<String> domainRoots = context.keySet();
 				for (String domainRoot : domainRoots) {
 					if (analyzeUrl.indexOf(domainRoot) > -1) {
 						// 获取匹配domain的fetchEvents
-						Map<String, Object> domain = (Map<String, Object>) domains.get(domainRoot);
+						Map<String, Object> domain = (Map<String, Object>) context.get(domainRoot);
 						if (domain != null && domain.get(XConfiguration.ENCODING) != null) {
 							return (String) domain.get(XConfiguration.ENCODING);
 						}

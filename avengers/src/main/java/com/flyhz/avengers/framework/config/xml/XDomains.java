@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="proxy" type="{http://www.flyhz.com/avengrs}xProxy" minOccurs="0"/>
  *         &lt;element name="domain" type="{http://www.flyhz.com/avengrs}xDomain" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -33,12 +34,34 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "domain" })
+@XmlType(name = "", propOrder = { "proxy", "domain" })
 @XmlRootElement(name = "xDomains")
 public class XDomains {
 
+	protected XProxy		proxy;
 	@XmlElement(required = true)
 	protected List<XDomain>	domain;
+
+	/**
+	 * Gets the value of the proxy property.
+	 * 
+	 * @return possible object is {@link XProxy }
+	 * 
+	 */
+	public XProxy getProxy() {
+		return proxy;
+	}
+
+	/**
+	 * Sets the value of the proxy property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XProxy }
+	 * 
+	 */
+	public void setProxy(XProxy value) {
+		this.proxy = value;
+	}
 
 	/**
 	 * Gets the value of the domain property.

@@ -1,5 +1,5 @@
 
-package com.flyhz.avengers;
+package com.flyhz.avengers.framework;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,8 +62,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.flyhz.avengers.framework.DSConstants;
 
 public class Avengers {
 	private static final Logger	LOG					= LoggerFactory.getLogger(Avengers.class);
@@ -407,10 +405,6 @@ public class Avengers {
 		// local resource for the
 		// eventual containers that will be launched to execute the shell
 		// scripts
-		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION, hdfsShellScriptLocation);
-		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTTIMESTAMP,
-				Long.toString(hdfsShellScriptTimestamp));
-		env.put(DSConstants.DISTRIBUTEDSHELLSCRIPTLEN, Long.toString(hdfsShellScriptLen));
 
 		// Add AvengersAppMaster.jar location to classpath
 		// At some point we should not be required to add

@@ -28,27 +28,11 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link XTemplates }
+	 * Create an instance of {@link XDomain }
 	 * 
 	 */
-	public XTemplates createXTemplates() {
-		return new XTemplates();
-	}
-
-	/**
-	 * Create an instance of {@link XEvents }
-	 * 
-	 */
-	public XEvents createXEvents() {
-		return new XEvents();
-	}
-
-	/**
-	 * Create an instance of {@link XDomains }
-	 * 
-	 */
-	public XDomains createXDomains() {
-		return new XDomains();
+	public XDomain createXDomain() {
+		return new XDomain();
 	}
 
 	/**
@@ -60,6 +44,22 @@ public class ObjectFactory {
 	}
 
 	/**
+	 * Create an instance of {@link XTemplates }
+	 * 
+	 */
+	public XTemplates createXTemplates() {
+		return new XTemplates();
+	}
+
+	/**
+	 * Create an instance of {@link XDomains }
+	 * 
+	 */
+	public XDomains createXDomains() {
+		return new XDomains();
+	}
+
+	/**
 	 * Create an instance of {@link XFilter }
 	 * 
 	 */
@@ -68,19 +68,19 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link XConstructor }
+	 * Create an instance of {@link XEvents }
 	 * 
 	 */
-	public XConstructor createXConstructor() {
-		return new XConstructor();
+	public XEvents createXEvents() {
+		return new XEvents();
 	}
 
 	/**
-	 * Create an instance of {@link XDomain }
+	 * Create an instance of {@link XProxy }
 	 * 
 	 */
-	public XDomain createXDomain() {
-		return new XDomain();
+	public XProxy createXProxy() {
+		return new XProxy();
 	}
 
 	/**
@@ -89,6 +89,14 @@ public class ObjectFactory {
 	 */
 	public XTemplate createXTemplate() {
 		return new XTemplate();
+	}
+
+	/**
+	 * Create an instance of {@link XConstructor }
+	 * 
+	 */
+	public XConstructor createXConstructor() {
+		return new XConstructor();
 	}
 
 }

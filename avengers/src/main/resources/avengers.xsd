@@ -15,6 +15,7 @@
 	<element name="xDomains">
 		<complexType>
 			<sequence>
+				<element name="proxy"  type="ave:xProxy" minOccurs="0" maxOccurs="1"/>
 				<element name="domain" type="ave:xDomain" minOccurs="1" maxOccurs="unbounded"/>
 			</sequence>
 	</complexType>
@@ -85,5 +86,19 @@
 		<sequence>
 			<element name="arg" type="token" minOccurs="1" maxOccurs="unbounded"/>
 		</sequence>
+	</complexType>
+	<complexType name="xProxy">
+		<all>
+			<element name="proxyHost">
+				<simpleType>
+					<restriction base="token">
+						<minLength value="1"/>
+					</restriction>
+				</simpleType>
+			</element>
+			<element name="proxyPort" type="unsignedShort"/>
+			<element name="username" type="token" minOccurs="0"/>
+			<element name="password" type="token" minOccurs="0"/>
+		</all>
 	</complexType>
 </schema>

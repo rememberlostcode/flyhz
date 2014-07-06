@@ -53,7 +53,7 @@ public class WebClientUtil {
 
 		if (StringUtils.isBlank(html)) {
 			log.debug("=======采用直接请求方式=========");
-			html = UrlUtil.sendGet(url);
+			html = URLXConnectionUtil.sendGet(url);
 		}
 		return html;
 	}

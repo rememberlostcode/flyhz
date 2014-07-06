@@ -20,15 +20,18 @@ import org.slf4j.Logger;
 import com.flyhz.avengers.framework.config.XConfiguration;
 import com.flyhz.avengers.framework.util.StringUtil;
 
-public abstract class AvengersExecutor implements Runnable {
+public abstract class AvengersExecutor {
 
-	public static final String			VERSION	= "version";
+	/**
+	 * LONG
+	 */
+	public static final String			BATCH_ID	= "batchId";
 
-	private final List<Event>			events	= new ArrayList<Event>();
+	private final List<Event>			events		= new ArrayList<Event>();
 
-	private final Map<String, Object>	context	= new HashMap<String, Object>();
+	private final Map<String, Object>	context		= new HashMap<String, Object>();
 
-	protected final Options				opts	= new Options();
+	protected final Options				opts		= new Options();
 
 	public AvengersExecutor() {
 		context.putAll(XConfiguration.getAvengersContext());
@@ -42,7 +45,7 @@ public abstract class AvengersExecutor implements Runnable {
 			sb.append(arg).append(" ");
 		}
 		getLog().info(this.getClass() + " main args = " + sb.toString());
-		opts.addOption("version", true, "版本号");
+		opts.addOption("batchId", true, "批号");
 		Map<String, Object> customerContext = initArgs(args);
 		CommandLine cliParser;
 		try {
@@ -51,12 +54,12 @@ public abstract class AvengersExecutor implements Runnable {
 			getLog().error(sb.toString(), e);
 			throw new RuntimeException(sb.toString(), e);
 		}
-		String version = cliParser.getOptionValue("version");
-		if (StringUtil.isBlank(version)) {
+		String batchId = cliParser.getOptionValue("batchId");
+		if (StringUtil.isBlank(batchId)) {
 			System.exit(0);
 		}
-		context.put(VERSION, version);
-		getLog().info("version = " + version);
+		context.put(BATCH_ID, Long.valueOf(batchId));
+		getLog().info("batchId = " + batchId);
 		if (customerContext != null && !customerContext.isEmpty()) {
 			context.putAll(customerContext);
 		}
@@ -72,17 +75,12 @@ public abstract class AvengersExecutor implements Runnable {
 
 	protected void execute(String[] args) {
 		init(args);
-		new Thread(this).start();
-	}
-
-	abstract Map<String, Object> initArgs(String[] args);
-
-	@Override
-	public void run() {
 		for (Event event : events) {
 			event.call(context);
 		}
 	}
+
+	abstract Map<String, Object> initArgs(String[] args);
 
 	/**
 	 * Helper function to print usage

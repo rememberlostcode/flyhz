@@ -19,7 +19,7 @@ import com.flyhz.avengers.domains.coach.template.CoachUrlTemplate;
 import com.flyhz.avengers.domains.dto.ProductDto;
 import com.flyhz.avengers.domains.dto.RtnResult;
 import com.flyhz.avengers.domains.parser.BaseParser;
-import com.flyhz.avengers.framework.util.UrlUtil;
+import com.flyhz.avengers.framework.util.URLXConnectionUtil;
 import com.flyhz.avengers.framework.util.WebClientUtil;
 
 /**
@@ -40,7 +40,7 @@ public class CoachParser implements BaseParser {
 		long b = System.currentTimeMillis();
 		String html = WebClientUtil.getContent(url, false, true);
 		if (StringUtils.isBlank(html)) {
-			html = UrlUtil.sendGet(url);
+			html = URLXConnectionUtil.sendGet(url);
 		}
 		long e = System.currentTimeMillis();
 		log.debug("爬网页时，花费时间{}毫秒", new Object[] { (e - b) });

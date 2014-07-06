@@ -30,6 +30,7 @@ import java.util.Vector;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -43,11 +44,9 @@ import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
-import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.api.ApplicationConstants.Environment;
 import org.apache.hadoop.yarn.api.protocolrecords.GetNewApplicationResponse;
-import org.apache.hadoop.yarn.api.protocolrecords.KillApplicationRequest;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
@@ -74,58 +73,10 @@ import org.apache.hadoop.yarn.util.Records;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.AvengersAppMaster;
+import com.flyhz.avengers.framework.application.CrawlApplication;
+import com.flyhz.avengers.framework.application.FetchApplication;
+import com.flyhz.avengers.framework.application.InitEnvApplication;
 
-/**
- * Client for Distributed Shell application submission to YARN.
- * 
- * <p>
- * The distributed shell client allows an application master to be launched that
- * in turn would run the provided shell command on a set of containers.
- * </p>
- * 
- * <p>
- * This client is meant to act as an example on how to write yarn-based
- * applications.
- * </p>
- * 
- * <p>
- * To submit an application, a client first needs to connect to the
- * <code>ResourceManager</code> aka ApplicationsManager or ASM via the
- * {@link ApplicationClientProtocol}. The {@link ApplicationClientProtocol}
- * provides a way for the client to get access to cluster information and to
- * request for a new {@link ApplicationId}.
- * <p>
- * 
- * <p>
- * For the actual job submission, the client first has to create an
- * {@link ApplicationSubmissionContext}. The
- * {@link ApplicationSubmissionContext} defines the application details such as
- * {@link ApplicationId} and application name, the priority assigned to the
- * application and the queue to which this application needs to be assigned. In
- * addition to this, the {@link ApplicationSubmissionContext} also defines the
- * {@link ContainerLaunchContext} which describes the <code>Container</code>
- * with which the {@link ApplicationMaster} is launched.
- * </p>
- * 
- * <p>
- * The {@link ContainerLaunchContext} in this scenario defines the resources to
- * be allocated for the {@link ApplicationMaster}'s container, the local
- * resources (jars, configuration files) to be made available and the
- * environment to be set for the {@link ApplicationMaster} and the commands to
- * be executed to run the {@link ApplicationMaster}.
- * <p>
- * 
- * <p>
- * Using the {@link ApplicationSubmissionContext}, the client submits the
- * application to the <code>ResourceManager</code> and then monitors the
- * application by requesting the <code>ResourceManager</code> for an
- * {@link ApplicationReport} at regular time intervals. In case of the
- * application taking too long, the client kills the application by submitting a
- * {@link KillApplicationRequest} to the <code>ResourceManager</code>.
- * </p>
- * 
- */
 @InterfaceAudience.Public
 @InterfaceStability.Unstable
 public class AvengersClient {
@@ -135,20 +86,13 @@ public class AvengersClient {
 	// Configuration
 	private Configuration		conf;
 	private YarnClient			yarnClient;
-	// Application master specific info to register a new Application with
-	// RM/ASM
-	private String				appName			= "";
+
 	// App master priority
 	private int					amPriority		= 0;
 	// Queue for App master
 	private String				amQueue			= "";
 	// Amt. of memory resource to request for to run the App Master
 	private int					amMemory		= 10;
-
-	// Application master jar file
-	private String				appMasterJar	= "";
-	// Main class to invoke application master
-	private final String		appMasterMainClass;
 
 	// log4j.properties file
 	// if available, add to local resources and set into classpath
@@ -157,13 +101,20 @@ public class AvengersClient {
 	// Start time for client
 	private final long			clientStartTime	= System.currentTimeMillis();
 	// Timeout threshold for client. Kill app after time interval expires.
-	private long				clientTimeout	= 600000;
-
-	// Debug flag
-	boolean						debugFlag		= false;
+	private long				clientTimeout	= 1200000;
 
 	// Command line options
 	private Options				opts;
+
+	private Long				batchId;
+
+	private String				hdfsPath;
+
+	private List<List<String>>	avengersProcessCmds;
+
+	private String				appJar;
+
+	private boolean				copy			= true;
 
 	/**
 	 * @param args
@@ -184,7 +135,11 @@ public class AvengersClient {
 				client.printUsage();
 				System.exit(-1);
 			}
-			result = client.run();
+			for (List<String> cmds : client.avengersProcessCmds) {
+				if (!client.run(cmds))
+					break;
+			}
+
 		} catch (Throwable t) {
 			LOG.error("Error running CLient", t);
 			System.exit(1);
@@ -197,28 +152,43 @@ public class AvengersClient {
 		System.exit(2);
 	}
 
-	/**
-   */
-	public AvengersClient(Configuration conf) throws Exception {
-		this(AvengersAppMaster.class.getName(), conf);
-	}
+	AvengersClient(Configuration conf) {
 
-	AvengersClient(String appMasterMainClass, Configuration conf) {
-		LOG.info("conf is " + conf);
+		batchId = System.currentTimeMillis();
+		LOG.info("conf is {},batchId is {}", batchId, conf);
 		this.conf = conf;
-		this.appMasterMainClass = appMasterMainClass;
 		System.setProperty("HADOOP_USER_NAME", "avengers");
 		yarnClient = YarnClient.createYarnClient();
-		LOG.info("huoding test path > "
-				+ conf.getClass().getClassLoader().getResource("yarn-site.xml").getPath());
 		conf.getSocketAddr(YarnConfiguration.RM_ADDRESS, YarnConfiguration.DEFAULT_RM_ADDRESS,
 				YarnConfiguration.DEFAULT_RM_PORT);
 
 		yarnClient.init(conf);
 
 		opts = new Options();
-		opts.addOption("appname", true, "Application Name. Default value - avengers");
 		opts.addOption("jar", true, "Jar file containing the application master");
+
+		Option all = new Option("all", false, "avengers all:include crawl fetch analyze");
+		all.setArgs(0);
+
+		Option crawl = new Option("crawl", true, "avengers crawl");
+		crawl.setArgs(1);
+		crawl.setArgName("batchId");
+
+		Option fetch = new Option("fetch", true, "avengers fetch");
+		fetch.setArgs(1);
+		fetch.setArgName("batchId");
+
+		Option analyze = new Option("analyze", true, "avengers analyze");
+		analyze.setArgs(1);
+		analyze.setArgName("batchId");
+
+		opts.addOption(all);
+		opts.addOption(crawl);
+		opts.addOption(fetch);
+		opts.addOption(analyze);
+
+		avengersProcessCmds = new ArrayList<List<String>>();
+		this.hdfsPath = "avengers/" + batchId + "/avengers.jar";
 	}
 
 	/**
@@ -241,8 +211,9 @@ public class AvengersClient {
 	 *            Parsed command line options
 	 * @return Whether the init was successful to run the client
 	 * @throws ParseException
+	 * @throws IOException
 	 */
-	public boolean init(String[] args) throws ParseException {
+	public boolean init(String[] args) throws ParseException, IOException {
 
 		LOG.info("env -> {}", conf.get("hadoop.tmp.dir"));
 
@@ -252,7 +223,6 @@ public class AvengersClient {
 			throw new IllegalArgumentException("No args specified for client to initialize");
 		}
 
-		appName = cliParser.getOptionValue("appname", "Avengers");
 		amPriority = 0;
 		amQueue = "default";
 		amMemory = 10;
@@ -261,18 +231,149 @@ public class AvengersClient {
 			throw new IllegalArgumentException("No jar file specified for application master");
 		}
 
-		appMasterJar = cliParser.getOptionValue("jar");
+		appJar = cliParser.getOptionValue("jar");
 
-		// shellCmdPriority = Integer.parseInt("0");
-
-		// containerMemory = 10;
-		// numContainers = 1;
-		//
-		// clientTimeout = 600000;
-		//
-		// log4jPropFile = "";
+		if (cliParser.hasOption("all")) {
+			avengersProcessCmds.add(getInitEnvCmd());
+			avengersProcessCmds.add(getCrawlCmd());
+			avengersProcessCmds.add(getFetchCmd());
+			avengersProcessCmds.add(runAnalyze());
+		} else {
+			if (cliParser.hasOption("crawl")) {
+				avengersProcessCmds.add(getInitEnvCmd());
+				avengersProcessCmds.add(getCrawlCmd());
+			}
+			if (cliParser.hasOption("fetch")) {
+				avengersProcessCmds.add(getInitEnvCmd());
+				avengersProcessCmds.add(getFetchCmd());
+			}
+			if (cliParser.hasOption("analyze")) {
+				avengersProcessCmds.add(getInitEnvCmd());
+				avengersProcessCmds.add(runAnalyze());
+			}
+		}
 
 		return true;
+	}
+
+	private List<String> getInitEnvCmd() {
+		// Set the necessary command to execute the application master
+		Vector<CharSequence> vargs = new Vector<CharSequence>(30);
+		// Set java executable command
+		LOG.info("Setting up app master command");
+		String appTempDir = conf.get("hadoop.tmp.dir");
+		vargs.add("/bin/mkdir -p");
+		vargs.add(appTempDir + "/" + batchId);
+		vargs.add("&&");
+		vargs.add(Environment.HADOOP_YARN_HOME.$() + "/bin/hadoop");
+		vargs.add("fs");
+		vargs.add("-copyToLocal");
+		vargs.add(hdfsPath);
+		vargs.add(appTempDir + "/" + batchId);
+		vargs.add("&&");
+		vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+		vargs.add("-classpath");
+		vargs.add("$CLASSPATH:" + appTempDir + "/" + batchId + "/avengers.jar");
+		vargs.add("-Xmx" + amMemory + "m");
+		vargs.add(InitEnvApplication.class.getName());
+		vargs.add("-batchId");
+		vargs.add(String.valueOf(this.batchId));
+		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/InitEnvApplication.stdout");
+		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/InitEnvApplication.stderr");
+
+		// Get final commmand
+		StringBuilder command = new StringBuilder();
+		for (CharSequence str : vargs) {
+			command.append(str).append(" ");
+		}
+
+		LOG.info("Completed setting up app client command " + command.toString());
+		List<String> commands = new ArrayList<String>();
+		commands.add(command.toString());
+		return commands;
+
+	}
+
+	private List<String> getCrawlCmd() {
+		// Set the necessary command to execute the application master
+		Vector<CharSequence> vargs = new Vector<CharSequence>(30);
+		// Set java executable command
+		LOG.info("Setting up app crawl command");
+		String appTempDir = conf.get("hadoop.tmp.dir");
+		vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+		vargs.add("-Xmx" + amMemory + "m");
+		vargs.add("-classpath");
+		vargs.add(Environment.CLASSPATH.$() + ":" + appTempDir + "/" + batchId + "/avengers.jar");
+		vargs.add(CrawlApplication.class.getName());
+		vargs.add("-batchId");
+		vargs.add(String.valueOf(this.batchId));
+		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/CrawlApplication.stdout");
+		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/CrawlApplication.stderr");
+
+		// Get final commmand
+		StringBuilder command = new StringBuilder();
+		for (CharSequence str : vargs) {
+			command.append(str).append(" ");
+		}
+
+		LOG.info("Completed setting up app client command " + command.toString());
+		List<String> commands = new ArrayList<String>();
+		commands.add(command.toString());
+		return commands;
+	}
+
+	private List<String> getFetchCmd() {
+		// Set the necessary command to execute the application master
+		Vector<CharSequence> vargs = new Vector<CharSequence>(30);
+		// Set java executable command
+		LOG.info("Setting up app fetch command");
+		String appTempDir = conf.get("hadoop.tmp.dir");
+		vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+		vargs.add("-Xmx" + amMemory + "m");
+		vargs.add("-classpath");
+		vargs.add(Environment.CLASSPATH.$() + ":" + appTempDir + "/" + batchId + "/avengers.jar");
+		vargs.add(FetchApplication.class.getName());
+		vargs.add("-batchId");
+		vargs.add(String.valueOf(this.batchId));
+		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/FetchApplication.stdout");
+		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/FetchApplication.stderr");
+
+		// Get final commmand
+		StringBuilder command = new StringBuilder();
+		for (CharSequence str : vargs) {
+			command.append(str).append(" ");
+		}
+
+		LOG.info("Completed setting up app client command " + command.toString());
+		List<String> commands = new ArrayList<String>();
+		commands.add(command.toString());
+		return commands;
+	}
+
+	private List<String> runAnalyze() {
+		// Set the necessary command to execute the application master
+		Vector<CharSequence> vargs = new Vector<CharSequence>(30);
+		// Set java executable command
+		LOG.info("Setting up app analyze command");
+		vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
+		vargs.add("-Xmx" + amMemory + "m");
+		String appTempDir = conf.get("hadoop.tmp.dir");
+		vargs.add("-classpath");
+		vargs.add(Environment.CLASSPATH.$() + ":" + appTempDir + "/" + batchId + "/avengers.jar");
+		vargs.add(Analyze.class.getName());
+		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AnalyzeApplication.stdout");
+		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AnalyzeApplication.stderr");
+
+		// Get final commmand
+		StringBuilder command = new StringBuilder();
+		for (CharSequence str : vargs) {
+			command.append(str).append(" ");
+		}
+
+		LOG.info("Completed setting up app client command " + command.toString());
+		List<String> commands = new ArrayList<String>();
+		commands.add(command.toString());
+		return commands;
 	}
 
 	/**
@@ -282,7 +383,7 @@ public class AvengersClient {
 	 * @throws IOException
 	 * @throws YarnException
 	 */
-	public boolean run() throws IOException, YarnException {
+	private boolean run(List<String> commands) throws IOException, YarnException {
 
 		LOG.info("Running Client");
 
@@ -337,7 +438,7 @@ public class AvengersClient {
 		// set the application name
 		ApplicationSubmissionContext appContext = app.getApplicationSubmissionContext();
 		ApplicationId appId = appContext.getApplicationId();
-		appContext.setApplicationName(appName);
+		appContext.setApplicationName("avengers");
 
 		// Set up the container launch context for the application master
 		ContainerLaunchContext amContainer = Records.newRecord(ContainerLaunchContext.class);
@@ -348,35 +449,26 @@ public class AvengersClient {
 		// the local resources
 		Map<String, LocalResource> localResources = new HashMap<String, LocalResource>();
 
-		LOG.info("Copy App Master jar from local filesystem and add to local environment");
-
 		FileSystem fs = DistributedFileSystem.get(conf);
-		Path src = new Path(appMasterJar);
-		String pathSuffix = "avengers/" + appId.getId() + "/AvengersAppMaster.jar";
-		// String pathSuffix = appName + "/32/AvengersAppMaster.jar";
-		Path dst = new Path(fs.getHomeDirectory(), pathSuffix);
-		fs.copyFromLocalFile(false, true, src, dst);
-		LOG.info("dst.toUri() > {}", dst.toUri());
+		Path src = new Path(appJar);
+		Path dst = new Path(fs.getHomeDirectory(), "avengers/" + batchId + "/avengers.jar");
+		if (copy) {
+			LOG.info("copy local jar to hdfs");
+			fs.copyFromLocalFile(false, true, src, dst);
+			copy = false;
+		}
+		this.hdfsPath = dst.toUri().toString();
+		LOG.info("hdfs hdfsPath = {}", dst);
 		FileStatus destStatus = fs.getFileStatus(dst);
 		LocalResource amJarRsrc = Records.newRecord(LocalResource.class);
 
-		// Set the type of resource - file or archive
-		// archives are untarred at destination
-		// we don't need the jar file to be untarred for now
 		amJarRsrc.setType(LocalResourceType.FILE);
-		// Set visibility of the resource
-		// Setting to most private option
 		amJarRsrc.setVisibility(LocalResourceVisibility.APPLICATION);
-		// Set the resource to be copied over
 		LOG.info("YarnURLFromPath ->{}", ConverterUtils.getYarnUrlFromPath(dst));
 		amJarRsrc.setResource(ConverterUtils.getYarnUrlFromPath(dst));
-		// Set timestamp and length of file so that the framework
-		// can do basic sanity checks for the local resource
-		// after it has been copied over to ensure it is the same
-		// resource the client intended to use with the application
 		amJarRsrc.setTimestamp(destStatus.getModificationTime());
 		amJarRsrc.setSize(destStatus.getLen());
-		localResources.put("AvengersAppMaster.jar", amJarRsrc);
+		localResources.put("avengers.jar", amJarRsrc);
 
 		// Set the log4j properties if needed
 		if (!log4jPropFile.isEmpty()) {
@@ -428,37 +520,10 @@ public class AvengersClient {
 
 		amContainer.setEnvironment(env);
 
-		// Set the necessary command to execute the application master
-		Vector<CharSequence> vargs = new Vector<CharSequence>(30);
-		// Set java executable command
-		LOG.info("Setting up app master command");
-		String copyDir = conf.get("hadoop.tmp.dir") + "/app/" + appId.getId();
-		vargs.add("/bin/mkdir -p");
-		vargs.add(copyDir);
-		vargs.add("&&");
-		vargs.add(Environment.HADOOP_YARN_HOME.$() + "/bin/hadoop");
-		vargs.add("fs");
-		vargs.add("-copyToLocal");
-		vargs.add(dst.toUri().toString());
-		vargs.add(copyDir);
-		vargs.add("&&");
-		vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
-		vargs.add("-classpath");
-		vargs.add("$CLASSPATH:" + copyDir + "/AvengersAppMaster.jar");
-		vargs.add("-Xmx" + amMemory + "m");
-		vargs.add(appMasterMainClass);
-		vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stdout");
-		vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/AppMaster.stderr");
-
-		// Get final commmand
-		StringBuilder command = new StringBuilder();
-		for (CharSequence str : vargs) {
-			command.append(str).append(" ");
+		for (String cmd : commands) {
+			LOG.info("run command {},appId {}", cmd, appId.getId());
 		}
 
-		LOG.info("Completed setting up app master command " + command.toString());
-		List<String> commands = new ArrayList<String>();
-		commands.add(command.toString());
 		amContainer.setCommands(commands);
 
 		// Set up resource type requirements

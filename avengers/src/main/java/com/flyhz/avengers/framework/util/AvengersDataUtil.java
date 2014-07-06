@@ -16,7 +16,7 @@
 // * 类说明:分类工具类
 // * 
 // * @author robin
-// * @version 创建时间：2013-5-28 下午6:16:54
+// * @batchId 创建时间：2013-5-28 下午6:16:54
 // */
 //@Deprecated
 //public class AvengersDataUtil {

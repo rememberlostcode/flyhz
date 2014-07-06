@@ -1,5 +1,5 @@
 
-package com.flyhz.avengers.common.event;
+package com.flyhz.avengers.framework.common.event;
 
 import java.util.Map;
 

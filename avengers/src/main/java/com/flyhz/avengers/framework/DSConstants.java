@@ -18,6 +18,10 @@
 
 package com.flyhz.avengers.framework;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 
@@ -28,20 +32,31 @@ import org.apache.hadoop.classification.InterfaceStability;
 @InterfaceStability.Unstable
 public class DSConstants {
 
-  /**
-   * Environment key name pointing to the shell script's location
-   */
-  public static final String DISTRIBUTEDSHELLSCRIPTLOCATION = "DISTRIBUTEDSHELLSCRIPTLOCATION";
+	/**
+	 * Environment key name pointing to the shell script's location
+	 */
+	public static final String	DISTRIBUTEDSHELLSCRIPTLOCATION	= "DISTRIBUTEDSHELLSCRIPTLOCATION";
 
-  /**
-   * Environment key name denoting the file timestamp for the shell script. 
-   * Used to validate the local resource. 
-   */
-  public static final String DISTRIBUTEDSHELLSCRIPTTIMESTAMP = "DISTRIBUTEDSHELLSCRIPTTIMESTAMP";
+	/**
+	 * Environment key name denoting the file timestamp for the shell script.
+	 * Used to validate the local resource.
+	 */
+	public static final String	DISTRIBUTEDSHELLSCRIPTTIMESTAMP	= "DISTRIBUTEDSHELLSCRIPTTIMESTAMP";
 
-  /**
-   * Environment key name denoting the file content length for the shell script. 
-   * Used to validate the local resource. 
-   */
-  public static final String DISTRIBUTEDSHELLSCRIPTLEN = "DISTRIBUTEDSHELLSCRIPTLEN";
+	/**
+	 * Environment key name denoting the file content length for the shell
+	 * script. Used to validate the local resource.
+	 */
+	public static final String	DISTRIBUTEDSHELLSCRIPTLEN		= "DISTRIBUTEDSHELLSCRIPTLEN";
+
+	public static void main(String[] args) {
+		Set<String> set = new HashSet<String>();
+		set.add("1");
+		set.add("2");
+		set.add("3");
+		Iterator<String> it = set.iterator();
+		it.next();
+		it.remove();
+		System.out.println(set.size());
+	}
 }

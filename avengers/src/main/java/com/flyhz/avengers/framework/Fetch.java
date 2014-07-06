@@ -14,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.common.event.URLFetchEvent;
+import com.flyhz.avengers.framework.common.event.URLFetchEvent;
 import com.flyhz.avengers.framework.config.XConfiguration;
 import com.flyhz.avengers.framework.util.StringUtil;
 
@@ -81,14 +81,13 @@ public class Fetch extends AvengersExecutor {
 		// 查询是否有自定义FetchEvent
 		String url = (String) context.get(FETCH_URL);
 		if (StringUtils.isNotBlank(url)) {
-			Map<String, Object> domains = (Map<String, Object>) context.get(XConfiguration.AVENGERS_DOMAINS);
 			// 判断参数URL属于哪个domain
-			if (domains != null && !domains.isEmpty()) {
-				Set<String> domainRoots = domains.keySet();
+			if (context != null && !context.isEmpty()) {
+				Set<String> domainRoots = context.keySet();
 				for (String domainRoot : domainRoots) {
 					if (url.indexOf(domainRoot) > -1) {
 						// 获取匹配domain的fetchEvents
-						Map<String, Object> domain = (Map<String, Object>) domains.get(domainRoot);
+						Map<String, Object> domain = (Map<String, Object>) context.get(domainRoot);
 						if (domain != null && domain.get(XConfiguration.FETCH_EVENTS) != null) {
 							List<Event> customEvents = (List<Event>) domain.get(XConfiguration.FETCH_EVENTS);
 							events.addAll(customEvents);

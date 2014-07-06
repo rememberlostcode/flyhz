@@ -4,8 +4,10 @@ package com.flyhz.avengers.framework.config;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import com.flyhz.avengers.framework.config.xml.XDomains;
 import com.flyhz.avengers.framework.config.xml.XEvent;
 import com.flyhz.avengers.framework.config.xml.XEvents;
 import com.flyhz.avengers.framework.config.xml.XFilter;
+import com.flyhz.avengers.framework.config.xml.XProxy;
 import com.flyhz.avengers.framework.config.xml.XTemplate;
 import com.flyhz.avengers.framework.config.xml.XTemplates;
 import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
@@ -30,12 +33,30 @@ public class XConfiguration {
 	private final Map<String, Object>	avengersConfiguration	= new HashMap<String, Object>();
 
 	/**
-	 * Map<String,Map<String,Object>>,key值是avengers.xml中domain.root,value是key为
-	 * CRAWL_EVENTS
-	 * ,FETCH_EVENTS,TEMPLATE_EVENTS,ANALYZE_EVENTS,URLFILTER_BEFORE_CRAWL
-	 * ,URLFILTER_AFTER_CRAWL
+	 * Map<String,String>
 	 */
-	public static final String			AVENGERS_DOMAINS		= "avengers.domains";
+	public static final String			PROXY					= "proxy";
+	/**
+	 * {@link String}
+	 */
+	public static final String			PROXY_HOST				= "proxy.host";
+	/**
+	 * {@link Integer}
+	 */
+	public static final String			PROXY_PORT				= "proxy.port";
+	/**
+	 * {@link String}
+	 */
+	public static final String			PROXY_USERNAME			= "proxy.username";
+	/**
+	 * {@link String}
+	 */
+	public static final String			PROXY_PASSWORD			= "proxy.password";
+
+	/**
+	 * {@link Set}
+	 */
+	public static final String			ROOTS					= "roots";
 
 	/**
 	 * List<Event>
@@ -94,26 +115,35 @@ public class XConfiguration {
 		XDomains domains = XmlUtil.convertXmlToObject(XDomains.class, avengersXml, avengersSchema);
 		LOG.info("domains is {}", domains);
 		if (domains != null) {
+			XProxy proxy = domains.getProxy();
+			if (proxy != null) {
+				Map<String, Object> proxyMap = new HashMap<String, Object>();
+				proxyMap.put(PROXY_HOST, proxy.getProxyHost());
+				proxyMap.put(PROXY_PORT, proxy.getProxyPort());
+				proxyMap.put(PROXY_USERNAME, proxy.getUsername());
+				proxyMap.put(PROXY_PASSWORD, proxy.getPassword());
+				avengersConfiguration.put(PROXY, proxyMap);
+			}
 			List<XDomain> listDomain = domains.getDomain();
 			if (listDomain != null && !listDomain.isEmpty()) {
-				Map<String, Map<String, Object>> domainsMap = new HashMap<String, Map<String, Object>>();
-				avengersConfiguration.put(AVENGERS_DOMAINS, domainsMap);
+				Set<String> roots = new HashSet<String>();
+				this.avengersConfiguration.put(ROOTS, roots);
 				for (XDomain domain : listDomain) {
 					String root = domain.getRoot();
 					String encoding = domain.getEncoding();
 					Integer depth = Integer.valueOf(domain.getDepth());
 					Integer period = domain.getPeriod();
 
-					if (StringUtil.isNotBlank(root)) {
-						if (domainsMap.keySet().contains(root)) {
-							throw new AvengersConfigurationException("domain root" + root
-									+ " duplicated");
-						}
-
+					if (StringUtil.isBlank(root)) {
+						continue;
 					}
-
+					if (avengersConfiguration.keySet().contains(root)) {
+						throw new AvengersConfigurationException("domain root" + root
+								+ " duplicated");
+					}
+					roots.add(root);
 					Map<String, Object> domainMap = new HashMap<String, Object>();
-					domainsMap.put(root, domainMap);
+					avengersConfiguration.put(root, domainMap);
 					domainMap.put(ENCODING, encoding);
 					domainMap.put(CRAWL_DEPTH, depth);
 					domainMap.put(CRAWL_PERIOD, period);
