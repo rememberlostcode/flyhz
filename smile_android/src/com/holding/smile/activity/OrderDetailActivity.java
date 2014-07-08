@@ -3,6 +3,7 @@ package com.holding.smile.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -37,7 +38,9 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 	private TextView			idcardView;
 	private ImageView			idcardImageView;
 
+	private Button				contactUsButton;
 	private Button				statusButton;
+
 	private MyListView			logisticsListView;		// 物流
 
 	@Override
@@ -54,6 +57,13 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 		orderNumberView = (TextView) findViewById(R.id.order_detail_number);
 		orderTimeView = (TextView) findViewById(R.id.order_detail_time);
 
+		contactUsButton = (Button) findViewById(R.id.order_detail_contact_us);
+		contactUsButton.setOnClickListener(this);
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
 		try {
 			Intent intent = getIntent();
 			if (intent.getExtras() != null && intent.getExtras().getSerializable("order") != null) {
@@ -94,9 +104,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 					if (order.getStatus() != null && Integer.parseInt(order.getStatus()) >= 20
 							&& !order.getStatus().equals("50") && order.getLogisticsDto() != null
 							&& order.getLogisticsDto().getTransitStepInfoList() != null) {
-						TextView textViewAddres =  (TextView) findViewById(R.id.order_detail_address);
-						textViewAddres.setText(textViewAddres.getText() + (order.getLogisticsDto().getAddress()!=null?order.getLogisticsDto().getAddress():""));
-						
+						TextView textViewAddres = (TextView) findViewById(R.id.order_detail_address);
+						textViewAddres.setText(textViewAddres.getText()
+								+ (order.getLogisticsDto().getAddress() != null ? order.getLogisticsDto()
+																						.getAddress()
+										: ""));
+
 						logisticsListView = (MyListView) findViewById(R.id.order_detail_logistics_list);
 						logisticsListView.setAdapter(new ArrayAdapter<String>(this,
 								R.layout.simple_list_text, order.getLogisticsDto()
@@ -107,27 +120,12 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
 					statusButton = (Button) findViewById(R.id.order_detail_status);
 					statusButton.setText(ClickUtil.getTextByStatus(order.getStatus()));
-					statusButton.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							if (Constants.OrderStateCode.FOR_PAYMENT.code.equals(order.getStatus())) {
-								Intent intent = new Intent(context, WebViewActivity.class);
-								intent.putExtra("number", order.getNumber());
-								intent.putExtra("amount", order.getTotal());
-								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								context.startActivity(intent);
-							} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(order.getStatus())) {
-								Intent intent = new Intent();
-								intent.setClass(context, IdcardManagerActivity.class);
-								intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								context.startActivity(intent);
-							}
-						}
-					});
+					statusButton.setBackgroundColor(ClickUtil.getBackgroundColorByStatus(order.getStatus()));
+					statusButton.setOnClickListener(this);
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(MyApplication.LOG_TAG, e.getMessage());
 		}
 		waitCloseProgressBar();
 	}
@@ -138,6 +136,26 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 			case R.id.btn_back: {
 				setResult(RESULT_CANCELED, null);
 				finish();
+				break;
+			}
+			case R.id.order_detail_status: {
+				if (order != null) {
+					if (Constants.OrderStateCode.FOR_PAYMENT.code.equals(order.getStatus())) {
+						Intent intent = new Intent(this, WebViewActivity.class);
+						intent.putExtra("number", order.getNumber());
+						intent.putExtra("amount", order.getTotal());
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(intent);
+					} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(order.getStatus())) {
+						Intent intent = new Intent(this, IdcardManagerActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(intent);
+					}
+				}
+				break;
+			}
+			case R.id.order_detail_contact_us: {
+				ClickUtil.sendEmail(this);
 				break;
 			}
 		}

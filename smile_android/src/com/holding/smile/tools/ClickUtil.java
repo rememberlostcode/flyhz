@@ -1,6 +1,8 @@
 
 package com.holding.smile.tools;
 
+import com.holding.smile.R;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,10 +27,10 @@ public class ClickUtil {
 				text = "已支付";
 				break;
 			case 13:
-				text = "上传身份证";
+				text = "已支付，上传身份证";
 				break;
 			case 14:
-				text = "已有身份证";
+				text = "已上传身份证";
 				break;
 			case 15:
 				text = "发货中";
@@ -61,7 +63,7 @@ public class ClickUtil {
 	}
 	
 	public static int getBackgroundColorByStatus(String status) {
-		int colorId = Color.parseColor("#cfcfcf");
+		int colorId = Color.parseColor("#46cf99");
 		if (status == null) {
 			return colorId;
 		}
@@ -69,7 +71,7 @@ public class ClickUtil {
 		switch (ints) {
 			case 10:
 				//"去支付";
-				colorId = Color.parseColor("#46cf99");
+				colorId = Color.parseColor("#e95e4b");
 				break;
 			case 11:
 				//"支付中";
@@ -100,12 +102,14 @@ public class ClickUtil {
 				break;
 			case 50:
 				//已关闭";
+				colorId = Color.parseColor("#56505d");
 				break;
 			case 60:
 				//已完成";
 				break;
 			case 70:
 				//已删除";
+				colorId = Color.parseColor("#56505d");
 				break;
 			default:
 				break;
@@ -116,7 +120,7 @@ public class ClickUtil {
 	public static void sendEmail(Context context) {
 		Intent email = new Intent(android.content.Intent.ACTION_SEND);
 		email.setType("plain/text");
-		String[] emailReciver = new String[]{"service@tiantianhaigou.com"};
+		String[] emailReciver = new String[]{context.getString(R.string.service_email)};
 		String emailSubject = "请输入标题";
 		String emailBody = "请输入内容（疑问、建议、要求等等）";
 

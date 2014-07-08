@@ -87,13 +87,9 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 				break;
 			}
 			case R.id.user_info_idcard_layout: {
-				// Intent intent = new Intent();
-				// intent.setClass(context, AddressManagerActivity.class);
-				// intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-				// startActivity(intent);
 				Intent intent = new Intent();
 				intent.setClass(context, IdcardManagerActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				startActivity(intent);
 				break;
 			}
@@ -114,7 +110,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 			case R.id.user_info_pwd_layout: {
 				Intent intent = new Intent();
 				intent.setClass(context, ResetPwdActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;
 			}
@@ -147,7 +143,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 																Intent intent = new Intent();
 																intent.setClass(context,
 																		LoginActivity.class);
-																intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+																intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 																startActivity(intent);
 															}
 														}).setNegativeButton("取消", null).show();
