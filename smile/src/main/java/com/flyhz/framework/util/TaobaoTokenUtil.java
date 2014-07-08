@@ -93,7 +93,7 @@ public class TaobaoTokenUtil {
 		/* 定时任务，每隔一段时间获取授权码 */
 		Timer timer = new Timer();
 		long delay = 60 * 1000;// 在豪秒后执行此任务
-		long period = 60 * 60 * 1000;// 每次间隔豪秒
+		long period = 60 * 60 * 1000;// 每次间隔豪秒/每个小时执行一次
 		timer.schedule(new MyTask(), delay, period);
 	}
 
@@ -142,10 +142,11 @@ public class TaobaoTokenUtil {
 		getAccessTokenAndRefreshTokenByRefreshToken();
 		if (refreshToken != null && !"".equals(refreshToken.trim())) {
 			// 将accessToken和refreshToken写入taobao.properties
+			lastModifyTime = (new Date().getTime()) / 1000 + "";
 			config.put("accessToken", accessToken);
 			config.put("refreshToken", refreshToken);
 			config.put("expiresIn", expiresIn);
-			config.put("lastModifyTime", (new Date().getTime()) / 1000 + "");
+			config.put("lastModifyTime",  lastModifyTime);
 			boolean writeResult = writeFile(config);
 			if (!writeResult) {
 				log.info("将accessToken和refreshToken写入taobao.properties失败!");
@@ -170,6 +171,7 @@ public class TaobaoTokenUtil {
 			param.put("state", state);
 			String responseJson = WebUtils.doPost(tbPostSessionUrl, param, connectTimeout,
 					readTimeout);
+			log.info(responseJson);
 			JSONObject jsonObj = new JSONObject(responseJson);
 			refreshToken = jsonObj.getString("refresh_token");
 		} catch (Exception e) {
@@ -194,11 +196,11 @@ public class TaobaoTokenUtil {
 			param.put("state", state);
 			String responseJson = WebUtils.doPost(tbPostSessionUrl, param, connectTimeout,
 					readTimeout);
-			// log.info("responseJson:" + responseJson);
+			log.info(responseJson);
 			JSONObject jsonObj = new JSONObject(responseJson);
 			accessToken = jsonObj.getString("access_token");
 			refreshToken = jsonObj.getString("refresh_token");
-			expiresIn = jsonObj.getString("expires_in");
+//			expiresIn = jsonObj.getString("expires_in");
 			log.info("获取到新的token：");
 			log.info("accessToken=" + accessToken);
 			log.info("refreshToken=" + refreshToken);
