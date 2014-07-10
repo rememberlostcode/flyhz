@@ -54,11 +54,11 @@
     </insert>
     
     <select id="getModelById" parameterType="Integer" resultType="UserModel">
-    	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify from user  
+    	select id,username,email,mobilephone,gmt_create gmtCreate,gmt_modify gmtModify,registrationID from user  
     	where id=#{id}
     </select>
     <select id="getModel" parameterType="UserModel" resultType="UserModel">
-    	select id,gmt_create gmtCreate,gmt_modify gmtModify,gmt_register gmtRegister,username,password,email,mobilephone,qq,weixin,weibo,identitycard,token
+    	select id,gmt_create gmtCreate,gmt_modify gmtModify,gmt_register gmtRegister,username,password,email,mobilephone,qq,weixin,weibo,identitycard,token,registrationID
     	from user  
     	where 1=1
         <if test="id!=null">
@@ -127,7 +127,7 @@
     	where username=#{username}
     </select>
     <select id="getUserById" parameterType="Integer" resultType="UserDto">
-    	select id,username,token from user
+    	select id,username,token,registrationID from user
     	where id = #{id}
     </select>
 
