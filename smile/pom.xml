@@ -24,14 +24,14 @@
 		<service.client.path>com/${company.name}/${company.product.name}/biz/${project.artifactId}/service/*</service.client.path>
 	</properties>
 	<dependencies>
-		<dependency>  
-	       <groupId>ch.qos.logback</groupId>  
-	       <artifactId>logback-classic</artifactId>  
-		</dependency> 
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
@@ -97,11 +97,11 @@
 			<artifactId>axis-wsdl4j</artifactId> <version>1.5.1</version> </dependency> -->
 		<!-- Spring Dependencies -->
 		<!-- Javamail API -->
-	    <dependency>
-	        <groupId>javax.mail</groupId>
-	        <artifactId>mail</artifactId>
-	        <version>1.4.4</version>
-	    </dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.4</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
@@ -234,8 +234,12 @@
 			<artifactId>taobao-sdk</artifactId>
 		</dependency>
 		<dependency>
-		  <groupId>org.json</groupId>
-		  <artifactId>json</artifactId>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>cn.jpush.api</groupId>
+			<artifactId>jpush-client</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -785,9 +789,14 @@
 				<version>20140701</version>
 			</dependency>
 			<dependency>
-			  <groupId>org.json</groupId>
-			  <artifactId>json</artifactId>
-			  <version>20080701</version>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20080701</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.jpush.api</groupId>
+				<artifactId>jpush-client</artifactId>
+				<version>3.1.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -23,6 +23,7 @@ public class UserModel implements Serializable {
 	private String				weibo;
 	private String				weixin;
 	private String				token;
+	private String registrationID;
 
 	public UserModel() {
 	}
@@ -129,5 +130,13 @@ public class UserModel implements Serializable {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getRegistrationID() {
+		return registrationID;
+	}
+
+	public void setRegistrationID(String registrationID) {
+		this.registrationID = registrationID;
 	}
 }

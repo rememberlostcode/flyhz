@@ -116,6 +116,9 @@
 	      ,weibo=#{weibo}
 	      ,identitycard=#{identitycard}
 	      ,token=#{token}
+	    <if test="registrationID != null and registrationID != ''">
+	      ,registrationID=#{registrationID}
+        </if>
         where id = #{id}
     </update>
 

@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import cn.jpush.android.api.JPushInterface;
 
 import com.holding.smile.R;
 import com.holding.smile.cache.ImageLoader;
@@ -65,6 +66,7 @@ public class MyApplication extends Application {
 
 	// JSESSIONID=6CCC2F179859F7D98D2F8E35CEBD5CF4
 	private String					sessionId;
+	private String 					registrationID;
 
 	/** 任务线程池 */
 	private static ExecutorService	threadPool;
@@ -85,6 +87,9 @@ public class MyApplication extends Application {
 		sqliteService = new SQLiteService(context);// 初始化本地DB
 
 		jgoods_img_url = getString(R.string.prefix_url) + getString(R.string.img_static_url);
+		
+		JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.init(this);     		// 初始化 JPush
 	}
 
 	public static ImageLoader getImageLoader() {
@@ -195,6 +200,14 @@ public class MyApplication extends Application {
 
 	public static void setHasNetwork(boolean isHasNetwork) {
 		MyApplication.isHasNetwork = isHasNetwork;
+	}
+
+	public String getRegistrationID() {
+		return registrationID;
+	}
+
+	public void setRegistrationID(String registrationID) {
+		this.registrationID = registrationID;
 	}
 
 }

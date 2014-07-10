@@ -115,7 +115,8 @@ public class BaseActivity extends Activity {
 
 		// 删除窗口背景
 		getWindow().setBackgroundDrawable(null);
-
+		
+		
 		if (MyApplication.getInstance().getScreenWidth() == null
 				|| MyApplication.getInstance().getScreenHeight() == null
 				|| MyApplication.getInstance().getDensity() == null) {

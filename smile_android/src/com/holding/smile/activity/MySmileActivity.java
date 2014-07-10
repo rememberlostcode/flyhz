@@ -45,6 +45,10 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 	 * 联系我们
 	 */
 	private LinearLayout	contactUsLayoutLayout;
+	/**
+	 * 消息接收
+	 */
+	private LinearLayout	messageLayoutLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +69,14 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 		settingLayout = (LinearLayout) findViewById(R.id.mysmile_setting_layout);
 		clearCacheLayout = (LinearLayout) findViewById(R.id.mysmile_clearcache_layout);
 		contactUsLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_contact_us_layout);
+		messageLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_message_layout);
 
 		myOrdersLayout.setOnClickListener(this);
 		myCouponLayout.setOnClickListener(this);
 		settingLayout.setOnClickListener(this);
 		clearCacheLayout.setOnClickListener(this);
 		contactUsLayoutLayout.setOnClickListener(this);
+		messageLayoutLayout.setOnClickListener(this);
 	}
 
 	@Override
@@ -92,7 +98,6 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				}
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
-				overridePendingTransition(0, 0);
 				break;
 			}
 			case R.id.mysmile_mycoupon_layout: {
@@ -110,7 +115,6 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				}
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
-				overridePendingTransition(0, 0);
 				break;
 			}
 			case R.id.mysmile_clearcache_layout: {
@@ -119,6 +123,13 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 			}
 			case R.id.mysmile_contact_us_layout: {
 				ClickUtil.sendEmail(this);
+				break;
+			}
+			case R.id.mysmile_message_layout: {
+				Intent intent = new Intent();
+				intent.setClass(context, JPushActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
 				break;
 			}
 		}

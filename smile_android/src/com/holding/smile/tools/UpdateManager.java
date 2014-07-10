@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.holding.smile.R;
+import com.holding.smile.activity.MainSmileActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -102,6 +103,9 @@ public class UpdateManager {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
+				Intent intent = new Intent(mContext, MainSmileActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				mContext.startActivity(intent);
 			}
 		});
 		noticeDialog = builder.create();

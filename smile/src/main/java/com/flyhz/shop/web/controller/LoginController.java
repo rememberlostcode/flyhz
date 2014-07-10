@@ -16,6 +16,7 @@ import com.flyhz.framework.auth.Authenticate;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.UserDto;
+import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.UserService;
 
 @Controller
@@ -30,12 +31,12 @@ public class LoginController {
 
 	// http://localhost:8088/smile/loginAuth.json?username=admin&password=123456
 	@RequestMapping(value = "loginAuth", method = RequestMethod.GET)
-	public String login(String username, String password, String verifycode,
+	public String login(UserModel userModel,
 			HttpServletRequest request, HttpServletResponse response, Model model)
 			throws IOException {
 		Protocol protocol = new Protocol();
 		try {
-			UserDto user = userService.login(username, password, verifycode);
+			UserDto user = userService.login(userModel);
 			if (user != null) {
 				auth.mark(user.getId(), request, response);
 				protocol.setCode(200000);
@@ -52,12 +53,12 @@ public class LoginController {
 
 	// http://localhost:8088/smile/loginAuto.json?username=admin&token=
 	@RequestMapping(value = "loginAuto", method = RequestMethod.GET)
-	public String loginAuto(String username, String token, String verifycode,
+	public String loginAuto(UserModel userModel,
 			HttpServletRequest request, HttpServletResponse response, Model model)
 			throws IOException {
 		Protocol protocol = new Protocol();
 		try {
-			UserDto user = userService.loginAuto(username, token, verifycode);
+			UserDto user = userService.loginAuto(userModel);
 			if (user != null) {
 				auth.mark(user.getId(), request, response);
 				protocol.setCode(200000);
