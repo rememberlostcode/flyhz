@@ -414,8 +414,10 @@ public class TaobaoDataImpl implements TaobaoData {
 
 	public void startMessageHandler() {
 		if (!isRunning) {
+			log.info("淘宝消息进程即将启动！");
+			log.info("appkey=" + appkey + ",appSecret=" + appSecret);
 			TmcClient client = new TmcClient("ws://mc.api.taobao.com/", appkey, appSecret,
-					"default");
+					"smile");
 			client.setMessageHandler(new MessageHandler() {
 				public void onMessage(Message message, MessageStatus status) {
 					try {
@@ -511,6 +513,7 @@ public class TaobaoDataImpl implements TaobaoData {
 			try {
 				client.connect();
 				isRunning = true;
+				log.info("淘宝消息进程运行成功！");
 			} catch (LinkException e) {
 				log.error(e.getMessage());
 			}
