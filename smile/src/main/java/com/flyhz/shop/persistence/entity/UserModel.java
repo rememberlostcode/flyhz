@@ -23,7 +23,7 @@ public class UserModel implements Serializable {
 	private String				weibo;
 	private String				weixin;
 	private String				token;
-	private String registrationID;
+	private String				registrationID;
 
 	public UserModel() {
 	}

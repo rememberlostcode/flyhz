@@ -17,4 +17,9 @@ public interface TaobaoData {
 	 * @return
 	 */
 	public Trade getTradeByTid(Long tid);
+	
+	/**
+	 * 启动淘宝消息进程，以便接收淘宝的信息
+	 */
+	public void startMessageHandler();
 }

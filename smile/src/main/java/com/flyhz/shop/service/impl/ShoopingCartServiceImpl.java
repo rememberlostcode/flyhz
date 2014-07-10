@@ -4,18 +4,22 @@ package com.flyhz.shop.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.flyhz.framework.lang.JPush;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.dto.ProductDto;
+import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.dao.CartItemDao;
+import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.CartitemModel;
 import com.flyhz.shop.service.ShoppingCartService;
 
@@ -25,6 +29,8 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	private CartItemDao		cartItemDao;
 	@Resource
 	private RedisRepository	redisRepository;
+	@Resource
+	private UserDao			userDao;
 
 	@Override
 	public void addItem(Integer userId, Integer productId, Byte qty) throws ValidateException {
@@ -57,6 +63,12 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 			cartitemModelNew.setQty(qtyNew);
 			cartitemModelNew.setGmtModify(new Date());
 			cartItemDao.updateCartItem(cartitemModelNew);
+		}
+		
+		UserDto user = userDao.getUserById(userId);
+		if(user!=null && user.getId()!=null && user.getRegistrationID()!=null){
+			JPush jpush = new JPush();
+			jpush.sendAndroidNotificationWithRegistrationID("您的购物车有新的商品！", new HashMap<String, String>(), user.getRegistrationID());
 		}
 	}
 

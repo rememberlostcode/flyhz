@@ -7,6 +7,7 @@
 		</encoder>   
 	</appender>
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">  
+    <!-- <File>log.log</File> -->
     <File>log.log</File>
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">  
         <FileNamePattern>log.log.%i.bak</FileNamePattern>  
@@ -15,7 +16,7 @@
     </rollingPolicy>
     <triggeringPolicy  
         class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">  
-        <MaxFileSize>100MB</MaxFileSize>  
+        <MaxFileSize>5MB</MaxFileSize>  
     </triggeringPolicy>  
     <layout class="ch.qos.logback.classic.PatternLayout">  
         <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>  

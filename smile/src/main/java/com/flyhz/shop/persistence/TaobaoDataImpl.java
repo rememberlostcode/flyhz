@@ -412,9 +412,6 @@ public class TaobaoDataImpl implements TaobaoData {
 
 	private static boolean	isRunning	= false;
 
-	/**
-	 * 启动淘宝消息进程，以便接收淘宝的信息
-	 */
 	public void startMessageHandler() {
 		if (!isRunning) {
 			TmcClient client = new TmcClient("ws://mc.api.taobao.com/", appkey, appSecret,

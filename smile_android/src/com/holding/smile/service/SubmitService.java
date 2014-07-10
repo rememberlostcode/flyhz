@@ -189,7 +189,7 @@ public class SubmitService {
 				e.printStackTrace();
 			}
 		}
-		if(rvd == null){
+		if (rvd == null) {
 			rvd = new RtnValueDto();
 			rvd.setCode(200001);
 		}
@@ -225,7 +225,7 @@ public class SubmitService {
 				e.printStackTrace();
 			}
 		}
-		if(rvd == null){
+		if (rvd == null) {
 			rvd = new RtnValueDto();
 			rvd.setCode(200001);
 		}
@@ -506,6 +506,29 @@ public class SubmitService {
 	}
 
 	public RtnValueDto closeOrder(Integer orderId) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
+		HashMap<String, String> param = new HashMap<String, String>();
+		if (orderId != null) {
+			param.put("id", String.valueOf(orderId));
+		}
+		String rvdString = URLUtil.getStringByPost(this.prefix_url + this.order_close_url, param);
+		if (rvdString != null) {
+			rvd = JSONUtil.getJson2Entity(rvdString, RtnValueDto.class);
+			rvd.setCode(200000);
+		}
+		return rvd;
+	}
+
+	/**
+	 * 还未实现
+	 * 
+	 * @param orderId
+	 * @return
+	 */
+	public RtnValueDto getOrderById(Integer orderId) {
 		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}

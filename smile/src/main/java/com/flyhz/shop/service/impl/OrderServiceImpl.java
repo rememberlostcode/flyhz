@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.flyhz.framework.lang.JPush;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.TaobaoData;
@@ -357,8 +358,22 @@ public class OrderServiceImpl implements OrderService {
 
 	public void updateStatusByNumber(OrderModel orderModel) {
 		orderDao.updateStatusByNumber(orderModel);
+	}
+	
+	public void updateStatusByNumberForMessage(OrderModel orderModel) {
+		orderDao.updateStatusByNumber(orderModel);
 		if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
 			sendPaySuccess(orderModel.getNumber());
+		} else if (Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {// 已发货的发送消息
+			OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
+			UserDto user = userDao.getUserById(orderDto.getUserId());
+			
+			if(user!=null && user.getId()!=null && user.getRegistrationID()!=null){
+				JPush jpush = new JPush();
+				Map<String, String> extras = new HashMap<String, String>();
+				extras.put("orderId", orderDto.getId().toString());
+				jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras, user.getRegistrationID());
+			}
 		}
 	}
 }
