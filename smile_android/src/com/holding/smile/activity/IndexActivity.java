@@ -188,6 +188,11 @@ public class IndexActivity extends InstrumentedActivity {
 															SUser user = (SUser) msg.obj;
 															LoginService loginService = MyApplication.getInstance()
 																										.getLoginService();
+															if (MyApplication.getInstance()
+																				.getRegistrationID() != null) {
+																user.setRegistrationID(MyApplication.getInstance()
+																									.getRegistrationID());
+															}
 															RtnValueDto rvd = loginService.autoLogin(user);
 															if (CodeValidator.dealCode(
 																	getApplicationContext(), rvd)) {
