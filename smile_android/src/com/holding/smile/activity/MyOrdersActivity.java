@@ -226,7 +226,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 													}
 
 												}
-												waitCloseProgressBar();
+												closeLoading();
 											}
 										};
 }

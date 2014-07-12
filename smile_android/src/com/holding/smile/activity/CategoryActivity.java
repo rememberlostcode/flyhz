@@ -134,7 +134,7 @@ public class CategoryActivity extends BaseActivity implements OnClickListener {
 												break;
 											}
 										}
-										waitCloseProgressBar();
+										closeLoading();
 									}
 
 								};

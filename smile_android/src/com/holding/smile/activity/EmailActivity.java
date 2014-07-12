@@ -85,9 +85,10 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				// 设置邮箱
 				email = emailEditText.getText().toString();
 				if(StrUtils.checkEmail(email)){
-					progressBar.setVisibility(View.VISIBLE);
+					showLoading();
 					RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 													.setUserInfo("email", email);
+					closeImmediatelyLoading();
 					if (CodeValidator.dealCode(context, rvd)) {
 						ToastUtils.showShort(this, "保存成功！");
 						Intent intent = new Intent();
@@ -95,7 +96,6 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 						setResult(RESULT_OK, intent);
 						finish();
 					}
-					waitCloseProgressBar();
 				} else {
 					ToastUtils.showShort(this, "邮箱格式不正确！");
 					return;
@@ -103,18 +103,17 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.email_canle: {
-				progressBar.setVisibility(View.VISIBLE);
+				showLoading();
 				// 解除绑定邮箱
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("email", "");
+				closeImmediatelyLoading();
 				if (CodeValidator.dealCode(context, rvd)) {
-					ToastUtils.showShort(this, "取消成功！");
+					ToastUtils.showShort(this, "解绑成功！");
 					Intent intent = new Intent();
-					intent.putExtra("email", "");
 					setResult(RESULT_OK, intent);
 					finish();
 				}
-				waitCloseProgressBar();
 				break;
 			}
 		}

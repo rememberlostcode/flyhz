@@ -70,7 +70,6 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 				break;
 			}
 			case R.id.phone_save: {
-				progressBar.setVisibility(View.VISIBLE);
 				// 设置手机
 				phone = phoneEditText.getText().toString();
 				
@@ -79,9 +78,10 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 					return;
 				}
 				
+				showLoading();
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.setUserInfo("mphone", phone);
-				waitCloseProgressBar();
+				closeImmediatelyLoading();
 				if (rvd != null && 200000 == rvd.getCode()) {
 					ToastUtils.showShort(context, "保存成功！");
 					Intent intent = new Intent();

@@ -137,11 +137,8 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 							smartFlag = false;
 						}
 					}
-
 				}
-
 			}
-
 		});
 
 		editText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
@@ -150,8 +147,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_SEARCH
 						|| actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
-					System.out.println("====================================search");
-
 					editText.clearFocus();
 					InputMethodManager imm = (InputMethodManager) editText.getContext()
 																			.getSystemService(
@@ -403,6 +398,7 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 															}
 														}
 														mPullToRefreshView.onHeaderRefreshComplete();
+														closeLoading();
 														break;
 													}
 													case WHAT_DID_REFRESH: {
@@ -454,9 +450,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 														break;
 													}
 												}
-
-												waitCloseProgressBar();
-
 											}
 										};
 

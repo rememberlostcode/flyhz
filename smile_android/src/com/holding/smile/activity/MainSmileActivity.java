@@ -328,6 +328,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 																			CodeValidator.dealCode(
 																					context, null);
 																		}
+																		closeLoading();
 																		break;
 																	}
 																	case WHAT_DID_REFRESH: {
@@ -356,10 +357,10 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 																		}
 																		brandAdapter.notifyDataSetChanged();
 																		mPullToRefreshView.onHeaderRefreshComplete();
+																		closeLoading();
 																		break;
 																	}
 																}
-																waitCloseProgressBar();
 															}
 														};
 }

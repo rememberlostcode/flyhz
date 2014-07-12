@@ -78,11 +78,11 @@ public class FindBackPwdActivity extends BaseActivity implements OnClickListener
 					ToastUtils.showShort(context, "用户名不能为空！");
 					return;
 				}
-				progressBar.setVisibility(View.VISIBLE);
-
+				
+				showLoading();
 				RtnValueDto rvd = MyApplication.getInstance().getDataService()
 												.findBackPwd(username);
-				waitCloseProgressBar();
+				closeImmediatelyLoading();
 				if (CodeValidator.dealCode(context, rvd)) {
 					ToastUtils.showShort(context, "新密码已发送至邮箱：" + rvd.getAtData());
 					finish();

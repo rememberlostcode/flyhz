@@ -198,13 +198,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																		finish();
 																	} else {
 																		loginViewInit();
-																		progressBar.setVisibility(View.INVISIBLE);
 																	}
 																}
 																break;
 															}
 														}
-														waitCloseProgressBar();
+														closeLoading();
 													}
 												};
 

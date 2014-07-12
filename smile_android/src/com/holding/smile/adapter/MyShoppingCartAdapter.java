@@ -232,6 +232,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 					if (cartItem.getQty() > 1) {
 
 						// 先显示进度条信息
+						if(progressBar!=null)
 						progressBar.setVisibility(View.VISIBLE);
 
 						cartItem.setQty((short) (cartItem.getQty() - 1));
@@ -250,6 +251,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View arg0) {
 					// 先显示进度条信息
+					if(progressBar!=null)
 					progressBar.setVisibility(View.VISIBLE);
 
 					cartItem.setQty((short) (cartItem.getQty() + 1));

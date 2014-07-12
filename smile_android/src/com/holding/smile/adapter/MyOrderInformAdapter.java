@@ -193,7 +193,8 @@ public class MyOrderInformAdapter extends BaseAdapter {
 
 	// 显示进度条
 	private void showPDialog() {
-		progressBar.setVisibility(View.VISIBLE);
+		if(progressBar!=null)
+			progressBar.setVisibility(View.VISIBLE);
 		if (mUIHandler != null) {
 			mUIHandler.sendEmptyMessage(2);
 		}

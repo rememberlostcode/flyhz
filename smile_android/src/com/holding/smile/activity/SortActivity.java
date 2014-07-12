@@ -25,7 +25,6 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JSort;
 import com.holding.smile.myview.MyLinearLayout;
-import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -128,9 +127,6 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rGoods;
 			msg.sendToTarget();
-		} else {
-			ToastUtils.showShort(context, "暂无数据！");
-			waitCloseProgressBar();
 		}
 	}
 
@@ -215,7 +211,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 															break;
 														}
 													}
-													waitCloseProgressBar();
+													closeLoading();
 												}
 											};
 

@@ -6,9 +6,6 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,12 +29,9 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.Category;
 import com.holding.smile.entity.JActivity;
 import com.holding.smile.entity.JIndexJGoods;
-import com.holding.smile.entity.JVersion;
-import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
-import com.holding.smile.service.LoginService;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
@@ -46,8 +40,6 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
 	private static final int	WHAT_DID_REFRESH	= 1;
-	private static final int	AUTO_LOGIN			= 2;
-	private static final int	CHECK_VERSION		= 3;
 
 	private PullToRefreshView	mPullToRefreshView;
 	private ViewPager			mViewPager;
@@ -77,31 +69,6 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 		displayFooterMain(R.id.mainfooter_one);
 
 		initView();
-
-		/* 自动登录另起一个线程 */
-		mUIHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
-				if (user != null) {
-					MyApplication.getInstance().setCurrentUser(user);
-				}
-				if (user != null && user.getUsername() != null && user.getToken() != null) {
-					Message msg = mUIHandler.obtainMessage(AUTO_LOGIN);
-					msg.obj = user;
-					msg.sendToTarget();
-				}
-			}
-		}, 500);
-		
-		mUIHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				startTask();Message msg = mUIHandler.obtainMessage(CHECK_VERSION);
-				msg.sendToTarget();
-			}
-		}, 2000);
-
 	}
 	
 	@Override
@@ -346,72 +313,8 @@ public class MainActivity extends BaseActivity implements OnClickListener, OnHea
 														mPullToRefreshView.onHeaderRefreshComplete();
 														break;
 													}
-													case WHAT_DID_REFRESH: {
-														brandJGoodsList.clear();
-														if (msg.obj != null) {
-															RtnValueDto obj = (RtnValueDto) msg.obj;
-															// 品牌区
-															List<BrandJGoods> brands = obj.getBrandData();
-															if (brands != null && !brands.isEmpty()) {
-																int bSize = brands.size();
-																for (int i = 0; i < bSize; i++) {
-																	BrandJGoods each = brands.get(i);
-																	brandJGoodsList.add(each);
-																}
-															}
-														} else {
-															ToastUtils.showShort(context, "暂无数据！");
-														}
-														vlAdapter.notifyDataSetChanged();
-														mPullToRefreshView.onHeaderRefreshComplete();
-														break;
-													}
-													case AUTO_LOGIN: {
-														if (msg.obj != null) {
-															SUser user = (SUser) msg.obj;
-															LoginService loginService = MyApplication.getInstance()
-																										.getLoginService();
-															RtnValueDto rvd = loginService.autoLogin(user);
-															if (rvd != null
-																	&& rvd.getUserData() != null) {
-																ToastUtils.showShort(
-																		context,
-																		"自动登录成功！欢迎您,"
-																				+ user.getUsername());
-															}
-														}
-														break;
-													}
-													case CHECK_VERSION: {
-														RtnValueDto rvd = MyApplication.getInstance()
-																						.getDataService()
-																						.getLastestVersion();
-														if (CodeValidator.dealCode(context, rvd)) {
-
-															try {
-																// 获取packagemanager的实例
-																PackageManager packageManager = getPackageManager();
-																// getPackageName()是你当前类的包名，0代表是获取版本信息
-																PackageInfo packInfo;
-																packInfo = packageManager.getPackageInfo(
-																		getPackageName(), 0);
-																String version = packInfo.versionName;
-
-																JVersion jversion = rvd.getVersionData();
-																ToastUtils.showShort(
-																		context,
-																		"当前版本为"
-																				+ version
-																				+ "，有新的版本APK，版本为"
-																				+ jversion.getVersionNew());
-															} catch (NameNotFoundException e) {
-																e.printStackTrace();
-															}
-														}
-														break;
-													}
 												}
-												progressBar.setVisibility(View.GONE);
+												closeLoading();
 											}
 										};
 

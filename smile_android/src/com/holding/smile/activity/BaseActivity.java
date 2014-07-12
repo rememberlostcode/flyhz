@@ -1,6 +1,9 @@
 
 package com.holding.smile.activity;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,11 +23,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.entity.SUser;
+import com.holding.smile.myview.HKDialogLoading;
 import com.holding.smile.tools.ToastUtils;
 
 /**
@@ -36,22 +39,22 @@ import com.holding.smile.tools.ToastUtils;
  */
 public class BaseActivity extends Activity {
 
-	public static final int		CATE_CODE			= 8;
-	public static final int		MORE_CODE			= 9;
-	public static final int		SEARCH_CODE			= 10;
-	public static final int		UPLOAD_IMAGE_CODE	= 11;
+	public static final int		CATE_CODE				= 8;
+	public static final int		MORE_CODE				= 9;
+	public static final int		SEARCH_CODE				= 10;
+	public static final int		UPLOAD_IMAGE_CODE		= 11;
 	/**
 	 * 编辑邮箱操作代码
 	 */
-	public static final int		EMAIL_CODE			= 13;
+	public static final int		EMAIL_CODE				= 13;
 	/**
 	 * 编辑手机号码操作代码
 	 */
-	public static final int		PHONE_CODE			= 14;
+	public static final int		PHONE_CODE				= 14;
 	/**
 	 * 选择身份证照片操作代码
 	 */
-	public static final int		SELECT_PHOTO_IMAGE	= 15;
+	public static final int		SELECT_PHOTO_IMAGE		= 15;
 	/**
 	 * 选择身份证照片操作代码
 	 */
@@ -59,51 +62,56 @@ public class BaseActivity extends Activity {
 	/**
 	 * 选择身份证照片编辑身份证操作代码
 	 */
-	public static final int		IDCARD_EDIT_CODE	= 16;
+	public static final int		IDCARD_EDIT_CODE		= 16;
 	/**
 	 * 订单代码
 	 */
-	public static final int		ORDER_CODE			= 17;
+	public static final int		ORDER_CODE				= 17;
 
 	public Context				context;
 
 	private LinearLayout		ly_content;
 	// 内容区域的布局
 	private View				contentView;
-	protected int				reqCode				= 0;
+	protected int				reqCode					= 0;
 	protected String			filepath;
-	protected ProgressBar		progressBar;
 
-	protected BroadcastReceiver	connectionReceiver	= new BroadcastReceiver() {
-														@Override
-														public void onReceive(Context context,
-																Intent intent) {
-															ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-															// mobile 3G Data
-															// Network
-															State mobile = conMan.getNetworkInfo(
-																	ConnectivityManager.TYPE_MOBILE)
+	protected HKDialogLoading	dialogLoading;
+	private boolean canClosed = false;
+	private Timer time;  
+	private TimerTask loadingTimerTask;
+
+	protected BroadcastReceiver	connectionReceiver		= new BroadcastReceiver() {
+															@Override
+															public void onReceive(Context context,
+																	Intent intent) {
+																ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+																// mobile 3G
+																// Data
+																// Network
+																State mobile = conMan.getNetworkInfo(
+																		ConnectivityManager.TYPE_MOBILE)
+																						.getState();
+																State wifi = conMan.getNetworkInfo(
+																		ConnectivityManager.TYPE_WIFI)
 																					.getState();
-															State wifi = conMan.getNetworkInfo(
-																	ConnectivityManager.TYPE_WIFI)
-																				.getState();
 
-															// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
-															// 则进入Network
-															// Setting界面
-															// 由用户配置网络连接
-															if (mobile == State.CONNECTED
-																	|| mobile == State.CONNECTING
-																	|| wifi == State.CONNECTED
-																	|| wifi == State.CONNECTING) {
-																MyApplication.setHasNetwork(true);
-															} else {
-																MyApplication.setHasNetwork(false);
-																ToastUtils.showShort(context,
-																		"网络异常，请检查网络！");
+																// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
+																// 则进入Network
+																// Setting界面
+																// 由用户配置网络连接
+																if (mobile == State.CONNECTED
+																		|| mobile == State.CONNECTING
+																		|| wifi == State.CONNECTED
+																		|| wifi == State.CONNECTING) {
+																	MyApplication.setHasNetwork(true);
+																} else {
+																	MyApplication.setHasNetwork(false);
+																	ToastUtils.showShort(context,
+																			"网络异常，请检查网络！");
+																}
 															}
-														}
-													};
+														};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -111,12 +119,10 @@ public class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.base);
 		ly_content = (LinearLayout) findViewById(R.id.content);
-		progressBar = (ProgressBar) findViewById(R.id.load_progressbar);
 
 		// 删除窗口背景
 		getWindow().setBackgroundDrawable(null);
-		
-		
+
 		if (MyApplication.getInstance().getScreenWidth() == null
 				|| MyApplication.getInstance().getScreenHeight() == null
 				|| MyApplication.getInstance().getDensity() == null) {
@@ -372,7 +378,9 @@ public class BaseActivity extends Activity {
 	 * 开始异步执行任务，开始后会调用loadData方法
 	 */
 	protected void startTask() {
-		progressBar.setVisibility(View.VISIBLE);
+		showLoading();
+		
+//		progressBar.setVisibility(View.VISIBLE);
 		MyApplication.getThreadPool().submit(new Runnable() {
 			@Override
 			public void run() {
@@ -511,15 +519,47 @@ public class BaseActivity extends Activity {
 	}
 
 	/**
-	 * 等待一秒后隐藏加载框
+	 * 显示loading图片，最少显示一秒
 	 */
-	public void waitCloseProgressBar() {
-		try {
-			Thread.sleep(1000);// 等待一秒
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		progressBar.setVisibility(View.GONE);
+	public void showLoading() {
+		dialogLoading = new HKDialogLoading(this, R.style.HKDialog);  
+		dialogLoading.show(); // 显示加载中对话框
+		canClosed = false;
+		
+		time = new Timer(true);  
+        loadingTimerTask = new TimerTask() {  
+            int countTime = 10;  
+
+            public void run() {
+            	if(canClosed || countTime <= 0){
+            		dialogLoading.dismiss();
+            		time.cancel();
+            		loadingTimerTask.cancel();
+            		return;
+            	} else {
+            		 countTime--;  
+            	}
+            }  
+
+        };
+        time.schedule(loadingTimerTask, 1000, 1000);
+	}
+	
+	/**
+	 * 关闭loading图片，关闭会有延迟，最长延迟一秒
+	 */
+	public void closeLoading() {
+		canClosed = true;
+	}
+	
+	/**
+	 * 立即关闭loading图片
+	 */
+	public void closeImmediatelyLoading() {
+		canClosed = true;
+		dialogLoading.dismiss();
+		time.cancel();
+		loadingTimerTask.cancel();
 	}
 
 }

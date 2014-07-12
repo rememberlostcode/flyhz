@@ -60,7 +60,7 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 			msg.obj = idcards;
 			msg.sendToTarget();
 		} else {
-			waitCloseProgressBar();
+			closeLoading();
 		}
 	}
 
@@ -109,7 +109,7 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 														break;
 													}
 												}
-												waitCloseProgressBar();
+												closeLoading();
 											}
 										};
 }
