@@ -54,14 +54,8 @@ public class TaobaoController {
 	}
 
 	@RequestMapping(value = "/paymentStatus")
-	public void paymentStatus(@Identify Integer userId,Model model, Integer orderId, Long tid) {
+	public void paymentStatus(@Identify Integer userId,Model model, String numbers, Long tid) {
 		String result = "0";
-		try {
-			result = orderService.getOrderPayStatusByTid(orderId, tid);
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = "获取淘宝订单付款状态失败！！！";
-		}
 		
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
@@ -69,9 +63,8 @@ public class TaobaoController {
 			if (userId == null) {
 				code = 100000;
 			} else {
-				result = orderService.getOrderPayStatusByTid(orderId, tid);
+				result = orderService.getOrderPayStatusByTid(numbers, tid);
 				OrderPayDto orderPayDto = new OrderPayDto();
-				orderPayDto.setId(orderId);
 				orderPayDto.setStatus(result);
 				protocol.setData(orderPayDto);
 			}

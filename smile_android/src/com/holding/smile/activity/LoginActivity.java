@@ -167,6 +167,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 														switch (msg.what) {
 															case LOGIN_BY_SELF: {
 																if (msg.obj != null) {
+																	showLoading();
 																	SUser user = (SUser) msg.obj;
 																	LoginService loginService = MyApplication.getInstance()
 																												.getLoginService();
@@ -176,6 +177,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																											.getRegistrationID());
 																	}
 																	RtnValueDto rvd = loginService.login(user);
+																	closeImmediatelyLoading();
 																	if (CodeValidator.dealCode(
 																			context, rvd)) {
 																		if (!isClose) {
@@ -203,7 +205,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																break;
 															}
 														}
-														closeLoading();
 													}
 												};
 

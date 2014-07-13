@@ -13,6 +13,11 @@
 	    from `order`
 	    where id = #{id}
 	</select>
+	<select id="getModelByNumber" parameterType="String" resultType="OrderModel">
+	    select id, number,gmt_create gmtCreate,gmt_modify gmtModify,detail,status,total,user_id userId
+	    from `order`
+	    where number = #{number}
+	</select>
 	<select id="getOrderPay" parameterType="OrderPayDto" resultType="OrderPayDto">
 	    select id, number,gmt_create gmtCreate,gmt_modify gmtModify,status,total,user_id userId
 	    from `order`
