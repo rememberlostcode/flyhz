@@ -32,9 +32,10 @@ import com.holding.smile.tools.TbUtil;
  * 
  */
 public class WebViewActivity extends Activity implements OnClickListener {
-	private String		number;	// 订单号
-	private BigDecimal	amount;	// 总额
-	private String		tbOrder;	// 淘宝订单号
+	private String		number;			// 订单号
+	private BigDecimal	amount;			// 总额
+	private String		viewhtml	= "";	// 页面HTML
+	private String		tid;				// 淘宝订单号
 
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
@@ -69,7 +70,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 				// 设置滚动条样式
 				TbUtil.getWebView().setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 				// 绑定webview接口
-				TbUtil.getWebView().addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
+				TbUtil.getWebView().addJavascriptInterface(new InJavaScriptLocalObj(), "localObj");
 				// 网页链接不以浏览器方式打开
 				TbUtil.getWebView().setWebViewClient(new WebViewClient() {
 					@Override
@@ -82,52 +83,73 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
 							TbUtil.setWebView(view);
 							view.reload();
-						}
-						if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
+						} else if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
 							// 设置返回和刷新按钮不显示
 							view.loadUrl("javascript:document.getElementsByTagName('section')[1].style.display='none';");
 							view.loadUrl("javascript:document.getElementsByTagName('section')[3].style.display='none';");
-						}
-						if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
+						} else if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
 							// 设置首页按钮不显示
 							// view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
+						} else if (url.indexOf("http://mclient.alipay.com/w/trade_pay.do?alipay_trade_no=") > -1) {
+							tid = url.substring(url.indexOf("pay_order_id=") + 13,
+									url.lastIndexOf("&"));
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
 
 					@Override
 					public void onPageFinished(WebView view, String url) {
+						// 设置webview头部显示url
 						TextView showVurl = (TextView) findViewById(R.id.show_vurl);
 						showVurl.setText(url);
 						super.onPageFinished(view, url);
-						TbUtil.setWebView(view);
-						// 加载js
-						StringBuffer jsStringBuffer = new StringBuffer();
-						jsStringBuffer.append("javascript:$(document).ready(function(){$('.c-btn-aw').eq(0).css('display','none');});");
-						jsStringBuffer.append("javascript:$(document).ready(function(){");
-						jsStringBuffer.append("setTimeout(function(){");
+						// TbUtil.setWebView(view);
 						// 给卖家留言设置订单编号和数量
 						if (url.indexOf("buyNow=true&v=0&skuId=&quantity=") > -1) {
-							// 设置隐藏返回按钮
+							// viewhtml = "";
+							// view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
+							// if (viewhtml.indexOf("给卖家留言") < 0 && viewhtml !=
+							// "") {
+							// view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
+							// onPageFinished(view, url);
+							// }
+							// 加载js
+							StringBuffer jsStringBuffer = new StringBuffer();
+							jsStringBuffer.append("javascript:$(document).ready(function(){");
+							jsStringBuffer.append("setTimeout(function(){");
 							jsStringBuffer.append("$('.c-btn-aw').eq(0).css('display','none');");
-							// 设置数量只读，不能修改
-							jsStringBuffer.append("$('.c-form-txt-normal').eq(0).attr('readonly','readonly');");
-							// 立即购买:卖家留言设置订单编号
+							jsStringBuffer.append("$('.numTxt').eq(0).attr('readonly','readonly');");
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('value','"
 									+ number + "');");
-							// 设置卖家留言属性值为空
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('placeholder','');");
-							// 设置卖家留言框只读，不能修改
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('readonly','readonly');");
+							jsStringBuffer.append("},1000);");
+							jsStringBuffer.append("});");
+							view.loadUrl(jsStringBuffer.toString());
 						} else if (url.indexOf("http://login.m.taobao.com/login.htm") > -1) {
 							// 设置首页按钮不显示
-							jsStringBuffer.append("document.getElementsByClassName('back')[0].style.display='none';");
+							view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
 						} else if (url.indexOf("https://mclient.alipay.com/cashierPay.htm?awid=") > -1) {
-							// jsStringBuffer.append("javascript:window.local_obj.showSource('document.getElementsByTagName('html')[0].innerHTML');");
+							viewhtml = "";
+							view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
+							if (viewhtml != ""
+									&& viewhtml.indexOf("J-success am-message am-message-success fn-hide") > -1
+									&& viewhtml.indexOf("J-error am-message am-message-error fn-hide") > -1) {
+								view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
+								onPageFinished(view, url);
+							}
+							// 校验订单支付状态
+							// 检验支付状态方法有问题
+							if ("12".equals("12")) {
+								// 订单号设置为空
+								tid = "";
+								// Activitity跳转
+								Intent intentNew = new Intent();
+								intentNew.setClass(WebViewActivity.this, MyOrdersActivity.class);
+								startActivity(intentNew);
+								WebViewActivity.this.finish();
+							}
 						}
-						jsStringBuffer.append("},1000);");
-						jsStringBuffer.append("});");
-						view.loadUrl(jsStringBuffer.toString());
 					}
 
 					@Override
@@ -188,7 +210,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 	final class InJavaScriptLocalObj {
 		public void showSource(String html) {
-			Log.d("HTML", html);
+			viewhtml = html;
 		}
 	}
 }
