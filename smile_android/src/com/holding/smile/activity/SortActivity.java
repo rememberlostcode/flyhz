@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyJGoodsAdapter;
+import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JSort;
@@ -37,13 +38,13 @@ import com.holding.smile.tools.ToastUtils;
 public class SortActivity extends BaseActivity implements OnClickListener {
 
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
-
+	private ImageLoader			mImageLoader		= MyApplication.getImageLoader();
 	private MyJGoodsAdapter		adapter;
 	private List<JGoods>		mStrings			= new ArrayList<JGoods>();
 
 	private ListView			mListView;
-	private String				sortUrl				= null;					// 选中的排序URL
-	private List<JSort>			jSortList			= new ArrayList<JSort>();	// 排序类型列表
+	private String				sortUrl				= null;							// 选中的排序URL
+	private List<JSort>			jSortList			= new ArrayList<JSort>();			// 排序类型列表
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +60,8 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 		setSortLayout();// 设置排序标签
 
 		mListView = (ListView) findViewById(R.id.goods_list_view);
-		adapter = new MyJGoodsAdapter(context, mStrings);
-		mListView.setAdapter(adapter);
+		// adapter = new MyJGoodsAdapter(context, mStrings);
+		// mListView.setAdapter(adapter);
 		mListView.setOnScrollListener(mScrollListener);
 
 		startTask();
@@ -150,6 +151,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 		mStrings.clear();
 		mStrings = null;
 		if (mListView != null) {
+			mListView.removeAllViews();
 			mListView.destroyDrawingCache();
 			mListView = null;
 		}
@@ -160,63 +162,92 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 		}
 	};
 
-	OnScrollListener		mScrollListener	= new OnScrollListener() {
+	OnScrollListener	mScrollListener	= new OnScrollListener() {
+											private int	_start_index;
+											private int	_end_index;
 
-												@Override
-												public void onScrollStateChanged(AbsListView view,
-														int scrollState) {
-													switch (scrollState) {
-														case OnScrollListener.SCROLL_STATE_FLING:
-															adapter.setFlagBusy(true);
-															break;
-														case OnScrollListener.SCROLL_STATE_IDLE:
-															adapter.setFlagBusy(false);
-															break;
-														case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-															adapter.setFlagBusy(false);
-															break;
-														default:
-															break;
-													}
-													adapter.notifyDataSetChanged();
+											@Override
+											public void onScrollStateChanged(AbsListView view,
+													int scrollState) {
+												switch (scrollState) {
+													case OnScrollListener.SCROLL_STATE_FLING:
+														adapter.setFlagBusy(true);
+														break;
+													case OnScrollListener.SCROLL_STATE_IDLE:
+														adapter.setFlagBusy(false);
+														pageImgLoad(_start_index, _end_index);
+														break;
+													case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+														adapter.setFlagBusy(true);
+														break;
+													default:
+														break;
 												}
+											}
 
-												@Override
-												public void onScroll(AbsListView view,
-														int firstVisibleItem, int visibleItemCount,
-														int totalItemCount) {
-
+											@Override
+											public void onScroll(AbsListView view,
+													int firstVisibleItem, int visibleItemCount,
+													int totalItemCount) {
+												// 设置当前屏幕显示的起始index和结束index
+												_start_index = firstVisibleItem;
+												_end_index = firstVisibleItem + visibleItemCount;
+												if (_end_index >= totalItemCount) {
+													_end_index = totalItemCount - 1;
 												}
-											};
+											}
+										};
+
+	private void pageImgLoad(int start_index, int end_index) {
+		for (int i = 0; start_index < end_index; start_index++, i++) {
+			JGoods curr_item = (JGoods) adapter.getItem(start_index);
+			if (curr_item != null && curr_item.getP() != null && curr_item.getP().length > 0) {
+				View itemView = mListView.getChildAt(i);
+				if (itemView != null) {
+					ImageView imageView = (ImageView) itemView.findViewById(R.id.p);
+					if (imageView != null) {
+						mImageLoader.DisplayImage(MyApplication.jgoods_img_url
+								+ curr_item.getP()[0], imageView, false);
+					}
+				}
+			}
+		}
+		adapter.notifyDataSetChanged();
+	}
 
 	@SuppressLint("HandlerLeak")
-	private final Handler	mUIHandler		= new Handler() {
+	private final Handler	mUIHandler	= new Handler() {
 
-												@Override
-												public void handleMessage(Message msg) {
-													switch (msg.what) {
-														case WHAT_DID_LOAD_DATA: {
-															mStrings.clear();
-															adapter = new MyJGoodsAdapter(context,
-																	mStrings);
-															mListView.setAdapter(adapter);
-															if (msg.obj != null) {
-																RtnValueDto obj = (RtnValueDto) msg.obj;
-																List<JGoods> strings = obj.getData();
-																if (strings != null
-																		&& !strings.isEmpty()) {
-																	for (int i = 0; i < strings.size(); i++) {
-																		JGoods each = strings.get(i);
-																		mStrings.add(each);
-																	}
+											@Override
+											public void handleMessage(Message msg) {
+												switch (msg.what) {
+													case WHAT_DID_LOAD_DATA: {
+														mStrings.clear();
+														if (adapter != null) {
+															adapter.notifyDataSetChanged();
+															adapter.notifyDataSetInvalidated();
+															adapter = null;
+														}
+														adapter = new MyJGoodsAdapter(context,
+																mStrings);
+														mListView.setAdapter(adapter);
+														if (msg.obj != null) {
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															List<JGoods> strings = obj.getData();
+															if (strings != null
+																	&& !strings.isEmpty()) {
+																for (int i = 0; i < strings.size(); i++) {
+																	JGoods each = strings.get(i);
+																	mStrings.add(each);
 																}
 															}
-															adapter.notifyDataSetChanged();
-															break;
 														}
+														adapter.notifyDataSetChanged();
+														break;
 													}
-													waitCloseProgressBar();
 												}
-											};
+												waitCloseProgressBar();
+											}
+										};
 
 }
