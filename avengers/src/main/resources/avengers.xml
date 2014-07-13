@@ -2,6 +2,12 @@
 <ave:xDomains  xmlns:ave="http://www.flyhz.com/avengrs"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.flyhz.com/avengrs avengers.xsd ">
+	<globalVariable>
+		<numAnalyzeThreads>3</numAnalyzeThreads>
+		<numCrawlThreads>3</numCrawlThreads>
+		<numFetchContainers>10</numFetchContainers>
+		<numFetchThreads>3</numFetchThreads>
+	</globalVariable>
 	<proxy>
 		<proxyHost>10.202.37.11</proxyHost>
 		<proxyPort>808</proxyPort>

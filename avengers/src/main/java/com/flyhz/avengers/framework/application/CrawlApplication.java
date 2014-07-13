@@ -54,7 +54,6 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HConnectionManager;
 import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.DataOutputBuffer;
@@ -92,6 +91,9 @@ import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.Crawl;
 import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.lang.AVTable;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumn;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumnFamily;
 import com.google.common.annotations.VisibleForTesting;
 
 @InterfaceAudience.Public
@@ -241,7 +243,7 @@ public class CrawlApplication {
 	 * @throws IOException
 	 */
 	public boolean init(String[] args) throws ParseException, IOException {
-		LOG.info("init args ...... start");
+		LOG.info("init args ...... first");
 		if (args.length == 0) {
 			throw new IllegalArgumentException("No args specified for client to initialize");
 		}
@@ -294,62 +296,53 @@ public class CrawlApplication {
 		try {
 			hConnection = HConnectionManager.createConnection(hbaseConf);
 			hbaseAdmin = new HBaseAdmin(hConnection);
-			if (hbaseAdmin.tableExists("av_page")) {
-				LOG.info("table[av_page] exist drop it");
-				hbaseAdmin.disableTable("av_page");
-				hbaseAdmin.deleteTable(Bytes.toBytes("av_page"));
-				LOG.info("table[av_page] dropped then create it");
+			// av_fetch
+			if (!hbaseAdmin.tableExists(AVTable.av_fetch.name())) {
+				LOG.info("table[av_fetch] create it");
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf("av_page"));
-				HColumnDescriptor info = new HColumnDescriptor("info");
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
+						TableName.valueOf(AVTable.av_fetch.name()));
+				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
 				tableDesc.addFamily(info);
-				tableDesc.addFamily(preference);
-				tableDesc.addCoprocessor("org.apache.hadoop.hbase.coprocessor.AggregateImplementation");
 				hbaseAdmin.createTable(tableDesc);
-			} else {
+			}
+
+			// av_page
+			if (!hbaseAdmin.tableExists(AVTable.av_page.name())) {
 				LOG.info("table[av_page] create it");
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf("av_page"));
-				HColumnDescriptor info = new HColumnDescriptor("info");
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
+						TableName.valueOf(AVTable.av_page.name()));
+				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
 				tableDesc.addFamily(info);
-				tableDesc.addFamily(preference);
-				tableDesc.addCoprocessor("org.apache.hadoop.hbase.coprocessor.AggregateImplementation");
 				hbaseAdmin.createTable(tableDesc);
 			}
 
-			if (hbaseAdmin.tableExists("av_temp_crawl_log")) {
-				LOG.info("table[av_temp_crawl_log] exist drop it");
-				hbaseAdmin.disableTable("av_temp_crawl_log");
-				hbaseAdmin.deleteTable(Bytes.toBytes("av_temp_crawl_log"));
+			// av_crawl
+			if (hbaseAdmin.tableExists(AVTable.av_crawl.name())) {
+				LOG.info("table[av_crawl] exist drop it");
+				if (hbaseAdmin.isTableEnabled(AVTable.av_crawl.name())) {
+					hbaseAdmin.disableTable(AVTable.av_crawl.name());
+				}
+				hbaseAdmin.deleteTable(Bytes.toBytes(AVTable.av_crawl.name()));
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf("av_temp_crawl_log"));
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
-				tableDesc.addFamily(preference);
-				LOG.info("table[av_temp_crawl_log] dropped then create it");
+						TableName.valueOf(AVTable.av_crawl.name()));
+				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
+				tableDesc.addFamily(info);
+				LOG.info("table[av_crawl] dropped then create it");
 				hbaseAdmin.createTable(tableDesc);
 			} else {
-				LOG.info("table[av_temp_crawl_log] create it");
+				LOG.info("table[av_crawl] create it");
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf("av_temp_crawl_log"));
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
-				tableDesc.addFamily(preference);
+						TableName.valueOf(AVTable.av_crawl.name()));
+				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
+				tableDesc.addFamily(info);
 				hbaseAdmin.createTable(tableDesc);
 			}
 
-			if (!hbaseAdmin.tableExists("av_domain")) {
-				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_domain"));
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
-				tableDesc.addFamily(preference);
-				hbaseAdmin.createTable(tableDesc);
-			}
-			if (!hbaseAdmin.tableExists("av_product")) {
-				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_product"));
-				HColumnDescriptor info = new HColumnDescriptor("info");
-				HColumnDescriptor preference = new HColumnDescriptor("preference");
+			if (!hbaseAdmin.tableExists(AVTable.av_domain.name())) {
+				HTableDescriptor tableDesc = new HTableDescriptor(
+						TableName.valueOf(AVTable.av_domain.name()));
+				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
 				tableDesc.addFamily(info);
-				tableDesc.addFamily(preference);
 				hbaseAdmin.createTable(tableDesc);
 			}
 
@@ -360,11 +353,12 @@ public class CrawlApplication {
 			configuration.setLong("hbase.client.scanner.caching", 1000);
 
 			Map<String, Object> context = XConfiguration.getAvengersContext();
-			hDomain = new HTable(hbaseConf, "av_domain");
+			hDomain = new HTable(hbaseConf, AVTable.av_domain.name());
 			for (String root : (Set<String>) context.get(XConfiguration.ROOTS)) {
 				Map<String, Object> domainMap = (Map<String, Object>) context.get(root);
 				Get hDomainGet = new Get(Bytes.toBytes(root));
-				hDomainGet.addColumn(Bytes.toBytes("preference"), Bytes.toBytes("batchId"));
+				hDomainGet.addColumn(Bytes.toBytes(AVColumnFamily.i.name()),
+						Bytes.toBytes(AVColumn.bid.name()));
 				Result result = hDomain.get(hDomainGet);
 				LOG.info("root[{}] result.isEmpty -> {}", root,
 						result == null ? null : result.isEmpty());
@@ -383,12 +377,6 @@ public class CrawlApplication {
 						continue;
 					}
 				}
-				LOG.info("put av_domain");
-				Put avDomainPut = new Put(Bytes.toBytes(root));
-				// 开始前先插入version数据，crawl的时候插入info数据
-				avDomainPut.add(Bytes.toBytes("preference"), Bytes.toBytes("batchId"),
-						Bytes.toBytes(batchId));
-				hDomain.put(avDomainPut);
 				domainRootForCrawlSet.add(root);
 			}
 		} catch (IOException e) {
@@ -480,7 +468,7 @@ public class CrawlApplication {
 		// send requests to this app master
 
 		// Register self with ResourceManager
-		// This will start hearInitializing Clienttbeating to the RM
+		// This will first hearInitializing Clienttbeating to the RM
 		appMasterHostname = NetUtils.getHostname();
 		RegisterApplicationMasterResponse response = amRMClient.registerApplicationMaster(
 				appMasterHostname, appMasterRpcPort, appMasterTrackingUrl);
@@ -641,7 +629,7 @@ public class CrawlApplication {
 							allocatedContainer, containerListener, rootUrl);
 					Thread launchThread = new Thread(runnableLaunchContainer);
 
-					// launch and start the container on a separate thread to
+					// launch and first the container on a separate thread to
 					// keep
 					// the main thread unblocked
 					// as all containers may not be allocated at one go.
@@ -715,7 +703,7 @@ public class CrawlApplication {
 		public void onContainerStarted(ContainerId containerId,
 				Map<String, ByteBuffer> allServiceResponse) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Succeeded to start Container {}", containerId);
+				LOG.debug("Succeeded to first Container {}", containerId);
 			}
 			Container container = containers.get(containerId);
 			if (container != null) {
@@ -727,7 +715,7 @@ public class CrawlApplication {
 		@Override
 		public void onStartContainerError(ContainerId containerId, Throwable t) {
 			LOG.error("onStartContainerError", t);
-			LOG.error("Failed to start Container {} ", containerId);
+			LOG.error("Failed to first Container {} ", containerId);
 			containers.remove(containerId);
 			crawlApplication.numCompletedContainers.incrementAndGet();
 			crawlApplication.numFailedContainers.incrementAndGet();
@@ -775,7 +763,7 @@ public class CrawlApplication {
 		/**
 		 * Connects to CM, sets up container launch context 
 		 * for shell command and eventually dispatches the container 
-		 * start request to the CM. 
+		 * first request to the CM. 
 		 */
 		public void run() {
 			LOG.info("Setting up container launch container for containerid={},node={}",

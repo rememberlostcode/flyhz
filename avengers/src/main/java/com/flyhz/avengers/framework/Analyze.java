@@ -19,10 +19,11 @@ import com.flyhz.avengers.framework.common.event.TemplateApplyEvent;
 import com.flyhz.avengers.framework.config.XConfiguration;
 import com.flyhz.avengers.framework.config.xml.XTemplate;
 import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
+import com.flyhz.avengers.framework.lang.Event;
 import com.flyhz.avengers.framework.util.StringUtil;
 
 public class Analyze extends AvengersExecutor {
-	private static final Logger	LOG					= LoggerFactory.getLogger(Analyze.class);
+	static final Logger			LOG					= LoggerFactory.getLogger(Analyze.class);
 	public static final String	ANALYZE_URL			= "analyze.url";
 	public static final String	ANALYZE_TEMPLATE	= "analyze.template";
 
@@ -30,8 +31,8 @@ public class Analyze extends AvengersExecutor {
 		try {
 			LOG.info("analyze begin..............");
 			AvengersExecutor analyze = new Analyze();
-			analyze.execute(args);
-			LOG.info("analyze end..............");
+			analyze.execute();
+			LOG.info("analyze second..............");
 		} catch (Throwable th) {
 			LOG.error("", th);
 			System.exit(0);
@@ -39,7 +40,7 @@ public class Analyze extends AvengersExecutor {
 	}
 
 	@Override
-	Logger getLog() {
+	public Logger getLog() {
 		return LOG;
 	}
 
@@ -83,10 +84,11 @@ public class Analyze extends AvengersExecutor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	List<Event> initAvengersEvents(Map<String, Object> context) {
+	List<Event> initAvengersEvents() {
+		Map<String, Object> context = getContext();
 		// 默认调用TemplateApplyEvent
 		List<Event> events = new ArrayList<Event>();
-		events.add(new TemplateApplyEvent());
+		events.add(new TemplateApplyEvent(context));
 		// 查询是否有自定义TemplateEvent
 		String url = (String) context.get(ANALYZE_URL);
 		if (StringUtils.isNotBlank(url)) {

@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
+ *         &lt;element name="globalVariable" type="{http://www.flyhz.com/avengrs}xGlobalVariable"/>
  *         &lt;element name="proxy" type="{http://www.flyhz.com/avengrs}xProxy" minOccurs="0"/>
  *         &lt;element name="domain" type="{http://www.flyhz.com/avengrs}xDomain" maxOccurs="unbounded"/>
  *       &lt;/sequence>
@@ -34,13 +35,36 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "proxy", "domain" })
+@XmlType(name = "", propOrder = { "globalVariable", "proxy", "domain" })
 @XmlRootElement(name = "xDomains")
 public class XDomains {
 
-	protected XProxy		proxy;
 	@XmlElement(required = true)
-	protected List<XDomain>	domain;
+	protected XGlobalVariable	globalVariable;
+	protected XProxy			proxy;
+	@XmlElement(required = true)
+	protected List<XDomain>		domain;
+
+	/**
+	 * Gets the value of the globalVariable property.
+	 * 
+	 * @return possible object is {@link XGlobalVariable }
+	 * 
+	 */
+	public XGlobalVariable getGlobalVariable() {
+		return globalVariable;
+	}
+
+	/**
+	 * Sets the value of the globalVariable property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link XGlobalVariable }
+	 * 
+	 */
+	public void setGlobalVariable(XGlobalVariable value) {
+		this.globalVariable = value;
+	}
 
 	/**
 	 * Gets the value of the proxy property.

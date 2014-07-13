@@ -12,17 +12,18 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.Event;
 import com.flyhz.avengers.framework.config.xml.XConstructor;
 import com.flyhz.avengers.framework.config.xml.XDomain;
 import com.flyhz.avengers.framework.config.xml.XDomains;
 import com.flyhz.avengers.framework.config.xml.XEvent;
 import com.flyhz.avengers.framework.config.xml.XEvents;
 import com.flyhz.avengers.framework.config.xml.XFilter;
+import com.flyhz.avengers.framework.config.xml.XGlobalVariable;
 import com.flyhz.avengers.framework.config.xml.XProxy;
 import com.flyhz.avengers.framework.config.xml.XTemplate;
 import com.flyhz.avengers.framework.config.xml.XTemplates;
 import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
+import com.flyhz.avengers.framework.lang.Event;
 import com.flyhz.avengers.framework.util.StringUtil;
 import com.flyhz.avengers.framework.util.XmlUtil;
 
@@ -31,6 +32,16 @@ public class XConfiguration {
 	private static final Logger			LOG						= LoggerFactory.getLogger(XConfiguration.class);
 
 	private final Map<String, Object>	avengersConfiguration	= new HashMap<String, Object>();
+
+	/**
+	 * {@link Integer}
+	 */
+	public static final String			NUM_FETCH_CONTAINERS	= "number.fetch.containers";
+
+	/**
+	 * {@link Integer}
+	 */
+	public static final String			NUM_FETCH_THREADS		= "number.fetch.threads";
 
 	/**
 	 * Map<String,String>
@@ -115,6 +126,12 @@ public class XConfiguration {
 		XDomains domains = XmlUtil.convertXmlToObject(XDomains.class, avengersXml, avengersSchema);
 		LOG.info("domains is {}", domains);
 		if (domains != null) {
+			XGlobalVariable globalVariable = domains.getGlobalVariable();
+			if (globalVariable != null) {
+				avengersConfiguration.put(NUM_FETCH_CONTAINERS,
+						globalVariable.getNumFetchContainers());
+				avengersConfiguration.put(NUM_FETCH_THREADS, globalVariable.getNumFetchThreads());
+			}
 			XProxy proxy = domains.getProxy();
 			if (proxy != null) {
 				Map<String, Object> proxyMap = new HashMap<String, Object>();

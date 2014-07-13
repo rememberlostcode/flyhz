@@ -39,6 +39,8 @@ import com.flyhz.avengers.domains.abercrombie.AbercrombieEncodeUtil;
 import com.flyhz.avengers.domains.abercrombie.AbercrombieImgUtil;
 import com.flyhz.avengers.framework.Analyze;
 import com.flyhz.avengers.framework.Template;
+import com.flyhz.avengers.framework.lang.AVTable;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumnFamily;
 import com.flyhz.avengers.framework.util.Constants;
 import com.flyhz.avengers.framework.util.WebClientUtil;
 
@@ -62,14 +64,12 @@ public class AbercrombieProductTemplateImpl implements Template {
 			HConnection hConnection = HConnectionManager.createConnection(hconf);
 			HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
 			// 判断av_page是否存在
-			if (!hbaseAdmin.tableExists("av_page")) {
-				HTableDescriptor tableDesc = new HTableDescriptor(TableName.valueOf("av_page"));
+			if (!hbaseAdmin.tableExists(AVTable.av_page.name())) {
+				HTableDescriptor tableDesc = new HTableDescriptor(
+						TableName.valueOf(AVTable.av_page.name()));
 				// 插入info列族
-				HColumnDescriptor columnConfInfo = new HColumnDescriptor("info");
+				HColumnDescriptor columnConfInfo = new HColumnDescriptor(AVColumnFamily.i.name());
 				tableDesc.addFamily(columnConfInfo);
-				// 插入preference列族
-				HColumnDescriptor columnConfPreference = new HColumnDescriptor("preference");
-				tableDesc.addFamily(columnConfPreference);
 				hbaseAdmin.createTable(tableDesc);
 			}
 			// 判断av_product是否存在
@@ -78,12 +78,12 @@ public class AbercrombieProductTemplateImpl implements Template {
 				// 插入info列族
 				HColumnDescriptor columnConfInfo = new HColumnDescriptor("info");
 				tableDesc.addFamily(columnConfInfo);
-				// 插入preference列族
+				// 插入i列族
 				HColumnDescriptor columnConfPreference = new HColumnDescriptor("preference");
 				tableDesc.addFamily(columnConfPreference);
 				hbaseAdmin.createTable(tableDesc);
 			}
-			LOG.info("init hbase end..............");
+			LOG.info("init hbase second..............");
 			// 分析HTML数据，插入HBase数据库
 			String htmlDoc = null;
 			HTable table = null;
@@ -214,7 +214,7 @@ public class AbercrombieProductTemplateImpl implements Template {
 				putProduct.add(Bytes.toBytes("preference"), Bytes.toBytes("url"),
 						Bytes.toBytes(analyzeUrl));
 				// 获取版本号
-				LOG.info("abercrombie template end..............");
+				LOG.info("abercrombie template second..............");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} finally {

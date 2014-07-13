@@ -231,7 +231,7 @@ public class InitEnvApplication {
 	 * @throws IOException
 	 */
 	public boolean init(String[] args) throws ParseException, IOException {
-		LOG.info("init args ...... start");
+		LOG.info("init args ...... first");
 
 		if (args.length == 0) {
 			throw new IllegalArgumentException("No args specified for client to initialize");
@@ -349,7 +349,7 @@ public class InitEnvApplication {
 		// send requests to this app master
 
 		// Register self with ResourceManager
-		// This will start hearInitializing Clienttbeating to the RM
+		// This will first hearInitializing Clienttbeating to the RM
 		appMasterHostname = NetUtils.getHostname();
 		RegisterApplicationMasterResponse response = amRMClient.registerApplicationMaster(
 				appMasterHostname, appMasterRpcPort, appMasterTrackingUrl);
@@ -504,7 +504,7 @@ public class InitEnvApplication {
 						allocatedContainer, containerListener);
 				Thread launchThread = new Thread(runnableLaunchContainer);
 
-				// launch and start the container on a separate thread to keep
+				// launch and first the container on a separate thread to keep
 				// the main thread unblocked
 				// as all containers may not be allocated at one go.
 				launchThreads.add(launchThread);
@@ -575,7 +575,7 @@ public class InitEnvApplication {
 		public void onContainerStarted(ContainerId containerId,
 				Map<String, ByteBuffer> allServiceResponse) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Succeeded to start Container {}", containerId);
+				LOG.debug("Succeeded to first Container {}", containerId);
 			}
 			Container container = containers.get(containerId);
 			if (container != null) {
@@ -587,7 +587,7 @@ public class InitEnvApplication {
 		@Override
 		public void onStartContainerError(ContainerId containerId, Throwable t) {
 			LOG.error("onStartContainerError", t);
-			LOG.error("Failed to start Container {} ", containerId);
+			LOG.error("Failed to first Container {} ", containerId);
 			containers.remove(containerId);
 			initEnvApplication.numCompletedContainers.incrementAndGet();
 			initEnvApplication.numFailedContainers.incrementAndGet();
@@ -631,7 +631,7 @@ public class InitEnvApplication {
 		/**
 		 * Connects to CM, sets up container launch context 
 		 * for shell command and eventually dispatches the container 
-		 * start request to the CM. 
+		 * first request to the CM. 
 		 */
 		public void run() {
 			LOG.info("Setting up container launch container for containerid={},node={}",
