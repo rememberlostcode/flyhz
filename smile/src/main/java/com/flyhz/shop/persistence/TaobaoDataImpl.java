@@ -93,7 +93,7 @@ public class TaobaoDataImpl implements TaobaoData {
 				isBeenInitialized = true;
 				log.info("淘宝初始化参数结束");
 			} else {
-				log.info("淘宝参数已经初始化，不需要重新初始化");
+//				log.info("淘宝参数已经初始化，不需要重新初始化");
 			}
 			return true;
 		} else {
@@ -104,7 +104,7 @@ public class TaobaoDataImpl implements TaobaoData {
 
 	public void synchronizationLogistics() {
 		if (checkAndInit()) {
-			log.info("同步淘宝物流信息开始...");
+			log.info("同步淘宝订单及物流信息开始...");
 
 			Long page = 1L;
 			Long totalPage = 1L;
@@ -113,7 +113,7 @@ public class TaobaoDataImpl implements TaobaoData {
 				log.info("第" + page + "页");
 				TaobaoClient client = new DefaultTaobaoClient(url, appkey, appSecret);
 				TradesSoldGetRequest req = new TradesSoldGetRequest();
-				req.setFields("status,tid,receiver_address,receiver_city,receiver_district,receiver_mobile,receiver_name,receiver_state,receiver_zip");
+				req.setFields("status,tid");
 				req.setPageSize(PAGE_SIZE);
 
 				try {
@@ -127,6 +127,7 @@ public class TaobaoDataImpl implements TaobaoData {
 					for (int i = 0; trades != null && i < trades.size(); i++) {
 						Long tid = trades.get(i).getTid();
 						String status = trades.get(i).getStatus();
+						log.info(i + ".淘宝订单tid:" + tid + ",status:" + status);
 
 						/*****************************
 						 * 处理订单状态 start*********************************** 交易状态：
@@ -141,12 +142,15 @@ public class TaobaoDataImpl implements TaobaoData {
 						 * WAIT_PRE_AUTH_CONFIRM(余额宝0元购合约中)/
 						 */
 
+						//只有 等待买家付款、买家已付款、卖家部分发货、卖家已发货、买家已签收、交易成功、交易关闭、交易被淘宝关闭
 						if ("WAIT_BUYER_PAY".equals(status)
 								|| "WAIT_SELLER_SEND_GOODS".equals(status)
 								|| "SELLER_CONSIGNED_PART".equals(status)
 								|| "WAIT_BUYER_CONFIRM_GOODS".equals(status)
 								|| "TRADE_BUYER_SIGNED".equals(status)
-								|| "TRADE_FINISHED".equals(status) || "TRADE_CLOSED".equals(status)) {
+								|| "TRADE_FINISHED".equals(status)
+								|| "TRADE_CLOSED".equals(status)
+								|| "TRADE_CLOSED_BY_TAOBAO".equals(status)) {
 							// 先获取买家留言
 							try {
 								buyerMessage = getOrderNumber(client, tid);
@@ -172,7 +176,7 @@ public class TaobaoDataImpl implements TaobaoData {
 									}
 								}
 								continue;
-							} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
+							} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 买家已付款,即:等待卖家发货
 								for (int g = 0; g < numbers.length; g++) {
 									if (StringUtils.isNotBlank(numbers[g])) {
 										orderModel.setNumber(numbers[g]);
@@ -189,7 +193,7 @@ public class TaobaoDataImpl implements TaobaoData {
 										orderService.updateStatusByNumber(orderModel);
 									}
 								}
-							} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
+							} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 卖家已发货,即:等待买家确认收货
 								for (int g = 0; g < numbers.length; g++) {
 									if (StringUtils.isNotBlank(numbers[g])) {
 										orderModel.setNumber(numbers[g]);
@@ -224,6 +228,13 @@ public class TaobaoDataImpl implements TaobaoData {
 								}
 								continue;
 							} else if ("TRADE_CLOSED_BY_TAOBAO".equals(status)) {
+								for (int g = 0; g < numbers.length; g++) {
+									if (StringUtils.isNotBlank(numbers[g])) {
+										orderModel.setNumber(numbers[g]);
+										orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_CLOSED.code);
+										orderService.updateStatusByNumber(orderModel);
+									}
+								}
 								continue;
 							} else if ("ALL_WAIT_PAY".equals(status)) {
 								continue;
@@ -238,6 +249,7 @@ public class TaobaoDataImpl implements TaobaoData {
 							/***************************** 处理订单状态 end ***********************************/
 
 							/***************************** 处理物流 start *************************************/
+							log.info("同步淘宝物流...");
 							for (int j = 0; j < numbers.length; j++) {
 								OrderSimpleDto orderDto = orderService.getOrderDtoByNumber(numbers[j]);
 								if (orderDto != null) {
@@ -311,6 +323,7 @@ public class TaobaoDataImpl implements TaobaoData {
 									}
 								}
 							}
+							log.info("同步淘宝物流结束");
 							/***************************** 处理物流 end ***********************************/
 						}
 					}
@@ -321,7 +334,7 @@ public class TaobaoDataImpl implements TaobaoData {
 				}
 				page++;
 			}
-			log.info("同步淘宝物流信息完成");
+			log.info("同步订单及淘宝物流信息完成");
 		}
 	}
 
@@ -458,7 +471,7 @@ public class TaobaoDataImpl implements TaobaoData {
 										if (StringUtils.isNotBlank(numbers[g])) {
 											orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_PAID.code);
 											orderModel.setNumber(number);
-											orderService.updateStatusByNumber(orderModel);
+											orderService.updateStatusByNumberForMessage(orderModel);
 										}
 									}
 								}
@@ -482,7 +495,7 @@ public class TaobaoDataImpl implements TaobaoData {
 										if (StringUtils.isNotBlank(numbers[g])) {
 											orderModel.setStatus(Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
 											orderModel.setNumber(number);
-											orderService.updateStatusByNumber(orderModel);
+											orderService.updateStatusByNumberForMessage(orderModel);
 										}
 									}
 								}
@@ -505,7 +518,7 @@ public class TaobaoDataImpl implements TaobaoData {
 										if (StringUtils.isNotBlank(numbers[g])) {
 											orderModel.setStatus(Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code);
 											orderModel.setNumber(number);
-											orderService.updateStatusByNumber(orderModel);
+											orderService.updateStatusByNumberForMessage(orderModel);
 										}
 									}
 								}

@@ -6,7 +6,7 @@ import com.taobao.api.domain.Trade;
 public interface TaobaoData {
 
 	/**
-	 * 同步物流信息
+	 * 同步订单及物流信息
 	 */
 	public void synchronizationLogistics();
 
