@@ -153,7 +153,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 															int which) {
 
 														MyApplication.getImageLoader()
-																		.clearMemoryCache();
+																		.clearFileCache();
 														ToastUtils.showShort(context, "清理缓存成功！");
 
 													}

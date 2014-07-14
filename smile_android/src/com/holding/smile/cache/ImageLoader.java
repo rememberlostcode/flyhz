@@ -85,7 +85,7 @@ public class ImageLoader {
 	 * 
 	 * @param url
 	 * @param bigFlag
-	 *            为true取原图，false按比例取图片
+	 * 为true取原图，false按比例取图片
 	 * @return
 	 */
 	public Bitmap getBitmap(String url, boolean bigFlag) {
@@ -252,7 +252,6 @@ public class ImageLoader {
 	 */
 	public void clearMemoryCache() {
 		memoryCache.clear();
-		fileCache.clear();
 	}
 
 	/**

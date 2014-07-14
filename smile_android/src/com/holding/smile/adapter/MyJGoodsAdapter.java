@@ -109,7 +109,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 				if (!mBusy) {
 					mImageLoader.DisplayImage(url, holder.p, false);
 				} else {
-					mImageLoader.DisplayImage(url, holder.p, false);
+					mImageLoader.DisplayImage(url, holder.p, true);
 				}
 			}
 		}

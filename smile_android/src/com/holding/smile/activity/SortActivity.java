@@ -36,7 +36,6 @@ import com.holding.smile.myview.MyLinearLayout;
 public class SortActivity extends BaseActivity implements OnClickListener {
 
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
-
 	private MyJGoodsAdapter		adapter;
 	private List<JGoods>		mStrings			= new ArrayList<JGoods>();
 
@@ -157,7 +156,6 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 	};
 
 	OnScrollListener		mScrollListener	= new OnScrollListener() {
-
 												@Override
 												public void onScrollStateChanged(AbsListView view,
 														int scrollState) {
@@ -169,12 +167,12 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 															adapter.setFlagBusy(false);
 															break;
 														case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-															adapter.setFlagBusy(false);
+															adapter.setFlagBusy(true);
 															break;
 														default:
 															break;
 													}
-													adapter.notifyDataSetChanged();
+												adapter.notifyDataSetChanged();
 												}
 
 												@Override
