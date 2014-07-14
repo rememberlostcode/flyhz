@@ -71,12 +71,15 @@ public class TaobaoDataImpl implements TaobaoData {
 	private LogisticsDao	logisticsDao;
 
 	private final Long		PAGE_SIZE	= 100L;
+	
+	private static boolean isBeenInitialized = false;
 
 	/**
 	 * 初始化参数
 	 */
 	private void init() {
-		if ("1".equals(taobaoFlag)) {// 判断是否打开淘宝接口调用
+		if (!isBeenInitialized && "1".equals(taobaoFlag)) {// 判断是否打开淘宝接口调用
+			log.info("淘宝初始化参数开始...");
 			if (StringUtils.isBlank(propertiesFilePath)) {
 				propertiesFilePath = taobaoPropertiesFilePath;
 			}
@@ -85,8 +88,9 @@ public class TaobaoDataImpl implements TaobaoData {
 			appSecret = TaobaoTokenUtil.getAppSecret();
 			sessionKey = TaobaoTokenUtil.getAccessToken();
 			sellerNick = TaobaoTokenUtil.getSellerNick();
-
-			startMessageHandler();
+			
+			isBeenInitialized = true;
+			log.info("淘宝初始化参数结束");
 		}
 	}
 
@@ -414,6 +418,7 @@ public class TaobaoDataImpl implements TaobaoData {
 
 	public void startMessageHandler() {
 		if (!isRunning) {
+			init();
 			log.info("淘宝消息进程即将启动！");
 			log.info("appkey=" + appkey + ",appSecret=" + appSecret);
 			TmcClient client = new TmcClient("ws://mc.api.taobao.com/", appkey, appSecret,

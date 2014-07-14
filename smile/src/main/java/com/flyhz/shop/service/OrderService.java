@@ -99,7 +99,7 @@ public interface OrderService {
 	public void updateStatusByNumber(OrderModel orderModel);
 	
 	/**
-	 * 通过订单编号修改状态（会法师消息/邮件）
+	 * 通过订单编号修改状态（会发送消息/邮件）
 	 * @param orderModel
 	 */
 	public void updateStatusByNumberForMessage(OrderModel orderModel);

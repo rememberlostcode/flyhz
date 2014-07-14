@@ -388,25 +388,66 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	public void updateStatusByNumber(OrderModel orderModel) {
-		orderDao.updateStatusByNumber(orderModel);
-		solrData.reBuildOrder();
+		OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
+		if (orderDto != null) {
+			orderDao.updateStatusByNumber(orderModel);
+			//尝试获取物流信息
+			LogisticsDto logisticsDto = getLogisticsDto(orderModel.getNumber());
+			
+			solrData.submitOrder(orderDto.getUserId(), orderDto.getId(), orderModel.getStatus(), new Date(), logisticsDto);
+		}
 	}
 	
 	public void updateStatusByNumberForMessage(OrderModel orderModel) {
-		orderDao.updateStatusByNumber(orderModel);
-		if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
-			sendPaySuccess(orderModel.getNumber());
-		} else if (Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {// 已发货的发送消息
-			OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
-			UserDto user = userDao.getUserById(orderDto.getUserId());
-			
-			if(user!=null && user.getId()!=null && user.getRegistrationID()!=null){
-				JPush jpush = new JPush();
-				Map<String, String> extras = new HashMap<String, String>();
-				extras.put("orderId", orderDto.getId().toString());
-				jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras, user.getRegistrationID());
+		OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
+		if (orderDto != null) {
+			orderDao.updateStatusByNumber(orderModel);
+			if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
+				sendPaySuccess(orderModel.getNumber());
+				
+				solrData.submitOrder(orderDto.getUserId(), orderDto.getId(), orderModel.getStatus(), new Date(), null);
+			} else if (Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {// 已发货的发送消息
+				//尝试获取物流信息
+				LogisticsDto logisticsDto = getLogisticsDto(orderModel.getNumber());
+				
+				//更新订单的状态（以及有物流信息的时更新物流）
+				solrData.submitOrder(orderDto.getUserId(), orderDto.getId(), orderModel.getStatus(),
+						new Date(), logisticsDto);
+	
+				//获取用户信息并得到registrationID发送通知
+				UserDto user = userDao.getUserById(orderDto.getUserId());
+				if (user != null && user.getId() != null && user.getRegistrationID() != null) {
+					JPush jpush = new JPush();
+					Map<String, String> extras = new HashMap<String, String>();
+					extras.put("orderId", orderDto.getId().toString());
+					jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras,
+							user.getRegistrationID());
+				}
 			}
 		}
-		solrData.reBuildOrder();
+	}
+	
+	/**
+	 * 根据订单编号获取mysql数据库物流信息
+	 * @param orderNumber
+	 * @return
+	 */
+	private LogisticsDto getLogisticsDto(String orderNumber){
+		LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderNumber(orderNumber);
+		LogisticsDto logisticsDto = null;
+		if (logisticsModel != null) {
+			logisticsDto = new LogisticsDto();
+			log.info("淘宝订单" + logisticsModel.getTid() + "已有物流信息:" + logisticsModel.getContent());
+			logisticsDto.setId(logisticsModel.getId());
+			logisticsDto.setCompanyName(logisticsModel.getCompanyName());
+			logisticsDto.setLogisticsStatus(logisticsModel.getLogisticsStatus());
+			logisticsDto.setTid(logisticsModel.getTid());
+			logisticsDto.setAddress(logisticsModel.getAddress());
+			if (StringUtils.isNotBlank(logisticsModel.getContent())) {
+				String[] lls = logisticsModel.getContent().split("@#@");
+				logisticsDto.setTransitStepInfoList(Arrays.asList(lls));
+			}
+		}
+		return logisticsDto;
 	}
 }
