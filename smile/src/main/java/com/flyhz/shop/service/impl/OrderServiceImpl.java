@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.flyhz.framework.lang.JPush;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.lang.TaobaoData;
@@ -296,69 +297,116 @@ public class OrderServiceImpl implements OrderService {
 		}
 	}
 
-	public String getOrderPayStatusByTid(Integer orderId, Long tid) throws ValidateException {
-		if(orderId==null){
+	public String getOrderPayStatusByTid(String numbers, Long tid) throws ValidateException {
+		if(numbers==null || StringUtils.isBlank(numbers)){
 			throw new ValidateException(201002);
 		}
 		if(tid == null){
 			throw new ValidateException(700001);
 		}
-		OrderModel orderModel = orderDao.getModelById(orderId);
+		
+		List<OrderModel> ordersList = new ArrayList<OrderModel>();
+		String[] number = numbers.replaceAll(" ", "").split(",");
 		String smileStatus = "10";
-		if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())
-				|| Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())
-				|| Constants.OrderStateCode.HAS_BEEN_COMPLETED.code.equals(orderModel.getStatus())
-				|| Constants.OrderStateCode.HAVE_BEEN_CLOSED.code.equals(orderModel.getStatus())) {// 如果状态已经是已付款/卖家已发货则直接返回状态
-			return orderModel.getStatus();
-		} else {// mysql显示未付款时，需要调用淘宝接口查看
-			Trade trade = taobaoData.getTradeByTid(tid);
-			if (trade == null) {
-				throw new ValidateException(400000);
-			} else {
-				BigDecimal Payment = new BigDecimal(trade.getPayment());
-				if(orderModel.getTotal().equals(Payment)){
-					String status = trade.getStatus();
-					if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
-						// 未付款
-						smileStatus = Constants.OrderStateCode.FOR_PAYMENT.code;
-					} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
-						// 已付款
-						smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
-	
-						// 买家已付款，需要验证身份证是否存在
-						IdcardModel im = new IdcardModel();
-						im.setUserId(orderModel.getUserId());
-						List<IdcardModel> list = idcardDao.getModelList(im);
-						if (list == null || list.size() == 0) {
-							// 缺失身份证
-							smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
-						} else {
-							// 等待发货
-							smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
-						}
-					} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
-						// 已发货
-						smileStatus = Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code;
-					} else if ("TRADE_FINISHED".equals(status)) {// 交易成功
-						smileStatus = Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;
-					} else {
-						// 未知状态
-						throw new ValidateException(400000);
-					}
-				} else {
-					throw new ValidateException(400001);
+		
+		Integer userId = null;
+		BigDecimal total = new BigDecimal(0);
+		for (int i = 0; i < number.length; i++) {
+			OrderModel orderModel = orderDao.getModelByNumber(number[i]);
+
+			if (orderModel != null) {
+				//累加订单总额
+				total.add(orderModel.getTotal());
+
+				if (userId == null) {
+					userId = orderModel.getUserId();
 				}
+				
+				//如果任一订单是已付款后面的状态，直接返回状态
+				if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())
+						|| Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())
+						|| Constants.OrderStateCode.HAS_BEEN_COMPLETED.code.equals(orderModel.getStatus())
+						|| Constants.OrderStateCode.HAVE_BEEN_CLOSED.code.equals(orderModel.getStatus())) {// 如果状态已经是已付款/卖家已发货则直接返回状态
+					return orderModel.getStatus();
+				} else {// mysql显示未付款时，需要调用淘宝接口查看
+				}
+
+				//最后一单，处理查看淘宝的订单信息
+				if (i == number.length - 1) {
+					Trade trade = taobaoData.getTradeByTid(tid);
+					if (trade == null) {
+						throw new ValidateException(400000);
+					} else {
+						BigDecimal Payment = new BigDecimal(trade.getPayment());
+						if (total.equals(Payment)) {
+							String status = trade.getStatus();
+							if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
+								// 未付款
+								smileStatus = Constants.OrderStateCode.FOR_PAYMENT.code;
+							} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
+								// 已付款
+								smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
+
+								// 买家已付款，需要验证身份证是否存在
+								IdcardModel im = new IdcardModel();
+								im.setUserId(userId);
+								List<IdcardModel> list = idcardDao.getModelList(im);
+								if (list == null || list.size() == 0) {
+									// 缺失身份证
+									smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
+								} else {
+									// 等待发货
+									smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
+								}
+							} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
+								// 已发货
+								smileStatus = Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code;
+							} else if ("TRADE_FINISHED".equals(status)) {// 交易成功
+								smileStatus = Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;
+							} else {
+								// 未知状态
+								throw new ValidateException(400000);
+							}
+						} else {
+							throw new ValidateException(400001);
+						}
+					}
+				}//淘宝结束
 			}
+			
+			//设置状态
+			orderModel.setStatus(smileStatus);
+			ordersList.add(orderModel);
 		}
-		orderModel.setStatus(smileStatus);
-		orderDao.updateStatusByNumber(orderModel);
+		
+		//循环更新数据库订单状态
+		for(int i=0;i<ordersList.size();i++){
+			orderDao.updateStatusByNumber(ordersList.get(i));
+		}
+		
 		return smileStatus;
 	}
 
 	public void updateStatusByNumber(OrderModel orderModel) {
 		orderDao.updateStatusByNumber(orderModel);
+		solrData.reBuildOrder();
+	}
+	
+	public void updateStatusByNumberForMessage(OrderModel orderModel) {
+		orderDao.updateStatusByNumber(orderModel);
 		if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
 			sendPaySuccess(orderModel.getNumber());
+		} else if (Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {// 已发货的发送消息
+			OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
+			UserDto user = userDao.getUserById(orderDto.getUserId());
+			
+			if(user!=null && user.getId()!=null && user.getRegistrationID()!=null){
+				JPush jpush = new JPush();
+				Map<String, String> extras = new HashMap<String, String>();
+				extras.put("orderId", orderDto.getId().toString());
+				jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras, user.getRegistrationID());
+			}
 		}
+		solrData.reBuildOrder();
 	}
 }

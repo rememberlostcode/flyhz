@@ -45,8 +45,12 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
 		TextView headerDesc = displayHeaderDescription();
 		headerDesc.setText(R.string.order_pay);
-
-		progressBar.setVisibility(View.VISIBLE);
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		showLoading();
 		Intent intent = getIntent();
 		try {
 			number = intent.getExtras().getString("number");// 订单号
@@ -69,7 +73,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 		} catch (Exception e) {
 			ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 		}
-		waitCloseProgressBar();
+		closeLoading();
 	}
 
 	@Override
@@ -95,7 +99,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ORDER_CODE && RESULT_CANCELED == resultCode) {
-			progressBar.setVisibility(View.VISIBLE);
+			showLoading();
 			RtnValueDto rtnValue = MyApplication.getInstance().getDataService()
 												.getOrderStatus(number);
 			if (CodeValidator.dealCode(context, rtnValue)) {
@@ -109,7 +113,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 					}
 				}
 			}
-			waitCloseProgressBar();
+			closeLoading();
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

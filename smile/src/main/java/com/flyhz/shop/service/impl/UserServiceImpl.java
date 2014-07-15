@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +38,7 @@ import com.flyhz.shop.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
+	private Logger			log			= LoggerFactory.getLogger(UserServiceImpl.class);
 	@Resource
 	private UserDao			userDao;
 	@Resource
@@ -88,23 +91,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto login(String username, String password, String verifycode)
+	public UserDto login(UserModel loginUserModel)
 			throws ValidateException {
-		if (StringUtils.isBlank(username)) {
+		if (StringUtils.isBlank(loginUserModel.getUsername())) {
 			throw new ValidateException(140002);// 用户名不能为空
 		}
-		if (StringUtils.isBlank(password)) {
+		if (StringUtils.isBlank(loginUserModel.getPassword())) {
 			throw new ValidateException(140005);// 密码不能为空
 		}
-		UserModel userTemp = new UserModel();
-		userTemp.setUsername(username);
-		userTemp.setPassword(password);
-		UserModel userModel = userDao.getModel(userTemp);
+		UserModel userModel = userDao.getModel(loginUserModel);
 		if (userModel == null) {
 			return null;
 		} else {
 			String token = RandomString.generateRandomString16();
 			userModel.setToken(token);
+			if (StringUtils.isBlank(loginUserModel.getRegistrationID())) {
+				log.warn(userModel.getUsername() + "登录时没有registrationID");
+//				throw new ValidateException(140002);// 用户名不能为空
+			} else {
+				userModel.setRegistrationID(loginUserModel.getRegistrationID());
+			}
 			userDao.update(userModel);
 			UserDto user = new UserDto();
 			user.setId(userModel.getId());
@@ -115,25 +121,30 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto loginAuto(String username, String token, String verifycode)
+	public UserDto loginAuto(UserModel loginUserModel)
 			throws ValidateException {
-		if (username == null) {
+		if (StringUtils.isBlank(loginUserModel.getUsername())) {
 			throw new ValidateException(140002);// 用户名不能为空
 		}
-		if (StringUtils.isBlank(token)) {
+		if (StringUtils.isBlank(loginUserModel.getToken())) {
 			throw new ValidateException(140007);// 用户TOKEN(验证码)不能为空
 		}
-		UserModel userTemp = new UserModel();
-		userTemp.setUsername(username);
-		userTemp.setToken(token);
-		UserModel userModel = userDao.getModel(userTemp);
+		UserModel userModel = userDao.getModel(loginUserModel);
 		if (userModel == null) {
 			return null;
 		} else {
 			UserDto user = new UserDto();
 			user.setId(userModel.getId());
 			user.setUsername(userModel.getUsername());
-			user.setToken(token);
+			user.setToken(loginUserModel.getToken());
+			
+			if (StringUtils.isBlank(loginUserModel.getRegistrationID())) {
+//				throw new ValidateException(140002);// 用户名不能为空
+				log.warn(userModel.getUsername() + "自动登录时没有registrationID");
+			} else {
+				userModel.setRegistrationID(loginUserModel.getRegistrationID());
+			}
+			userDao.update(userModel);
 			return user;
 		}
 	}

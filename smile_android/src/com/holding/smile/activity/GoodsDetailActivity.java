@@ -404,7 +404,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 														break;
 													}
 												}
-												waitCloseProgressBar();
+												closeLoading();
 											}
 										};
 

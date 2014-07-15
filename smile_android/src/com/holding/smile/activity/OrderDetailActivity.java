@@ -52,7 +52,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 
 		TextView textView = displayHeaderDescription();
 		textView.setText("订单详情");
-		progressBar.setVisibility(View.VISIBLE);
 		listView = (MyListView) findViewById(R.id.order_detail_list_view);
 		orderNumberView = (TextView) findViewById(R.id.order_detail_number);
 		orderTimeView = (TextView) findViewById(R.id.order_detail_time);
@@ -127,7 +126,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, e.getMessage());
 		}
-		waitCloseProgressBar();
+		closeLoading();
 	}
 
 	@Override

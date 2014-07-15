@@ -23,12 +23,13 @@ public class SUser implements Serializable {
 	private String				weibo;
 	private String				weixin;
 	private String				token;
-	private String 			url;
-	
+	private String				url;
+	private String				registrationID;
+
 	/**
 	 * 当前登录人标识
 	 */
-	private String	flag;
+	private String				flag;
 
 	public SUser() {
 	}
@@ -151,5 +152,13 @@ public class SUser implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getRegistrationID() {
+		return registrationID;
+	}
+
+	public void setRegistrationID(String registrationID) {
+		this.registrationID = registrationID;
 	}
 }

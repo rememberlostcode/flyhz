@@ -140,28 +140,27 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 		RtnValueDto rvd = null;
 		try {
 			switch (optNum) {
-				case OPT_CODE_SAVE:
+				case OPT_CODE_SAVE: {
 					rvd = MyApplication.getInstance().getSubmitService()
-										.idcardSave(idcard, picturePath,backPicturePath);
+										.idcardSave(idcard, picturePath, backPicturePath);
 					break;
-				case OPT_CODE_REMOVE:
+				}
+				case OPT_CODE_REMOVE: {
 					if (idcard != null && idcard.getId() != null) {
 						rvd = MyApplication.getInstance().getSubmitService()
 											.idcardRemove(idcard.getId());
 					}
 					break;
+				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(CodeValidator.dealCode(this, rvd)){
-			Message msg = mUIHandler.obtainMessage(optNum);
-			msg.obj = rvd;
-			msg.sendToTarget();
-		} else {
-			waitCloseProgressBar();
-		}
+		
+		Message msg = mUIHandler.obtainMessage(optNum);
+		msg.obj = rvd;
+		msg.sendToTarget();
 	}
 
 	private final int	OPT_CODE_SAVE	= 1;
@@ -328,15 +327,25 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 											@Override
 											public void handleMessage(Message msg) {
 												// if (msg.obj != null) {
+												closeImmediatelyLoading();
 												switch (msg.what) {
 													case OPT_CODE_SAVE: {
-														RtnValueDto rvd = (RtnValueDto) msg.obj;
-														if (rvd != null && 200000 == rvd.getCode()) {
-															ToastUtils.showShort(context, "保存成功!");
-															Intent intent = new Intent();
-															intent.putExtra("idcard", idcard);
-															setResult(RESULT_OK, intent);
-															finish();
+														if (msg.obj != null) {
+															RtnValueDto rvd = (RtnValueDto) msg.obj;
+															if (rvd != null
+																	&& CodeValidator.dealCode(
+																			context, rvd)
+																	&& 200000 == rvd.getCode()) {
+																ToastUtils.showShort(context,
+																		"保存成功!");
+																Intent intent = new Intent();
+																intent.putExtra("idcard", idcard);
+																setResult(RESULT_OK, intent);
+																finish();
+															} else {
+																ToastUtils.showShort(context,
+																		"保存失败，请重试！");
+															}
 														} else {
 															ToastUtils.showShort(context,
 																	"保存失败，请重试！");
@@ -344,26 +353,35 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 														break;
 													}
 													case OPT_CODE_REMOVE: {
-														RtnValueDto rvd = (RtnValueDto) msg.obj;
-														if (rvd != null && 200000 == rvd.getCode()) {
-															ToastUtils.showShort(context, "删除成功!");
-															Intent intent = new Intent();
-															intent.putExtra("idcard", idcard);
-															setResult(RESULT_OK, intent);
-															finish();
+														if (msg.obj != null) {
+															RtnValueDto rvd = (RtnValueDto) msg.obj;
+															if (rvd != null
+																	&& CodeValidator.dealCode(
+																			context, rvd)
+																	&& 200000 == rvd.getCode()) {
+																ToastUtils.showShort(context,
+																		"删除成功!");
+																Intent intent = new Intent();
+																intent.putExtra("idcard", idcard);
+																setResult(RESULT_OK, intent);
+																finish();
+															} else {
+																if (idcard != null
+																		&& idcard.getId() != null) {
+																	ToastUtils.showShort(context,
+																			"删除失败，请重试!");
+																}
+															}
 														} else {
 															if (idcard != null
 																	&& idcard.getId() != null) {
 																ToastUtils.showShort(context,
 																		"删除失败，请重试!");
 															}
-															finish();
 														}
 														break;
 													}
 												}
-												waitCloseProgressBar();
-												// }
 											}
 										};
 

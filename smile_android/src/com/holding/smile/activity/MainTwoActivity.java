@@ -110,7 +110,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			v.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					progressBar.setVisibility(View.VISIBLE);
 					sortTypeLayout.setBackgroundBtn(v.getId());
 					seqorderType = v.getTag().toString();
 					onRefresh();
@@ -142,7 +141,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			if (data != null) {
 				Category cate = (Category) data.getExtras().getSerializable("cate");
 				if (cate != null) {
-					progressBar.setVisibility(View.VISIBLE);
 					cid = cate.getId();
 					onRefresh();
 				}
@@ -194,6 +192,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	}
 
 	public void onRefresh() {
+		showLoading();
 		mStrings.clear();
 		if (adapter != null) {
 			mListView.removeAllViewsInLayout();
@@ -207,8 +206,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_REFRESH);
 			msg.obj = rGoods;
 			msg.sendToTarget();
-		} else {
-			waitCloseProgressBar();
 		}
 	}
 
@@ -280,7 +277,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 
 												@Override
 												public void handleMessage(Message msg) {
-													progressBar.setVisibility(View.GONE);
 													switch (msg.what) {
 														case WHAT_DID_LOAD_DATA: {
 															mStrings.clear();
@@ -300,6 +296,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																adapter.notifyDataSetChanged();
 																mPullToRefreshView.onHeaderRefreshComplete();
 															}
+															closeLoading();
 															break;
 														}
 														case WHAT_DID_REFRESH: {
@@ -339,6 +336,7 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																adapter.notifyDataSetChanged();
 																mPullToRefreshView.onHeaderRefreshComplete();
 															}
+															closeLoading();
 															break;
 														}
 

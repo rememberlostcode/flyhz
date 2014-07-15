@@ -111,8 +111,6 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 					ToastUtils.showShort(context, "输入的邮箱格式不正确！");
 					return;
 				}
-				progressBar.setVisibility(View.VISIBLE);
-
 				/* 关闭软键盘 */
 				InputMethodManager inputMgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputMgr.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
@@ -139,11 +137,12 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																case REGISTER_BY_SELF: {
 																	if (msg.obj != null) {
 																		SUser user = (SUser) msg.obj;
+																		showLoading();
 																		RtnValueDto rvd = MyApplication.getInstance()
 																										.getSubmitService()
 																										.register(
 																												user);
-
+																		closeLoading();
 																		if (!CodeValidator.dealCode(
 																				context, rvd)) {
 																			loginViewInit();
@@ -162,7 +161,6 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																	break;
 																}
 															}
-															waitCloseProgressBar();
 														}
 													};
 

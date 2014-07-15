@@ -38,7 +38,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 	private static final int		WHAT_DID_LOAD_DATA			= 0;
 	private static final int		WHAT_DID_UPDATE_DATA		= 1;
-	private static final int		WHAT_PROGRESS_STATE			= 2;
 	private static final int		WHAT_DID_CONFIRMORDER_DATA	= 3;
 	private MyListView				listView;
 	private MyOrderInformAdapter	orderAdapter;
@@ -93,15 +92,15 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		totalMoney = (TextView) findViewById(R.id.order_inform_total_money);
 
 		listView = (MyListView) findViewById(R.id.order_list);
-		orderAdapter = new MyOrderInformAdapter(context, orderDetails, progressBar, mUIHandler,
+		orderAdapter = new MyOrderInformAdapter(context, orderDetails, null, mUIHandler,
 				cartFlag);
 		listView.setAdapter(orderAdapter);
 
 	}
 
+	@Override
 	public synchronized void loadData() {
 		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
-			progressBar.setVisibility(View.VISIBLE);
 			String pidQty = "";
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
@@ -123,13 +122,14 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	 */
 	private void confirmOrder() {
 		if (gid != null || (cartIds != null && !cartIds.isEmpty())) {
-			progressBar.setVisibility(View.VISIBLE);
 			String pidQty = "";
 			if (gid != null) {
 				pidQty = gid + "_" + qty;
 			}
+			showLoading();
 			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.confirmOrder(pidQty, cartIds, addressId);
+			closeLoading();
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_CONFIRMORDER_DATA);
 			msg.obj = rtnValue;
 			msg.sendToTarget();
@@ -229,7 +229,6 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 																}
 															}
 														}
-														waitCloseProgressBar();
 														break;
 													}
 													case WHAT_DID_UPDATE_DATA: {
@@ -339,7 +338,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 														break;
 													}
 												}
-												waitCloseProgressBar();
+												closeLoading();
 											}
 
 										};

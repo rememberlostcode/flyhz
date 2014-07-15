@@ -10,6 +10,7 @@ import com.flyhz.shop.dto.ConsigneeDetailDto;
 import com.flyhz.shop.dto.UserDetailDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
+import com.flyhz.shop.persistence.entity.UserModel;
 
 public interface UserService {
 	/**
@@ -32,7 +33,7 @@ public interface UserService {
 	 * @return
 	 * @throws ValidateException
 	 */
-	public UserDto login(String username, String password, String verifycode)
+	public UserDto login(UserModel loginUserModel)
 			throws ValidateException;
 
 	/**
@@ -47,7 +48,7 @@ public interface UserService {
 	 * @return
 	 * @throws ValidateException
 	 */
-	public UserDto loginAuto(String username, String token, String verifycode)
+	public UserDto loginAuto(UserModel loginUserModel)
 			throws ValidateException;
 
 	/**

@@ -19,6 +19,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
@@ -59,10 +60,10 @@ public class LoginService {
 	 */
 	public boolean isSessionInvalidated() {
 		boolean isLogining = true;
-		System.out.println(MyApplication.getSessionTime());
 		if (MyApplication.getSessionTime() == null) {//
 			SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
 			if (user != null) {
+				user.setRegistrationID(MyApplication.getInstance().getRegistrationID());
 				RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
 														.autoLogin(user);
 				if (rtnValueDto == null || !rtnValueDto.getCode().equals(200000)) {
@@ -73,13 +74,21 @@ public class LoginService {
 			}
 		} else {
 			if (new Date().getTime() - MyApplication.getSessionTime().getTime() > SESSION_TIME) {// 超过20分钟需确认下是否登录失效
+				System.out.println(MyApplication.getSessionTime());
+				Log.i(MyApplication.LOG_TAG, "超过20分钟，需要重新登录");
 				SUser user = MyApplication.getInstance().getCurrentUser();
-				RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
-														.autoLogin(user);
-				if (rtnValueDto == null || !rtnValueDto.getCode().equals(200000)) {
-					MyApplication.getInstance().setCurrentUser(null);
-					MyApplication.getInstance().setSessionId(null);
-					isLogining = false;
+				if (user != null) {
+					user.setRegistrationID(MyApplication.getInstance().getRegistrationID());
+					RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
+															.autoLogin(user);
+					if (rtnValueDto == null || !rtnValueDto.getCode().equals(200000)) {
+						MyApplication.getInstance().setCurrentUser(null);
+						MyApplication.getInstance().setSessionId(null);
+						isLogining = false;
+						Log.i(MyApplication.LOG_TAG, "重新登录失败");
+					} else {
+						Log.i(MyApplication.LOG_TAG, "重新登录成功");
+					}
 				}
 			} else {
 				
@@ -102,6 +111,9 @@ public class LoginService {
 		HashMap<String, String> param = new HashMap<String, String>();
 		param.put("username", iuser.getUsername());
 		param.put("password", iuser.getPassword());
+		if (iuser.getRegistrationID() != null) {
+			param.put("registrationID", iuser.getRegistrationID());
+		}
 		String rvdString = null;
 		if (login_url.indexOf("https") > -1) {
 			rvdString = https_get(login_url, param);
@@ -116,8 +128,9 @@ public class LoginService {
 				rvd.setUserData(user.getData());
 				rvd.setCode(user.getCode());
 				if (user.getData() != null && user.getCode() == SUCCESS_CODE) {
-					setLoginUser(user.getData());
 					try {
+						user.getData().setRegistrationID(iuser.getRegistrationID());
+						setLoginUser(user.getData());
 						// 添加本地数据库用户信息
 						MyApplication.getInstance().getSqliteService().addUser();
 					} catch (Exception e) {
@@ -142,6 +155,9 @@ public class LoginService {
 			HashMap<String, String> param = new HashMap<String, String>();
 			param.put("username", iuser.getUsername());
 			param.put("token", iuser.getToken());
+			if (iuser.getRegistrationID() != null) {
+				param.put("registrationID", iuser.getRegistrationID());
+			}
 			String rvdString = https_get(auto_login_url, param);
 			MyApplication.setSessionTime(new Date());
 			if (rvdString != null) {
@@ -152,9 +168,10 @@ public class LoginService {
 					rvd.setCode(user.getCode());
 					if (user.getData() != null && user.getCode() == SUCCESS_CODE) {
 						try {
+							user.getData().setRegistrationID(iuser.getRegistrationID());
+							setLoginUser(user.getData());
 							// 添加本地数据库用户信息
 							MyApplication.getInstance().getSqliteService().addUser();
-							setLoginUser(user.getData());
 						} catch (Exception e) {
 							System.out.println("SQLite出错了！");
 							e.printStackTrace();

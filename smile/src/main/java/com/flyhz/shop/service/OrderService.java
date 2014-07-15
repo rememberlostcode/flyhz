@@ -83,12 +83,13 @@ public interface OrderService {
 	/**
 	 * 通过淘宝订单号获取付款状态
 	 * 
-	 * @param orderId
+	 * @param numbers
+	 * 订单编号，多个时以逗号分隔
 	 * @param tid
 	 * @return
 	 * @throws ValidateException
 	 */
-	public String getOrderPayStatusByTid(Integer orderId, Long tid) throws ValidateException;
+	public String getOrderPayStatusByTid(String numbers, Long tid) throws ValidateException;
 
 	/**
 	 * 通过订单编号修改状态
@@ -96,5 +97,11 @@ public interface OrderService {
 	 * @param orderModel
 	 */
 	public void updateStatusByNumber(OrderModel orderModel);
+	
+	/**
+	 * 通过订单编号修改状态（会法师消息/邮件）
+	 * @param orderModel
+	 */
+	public void updateStatusByNumberForMessage(OrderModel orderModel);
 
 }

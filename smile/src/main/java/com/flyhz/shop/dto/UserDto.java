@@ -10,8 +10,10 @@ public class UserDto {
 	private String	username;
 
 	private String	token;
-	
-	private String url = Constants.TB_URL;
+
+	private String	url	= Constants.TB_URL;
+
+	private String	registrationID;
 
 	public String getUsername() {
 		return username;
@@ -43,6 +45,14 @@ public class UserDto {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getRegistrationID() {
+		return registrationID;
+	}
+
+	public void setRegistrationID(String registrationID) {
+		this.registrationID = registrationID;
 	}
 
 }

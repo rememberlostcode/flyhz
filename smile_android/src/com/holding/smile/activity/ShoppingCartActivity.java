@@ -69,8 +69,12 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		editBtn.setTag("edit");
 		editBtn.setOnClickListener(this);
 
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
 		startTask();
-
 	}
 
 	/**
@@ -108,7 +112,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 
 		// initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.cart_list);
-		cartAdapter = new MyShoppingCartAdapter(context, cartItemList, progressBar, mUIHandler);
+		cartAdapter = new MyShoppingCartAdapter(context, cartItemList, null, mUIHandler);
 		listView.setAdapter(cartAdapter);
 	}
 
@@ -170,12 +174,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		startTask();
 	}
 
 	@Override
@@ -258,7 +256,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																	}
 															}
 														}
-
 														initView();
 														break;
 													}
@@ -306,7 +303,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														break;
 													}
 												}
-												waitCloseProgressBar();
+												closeLoading();
 											}
 										};
 
@@ -317,12 +314,12 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 												new DialogInterface.OnClickListener() {
 													public void onClick(DialogInterface dialog,
 															int which) {
-														progressBar.setVisibility(View.VISIBLE);
+														showLoading();
 														RtnValueDto rtnValue = MyApplication.getInstance()
 																							.getSubmitService()
 																							.removeCart(
 																									itemId);
-														
+														closeLoading();
 														if (CodeValidator.dealCode(context, rtnValue)) {
 															cartAdapter.getSelectIds().remove(
 																	itemId);
@@ -341,7 +338,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														} else {
 															ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
 														}
-														waitCloseProgressBar();
 													}
 												}).setNegativeButton("取消", null).show();
 	}

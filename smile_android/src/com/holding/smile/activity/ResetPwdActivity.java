@@ -74,16 +74,15 @@ public class ResetPwdActivity extends BaseActivity {
 					return;
 				}
 
-				progressBar.setVisibility(View.VISIBLE);
-
+				showLoading();
 				RtnValueDto rvd = MyApplication.getInstance().getSubmitService()
 												.passwordReset(oldPwd, newPwd);
+				closeImmediatelyLoading();
 				if (CodeValidator.dealCode(context, rvd)) {
 					ToastUtils.showShort(context, "修改成功！");
 					setResult(RESULT_CANCELED, null);
 					finish();
 				}
-				waitCloseProgressBar();
 			}
 		});
 	}
