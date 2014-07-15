@@ -25,6 +25,12 @@ public class Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.out.println("http://www.coach.com/".hashCode());
+		System.out.println("http://www.coach.com/".hashCode() & 0x00000000ffffffffL);
+		System.out.println(Long.valueOf(System.currentTimeMillis()).hashCode());
+		System.out.println("http://www.coachfactory.com/".hashCode());
+		System.out.println("http://www.coach.com/online/handbags/Product-baby_bag_tote_in_saffiano_leather-10551-10051-26353-en?cs=svbk&catId=5000000000000015032&navCatId=7100000000000000598".hashCode());
+		System.out.println("http://www.coach.com/online/handbags/Product-baby_bag_tote_in_saffiano_leather-10551-10051-26353-en?cs=svbk&catId=5000000000000015032&navCatId=7100000000000000599".hashCode());
 		HConnection hConnection = null;
 		HBaseAdmin hbaseAdmin = null;
 		// HTable hVersion = null;
@@ -43,25 +49,35 @@ public class Test {
 			configuration.setLong("hbase.client.scanner.caching", 1000);
 
 			hPage = new HTable(hbaseConf, "av_page");
+			// Pair<byte[][], byte[][]> pairs = hPage.getRowOrBefore(row,
+			// family).getStartEndKeys();
 
-			Scan scan = new Scan();
-			scan.addColumn(Bytes.toBytes("preference"), Bytes.toBytes("batchId"));
-			PageFilter pageFilter = new PageFilter(10);
+			for (byte[] startKey : hPage.getStartKeys()) {
+				LOG.info("startKey > {}", Bytes.toString(startKey));
+			}
+			for (byte[] endKey : hPage.getEndKeys()) {
+				LOG.info("endKey > {}", Bytes.toString(endKey));
+			}
+
+			Scan scan = new Scan(new byte[0], new byte[0]);
+			// scan.addColumn(Bytes.toBytes("preference"),
+			// Bytes.toBytes("batchId"));
+			PageFilter pageFilter = new PageFilter(2);
 			scan.setFilter(pageFilter);
 			ResultScanner rs = hPage.getScanner(scan);
 
-			if (rs != null && rs.iterator().hasNext()) {
-				Integer count = 0;
-				for (Result result : rs) {
-					String url = Bytes.toString(result.getRow());
-					Long value = Bytes.toLong(result.getValue(Bytes.toBytes("preference"),
-							Bytes.toBytes("batchId")));
-					count++;
-					LOG.info("rowkey -> {},batchId -> {},count -> {}", url, value, count);
-
-				}
+			// if (rs != null && rs.iterator().hasNext()) {
+			Integer count = 0;
+			for (Result result : rs) {
+				String url = Bytes.toString(result.getRow());
+				Long value = Bytes.toLong(result.getValue(Bytes.toBytes("preference"),
+						Bytes.toBytes("batchId")));
+				count++;
+				LOG.info("rowkey -> {},batchId -> {},count -> {}", url, value, count);
 
 			}
+			//
+			// }
 
 		} catch (IOException e) {
 			LOG.error("fetch", e);
@@ -92,5 +108,4 @@ public class Test {
 		}
 
 	}
-
 }

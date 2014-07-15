@@ -237,7 +237,7 @@ public class AvengersClient {
 			avengersProcessCmds.add(getInitEnvCmd());
 			avengersProcessCmds.add(getCrawlCmd());
 			avengersProcessCmds.add(getFetchCmd());
-			avengersProcessCmds.add(runAnalyze());
+			// avengersProcessCmds.add(runAnalyze());
 		} else {
 			if (cliParser.hasOption("crawl")) {
 				avengersProcessCmds.add(getInitEnvCmd());
@@ -247,10 +247,10 @@ public class AvengersClient {
 				avengersProcessCmds.add(getInitEnvCmd());
 				avengersProcessCmds.add(getFetchCmd());
 			}
-			if (cliParser.hasOption("analyze")) {
-				avengersProcessCmds.add(getInitEnvCmd());
-				avengersProcessCmds.add(runAnalyze());
-			}
+			// if (cliParser.hasOption("analyze")) {
+			// avengersProcessCmds.add(getInitEnvCmd());
+			// avengersProcessCmds.add(runAnalyze());
+			// }
 		}
 
 		return true;

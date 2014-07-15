@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -32,27 +31,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.Crawl;
-import com.flyhz.avengers.framework.Event;
 import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.lang.AVTable;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumn;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumnFamily;
+import com.flyhz.avengers.framework.lang.AbstractEvent;
+import com.flyhz.avengers.framework.util.IdFactory;
 import com.flyhz.avengers.framework.util.StringUtil;
 import com.flyhz.avengers.framework.util.URLXConnectionUtil;
 
-public class URLCrawlEvent implements Event {
+public class URLCrawlEvent extends AbstractEvent {
 
 	private static final Logger	LOG				= LoggerFactory.getLogger(URLCrawlEvent.class);
 	String						crawlUrl;
 	private String				rootUrl			= "";
 	HConnection					hConnection		= null;
 	HBaseAdmin					hbaseAdmin		= null;
+	HTable						hDomain			= null;
 	HTable						hPage			= null;
+	HTable						hCrawlRes		= null;
 	HTable						hTempCrawlLog	= null;
 	List<String>				urlFilterBeforeCrawls;
 	List<String>				urlFilterAfterCrawls;
 	String						encode;
 	Integer						depth;
 	Long						batchId;
+	Long						maxId			= 0L;
 
-	public URLCrawlEvent() {
+	public URLCrawlEvent(Map<String, Object> context) {
+		super(context);
 		LOG.info("URLCrawlEvent()");
 		Configuration hconf = HBaseConfiguration.create();
 		hconf.set("hbase.zookeeper.quorum", "m1,s1,s2");
@@ -60,18 +67,23 @@ public class URLCrawlEvent implements Event {
 		try {
 			hConnection = HConnectionManager.createConnection(hconf);
 			hbaseAdmin = new HBaseAdmin(hConnection);
-			hPage = new HTable(hconf, "av_page");
+			hDomain = new HTable(hconf, AVTable.av_domain.name());
+			hDomain.setAutoFlush(true, true);
+			hPage = new HTable(hconf, AVTable.av_page.name());
 			hPage.setAutoFlush(false, true);
-			hTempCrawlLog = new HTable(hconf, "av_temp_crawl_log");
+			hCrawlRes = new HTable(hconf, AVTable.av_fetch.name());
+			hCrawlRes.setAutoFlush(false, true);
+			hTempCrawlLog = new HTable(hconf, AVTable.av_crawl.name());
 			hTempCrawlLog.setAutoFlush(true, true);
 		} catch (IOException e) {
 			LOG.error("URLCrawlEvent", e);
 		}
+
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean call(Map<String, Object> context) {
+	public boolean call() {
 		crawlUrl = (String) context.get(Crawl.CRAWL_URL);
 		batchId = (Long) context.get(Crawl.BATCH_ID);
 		if (StringUtils.isBlank(crawlUrl))
@@ -100,9 +112,17 @@ public class URLCrawlEvent implements Event {
 
 		try {
 			if (StringUtil.filterUrl(crawlUrl, urlFilterAfterCrawls)) {
-				insertInfoToHbase(crawlUrl);
+				insertInfoToCrawlRes(crawlUrl);
 			}
 			recursiveMethod(crawlUrl, depth);
+			LOG.info("put av_domain");
+			Put avDomainPut = new Put(Bytes.toBytes(crawlUrl));
+			// 开始前先插入version数据，crawl的时候插入info数据
+			avDomainPut.add(Bytes.toBytes(AVColumnFamily.i.name()),
+					Bytes.toBytes(AVColumn.bid.name()), Bytes.toBytes(batchId));
+			avDomainPut.add(Bytes.toBytes(AVColumnFamily.i.name()),
+					Bytes.toBytes(AVColumn.maxid.name()), Bytes.toBytes(maxId));
+			hDomain.put(avDomainPut);
 		} catch (IOException e) {
 			LOG.error("", e);
 		} finally {
@@ -128,7 +148,7 @@ public class URLCrawlEvent implements Event {
 			}
 		}
 
-		LOG.info("crawl {} is end", crawlUrl);
+		LOG.info("crawl {} is second", crawlUrl);
 		return true;
 
 	}
@@ -223,7 +243,7 @@ public class URLCrawlEvent implements Event {
 								}
 							}
 							if (StringUtil.filterUrl(href, urlFilterAfterCrawls)) {
-								insertInfoToHbase(href);
+								insertInfoToCrawlRes(href);
 							}
 							if (StringUtil.filterUrl(href, urlFilterBeforeCrawls) && new_depth > 0) {
 								recursiveMethod(href, new_depth);
@@ -244,58 +264,82 @@ public class URLCrawlEvent implements Event {
 		}
 	}
 
-	private void insertInfoToHbase(String crawlUrl) throws IOException {
-		LOG.info("insertInfoToHbase start");
-		// 判断是否已经采过，采了就不要再采了
-		Get hPageGet = new Get(Bytes.toBytes(crawlUrl));
-		Result res = hPage.get(hPageGet);
-		if (res != null && !res.isEmpty()) {
-			LOG.info("url {} is crawled,don't insert to hbase", crawlUrl);
-			return;
-		}
-		if (StringUtil.isBlank(crawlUrl))
-			return;
-		LOG.info("=====insert {} to av_page=====", crawlUrl);
-		byte[] rowKey = Bytes.toBytes(crawlUrl);
-		Get get = new Get(rowKey);
-		get.addColumn(Bytes.toBytes("preference"), Bytes.toBytes("batchId"));
-		Result result = hPage.get(get);
-		// 判断是否已经crawl过
-		if (!result.isEmpty()) {
-			Cell cell = result.rawCells()[0];
-			Long v = Bytes.toLong(cell.getValueArray());
-			if (v.equals(batchId)) {
-				return;
-			}
-		}
+	private void insertInfoToPage(Long id, String crawlUrl) throws IOException {
+		LOG.info("insertInfoToPage first");
+		byte[] rowKey = Bytes.toBytes(id);
+		LOG.info("=====insert {} {} to av_page=====", crawlUrl, batchId);
 		Put put = new Put(rowKey);
-		put.add(Bytes.toBytes("preference"), Bytes.toBytes("batchId"), Bytes.toBytes(batchId));
-		put.add(Bytes.toBytes("preference"), Bytes.toBytes("encode"), Bytes.toBytes(encode));
+		put.add(Bytes.toBytes(AVColumnFamily.i.name()), Bytes.toBytes(AVColumn.bid.name()),
+				Bytes.toBytes(batchId));
+		put.add(Bytes.toBytes(AVColumnFamily.i.name()), Bytes.toBytes(AVColumn.url.name()),
+				Bytes.toBytes(crawlUrl));
+		put.add(Bytes.toBytes(AVColumnFamily.i.name()), Bytes.toBytes(AVColumn.e.name()),
+				Bytes.toBytes(encode));
 		hPage.put(put);
-		LOG.info("insertInfoToHbase end");
+		if (id > maxId) {
+			maxId = id;
+		}
+		LOG.info("insertInfoToPage second");
+	}
+
+	private void insertInfoToCrawlRes(String crawlUrl) throws IOException {
+		LOG.info("insertInfoToCrawlRes first");
+		byte[] rowKey = Bytes.toBytes(crawlUrl);
+
+		Get hPageGet = new Get(rowKey);
+		hPageGet.addFamily(Bytes.toBytes(AVColumnFamily.i.name()));
+		Result res = hPage.get(hPageGet);
+		Long id;
+		if (res != null && !res.isEmpty()) {
+			Long bid = Bytes.toLong(res.getValue(Bytes.toBytes(AVColumnFamily.i.name()),
+					Bytes.toBytes(AVColumn.id.name())));
+			// 判断是否已经采过，采了就不要再采了
+			if (batchId.equals(bid)) {
+				LOG.info("url {} is crawled,don't insert to hbase", crawlUrl);
+				return;
+			} else {
+				id = Bytes.toLong(res.getValue(Bytes.toBytes(AVColumnFamily.i.name()),
+						Bytes.toBytes(AVColumn.id.name())));
+			}
+		} else {
+			id = IdFactory.getInstance().nextId();
+		}
+
+		insertInfoToPage(id, crawlUrl);
+
+		LOG.info("=====insert {} {} to av_page=====", crawlUrl, batchId);
+		Put put = new Put(rowKey);
+		put.add(Bytes.toBytes(AVColumnFamily.i.name()), Bytes.toBytes(AVColumn.bid.name()),
+				Bytes.toBytes(batchId));
+		put.add(Bytes.toBytes(AVColumnFamily.i.name()), Bytes.toBytes(AVColumn.id.name()),
+				Bytes.toBytes(id));
+		hPage.put(put);
+		LOG.info("insertInfoToCrawlRes second");
 	}
 
 	private void insertCrawlLogToHbase(String crawlUrl) throws IOException {
-		LOG.info("insertCrawlLogToHbase start");
+		LOG.info("insertCrawlLogToHbase first");
 		if (StringUtil.isBlank(crawlUrl))
 			return;
-		LOG.info("=====insert {} to av_temp_crawl_log=====", crawlUrl);
+		LOG.info("=====insert {} {} to av_crawl=====", crawlUrl, batchId);
 		byte[] rowKey = Bytes.toBytes(crawlUrl);
 		Get get = new Get(rowKey);
-		get.addColumn(Bytes.toBytes("preference"), Bytes.toBytes("batchId"));
+		get.addColumn(Bytes.toBytes(AVColumnFamily.i.name()), Bytes.toBytes(AVColumn.bid.name()));
 		Result result = hPage.get(get);
 		// 判断是否已经crawl过
-		if (!result.isEmpty()) {
-			Cell cell = result.rawCells()[0];
-			Long v = Bytes.toLong(cell.getValueArray());
+		if (result != null && !result.isEmpty()) {
+			Long v = Bytes.toLong(result.getValue(Bytes.toBytes(AVColumnFamily.i.name()),
+					Bytes.toBytes(AVColumn.bid.name())));
 			if (v.equals(batchId)) {
 				return;
 			}
 		}
 		Put put = new Put(rowKey);
-		put.add(Bytes.toBytes("preference"), Bytes.toBytes("batchId"), Bytes.toBytes(batchId));
+		Long id = IdFactory.getInstance().nextId();
+		put.add(Bytes.toBytes(AVTable.av_crawl.name()),
+				Bytes.toBytes(AVColumn.id.name()), Bytes.toBytes(id));
 		hTempCrawlLog.put(put);
-		LOG.info("insertCrawlLogToHbase end");
+		LOG.info("insertCrawlLogToHbase second");
 	}
 
 	public static void main(String[] args) {

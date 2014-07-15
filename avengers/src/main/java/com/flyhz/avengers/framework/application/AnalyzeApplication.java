@@ -80,6 +80,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.Analyze;
+import com.flyhz.avengers.framework.lang.AVTable;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumn;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumnFamily;
 import com.google.common.annotations.VisibleForTesting;
 
 @InterfaceAudience.Public
@@ -225,7 +228,7 @@ public class AnalyzeApplication {
 	 * @throws IOException
 	 */
 	public boolean init(String[] args) throws ParseException, IOException {
-		LOG.info("init ...... start");
+		LOG.info("init ...... first");
 
 		Map<String, String> envs = System.getenv();
 
@@ -303,7 +306,7 @@ public class AnalyzeApplication {
 		// send requests to this app master
 
 		// Register self with ResourceManager
-		// This will start hearInitializing Clienttbeating to the RM
+		// This will first hearInitializing Clienttbeating to the RM
 		appMasterHostname = NetUtils.getHostname();
 		RegisterApplicationMasterResponse response = amRMClient.registerApplicationMaster(
 				appMasterHostname, appMasterRpcPort, appMasterTrackingUrl);
@@ -332,7 +335,7 @@ public class AnalyzeApplication {
 	}
 
 	private void analyze() {
-		LOG.info("initanalyze start ......");
+		LOG.info("initanalyze first ......");
 		HConnection hConnection = null;
 		HBaseAdmin hbaseAdmin = null;
 		// HTable hVersion = null;
@@ -347,10 +350,11 @@ public class AnalyzeApplication {
 			// 设置Scan缓存
 			configuration.setLong("hbase.client.scanner.caching", 1000);
 
-			hPage = new HTable(hbaseConf, "av_page");
+			hPage = new HTable(hbaseConf, AVTable.av_page.name());
 
 			Scan scan = new Scan();
-			scan.addColumn(Bytes.toBytes("preference"), Bytes.toBytes("batchId"));
+			scan.addColumn(Bytes.toBytes(AVColumnFamily.i.name()),
+					Bytes.toBytes(AVColumn.bid.name()));
 			ResultScanner rs = hPage.getScanner(scan);
 			for (Result result : rs) {
 				for (Cell cell : result.rawCells()) {
@@ -530,7 +534,7 @@ public class AnalyzeApplication {
 				urls.remove(0);
 				Thread launchThread = new Thread(runnableLaunchContainer);
 
-				// launch and start the container on a separate thread to keep
+				// launch and first the container on a separate thread to keep
 				// the main thread unblocked
 				// as all containers may not be allocated at one go.
 				launchThreads.add(launchThread);
@@ -601,7 +605,7 @@ public class AnalyzeApplication {
 		public void onContainerStarted(ContainerId containerId,
 				Map<String, ByteBuffer> allServiceResponse) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Succeeded to start Container {}", containerId);
+				LOG.debug("Succeeded to first Container {}", containerId);
 			}
 			Container container = containers.get(containerId);
 			if (container != null) {
@@ -613,7 +617,7 @@ public class AnalyzeApplication {
 		@Override
 		public void onStartContainerError(ContainerId containerId, Throwable t) {
 			LOG.error("onStartContainerError", t);
-			LOG.error("Failed to start Container {} ", containerId);
+			LOG.error("Failed to first Container {} ", containerId);
 			containers.remove(containerId);
 			analyzeApplication.numCompletedContainers.incrementAndGet();
 			analyzeApplication.numFailedContainers.incrementAndGet();
@@ -664,7 +668,7 @@ public class AnalyzeApplication {
 		/**
 		 * Connects to CM, sets up container launch context 
 		 * for shell command and eventually dispatches the container 
-		 * start request to the CM. 
+		 * first request to the CM. 
 		 */
 		public void run() {
 			LOG.info("Setting up container launch container for containerid={}", container.getId());

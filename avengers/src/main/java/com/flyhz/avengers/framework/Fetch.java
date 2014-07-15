@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
@@ -16,18 +17,29 @@ import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.common.event.URLFetchEvent;
 import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.lang.Event;
 import com.flyhz.avengers.framework.util.StringUtil;
 
-public class Fetch extends AvengersExecutor {
+public class Fetch extends AvengersExecutor implements Runnable {
+
 	private static final Logger	LOG			= LoggerFactory.getLogger(Fetch.class);
 	public static final String	FETCH_URL	= "fetch.url";
+
+	public Fetch() {
+		super();
+	}
+
+	public Fetch(Map<String, Object> context) {
+		super(context);
+	}
 
 	public static void main(String[] args) {
 		try {
 			LOG.info("fetch begin..............");
 			AvengersExecutor fetch = new Fetch();
-			fetch.execute(args);
-			LOG.info("fetch end..............");
+			fetch.init(args);
+			fetch.execute();
+			LOG.info("fetch second..............");
 		} catch (Throwable th) {
 			LOG.error("", th);
 			System.exit(0);
@@ -52,16 +64,6 @@ public class Fetch extends AvengersExecutor {
 			throw new IllegalArgumentException("No args specified for Fetch to initialize");
 		}
 
-		if (cliParser.hasOption("help")) {
-			printUsage(opts);
-			System.exit(0);
-		}
-
-		if (cliParser.hasOption("debug")) {
-			dumpOutDebugInfo();
-			System.exit(0);
-		}
-
 		String url = cliParser.getOptionValue("url");
 		if (StringUtil.isBlank(url)) {
 			System.exit(0);
@@ -74,10 +76,11 @@ public class Fetch extends AvengersExecutor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	List<Event> initAvengersEvents(Map<String, Object> context) {
+	List<Event> initAvengersEvents() {
+		Map<String, Object> context = getContext();
 		// 默认调用URLFetchEvent
 		List<Event> events = new ArrayList<Event>();
-		events.add(new URLFetchEvent());
+		events.add(new URLFetchEvent(context));
 		// 查询是否有自定义FetchEvent
 		String url = (String) context.get(FETCH_URL);
 		if (StringUtils.isNotBlank(url)) {
@@ -103,5 +106,19 @@ public class Fetch extends AvengersExecutor {
 	@Override
 	Logger getLog() {
 		return LOG;
+	}
+
+	@Override
+	public void run() {
+		@SuppressWarnings("unchecked")
+		BlockingQueue<String> queue = (BlockingQueue<String>) getContext().get(FetchRange.QUEUE);
+		try {
+			String url = queue.take();
+			String[] args = new String[] { "-url", url };
+			init(args);
+			execute();
+		} catch (InterruptedException e) {
+			LOG.error("", e);
+		}
 	}
 }

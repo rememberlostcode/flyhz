@@ -18,23 +18,29 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 
 import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.lang.Event;
 import com.flyhz.avengers.framework.util.StringUtil;
 
-public abstract class AvengersExecutor {
+public abstract class AvengersExecutor implements Runnable {
 
 	/**
 	 * LONG
 	 */
-	public static final String			BATCH_ID	= "batchId";
+	public static final String	BATCH_ID	= "batchId";
 
-	private final List<Event>			events		= new ArrayList<Event>();
+	private List<Event>			events		= new ArrayList<Event>();
 
-	private final Map<String, Object>	context		= new HashMap<String, Object>();
+	private Map<String, Object>	context;
 
-	protected final Options				opts		= new Options();
+	protected final Options		opts		= new Options();
 
-	public AvengersExecutor() {
+	protected AvengersExecutor() {
+		context = new HashMap<String, Object>();
 		context.putAll(XConfiguration.getAvengersContext());
+	}
+
+	protected AvengersExecutor(Map<String, Object> context) {
+		this.context = context;
 	}
 
 	abstract Logger getLog();
@@ -65,19 +71,23 @@ public abstract class AvengersExecutor {
 		}
 	}
 
-	abstract List<Event> initAvengersEvents(Map<String, Object> context);
+	abstract List<Event> initAvengersEvents();
 
-	protected void init(String[] args) {
+	public void init(String[] args) {
 		initAvengersContext(args);
-		List<Event> events = initAvengersEvents(context);
+		List<Event> events = initAvengersEvents();
 		this.events.addAll(events);
 	}
 
-	protected void execute(String[] args) {
-		init(args);
+	public void execute() {
 		for (Event event : events) {
-			event.call(context);
+			event.call();
 		}
+	}
+
+	@Override
+	public void run() {
+		execute();
 	}
 
 	abstract Map<String, Object> initArgs(String[] args);
@@ -118,7 +128,7 @@ public abstract class AvengersExecutor {
 		} catch (IOException e) {
 			getLog().error("", e);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			getLog().error("", e);
 		}
 	}
 
@@ -128,5 +138,9 @@ public abstract class AvengersExecutor {
 
 	public Map<String, Object> getContext() {
 		return Collections.unmodifiableMap(context);
+	}
+
+	protected void put(String key, Object value) {
+		this.context.put(key, value);
 	}
 }

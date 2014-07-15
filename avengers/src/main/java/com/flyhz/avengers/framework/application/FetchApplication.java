@@ -28,19 +28,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HConnection;
 import org.apache.hadoop.hbase.client.HConnectionManager;
@@ -48,9 +50,6 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
-import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
-import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.DataOutputBuffer;
 import org.apache.hadoop.net.NetUtils;
@@ -87,7 +86,12 @@ import org.apache.hadoop.yarn.util.Records;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.Fetch;
+import com.flyhz.avengers.framework.FetchRange;
+import com.flyhz.avengers.framework.common.obj.XPair;
+import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.lang.AVTable;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumn;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumnFamily;
 import com.google.common.annotations.VisibleForTesting;
 
 @InterfaceAudience.Public
@@ -153,9 +157,11 @@ public class FetchApplication {
 
 	private long								batchId;
 
-	private Set<String>							urls					= new ConcurrentSkipListSet<String>();
+	private Options								opts;
 
-	private List<String>						nodeSet					= new ArrayList<String>();
+	private BlockingQueue<String>				nodeQueue;
+
+	private Vector<XPair<Long, Long>>			pairs					= new Vector<XPair<Long, Long>>();
 
 	public FetchApplication() {
 		// Set up the configuration
@@ -235,7 +241,15 @@ public class FetchApplication {
 	 * @throws IOException
 	 */
 	public boolean init(String[] args) throws ParseException, IOException {
-		LOG.info("init ...... start");
+		LOG.info("init ...... first");
+		if (args.length == 0) {
+			throw new IllegalArgumentException("No args specified for client to initialize");
+		}
+
+		opts = new Options();
+		opts.addOption("batchId", true, "batchId");
+		CommandLine cliParser = new GnuParser().parse(opts, args);
+		this.batchId = Long.valueOf(cliParser.getOptionValue("batchId"));
 
 		Map<String, String> envs = System.getenv();
 
@@ -312,7 +326,7 @@ public class FetchApplication {
 		// send requests to this app master
 
 		// Register self with ResourceManager
-		// This will start hearInitializing Clienttbeating to the RM
+		// This will first hearInitializing Clienttbeating to the RM
 		appMasterHostname = NetUtils.getHostname();
 		RegisterApplicationMasterResponse response = amRMClient.registerApplicationMaster(
 				appMasterHostname, appMasterRpcPort, appMasterTrackingUrl);
@@ -341,7 +355,7 @@ public class FetchApplication {
 	}
 
 	private void fetch() {
-		LOG.info("initFetch start ......");
+		LOG.info("initFetch first ......");
 		YarnClient yarnClient = YarnClient.createYarnClient();
 		yarnClient.init(conf);
 		yarnClient.start();
@@ -349,10 +363,18 @@ public class FetchApplication {
 		try {
 			clusterNodeReports = yarnClient.getNodeReports(NodeState.RUNNING);
 			LOG.info("Got all node!");
+			int size = clusterNodeReports.size();
+			LOG.info("fetch queue size is {}", size);
+			nodeQueue = new ArrayBlockingQueue<String>(size);
 			for (NodeReport node : clusterNodeReports) {
-				nodeSet.add(node.getNodeId().getHost());
+				String host = node.getNodeId().getHost();
+				try {
+					nodeQueue.put(host);
+				} catch (InterruptedException e) {
+					LOG.error("nodeQueue put error host is " + host, e);
+					throw new RuntimeException("nodeQueue put error host is " + host, e);
+				}
 			}
-			numTotalContainers = nodeSet.size();
 
 		} catch (YarnException e) {
 			LOG.error("initJarAndClasspath", e);
@@ -368,6 +390,7 @@ public class FetchApplication {
 		HBaseAdmin hbaseAdmin = null;
 		// HTable hVersion = null;
 		HTable hPage = null;
+		HTable hDomain = null;
 		try {
 			hConnection = HConnectionManager.createConnection(hbaseConf);
 			hbaseAdmin = new HBaseAdmin(hConnection);
@@ -378,38 +401,58 @@ public class FetchApplication {
 			// 设置Scan缓存
 			configuration.setLong("hbase.client.scanner.caching", 1000);
 
-			hPage = new HTable(hbaseConf, "av_page");
-
-			Scan scan = new Scan();
-			scan.addColumn(Bytes.toBytes("preference"), Bytes.toBytes("batchId"));
-
-			AggregationClient ac = new AggregationClient(hbaseConf);
-
-			Long count = ac.rowCount(TableName.valueOf("av_page"), new LongColumnInterpreter(),
-					scan);
-			Integer nodeNum = nodeSet.size();
-			Long pageSize = count % nodeNum == 0 ? count / nodeNum : count / nodeNum + 1;
-			LOG.info("count = {},nodeNum = {},pageSize = {}", count, nodeNum, pageSize);
-			PageFilter pageFilter = new PageFilter(pageSize);
-			scan.setFilter(pageFilter);
-			ResultScanner rs = hPage.getScanner(scan);
-			if (rs != null && rs.iterator().hasNext()) {
-				for (Result result : rs) {
-					String url = Bytes.toString(result.getRow());
-					Long value = Bytes.toLong(result.getValue(Bytes.toBytes("preference"),
-							Bytes.toBytes("batchId")));
-					LOG.info("rowkey -> {},batchId ->{}", url, value);
-					if (value.equals(this.batchId)) {
-						urls.add(url);
-						this.numTotalContainers += 1;
-						ContainerRequest containerAsk = setupContainerAskForRM();
-						amRMClient.addContainerRequest(containerAsk);
+			hPage = new HTable(hbaseConf, AVTable.av_page.name());
+			Scan hPageScan = new Scan();
+			hPageScan.addColumn(Bytes.toBytes(AVColumnFamily.i.name()),
+					Bytes.toBytes(AVColumn.bid.name()));
+			ResultScanner hPageRs = hPage.getScanner(hPageScan);
+			if (hPageRs != null) {
+				Long startKey = 0L;
+				Long endKey = 0L;
+				for (Result result : hPageRs) {
+					Long id = Bytes.toLong(result.getRow());
+					Long batchId = Bytes.toLong(result.getValue(
+							Bytes.toBytes(AVColumnFamily.i.name()),
+							Bytes.toBytes(AVColumn.bid.name())));
+					if (this.batchId == batchId) {
+						LOG.info("rowkey -> {},batchId ->{}", id, batchId);
+						startKey = id;
+						break;
 					}
-
 				}
+				hDomain = new HTable(hbaseConf, AVTable.av_domain.name());
+				Scan hDomainScan = new Scan();
+				hDomainScan.addColumn(Bytes.toBytes(AVColumnFamily.i.name()),
+						Bytes.toBytes(AVColumn.bid.name()));
+				ResultScanner hDomainRs = hDomain.getScanner(hDomainScan);
+				if (hDomainRs == null) {
+					return;
+				}
+				for (Result result : hDomainRs) {
+					Long value = Bytes.toLong(result.getValue(
+							Bytes.toBytes(AVColumnFamily.i.name()),
+							Bytes.toBytes(AVColumn.bid.name())));
+					if (endKey.compareTo(value) < 0) {
+						endKey = value;
+					}
+				}
+				LOG.info("startKey > {},endKey > {}", startKey, endKey);
+				numTotalContainers = (Integer) XConfiguration.getAvengersContext().get(
+						XConfiguration.NUM_FETCH_CONTAINERS);
+				Long sk = startKey;
+				Long size = (endKey - startKey + 1) / numTotalContainers;
 				for (int i = 0; i < numTotalContainers; i++) {
+					Long ek = sk + size;
+					XPair<Long, Long> pair = new XPair<Long, Long>(sk, ek);
+					pairs.add(pair);
 					ContainerRequest containerAsk = setupContainerAskForRM();
 					amRMClient.addContainerRequest(containerAsk);
+
+				}
+
+				for (int i = 0; i < numTotalContainers; i++) {
+					// ContainerRequest containerAsk = setupContainerAskForRM();
+					// amRMClient.addContainerRequest(containerAsk);
 				}
 
 				numRequestedContainers.set(numTotalContainers);
@@ -560,7 +603,7 @@ public class FetchApplication {
 			numAllocatedContainers.addAndGet(allocatedContainers.size());
 			for (int i = 0; i < allocatedContainers.size(); i++) {
 				Container allocatedContainer = allocatedContainers.get(i);
-				Iterator<String> it = urls.iterator();
+				Iterator<XPair<Long, Long>> it = pairs.iterator();
 				if (it.hasNext()) {
 					LOG.info("Launching shell command on a new container." + ", containerId="
 							+ allocatedContainer.getId() + ", containerNode="
@@ -576,7 +619,7 @@ public class FetchApplication {
 					it.remove();
 				}
 
-				// launch and start the container on a separate thread to keep
+				// launch and first the container on a separate thread to keep
 				// the main thread unblocked
 				// as all containers may not be allocated at one go.
 
@@ -631,6 +674,11 @@ public class FetchApplication {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Succeeded to stop Container " + containerId);
 			}
+			try {
+				fetchApplication.nodeQueue.put(containers.get(containerId).getNodeId().getHost());
+			} catch (InterruptedException e) {
+				LOG.error("onContainerStopped", e);
+			}
 			containers.remove(containerId);
 		}
 
@@ -646,7 +694,7 @@ public class FetchApplication {
 		public void onContainerStarted(ContainerId containerId,
 				Map<String, ByteBuffer> allServiceResponse) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Succeeded to start Container {}", containerId);
+				LOG.debug("Succeeded to first Container {}", containerId);
 			}
 			Container container = containers.get(containerId);
 			if (container != null) {
@@ -658,7 +706,12 @@ public class FetchApplication {
 		@Override
 		public void onStartContainerError(ContainerId containerId, Throwable t) {
 			LOG.error("onStartContainerError", t);
-			LOG.error("Failed to start Container {} ", containerId);
+			LOG.error("Failed to first Container {} ", containerId);
+			try {
+				fetchApplication.nodeQueue.put(containers.get(containerId).getNodeId().getHost());
+			} catch (InterruptedException e) {
+				LOG.error("onStartContainerError", e);
+			}
 			containers.remove(containerId);
 			fetchApplication.numCompletedContainers.incrementAndGet();
 			fetchApplication.numFailedContainers.incrementAndGet();
@@ -672,6 +725,11 @@ public class FetchApplication {
 		@Override
 		public void onStopContainerError(ContainerId containerId, Throwable t) {
 			LOG.error("Failed to stop Container " + containerId);
+			try {
+				fetchApplication.nodeQueue.put(containers.get(containerId).getNodeId().getHost());
+			} catch (InterruptedException e) {
+				LOG.error("onStopContainerError", e);
+			}
 			containers.remove(containerId);
 		}
 	}
@@ -687,7 +745,7 @@ public class FetchApplication {
 
 		NMCallbackHandler	containerListener;
 
-		String				url;
+		XPair<Long, Long>	startEndKeyPair;
 
 		Long				batchId;
 
@@ -698,10 +756,10 @@ public class FetchApplication {
 		 *            Callback handler of the container
 		 */
 		public LaunchContainerRunnable(Container lcontainer, NMCallbackHandler containerListener,
-				String url, Long batchId) {
+				XPair<Long, Long> pair, Long batchId) {
 			this.container = lcontainer;
 			this.containerListener = containerListener;
-			this.url = url;
+			this.startEndKeyPair = pair;
 			this.batchId = batchId;
 		}
 
@@ -709,7 +767,7 @@ public class FetchApplication {
 		/**
 		 * Connects to CM, sets up container launch context 
 		 * for shell command and eventually dispatches the container 
-		 * start request to the CM. 
+		 * first request to the CM. 
 		 */
 		public void run() {
 			LOG.info("Setting up container launch container for containerid={}", container.getId());
@@ -719,7 +777,6 @@ public class FetchApplication {
 				if (!v.getKey().equals("JAVA_HOME")) {
 					env.put(v.getKey(), v.getValue());
 				}
-
 			}
 			String localJarDir = conf.get("hadoop.tmp.dir") + "/" + batchId + "/avengers.jar";
 
@@ -739,25 +796,17 @@ public class FetchApplication {
 			vargs.add(Environment.JAVA_HOME.$() + "/bin/java");
 			// Set Xmx based on am memory size
 			vargs.add("-Xmx" + containerMemory + "m");
-			// vargs.add("-classpath");
-			// vargs.add(Environment.CLASSPATH.$() + ":" + localJarDir + ":"
-			// + Environment.HADOOP_YARN_HOME.$() + "/share/hadoop/yarn/lib/*:"
-			// + Environment.HADOOP_CONF_DIR.$() + ":" +
-			// Environment.HADOOP_COMMON_HOME.$()
-			// + "/share/hadoop/common/*" + Environment.HADOOP_COMMON_HOME.$()
-			// + "/share/hadoop/common/lib/*:" +
-			// Environment.HADOOP_COMMON_HOME.$()
-			// + "/share/hadoop/common/lib/*:" +
-			// Environment.HADOOP_HDFS_HOME.$()
-			// + "/share/hadoop/hdfs/*:" + Environment.HADOOP_HDFS_HOME.$()
-			// + "/share/hadoop/hdfs/lib/*:" + Environment.HADOOP_YARN_HOME.$()
-			// + "/share/hadoop/yarn/*:./log4j.properties");
 			// Set executable command
-			vargs.add(Fetch.class.getName());
-			vargs.add("-url");
-			vargs.add(this.url);
+			vargs.add(FetchRange.class.getName());
+			vargs.add("-start");
+			vargs.add(String.valueOf(this.startEndKeyPair.getFirst()));
+			vargs.add("-end");
+			vargs.add(String.valueOf(this.startEndKeyPair.getSecond()));
 			vargs.add("-batchId");
 			vargs.add(String.valueOf(this.batchId));
+
+			vargs.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/FetchRange.stdout");
+			vargs.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + "/FetchRange.stderr");
 
 			// Get final commmand
 			StringBuilder command = new StringBuilder();
@@ -794,11 +843,19 @@ public class FetchApplication {
 		// For now, only memory is supported so we set memory requirements
 		Resource capability = Records.newRecord(Resource.class);
 		capability.setMemory(containerMemory);
-		ContainerRequest request = new ContainerRequest(capability, null, null, pri);
-		LOG.info("Requested container ask: {},request node: {} ", request.toString(),
-				request.getNodes() != null && !request.getNodes().isEmpty() ? request.getNodes()
-																						.get(0)
-						: "");
-		return request;
+		try {
+			String[] node = new String[] { nodeQueue.take() };
+			ContainerRequest request = new ContainerRequest(capability, node, null, pri, false);
+			LOG.info(
+					"Requested container ask: {},request node: {} ",
+					request.toString(),
+					request.getNodes() != null && !request.getNodes().isEmpty() ? request.getNodes()
+																							.get(0)
+							: "");
+			return request;
+		} catch (InterruptedException e) {
+			LOG.error("setupContainerAskForRM nodeQueue.take()", e);
+		}
+		return null;
 	}
 }

@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -28,17 +27,14 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.Event;
 import com.flyhz.avengers.framework.Fetch;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumnFamily;
+import com.flyhz.avengers.framework.lang.AbstractEvent;
 import com.flyhz.avengers.framework.util.URLXConnectionUtil;
 
-public class URLFetchEvent implements Event {
-	private static final Logger	LOG			= LoggerFactory.getLogger(URLFetchEvent.class);
-	HConnection					hConnection	= null;
-	HBaseAdmin					hbaseAdmin	= null;
-	HTable						hPage		= null;
-
-	public URLFetchEvent() {
+public class URLFetchEvent extends AbstractEvent {
+	public URLFetchEvent(Map<String, Object> context) {
+		super(context);
 		LOG.info("URLFetchEvent()");
 		Configuration hconf = HBaseConfiguration.create();
 		hconf.set("hbase.zookeeper.quorum", "m1,s1,s2");
@@ -52,6 +48,11 @@ public class URLFetchEvent implements Event {
 			LOG.error("URLCrawlEvent", e);
 		}
 	}
+
+	private static final Logger	LOG			= LoggerFactory.getLogger(URLFetchEvent.class);
+	HConnection					hConnection	= null;
+	HBaseAdmin					hbaseAdmin	= null;
+	HTable						hPage		= null;
 
 	private StringBuffer readResponse(URLConnection connection, String charset) throws IOException {
 		// 定义BufferedReader输入流来读取URL的响应
@@ -69,13 +70,13 @@ public class URLFetchEvent implements Event {
 	}
 
 	@Override
-	public boolean call(Map<String, Object> context) {
+	public boolean call() {
 		LOG.info("urlFetchEvent begin..............");
 		// 获得参数URL并建立请求连接，返回response数据
 		String fetchUrl = (String) context.get(Fetch.FETCH_URL);
 		Long batchId = (Long) context.get(Fetch.BATCH_ID);
 		Get get = new Get(Bytes.toBytes(fetchUrl));
-		get.addFamily(Bytes.toBytes("preference"));
+		get.addFamily(Bytes.toBytes(AVColumnFamily.i.name()));
 		Result result = null;
 		try {
 			result = hPage.get(get);
@@ -85,11 +86,12 @@ public class URLFetchEvent implements Event {
 		if (result == null || result.isEmpty()) {
 			return false;
 		}
-		Cell[] cells = result.rawCells();
-
-		String batchIdColumn = Bytes.toString(cells[0].getQualifierArray());
-		if ("batchId".equals(batchIdColumn) && batchId == Bytes.toLong(cells[0].getValueArray())) {
-			String encode = Bytes.toString(cells[1].getValueArray());
+		Long hBatchId = Bytes.toLong(result.getValue(Bytes.toBytes("preference"),
+				Bytes.toBytes("batchId")));
+		LOG.info("fetch event batchId = {},hBatchId = {}", batchId, hBatchId);
+		if (batchId.equals(hBatchId)) {
+			String encode = Bytes.toString(result.getValue(Bytes.toBytes("preference"),
+					Bytes.toBytes("encode")));
 
 			HttpURLConnection connection = null;
 			StringBuffer sb = null;
@@ -148,7 +150,7 @@ public class URLFetchEvent implements Event {
 						}
 					}
 				}
-				LOG.info("urlFetchEvent end..............");
+				LOG.info("urlFetchEvent second..............");
 			} catch (MalformedURLException e) {
 				LOG.error("", e);
 			}

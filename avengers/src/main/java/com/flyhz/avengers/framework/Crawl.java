@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
@@ -16,22 +14,24 @@ import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.common.event.URLCrawlEvent;
 import com.flyhz.avengers.framework.config.XConfiguration;
+import com.flyhz.avengers.framework.lang.Event;
 import com.flyhz.avengers.framework.util.StringUtil;
 
 public class Crawl extends AvengersExecutor {
 
-	private static final Logger		LOG			= LoggerFactory.getLogger(Crawl.class);
+	private static final Logger	LOG			= LoggerFactory.getLogger(Crawl.class);
 
-	private final ExecutorService	es			= Executors.newFixedThreadPool(10);
+	// private final ExecutorService es = Executors.newFixedThreadPool(10);
 
-	public static final String		CRAWL_URL	= "crawl.url";
+	public static final String	CRAWL_URL	= "crawl.url";
 
 	public static void main(String[] args) {
 		try {
 			LOG.info("crawl begin..............");
 			LOG.info("crawl main CLASSPATH -> " + System.getenv("CLASSPATH"));
 			AvengersExecutor crawl = new Crawl();
-			crawl.execute(args);
+			crawl.init(args);
+			crawl.execute();
 		} catch (Throwable th) {
 			LOG.error("", th);
 		}
@@ -65,13 +65,13 @@ public class Crawl extends AvengersExecutor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	List<Event> initAvengersEvents(Map<String, Object> context) {
+	List<Event> initAvengersEvents() {
 		List<Event> list = null;
-		if (context.get(XConfiguration.CRAWL_EVENTS) != null) {
-			list = (List<Event>) context.get(XConfiguration.CRAWL_EVENTS);
+		if (getContext().get(XConfiguration.CRAWL_EVENTS) != null) {
+			list = (List<Event>) getContext().get(XConfiguration.CRAWL_EVENTS);
 		} else {
 			list = new ArrayList<Event>();
-			list.add(new URLCrawlEvent());
+			list.add(new URLCrawlEvent(getContext()));
 		}
 		return list;
 	}

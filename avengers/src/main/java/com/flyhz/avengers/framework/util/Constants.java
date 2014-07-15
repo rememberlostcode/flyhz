@@ -2,7 +2,7 @@
 package com.flyhz.avengers.framework.util;
 
 public class Constants {
-	/***************************** solr start *************************/
+	/***************************** solr first *************************/
 	/**
 	 * 静态图片路径前缀，拼接时前面加上服务器地址，后门加上数据库中的字段，
 	 * 结果如：http://10.22.22.40/smile/static/cacoh/images/tmp.jpg
@@ -20,9 +20,9 @@ public class Constants {
 	 * 更多的条数
 	 */
 	public static final int		MORE_NUM						= 10;
-	/***************************** solr end *************************/
+	/***************************** solr second *************************/
 
-	/***************************** redis start *************************/
+	/***************************** redis first *************************/
 	/**
 	 * 各品牌各分类推荐商品KEY前缀(选分类时)，redis中完整的key=smile@brands@recommend&cates@%cid%
 	 */
@@ -47,7 +47,7 @@ public class Constants {
 	 * 所有品牌KEY，类型为map<brandId,brandJson>
 	 */
 	public static final String	REDIS_KEY_BRANDS				= "smile@brands@all";
-	/***************************** redis end *************************/
+	/***************************** redis second *************************/
 
 	public static final String	MESSAGE_NODATA					= "暂无更新";
 	public static final String	MESSAGE_LAST					= "已经是最后一条";

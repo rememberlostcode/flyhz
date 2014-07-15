@@ -15,6 +15,7 @@
 	<element name="xDomains">
 		<complexType>
 			<sequence>
+				<element name="globalVariable" type="ave:xGlobalVariable" minOccurs="1" maxOccurs="1"/>
 				<element name="proxy"  type="ave:xProxy" minOccurs="0" maxOccurs="1"/>
 				<element name="domain" type="ave:xDomain" minOccurs="1" maxOccurs="unbounded"/>
 			</sequence>
@@ -99,6 +100,14 @@
 			<element name="proxyPort" type="unsignedShort"/>
 			<element name="username" type="token" minOccurs="0"/>
 			<element name="password" type="token" minOccurs="0"/>
+		</all>
+	</complexType>
+	<complexType name="xGlobalVariable">
+		<all>
+			<element name="numCrawlThreads" type="unsignedShort" default="3"/>
+			<element name="numFetchContainers" type="unsignedShort" default="10"/>
+			<element name="numFetchThreads" type="unsignedShort" default="3"/>
+			<element name="numAnalyzeThreads" type="unsignedShort" default="3"/>
 		</all>
 	</complexType>
 </schema>
