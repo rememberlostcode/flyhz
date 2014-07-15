@@ -156,7 +156,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		
+
 		brandList.clear();
 		brandList = null;
 		if (brandAdapter != null) {
@@ -177,7 +177,11 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 	 * 添加页卡
 	 */
 	private void addViewPager() {
-		viewList = new ArrayList<View>();
+		if (viewList == null) {
+			viewList = new ArrayList<View>();
+		} else {
+			viewList.clear();
+		}
 		LayoutInflater inflater = getLayoutInflater();
 		// 添加页卡数据
 		if (recActList != null && !recActList.isEmpty()) {
@@ -275,92 +279,87 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 	}
 
 	@SuppressLint("HandlerLeak")
-	private final Handler		mUIHandler				= new Handler() {
+	private final Handler	mUIHandler	= new Handler() {
 
-															@Override
-															public void handleMessage(Message msg) {
-																switch (msg.what) {
-																	case WHAT_DID_LOAD_DATA: {
-																		if (msg.obj != null) {
-																			RtnValueDto rvd = (RtnValueDto) msg.obj;
-																			if (CodeValidator.dealCode(
-																					context, rvd)) {
-																				recActList.clear();
-																				brandList.clear();
+											@Override
+											public void handleMessage(Message msg) {
+												switch (msg.what) {
+													case WHAT_DID_LOAD_DATA: {
+														if (msg.obj != null) {
+															RtnValueDto rvd = (RtnValueDto) msg.obj;
+															if (CodeValidator.dealCode(context, rvd)) {
+																recActList.clear();
+																brandList.clear();
 
-																				IndexBrands obj = rvd.getIndexBrandsData();
-																				if (obj != null) {
-																					// 活动区商品
-																					List<JActivity> jActList = obj.getActivitys();
-																					if (jActList != null
-																							&& !jActList.isEmpty()) {
-																						int jSize = jActList.size();
-																						for (int i = 0; i < jSize; i++) {
-																							JActivity each = jActList.get(i);
-																							recActList.add(each);
-																						}
-
-																						addViewPager();// 添加页卡
-																						// 实例化适配器
-																						pagerAdapter = new MyPagerAdapter(
-																								viewList,
-																								true);
-																						mViewPager.setAdapter(pagerAdapter);
-																						mViewPager.setCurrentItem(0); // 设置默认当前页
-																					}
-
-																					// 品牌区
-																					// 品牌区
-																					List<Brand> brands = obj.getBrands();
-																					if (brands != null
-																							&& !brands.isEmpty()) {
-																						int bSize = brands.size();
-																						for (int i = 0; i < bSize; i++) {
-																							Brand each = brands.get(i);
-																							brandList.add(each);
-																						}
-																					}
-																					brandAdapter.notifyDataSetChanged();
-																					mPullToRefreshView.onHeaderRefreshComplete();
-																				}
-																			}
-																		} else {
-																			CodeValidator.dealCode(
-																					context, null);
+																IndexBrands obj = rvd.getIndexBrandsData();
+																if (obj != null) {
+																	// 活动区商品
+																	List<JActivity> jActList = obj.getActivitys();
+																	if (jActList != null
+																			&& !jActList.isEmpty()) {
+																		int jSize = jActList.size();
+																		for (int i = 0; i < jSize; i++) {
+																			JActivity each = jActList.get(i);
+																			recActList.add(each);
 																		}
-																		closeLoading();
-																		break;
+
+																		addViewPager();// 添加页卡
+																		// 实例化适配器
+																		pagerAdapter = new MyPagerAdapter(
+																				viewList, true);
+																		mViewPager.setAdapter(pagerAdapter);
+																		mViewPager.setCurrentItem(0); // 设置默认当前页
 																	}
-																	case WHAT_DID_REFRESH: {
-																		brandList.clear();
-																		if (msg.obj != null) {
-																			RtnValueDto obj = (RtnValueDto) msg.obj;
-																			if (CodeValidator.dealCode(
-																					context, obj)) {
-																				if (obj.getIndexBrandsData() != null) {
-																					// 品牌区
-																					List<Brand> brands = obj.getIndexBrandsData()
-																											.getBrands();
-																					if (brands != null
-																							&& !brands.isEmpty()) {
-																						int bSize = brands.size();
-																						for (int i = 0; i < bSize; i++) {
-																							Brand each = brands.get(i);
-																							brandList.add(each);
-																						}
-																					}
-																				}
-																			}
-																		} else {
-																			CodeValidator.dealCode(
-																					context, null);
+
+																	// 品牌区
+																	// 品牌区
+																	List<Brand> brands = obj.getBrands();
+																	if (brands != null
+																			&& !brands.isEmpty()) {
+																		int bSize = brands.size();
+																		for (int i = 0; i < bSize; i++) {
+																			Brand each = brands.get(i);
+																			brandList.add(each);
 																		}
-																		brandAdapter.notifyDataSetChanged();
-																		mPullToRefreshView.onHeaderRefreshComplete();
-																		closeLoading();
-																		break;
+																	}
+																	brandAdapter.notifyDataSetChanged();
+																	mPullToRefreshView.onHeaderRefreshComplete();
+																}
+															}
+														} else {
+															CodeValidator.dealCode(context, null);
+														}
+														closeLoading();
+														break;
+													}
+													case WHAT_DID_REFRESH: {
+														brandList.clear();
+														if (msg.obj != null) {
+															RtnValueDto obj = (RtnValueDto) msg.obj;
+															if (CodeValidator.dealCode(context, obj)) {
+																if (obj.getIndexBrandsData() != null) {
+																	// 品牌区
+																	List<Brand> brands = obj.getIndexBrandsData()
+																							.getBrands();
+																	if (brands != null
+																			&& !brands.isEmpty()) {
+																		int bSize = brands.size();
+																		for (int i = 0; i < bSize; i++) {
+																			Brand each = brands.get(i);
+																			brandList.add(each);
+																		}
 																	}
 																}
 															}
-														};
+														} else {
+															CodeValidator.dealCode(context, null);
+														}
+														brandAdapter.notifyDataSetChanged();
+														mPullToRefreshView.onHeaderRefreshComplete();
+														closeLoading();
+														break;
+													}
+												}
+											}
+										};
 }
