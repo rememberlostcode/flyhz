@@ -76,5 +76,34 @@ public class TaobaoController {
 		protocol.setCode(code);
 		model.addAttribute("protocol", protocol);
 	}
+	
+	@RequestMapping(value = "/startMessage")
+	public void startMessage(Model model, HttpServletResponse response) {
+		try {
+			taobaoData.startMessageHandler();
+			PrintWriter writer = response.getWriter();
+			response.reset();
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html");
+			writer.println("操作成功!");
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
+	@RequestMapping(value = "/stopMessage")
+	public void stopMessage(Model model, HttpServletResponse response) {
+		try {
+			taobaoData.stopMessageHandler();
+			PrintWriter writer = response.getWriter();
+			response.reset();
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html");
+			writer.println("操作成功!");
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

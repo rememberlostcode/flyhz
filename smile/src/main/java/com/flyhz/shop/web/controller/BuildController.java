@@ -121,19 +121,4 @@ public class BuildController {
 			e.printStackTrace();
 		}
 	}
-	
-	@RequestMapping(value = "/startMessage")
-	public void startMessage(Model model, HttpServletResponse response) {
-		try {
-			taobaoData.startMessageHandler();
-			PrintWriter writer = response.getWriter();
-			response.reset();
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("text/html");
-			writer.println("淘宝消息进程已经开启!");
-			return;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

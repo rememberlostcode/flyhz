@@ -19,10 +19,12 @@ import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.TaobaoTokenUtil;
 import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
+import com.flyhz.shop.persistence.dao.IdcardDao;
 import com.flyhz.shop.persistence.dao.LogisticsDao;
+import com.flyhz.shop.persistence.dao.OrderDao;
+import com.flyhz.shop.persistence.entity.IdcardModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.OrderService;
-
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
@@ -44,35 +46,41 @@ import com.taobao.api.response.TradesSoldGetResponse;
 import com.taobao.top.link.LinkException;
 
 public class TaobaoDataImpl implements TaobaoData {
-	private Logger			log			= LoggerFactory.getLogger(TaobaoDataImpl.class);
+	private Logger				log					= LoggerFactory.getLogger(TaobaoDataImpl.class);
 
-	private final String	url			= "http://gw.api.taobao.com/router/rest";
-	private String			appkey;
-	private String			appSecret;
-	private String			sessionKey;
-	private String			sellerNick;
+	private final String		url					= "http://gw.api.taobao.com/router/rest";
+	private String				appkey;
+	private String				appSecret;
+	private String				sessionKey;
+	private String				sellerNick;
 	/**
 	 * 淘宝配置文件全路径，taobao.properties
 	 */
-	public static String	propertiesFilePath;
+	public static String		propertiesFilePath;
 
 	@Resource
 	@Value(value = "${smile.taobao.file}")
-	private String			taobaoPropertiesFilePath;
+	private String				taobaoPropertiesFilePath;
 	@Resource
 	@Value(value = "${smile.taobao.flag}")
-	private String			taobaoFlag;
+	private String				taobaoFlag;
 
 	@Resource
-	private SolrData		solrData;
+	private SolrData			solrData;
 	@Resource
-	private OrderService	orderService;
+	private OrderService		orderService;
 	@Resource
-	private LogisticsDao	logisticsDao;
+	private LogisticsDao		logisticsDao;
+	@Resource
+	private IdcardDao idcardDao;
+	@Resource
+	private OrderDao orderDao;
 
-	private final Long		PAGE_SIZE	= 100L;
-	
-	private static boolean isBeenInitialized = false;
+	private final Long			PAGE_SIZE			= 100L;
+
+	private static boolean		isBeenInitialized	= false;
+
+	private static TmcClient	client;
 
 	/**
 	 * 初始化参数
@@ -93,7 +101,7 @@ public class TaobaoDataImpl implements TaobaoData {
 				isBeenInitialized = true;
 				log.info("淘宝初始化参数结束");
 			} else {
-//				log.info("淘宝参数已经初始化，不需要重新初始化");
+				// log.info("淘宝参数已经初始化，不需要重新初始化");
 			}
 			return true;
 		} else {
@@ -142,14 +150,13 @@ public class TaobaoDataImpl implements TaobaoData {
 						 * WAIT_PRE_AUTH_CONFIRM(余额宝0元购合约中)/
 						 */
 
-						//只有 等待买家付款、买家已付款、卖家部分发货、卖家已发货、买家已签收、交易成功、交易关闭、交易被淘宝关闭
+						// 只有 等待买家付款、买家已付款、卖家部分发货、卖家已发货、买家已签收、交易成功、交易关闭、交易被淘宝关闭
 						if ("WAIT_BUYER_PAY".equals(status)
 								|| "WAIT_SELLER_SEND_GOODS".equals(status)
 								|| "SELLER_CONSIGNED_PART".equals(status)
 								|| "WAIT_BUYER_CONFIRM_GOODS".equals(status)
 								|| "TRADE_BUYER_SIGNED".equals(status)
-								|| "TRADE_FINISHED".equals(status)
-								|| "TRADE_CLOSED".equals(status)
+								|| "TRADE_FINISHED".equals(status) || "TRADE_CLOSED".equals(status)
 								|| "TRADE_CLOSED_BY_TAOBAO".equals(status)) {
 							// 先获取买家留言
 							try {
@@ -180,7 +187,22 @@ public class TaobaoDataImpl implements TaobaoData {
 								for (int g = 0; g < numbers.length; g++) {
 									if (StringUtils.isNotBlank(numbers[g])) {
 										orderModel.setNumber(numbers[g]);
+										
+										// 已付款
 										orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_PAID.code);
+										OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
+										
+										// 买家已付款，需要验证身份证是否存在
+										IdcardModel im = new IdcardModel();
+										im.setUserId(orderDto.getUserId());
+										List<IdcardModel> list = idcardDao.getModelList(im);
+										if (list == null || list.size() == 0) {
+											// 缺失身份证
+											orderModel.setStatus(Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code);
+										} else {
+											// 等待发货
+											orderModel.setStatus(Constants.OrderStateCode.WAITING_FOR_DELIVERY.code);
+										}
 										orderService.updateStatusByNumber(orderModel);
 									}
 								}
@@ -255,7 +277,7 @@ public class TaobaoDataImpl implements TaobaoData {
 								if (orderDto != null) {
 									// 详细收货地址
 									String address = getLogisticsOrderAddress(client, tid);
-									
+
 									LogisticsTraceSearchResponse res = null;
 									try {
 										res = this.getTraceList(client, tid);
@@ -430,12 +452,22 @@ public class TaobaoDataImpl implements TaobaoData {
 
 	private static boolean	isRunning	= false;
 
+	public void stopMessageHandler() {
+		if (client != null && client.isOnline()) {
+			log.info("淘宝消息进程正在关闭！");
+			client.close();
+			log.info("淘宝消息进程已关闭！");
+		} else {
+			log.info("淘宝消息进程没有启用！");
+		}
+	}
+
 	public void startMessageHandler() {
 		if (checkAndInit()) {
 			if (!isRunning) {
 				log.info("淘宝消息进程即将启动！");
 				log.info("appkey=" + appkey + ",appSecret=" + appSecret);
-				TmcClient client = new TmcClient("ws://mc.api.taobao.com/", appkey, appSecret,
+				client = new TmcClient("ws://mc.api.taobao.com/", appkey, appSecret,
 						"smile");
 				client.setMessageHandler(new MessageHandler() {
 					public void onMessage(Message message, MessageStatus status) {
