@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -77,9 +78,9 @@ public class BaseActivity extends Activity {
 	protected String			filepath;
 
 	protected HKDialogLoading	dialogLoading;
-	private boolean canClosed = false;
-	private Timer time;  
-	private TimerTask loadingTimerTask;
+	private boolean				canClosed				= false;
+	private Timer				time;
+	private TimerTask			loadingTimerTask;
 
 	protected BroadcastReceiver	connectionReceiver		= new BroadcastReceiver() {
 															@Override
@@ -379,14 +380,21 @@ public class BaseActivity extends Activity {
 	 */
 	protected void startTask() {
 		showLoading();
-		
-//		progressBar.setVisibility(View.VISIBLE);
-		MyApplication.getThreadPool().submit(new Runnable() {
+
+		// progressBar.setVisibility(View.VISIBLE);
+		ly_content.postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				loadData();
 			}
-		});
+		}, 1000);
+
+		// MyApplication.getThreadPool().submit(new Runnable() {
+		// @Override
+		// public void run() {
+		// loadData();
+		// }
+		// });
 	}
 
 	public void onClick(View v) {
@@ -397,6 +405,29 @@ public class BaseActivity extends Activity {
 	 */
 	public synchronized void loadData() {
 		System.out.println("-------------------空方法-------------------");
+	}
+
+	/**
+	 * 异步执行任务，比如载入数据；使用时需要在activity中覆盖loadData方法，在loadData方法中编写获取数据代码
+	 * 
+	 * @author robin 2014年7月17日 下午2:19:10
+	 * 
+	 */
+	protected class LoadTask extends AsyncTask<String, Integer, String> {
+
+		@Override
+		protected String doInBackground(String... arg0) {
+			loadData();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// closeLoading();
+			if (this.isCancelled())
+				this.cancel(true);
+		}
+
 	}
 
 	public View displayFooterMain(int idNow) {
@@ -522,36 +553,36 @@ public class BaseActivity extends Activity {
 	 * 显示loading图片，最少显示一秒
 	 */
 	public void showLoading() {
-		dialogLoading = new HKDialogLoading(this, R.style.HKDialog);  
+		dialogLoading = new HKDialogLoading(this, R.style.HKDialog);
 		dialogLoading.show(); // 显示加载中对话框
 		canClosed = false;
-		
-		time = new Timer(true);  
-        loadingTimerTask = new TimerTask() {  
-            int countTime = 10;  
 
-            public void run() {
-            	if(canClosed || countTime <= 0){
-            		dialogLoading.dismiss();
-            		time.cancel();
-            		loadingTimerTask.cancel();
-            		return;
-            	} else {
-            		 countTime--;  
-            	}
-            }  
+		time = new Timer(true);
+		loadingTimerTask = new TimerTask() {
+			int	countTime	= 10;
 
-        };
-        time.schedule(loadingTimerTask, 1000, 1000);
+			public void run() {
+				if (canClosed || countTime <= 0) {
+					dialogLoading.dismiss();
+					time.cancel();
+					loadingTimerTask.cancel();
+					return;
+				} else {
+					countTime--;
+				}
+			}
+
+		};
+		time.schedule(loadingTimerTask, 1000, 1000);
 	}
-	
+
 	/**
 	 * 关闭loading图片，关闭会有延迟，最长延迟一秒
 	 */
 	public void closeLoading() {
 		canClosed = true;
 	}
-	
+
 	/**
 	 * 立即关闭loading图片
 	 */
