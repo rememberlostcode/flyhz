@@ -274,6 +274,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 						sIds.add(cartItem.getId());
 						v.setBackgroundResource(R.drawable.icon_choice);
 					} else {
+						selectAll = false;
 						sIds.remove(cartItem.getId());
 						v.setBackgroundResource(R.drawable.icon_no_choice);
 					}
