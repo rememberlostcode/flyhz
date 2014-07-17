@@ -4,6 +4,7 @@ package com.flyhz.shop.web.controller;
 import java.io.IOException;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -48,6 +49,10 @@ public class LoginController {
 			model.addAttribute("message", "登陆异常");
 		}
 		model.addAttribute("current", "0");
+		
+		Cookie cookie = new Cookie("JSESSIONID", request.getSession().getId());
+		cookie.setPath("/");
+		response.addCookie(cookie);
 		return UrlBasedViewResolver.REDIRECT_URL_PREFIX + "/index";
 	}
 
