@@ -47,6 +47,20 @@ public class TaobaoTokenUtil {
 	public static HashMap<String, String>	config						= new HashMap<String, String>();
 	static {
 		taobaoPropertiesFilePath = TaobaoDataImpl.getPropertiesFilePath();
+
+		initPropertiesFromFile();
+		
+		/* 定时任务，每隔一段时间获取授权码 */
+		Timer timer = new Timer();
+		long delay = 60 * 1000;// 在豪秒后执行此任务
+		long period = 60 * 60 * 1000;// 每次间隔豪秒/每个小时执行一次
+		timer.schedule(new MyTask(), delay, period);
+	}
+	
+	/**
+	 * 从文件读取数据初始化参数
+	 */
+	private static void initPropertiesFromFile(){
 		StringBuffer sb = new StringBuffer();
 		Properties props = new Properties();
 		InputStream is = null;
@@ -89,17 +103,12 @@ public class TaobaoTokenUtil {
 		expiresIn = config.get("expiresIn");
 		lastModifyTime = config.get("lastModifyTime");
 		sellerNick = config.get("sellerNick");
-
-		/* 定时任务，每隔一段时间获取授权码 */
-		Timer timer = new Timer();
-		long delay = 60 * 1000;// 在豪秒后执行此任务
-		long period = 60 * 60 * 1000;// 每次间隔豪秒/每个小时执行一次
-		timer.schedule(new MyTask(), delay, period);
 	}
 
 	static class MyTask extends java.util.TimerTask {
 		@Override
 		public void run() {
+			initPropertiesFromFile();
 			getTaobaoAccessToken();
 		}
 	}
