@@ -22,4 +22,9 @@ public interface TaobaoData {
 	 * 启动淘宝消息进程，以便接收淘宝的信息
 	 */
 	public void startMessageHandler();
+	
+	/**
+	 * 关闭淘宝消息进程
+	 */
+	public void stopMessageHandler();
 }

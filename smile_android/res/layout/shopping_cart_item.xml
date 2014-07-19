@@ -25,7 +25,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
-                android:background="@drawable/checkbox_bg" />
+                android:contentDescription="@string/gu"
+                />
 
             <ImageView
                 android:id="@+id/p"

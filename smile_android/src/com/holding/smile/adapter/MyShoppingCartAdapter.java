@@ -159,14 +159,15 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 		if (cartItem != null && cartItem.getProduct() != null) {
 
 			if (selectAll) {
-				holder.checkBox.setSelected(true);
+				holder.checkBox.setBackgroundResource(R.drawable.icon_choice);
 			} else {
-				holder.checkBox.setSelected(false);
+				holder.checkBox.setBackgroundResource(R.drawable.icon_no_choice);
 			}
 			if (sIds.contains(cartItem.getId())) {
-				holder.checkBox.setSelected(true);
+				holder.checkBox.setBackgroundResource(R.drawable.icon_choice);
 			} else {
-				holder.checkBox.setSelected(false);
+				selectAll = false;
+				holder.checkBox.setBackgroundResource(R.drawable.icon_no_choice);
 			}
 
 			final ProductDto jGoods = cartItem.getProduct();
@@ -232,8 +233,8 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 					if (cartItem.getQty() > 1) {
 
 						// 先显示进度条信息
-						if(progressBar!=null)
-						progressBar.setVisibility(View.VISIBLE);
+						if (progressBar != null)
+							progressBar.setVisibility(View.VISIBLE);
 
 						cartItem.setQty((short) (cartItem.getQty() - 1));
 						RtnValueDto rtnValue = MyApplication.getInstance()
@@ -251,8 +252,8 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View arg0) {
 					// 先显示进度条信息
-					if(progressBar!=null)
-					progressBar.setVisibility(View.VISIBLE);
+					if (progressBar != null)
+						progressBar.setVisibility(View.VISIBLE);
 
 					cartItem.setQty((short) (cartItem.getQty() + 1));
 					RtnValueDto rtnValue = MyApplication.getInstance()
@@ -271,10 +272,11 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 				public void onClick(View v) {
 					if (!sIds.contains(cartItem.getId())) {
 						sIds.add(cartItem.getId());
-						v.setSelected(true);
+						v.setBackgroundResource(R.drawable.icon_choice);
 					} else {
+						selectAll = false;
 						sIds.remove(cartItem.getId());
-						v.setSelected(false);
+						v.setBackgroundResource(R.drawable.icon_no_choice);
 					}
 					if (sIds.isEmpty()) {
 						selectAll = false;

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.holding.smile"
     android:versionCode="14"
-    android:versionName="1.4.2" >
+    android:versionName="1.4.5" >
 
     <uses-sdk android:minSdkVersion="8" />
 
@@ -55,7 +55,8 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.MainSmileActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name="com.holding.smile.activity.MainTwoActivity"
@@ -63,7 +64,6 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.SortActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
         <activity
