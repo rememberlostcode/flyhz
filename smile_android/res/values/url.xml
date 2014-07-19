@@ -41,4 +41,5 @@
     <string name="cart_setQty_url">/smile/cart/setQty.json</string>
     <string name="cart_remove_url">/smile/cart/remove.json</string>
     
+    <string name="pay_status_url">/smile/taobao/paymentStatus.json</string>
 </resources>

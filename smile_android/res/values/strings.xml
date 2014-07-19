@@ -71,8 +71,6 @@
     <string name="guanbi">关闭</string>
     <string name="zongjia">总价</string>
     <string name="zongliang">总量</string>
-
     <string name="showurl">http://h5.m.taobao.com/awp/base/buy.htm?itemId=</string>
-    
     <string name="service_email">service@tiantianhaigou.com</string>
 </resources>

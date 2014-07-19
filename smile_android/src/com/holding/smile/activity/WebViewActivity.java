@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -32,10 +33,10 @@ import com.holding.smile.tools.TbUtil;
  * 
  */
 public class WebViewActivity extends Activity implements OnClickListener {
-	private String		number;			// 订单号
-	private BigDecimal	amount;			// 总额
-	private String		viewhtml	= "";	// 页面HTML
-	private String		tid;				// 淘宝订单号
+	private String		number;	// 订单号
+	private BigDecimal	amount;	// 总额
+	private String		viewhtml;	// 页面HTML
+	private String		tid;		// 淘宝订单号
 
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
@@ -106,18 +107,11 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						// TbUtil.setWebView(view);
 						// 给卖家留言设置订单编号和数量
 						if (url.indexOf("buyNow=true&v=0&skuId=&quantity=") > -1) {
-							// viewhtml = "";
-							// view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
-							// if (viewhtml.indexOf("给卖家留言") < 0 && viewhtml !=
-							// "") {
-							// view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
-							// onPageFinished(view, url);
-							// }
 							// 加载js
 							StringBuffer jsStringBuffer = new StringBuffer();
 							jsStringBuffer.append("javascript:$(document).ready(function(){");
-							jsStringBuffer.append("setTimeout(function(){");
 							jsStringBuffer.append("$('.c-btn-aw').eq(0).css('display','none');");
+							jsStringBuffer.append("setTimeout(function(){");
 							jsStringBuffer.append("$('.numTxt').eq(0).attr('readonly','readonly');");
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('value','"
 									+ number + "');");
@@ -128,26 +122,35 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							view.loadUrl(jsStringBuffer.toString());
 						} else if (url.indexOf("http://login.m.taobao.com/login.htm") > -1) {
 							// 设置首页按钮不显示
-							view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
+							StringBuffer jsStringBuffer = new StringBuffer();
+							jsStringBuffer.append("javascript:$(document).ready(function(){");
+							jsStringBuffer.append("$('.back').eq(0).css('display','none');");
+							jsStringBuffer.append("});");
 						} else if (url.indexOf("https://mclient.alipay.com/cashierPay.htm?awid=") > -1) {
-							viewhtml = "";
 							view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
-							if (viewhtml != ""
-									&& viewhtml.indexOf("J-success am-message am-message-success fn-hide") > -1
-									&& viewhtml.indexOf("J-error am-message am-message-error fn-hide") > -1) {
-								view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
-								onPageFinished(view, url);
-							}
-							// 校验订单支付状态
-							// 检验支付状态方法有问题
-							if ("12".equals("12")) {
-								// 订单号设置为空
-								tid = "";
-								// Activitity跳转
-								Intent intentNew = new Intent();
-								intentNew.setClass(WebViewActivity.this, MyOrdersActivity.class);
-								startActivity(intentNew);
-								WebViewActivity.this.finish();
+							if (viewhtml != null) {
+								if (viewhtml.indexOf("J-success am-message am-message-success fn-hide") < 0) {
+									new Handler().postDelayed(new Runnable() {
+										public void run() {
+											// 获取订单状态
+											// 订单号设置为空
+											tid = "";
+											// Activitity跳转
+											Intent intentNew = new Intent();
+											intentNew.setClass(WebViewActivity.this,
+													MyOrdersActivity.class);
+											startActivity(intentNew);
+											WebViewActivity.this.finish();
+										}
+									}, 2000);
+								} else if (viewhtml.indexOf("J-error am-message am-message-error fn-hide") > -1) {
+									try {
+										Thread.sleep(2000);
+										onPageFinished(view, url);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+								}
 							}
 						}
 					}

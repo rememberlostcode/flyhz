@@ -58,6 +58,7 @@ public class DataService {
 	private String			cart_list_url;
 	private String			order_status_url;
 	private String			user_find_backpwd_url;
+	private String			pay_status_url;
 
 	public DataService(Context context) {
 		prefix_url = context.getString(R.string.prefix_url);
@@ -79,6 +80,7 @@ public class DataService {
 		cart_list_url = context.getString(R.string.cart_list_url);
 		order_status_url = context.getString(R.string.order_status_url);
 		user_find_backpwd_url = context.getString(R.string.user_find_backpwd_url);
+		pay_status_url = context.getString(R.string.pay_status_url);
 	}
 
 	/**
@@ -723,14 +725,43 @@ public class DataService {
 		}
 		return rvd;
 	}
-	
+
+	/**
+	 * 查询订单支付结果
+	 * 
+	 * @param tid
+	 *            淘宝订单号
+	 * @param number
+	 *            订单号(可能多个)
+	 * @return RtnValueDto
+	 */
+	public RtnValueDto getPayStatus(String tid, String number) {
+		if (CodeValidator.isNetworkError()) {
+			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		RtnValueDto rvd = null;
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("tid", tid);
+		param.put("number", number);
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.user_find_backpwd_url,
+				param);
+		if (rvdString != null) {
+			PFindPwd pc = JSONUtil.getJson2Entity(rvdString, PFindPwd.class);
+			if (pc != null) {
+				rvd = new RtnValueDto();
+				rvd.setAtData(pc.getData());
+				rvd.setCode(pc.getCode());
+			}
+		}
+		return rvd;
+	}
+
 	public RtnValueDto getLastestVersion() {
 		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = null;
-		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.jGoods_version_url,
-				null);
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.jGoods_version_url, null);
 		if (rvdString != null) {
 			PVersion pv = JSONUtil.getJson2Entity(rvdString, PVersion.class);
 			if (pv != null) {
