@@ -652,4 +652,10 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return null;
 	}
+
+	public static void main(String[] args) {
+		String url = "http://maliprod.alipay.com/w/trade_pay.do?alipay_trade_no=2014062611001001380023157848&s_id=736d2ca9b7756f2a408ed0bb85617674&tcode=eyJiaXpPcmRlcklkcyI6IjcxMDI5NTUyMjc3MzY1OSIsInR5cGUiOiIzIiwiYnV5ZXJJZCI6IjE3MTYyMjU5MzYifQ%3D%3D&pay_order_id=710295522773659&refer=tbc";
+		System.out.println(url.indexOf("pay_order_id="));
+		System.out.println(url.substring(url.indexOf("pay_order_id=") + 13, url.lastIndexOf("&")));
+	}
 }
