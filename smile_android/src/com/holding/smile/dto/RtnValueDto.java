@@ -41,6 +41,7 @@ public class RtnValueDto {
 	private List<CartItem>		cartListData;		// 购物车列表数据
 	private IndexBrands			indexBrandsData;	// 返回首页品牌数据
 	private JVersion			versionData;		// 版本信息数据
+	private OrderPayDto			orderPayDto;		// 订单支付状态
 
 	public Integer getCode() {
 		return code;
@@ -202,4 +203,11 @@ public class RtnValueDto {
 		this.versionData = versionData;
 	}
 
+	public OrderPayDto getOrderPayDto() {
+		return orderPayDto;
+	}
+
+	public void setOrderPayDto(OrderPayDto orderPayDto) {
+		this.orderPayDto = orderPayDto;
+	}
 }

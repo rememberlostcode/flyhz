@@ -22,6 +22,7 @@ import com.holding.smile.protocol.PIndexBrands;
 import com.holding.smile.protocol.PIndexJGoods;
 import com.holding.smile.protocol.POrder;
 import com.holding.smile.protocol.POrderList;
+import com.holding.smile.protocol.PPayStatus;
 import com.holding.smile.protocol.PSort;
 import com.holding.smile.protocol.PSortTypes;
 import com.holding.smile.protocol.PUser;
@@ -735,22 +736,21 @@ public class DataService {
 	 *            订单号(可能多个)
 	 * @return RtnValueDto
 	 */
-	public RtnValueDto getPayStatus(String tid, String number) {
+	public RtnValueDto getPayStatus(Long tid, String numbers) {
 		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
 		RtnValueDto rvd = null;
 		HashMap<String, String> param = new HashMap<String, String>();
-		param.put("tid", tid);
-		param.put("number", number);
-		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.user_find_backpwd_url,
-				param);
+		param.put("tid", tid == null ? "" : tid.toString());
+		param.put("numbers", numbers == null ? "" : numbers);
+		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.pay_status_url, param);
 		if (rvdString != null) {
-			PFindPwd pc = JSONUtil.getJson2Entity(rvdString, PFindPwd.class);
-			if (pc != null) {
+			PPayStatus ps = JSONUtil.getJson2Entity(rvdString, PPayStatus.class);
+			if (ps != null) {
 				rvd = new RtnValueDto();
-				rvd.setAtData(pc.getData());
-				rvd.setCode(pc.getCode());
+				rvd.setOrderPayDto(ps.getData());
+				rvd.setCode(ps.getCode());
 			}
 		}
 		return rvd;

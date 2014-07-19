@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.holding.smile.R;
+import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.TbUtil;
 
@@ -36,7 +37,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 	private String		number;	// 订单号
 	private BigDecimal	amount;	// 总额
 	private String		viewhtml;	// 页面HTML
-	private String		tid;		// 淘宝订单号
+	private Long		tid;		// 淘宝订单号
 
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
@@ -91,9 +92,9 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						} else if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
 							// 设置首页按钮不显示
 							// view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
-						} else if (url.indexOf("http://mclient.alipay.com/w/trade_pay.do?alipay_trade_no=") > -1) {
-							tid = url.substring(url.indexOf("pay_order_id=") + 13,
-									url.lastIndexOf("&"));
+						} else if (url.indexOf("http://maliprod.alipay.com/w/trade_pay.do?alipay_trade_no=") > -1) {
+							tid = Long.parseLong(url.substring(url.indexOf("pay_order_id=") + 13,
+									url.lastIndexOf("&")));
 						}
 						return super.shouldInterceptRequest(view, url);
 					}
@@ -133,14 +134,23 @@ public class WebViewActivity extends Activity implements OnClickListener {
 									new Handler().postDelayed(new Runnable() {
 										public void run() {
 											// 获取订单状态
-											// 订单号设置为空
-											tid = "";
-											// Activitity跳转
-											Intent intentNew = new Intent();
-											intentNew.setClass(WebViewActivity.this,
-													MyOrdersActivity.class);
-											startActivity(intentNew);
-											WebViewActivity.this.finish();
+											RtnValueDto rtnValue = MyApplication.getInstance()
+																				.getDataService()
+																				.getPayStatus(tid,
+																						number);
+											if (rtnValue != null
+													&& rtnValue.getOrderPayDto() != null
+													&& "12".equals(rtnValue.getOrderPayDto()
+																			.getStatus())) {
+												// 订单号设置为空
+												tid = null;
+												// Activitity跳转
+												Intent intentNew = new Intent();
+												intentNew.setClass(WebViewActivity.this,
+														MyOrdersActivity.class);
+												startActivity(intentNew);
+												WebViewActivity.this.finish();
+											}
 										}
 									}, 2000);
 								} else if (viewhtml.indexOf("J-error am-message am-message-error fn-hide") > -1) {
