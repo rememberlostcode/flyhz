@@ -316,7 +316,8 @@ public class OrderServiceImpl implements OrderService {
 
 			if (orderModel != null) {
 				//累加订单总额
-				total.add(orderModel.getTotal());
+				total = total.add(orderModel.getTotal());
+				log.info("total = "+ total);
 
 				if (userId == null) {
 					userId = orderModel.getUserId();
@@ -337,8 +338,8 @@ public class OrderServiceImpl implements OrderService {
 					if (trade == null) {
 						throw new ValidateException(400000);
 					} else {
-						BigDecimal Payment = new BigDecimal(trade.getPayment());
-						if (total.equals(Payment)) {
+						BigDecimal payment = new BigDecimal(trade.getPayment());
+						if (total.equals(payment)) {
 							String status = trade.getStatus();
 							if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
 								// 未付款
@@ -365,9 +366,11 @@ public class OrderServiceImpl implements OrderService {
 								smileStatus = Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;
 							} else {
 								// 未知状态
+								log.error("淘宝其他状态：" + status);
 								throw new ValidateException(400000);
 							}
 						} else {
+							log.error("淘宝订单价格和smile系统订单价格不相等" + payment + "?=" + total);
 							throw new ValidateException(400001);
 						}
 					}
