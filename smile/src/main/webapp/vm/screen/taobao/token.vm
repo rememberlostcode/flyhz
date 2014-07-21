@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script>
+		function getCode(){
+			window.open(document.getElementById('url_get_code').value + document.getElementById('appkey').value);
+		}
+		
+		function getToken(){
+			window.open(document.getElementById('url_get_token').value + document.getElementById('authCode').value);
+		}
+        </script>
+	</head>
+	<body>
+		<div id="main">
+			<div id="content">
+			<input type="text" id="appkey" value="$!appkey"/>
+			<input type="text" id="url_get_code" value="http://my.open.taobao.com/auth/authorize.htm?appkey="/>
+			<button onclick="getCode()">getToken</button>
+			
+			<input type="text" id="authCode"/>
+			<input type="text" id="url_get_token" value="http://container.open.taobao.com/container?authcode="/>
+			<button onclick="getToken()">getToken</button>
+			</div>
+		</div>
+	</body>
+</html>

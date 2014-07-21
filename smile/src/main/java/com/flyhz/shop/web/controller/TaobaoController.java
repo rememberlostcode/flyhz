@@ -15,6 +15,7 @@ import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.Protocol;
 import com.flyhz.framework.lang.TaobaoData;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.util.TaobaoTokenUtil;
 import com.flyhz.shop.dto.OrderPayDto;
 import com.flyhz.shop.service.OrderService;
 
@@ -106,4 +107,12 @@ public class TaobaoController {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping(value = { "token" })
+	public String token(Model model) {
+		taobaoData.startMessageHandler();
+		model.addAttribute("appkey", TaobaoTokenUtil.getAppKey());
+		return "taobao/token";
+	}
+
 }
