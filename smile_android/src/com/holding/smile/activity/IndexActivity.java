@@ -52,8 +52,6 @@ public class IndexActivity extends InstrumentedActivity {
 		});
 
 		registerMessageReceiver(); // used for receive msg
-
-		init();
 	}
 
 	// 初始化 JPush。如果已经初始化，但没有登录成功，则执行重新登录。
@@ -83,6 +81,7 @@ public class IndexActivity extends InstrumentedActivity {
 		mUIHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
+				init();
 				SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
 				if (user != null) {
 					MyApplication.getInstance().setCurrentUser(user);
@@ -95,35 +94,41 @@ public class IndexActivity extends InstrumentedActivity {
 			}
 		}, 200);
 
-		RtnValueDto rvd = MyApplication.getInstance().getDataService().getLastestVersion();
-		if (CodeValidator.dealCode(getApplicationContext(), rvd)) {
-			try {
-				// 获取packagemanager的实例
-				PackageManager packageManager = getPackageManager();
-				// getPackageName()是你当前类的包名，0代表是获取版本信息
-				PackageInfo packInfo;
-				packInfo = packageManager.getPackageInfo(getPackageName(), 0);
-				String version = packInfo.versionName;
+		mUIHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				RtnValueDto rvd = MyApplication.getInstance().getDataService().getLastestVersion();
+				if (CodeValidator.dealCode(getApplicationContext(), rvd)) {
+					try {
+						// 获取packagemanager的实例
+						PackageManager packageManager = getPackageManager();
+						// getPackageName()是你当前类的包名，0代表是获取版本信息
+						PackageInfo packInfo;
+						packInfo = packageManager.getPackageInfo(getPackageName(), 0);
+						String version = packInfo.versionName;
 
-				JVersion jversion = rvd.getVersionData();
+						JVersion jversion = rvd.getVersionData();
 
-				if (!version.equals(jversion.getVersionNew())) {
-					// 这里来检测版本是否需要更新
-					Log.i(MyApplication.LOG_TAG, "检测到新版本需要更新");
-					UpdateManager mUpdateManager = new UpdateManager(this);
-					mUpdateManager.setApkUrl(MyApplication.jgoods_img_url
-							+ jversion.getVersionApk());
-					mUpdateManager.checkUpdateInfo();
-				} else {
-					Log.i(MyApplication.LOG_TAG, "未检测到新版本");
-					Intent intent = new Intent(this, MainSmileActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivity(intent);
+						if (!version.equals(jversion.getVersionNew())) {
+							// 这里来检测版本是否需要更新
+							Log.i(MyApplication.LOG_TAG, "检测到新版本需要更新");
+							UpdateManager mUpdateManager = new UpdateManager(IndexActivity.this);
+							mUpdateManager.setApkUrl(MyApplication.jgoods_img_url
+									+ jversion.getVersionApk());
+							mUpdateManager.checkUpdateInfo();
+						} else {
+							Log.i(MyApplication.LOG_TAG, "未检测到新版本");
+							Intent intent = new Intent(IndexActivity.this, MainSmileActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							startActivity(intent);
+						}
+					} catch (NameNotFoundException e) {
+						Log.e(MyApplication.LOG_TAG, e.getMessage());
+					}
 				}
-			} catch (NameNotFoundException e) {
-				Log.e(MyApplication.LOG_TAG, e.getMessage());
 			}
-		}
+		}, 1000);
+		
 		// Message msg = mUIHandler.obtainMessage(CHECK_VERSION);
 		// msg.sendToTarget();
 	}

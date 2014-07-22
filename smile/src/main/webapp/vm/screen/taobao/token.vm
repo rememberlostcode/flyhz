@@ -8,21 +8,23 @@
 		}
 		
 		function getToken(){
-			window.open(document.getElementById('url_get_token').value + document.getElementById('authCode').value);
+			window.open(document.getElementById('url_get_token').value + 'TOP-' + document.getElementById('authCode').value + '-END');
 		}
         </script>
 	</head>
 	<body>
 		<div id="main">
 			<div id="content">
-			<input type="text" id="appkey" value="$!appkey"/>
-			<input type="text" id="url_get_code" value="http://my.open.taobao.com/auth/authorize.htm?appkey="/>
-			<button onclick="getCode()">getToken</button>
+			当前appkey：<input type="text" id="appkey" value="$!appkey"/>
+			<input type="hidden" id="url_get_code" readonly="readonly" value="http://my.open.taobao.com/auth/authorize.htm?appkey="/>
+			<button onclick="getCode()">getCode</button>
 			
-			<input type="text" id="authCode"/>
-			<input type="text" id="url_get_token" value="http://container.open.taobao.com/container?authcode="/>
+			<br/>
+			authCode：<input type="text" id="authCode"/>
+			<input type="hidden" id="url_get_token" value="http://container.open.taobao.com/container?authcode="/>
 			<button onclick="getToken()">getToken</button>
 			</div>
 		</div>
+        <font color="red">操作流程：点击“getCode”后，登录并授权，复制页面上TOP与END之间的字符串（不包括减号“-”）到“authCode”再点击“getToken”，直到新打开的页面出现“WELCOME TO TIANTIANHAIGOU!”方可关闭！</font>
 	</body>
 </html>
