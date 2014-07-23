@@ -2,23 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="2dip"
-    android:paddingRight="2dip"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip"
+    android:paddingTop="10dip"
+    android:background="@drawable/qianhuise"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="@drawable/qianhuise" >
-    </View>
-
+    <ImageView
+        android:id="@+id/branc_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:scaleType="fitXY" />
+    
     <RelativeLayout
         android:id="@+id/brand_head"
         android:layout_width="fill_parent"
         android:layout_height="30dp"
-        android:background="@android:color/transparent"
-        android:gravity="bottom"
+        android:background="@color/white"
+        android:gravity="left|center_vertical"
         android:orientation="horizontal" >
 
         <TextView
@@ -28,16 +31,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="6dp"
             android:text=""
-            android:textColor="@drawable/shenhuise"
-            android:textSize="22sp" />
+            android:textColor="@color/black"
+            android:textSize="18sp" />
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/branc_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@null"
-        android:paddingTop="5dp"
-        android:scaleType="fitXY" />
 
 </LinearLayout>

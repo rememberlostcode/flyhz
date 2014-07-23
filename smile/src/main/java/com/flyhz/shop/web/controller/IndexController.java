@@ -10,7 +10,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.flyhz.framework.lang.TaobaoData;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.util.TaobaoTokenUtil;
 import com.flyhz.shop.dto.TaobaoParameters;
 import com.flyhz.shop.persistence.entity.VersionModel;
 import com.flyhz.shop.service.VersionService;
@@ -26,12 +28,19 @@ public class IndexController {
 	private Logger			log	= LoggerFactory.getLogger(IndexController.class);
 	@Resource
 	private VersionService	versionService;
+	@Resource
+	private TaobaoData taobaoData;
 
 	@RequestMapping(value = { "index", "" })
 	public String index(Model model, TaobaoParameters taobaoParameters) {
 		if (taobaoParameters != null) {
 			log.info("top_appkey=" + taobaoParameters.getTop_appkey());
 			log.info("top_session=" + taobaoParameters.getTop_session());
+			
+			TaobaoTokenUtil.setAccessToken(taobaoParameters.getTop_session());
+			
+			taobaoData.stopMessageHandler();
+			taobaoData.startMessageHandler();
 		}
 		return "index";
 	}

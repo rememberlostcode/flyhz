@@ -14,11 +14,11 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.shop.persistence.TaobaoDataImpl;
 import com.taobao.api.internal.util.WebUtils;
 
 /**
@@ -46,63 +46,69 @@ public class TaobaoTokenUtil {
 
 	public static HashMap<String, String>	config						= new HashMap<String, String>();
 	static {
-		taobaoPropertiesFilePath = TaobaoDataImpl.getPropertiesFilePath();
-
-		initPropertiesFromFile();
-		
 		/* 定时任务，每隔一段时间获取授权码 */
 		Timer timer = new Timer();
-		long delay = 60 * 1000;// 在豪秒后执行此任务
+		long delay = 10 * 60 * 1000;// 在豪秒后执行此任务
 		long period = 60 * 60 * 1000;// 每次间隔豪秒/每个小时执行一次
 		timer.schedule(new MyTask(), delay, period);
 	}
 	
+	public static void init(){
+		log.info("TaobaoTokenUtil init ...");
+		taobaoPropertiesFilePath = Constants.propertiesFilePath;
+
+		initPropertiesFromFile();
+	}
 	/**
 	 * 从文件读取数据初始化参数
 	 */
 	private static void initPropertiesFromFile(){
 		StringBuffer sb = new StringBuffer();
 		Properties props = new Properties();
-		InputStream is = null;
-		try {
-			File file = new File(taobaoPropertiesFilePath);
-			if (file.exists()) {
-				is = new FileInputStream(file);
-				props.load(is);
-			} else {
-				log.info("淘宝配置文件不存在，请添加taobao.properties");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+		if (StringUtils.isNotBlank(taobaoPropertiesFilePath)) {
+			InputStream is = null;
 			try {
-				is.close();
-			} catch (IOException e) {
+				File file = new File(taobaoPropertiesFilePath);
+				if (file.exists()) {
+					is = new FileInputStream(file);
+					props.load(is);
+				} else {
+					log.info("淘宝配置文件不存在，请添加taobao.properties");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			try {
+				Set<Object> set = props.keySet();
+				Iterator<Object> it = set.iterator();
+				while (it.hasNext()) {
+					String key = it.next().toString();
+					String value = props.get(key) + "";
+					config.put(key, value);
+					sb.append("" + key + "=" + value + "\n");
+				}
+				log.info(taobaoPropertiesFilePath + ":\n{\n" + sb.toString() + "}");
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			appKey = config.get("appKey");
+			appSecret = config.get("appSecret");
+			tbPostSessionUrl = config.get("tbPostSessionUrl");
+			redirectUri = config.get("redirectUri");
+			accessToken = config.get("accessToken");
+			refreshToken = config.get("refreshToken");
+			expiresIn = config.get("expiresIn");
+			lastModifyTime = config.get("lastModifyTime");
+			sellerNick = config.get("sellerNick");
+		} else {
+			log.info("taobaoPropertiesFilePath is null!!!");
 		}
-		try {
-			Set<Object> set = props.keySet();
-			Iterator<Object> it = set.iterator();
-			while (it.hasNext()) {
-				String key = it.next().toString();
-				String value = props.get(key) + "";
-				config.put(key, value);
-				sb.append("" + key + "=" + value + "\n");
-			}
-			log.info(taobaoPropertiesFilePath + ":\n{\n" + sb.toString() + "}");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		appKey = config.get("appKey");
-		appSecret = config.get("appSecret");
-		tbPostSessionUrl = config.get("tbPostSessionUrl");
-		redirectUri = config.get("redirectUri");
-		accessToken = config.get("accessToken");
-		refreshToken = config.get("refreshToken");
-		expiresIn = config.get("expiresIn");
-		lastModifyTime = config.get("lastModifyTime");
-		sellerNick = config.get("sellerNick");
 	}
 
 	static class MyTask extends java.util.TimerTask {
@@ -128,15 +134,18 @@ public class TaobaoTokenUtil {
 				if (expiresTime > intervalTime) {
 					log.info("accessToken还没有失效，不需要刷新token!");
 					return accessToken;
+				} else {
+					log.info("token有效期还有" + intervalTime /60 + "分钟");
 				}
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 		if (refreshToken == null || "".equals(refreshToken.trim())) {
 			// 如果refreshToken为空，则通过初始授权码获取refreshToken
 			if (accessToken != null) {
-				getRefreshTokenByAccessToken();
+				log.info("跳过，暂定不用此方式获取token!");
+//				getRefreshTokenByAccessToken();
 			} else {
 				log.info("初始授权码和刷新授权码都为空，无法刷新!");
 			}
@@ -148,7 +157,8 @@ public class TaobaoTokenUtil {
 		}
 		// 通过refreshToken获取授权码accessToken(即session)和refreshToken(new)
 		log.info("accessToken已失效，将要刷新!");
-		getAccessTokenAndRefreshTokenByRefreshToken();
+		log.info("跳过，暂定不用此方式获取token!");
+//		getAccessTokenAndRefreshTokenByRefreshToken();
 		if (refreshToken != null && !"".equals(refreshToken.trim())) {
 			// 将accessToken和refreshToken写入taobao.properties
 			lastModifyTime = (new Date().getTime()) / 1000 + "";

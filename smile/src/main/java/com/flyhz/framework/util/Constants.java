@@ -74,4 +74,10 @@ public class Constants {
 	public static final String	TB_URL	= "http://211.149.175.138/smile/build/url";
 
 	public static Double		dollarExchangeRate;
+	
+	
+	/**
+	 * 淘宝配置文件全路径，taobao.properties
+	 */
+	public static String		propertiesFilePath;
 }

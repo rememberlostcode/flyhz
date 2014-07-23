@@ -338,9 +338,10 @@ public class OrderServiceImpl implements OrderService {
 					if (trade == null) {
 						throw new ValidateException(400000);
 					} else {
+						String status = trade.getStatus();
 						BigDecimal payment = new BigDecimal(trade.getPayment());
+						log.info("淘宝状态：" + status);
 						if (total.equals(payment)) {
-							String status = trade.getStatus();
 							if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
 								// 未付款
 								smileStatus = Constants.OrderStateCode.FOR_PAYMENT.code;
@@ -366,7 +367,7 @@ public class OrderServiceImpl implements OrderService {
 								smileStatus = Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;
 							} else {
 								// 未知状态
-								log.error("淘宝其他状态：" + status);
+								log.error("淘宝是暂不处理的状态：" + status);
 								throw new ValidateException(400000);
 							}
 						} else {

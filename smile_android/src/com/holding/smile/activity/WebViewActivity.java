@@ -129,38 +129,42 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							jsStringBuffer.append("});");
 						} else if (url.indexOf("https://mclient.alipay.com/cashierPay.htm?awid=") > -1) {
 							view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
-							if (viewhtml != null) {
-								if (viewhtml.indexOf("J-success am-message am-message-success fn-hide") < 0) {
-									new Handler().postDelayed(new Runnable() {
-										public void run() {
-											// 获取订单状态
-											RtnValueDto rtnValue = MyApplication.getInstance()
-																				.getDataService()
-																				.getPayStatus(tid,
-																						number);
-											if (rtnValue != null
-													&& rtnValue.getOrderPayDto() != null
-													&& "12".equals(rtnValue.getOrderPayDto()
-																			.getStatus())) {
-												// 订单号设置为空
-												tid = null;
-												// Activitity跳转
-												Intent intentNew = new Intent();
-												intentNew.setClass(WebViewActivity.this,
-														MyOrdersActivity.class);
-												startActivity(intentNew);
-												WebViewActivity.this.finish();
-											}
+							try {
+								Thread.sleep(500);
+								if (viewhtml != null) {
+									// Log.d("paySmile", "html is not null");
+									if (viewhtml.indexOf("J-success am-message am-message-success fn-hide") < 0) {
+										// Log.d("paySmile", "pay success");
+										// 获取订单状态
+										RtnValueDto rtnValue = MyApplication.getInstance()
+																			.getDataService()
+																			.getPayStatus(tid,
+																					number);
+										if (rtnValue != null
+												&& rtnValue.getOrderPayDto() != null
+												&& "12".equals(rtnValue.getOrderPayDto()
+																		.getStatus())) {
+											new Handler().postDelayed(new Runnable() {
+												public void run() {
+													// Activity跳转
+													Intent intentNew = new Intent();
+													intentNew.setClass(WebViewActivity.this,
+															MyOrdersActivity.class);
+													startActivity(intentNew);
+													finish();
+												}
+											}, 1000);
 										}
-									}, 2000);
-								} else if (viewhtml.indexOf("J-error am-message am-message-error fn-hide") > -1) {
-									try {
-										Thread.sleep(2000);
+									} else if (viewhtml.indexOf("J-error am-message am-message-error fn-hide") > -1) {
+										// Log.d("paySmile", "pay progress");
 										onPageFinished(view, url);
-									} catch (InterruptedException e) {
-										e.printStackTrace();
 									}
+								} else {
+									// Log.d("paySmile", "html is null");
+									onPageFinished(view, url);
 								}
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
 							}
 						}
 					}
@@ -223,6 +227,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 	final class InJavaScriptLocalObj {
 		public void showSource(String html) {
+			// Log.d("paySmile", "get html");
 			viewhtml = html;
 		}
 	}
