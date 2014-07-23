@@ -3,20 +3,22 @@
     android:id="@+id/main_pull_refresh_view"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/qianhuise"
         android:scrollbars="none" >
 
         <com.holding.smile.myview.MyListView
             android:id="@+id/list_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="1sp" />
+            android:divider="@drawable/qianhuise"
+            android:dividerHeight="0sp"
+            android:background="@drawable/qianhuise"
+            android:layout_marginBottom="10dip"/>
     </ScrollView>
 
 </com.holding.smile.myview.PullToRefreshView>

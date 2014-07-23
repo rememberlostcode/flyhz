@@ -36,7 +36,7 @@ public class HKDialogLoading extends Dialog {
 		contentView.setMinimumHeight(60);
 		contentView.setGravity(Gravity.CENTER);
 		contentView.setOrientation(LinearLayout.HORIZONTAL);
-
+		
 		/**
 		 * 向"加载项"布局中添加一个圆型进度条。
 		 */
@@ -49,7 +49,6 @@ public class HKDialogLoading extends Dialog {
 
 		contentView.addView(image);
 		setContentView(contentView);
-
 	}
 
 	@Override
