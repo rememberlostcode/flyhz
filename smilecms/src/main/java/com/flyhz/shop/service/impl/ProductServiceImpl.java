@@ -414,6 +414,46 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
+	@Override
+	public void refreshProductImgsNew(Integer userId, Integer start, Integer end) {
+		ProductPageDto productPageDto = new ProductPageDto();
+		// 设置起始ID
+		if (start != null) {
+			productPageDto.setStart(start);
+		}
+		// 设置结束ID
+		if (end != null) {
+			productPageDto.setEnd(end);
+		}
+		// 查询全部品牌列表
+		List<BrandBuildDto> brandBuildDtos = brandDao.getBrandBuildDtoList();
+		// 查询产品数量并重新截图
+		List<ProductModel> productModels = productDao.getProductsByStartAndEnd(productPageDto);
+		if (productModels != null && !productModels.isEmpty()) {
+			for (ProductModel productModel : productModels) {
+				if (productModel != null && StringUtils.isNotBlank(productModel.getImgs())
+						&& !NULL_IMGS.equals(productModel.getImgs())) {
+					String brandName = getBrandNameById(brandBuildDtos, productModel.getBrandId());
+					// 存储未更改前product数据
+					ProductLogModel productLogModel = new ProductLogModel();
+					productLogModel.setBeforeInfo(JSONUtil.getEntity2Json(productModel));
+					disposeProductImgSrcRe(productModel, brandName);
+					productDao.editProduct(productModel);
+					// 记录产品操作日志
+					productLogModel.setProductId(productModel.getId());
+					productLogModel.setUserId(userId);
+					productLogModel.setOperate(OPERATE_EDIT);
+					productLogModel.setGmtModify(new Date());
+					productLogModel.setAfterInfo(JSONUtil.getEntity2Json(productModel));
+					productDao.addProductLog(productLogModel);
+					// builder数据到Solr中
+					ProductBuildDto productBuildDto = productDao.getProductBuildDtoById(productModel.getId());
+					solrData.submitProduct(productBuildDto);
+				}
+			}
+		}
+	}
+
 	private void dispostColorimg(MultipartFile file, ProductModel productModel,
 			ProductParamDto productParamDto, String brandName) {
 		if (file != null && productModel != null && productParamDto != null
@@ -575,6 +615,74 @@ public class ProductServiceImpl implements ProductService {
 
 	// 重新读取产品原图片并处理
 	private void disposeProductImgSrcRe(ProductModel productModel, String brandName) {
+		if (productModel != null && StringUtils.isNotBlank(productModel.getImgs())
+				&& !NULL_IMGS.equals(productModel.getImgs()) && StringUtils.isNotBlank(brandName)) {
+			List<String> productSrcImgs = JSONUtil.getJson2EntityList(productModel.getImgs(),
+					ArrayList.class, String.class);
+			try {
+				String prefix = File.separatorChar + brandName + File.separatorChar;
+				if (productSrcImgs != null && !productSrcImgs.isEmpty()) {
+					List<String> bigImgUrls = new ArrayList<String>();
+					List<String> litImgUrls = new ArrayList<String>();
+					// 循环处理产品原图片
+					int count = 0;
+					for (String productSrcImg : productSrcImgs) {
+						if (StringUtils.isNotBlank(productSrcImg)) {
+							StringBuffer newFileName = new StringBuffer();
+							newFileName.append(brandName)
+										.append(File.separatorChar)
+										.append(productModel.getStyle())
+										.append("_")
+										.append(System.currentTimeMillis())
+										.append(productSrcImg.substring(productSrcImg.lastIndexOf(".")));
+							// 获得产品原图片文件
+							File imgFile = new File(pathFileUpload + File.separatorChar
+									+ productSrcImg);
+							if (imgFile.exists()) {
+								// 处理物品大图
+								String bigPath = fileRepository.saveToTarget(new FileInputStream(
+										imgFile), newFileName.toString());
+								if (StringUtils.isNotBlank(bigPath)) {
+									bigImgUrls.add(File.separatorChar + bigPath);
+								}
+								// 处理物品小图
+								if (count == 0) {
+									String litPath = disposeLitImgs(productModel.getBrandId(),
+											pathFileUpload + File.separatorChar + bigPath);
+									List<String> coverSmall = new ArrayList<String>();
+									if (StringUtils.isNotBlank(litPath)) {
+										coverSmall.add(prefix + litPath);
+									}
+									productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
+								}
+								// 缩放图片
+								String scalePath = ImageUtil.zoomInScale(pathFileUpload
+										+ File.separatorChar + bigPath, 500, "scale");
+								if (StringUtils.isNotBlank(scalePath)) {
+									litImgUrls.add(prefix + scalePath);
+								}
+								count++;
+
+							}
+						}
+					}
+					if (bigImgUrls != null && !bigImgUrls.isEmpty()) {
+						productModel.setImgs(JSONUtil.getEntity2Json(bigImgUrls));
+					}
+					if (litImgUrls != null && !litImgUrls.isEmpty()) {
+						productModel.setCover(JSONUtil.getEntity2Json(litImgUrls));
+					}
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	// 重新读取产品原图片并处理
+	private void disposeProductImgSrcReNew(ProductModel productModel, String brandName) {
 		if (productModel != null && StringUtils.isNotBlank(productModel.getImgs())
 				&& !NULL_IMGS.equals(productModel.getImgs()) && StringUtils.isNotBlank(brandName)) {
 			List<String> productSrcImgs = JSONUtil.getJson2EntityList(productModel.getImgs(),

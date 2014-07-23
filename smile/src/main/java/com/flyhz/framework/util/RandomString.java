@@ -10,6 +10,7 @@ public class RandomString {
 	 * 每位允许的字符
 	 */
 	private static final String		POSSIBLE_CHARS	= "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String		POSSIBLE_NUMBER	= "0123456789";
 	private static AtomicInteger	count			= new AtomicInteger(0);
 
 	/**
@@ -36,6 +37,15 @@ public class RandomString {
 		return generateRandomString(8);
 	}
 
+	public static String generateRandomNumber6() {
+		StringBuilder sb = new StringBuilder(6);
+		SecureRandom random = new SecureRandom();
+		for (int i = 0; i < 6; i++) {
+			sb.append(POSSIBLE_NUMBER.charAt(random.nextInt(POSSIBLE_NUMBER.length())));
+		}
+		return sb.toString();
+	}
+
 	/**
 	 * 订单号生成规则:毫秒数*100,拼接count
 	 * 
@@ -55,5 +65,6 @@ public class RandomString {
 	public static void main(String[] args) {
 		System.out.println(generateRandomStringTime());
 		System.out.println(generateRandomStringTime());
+		System.out.println(generateRandomNumber6());
 	}
 }
