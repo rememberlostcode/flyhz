@@ -537,6 +537,19 @@ public class BaseActivity extends Activity {
 	}
 
 	/**
+	 * 显示隐藏结算总额
+	 * 
+	 * @param visibility
+	 * @return
+	 */
+	public View showOrhideFooterMainTotal(int visibility) {
+		int id = R.id.calculate_total;
+		View view = (View) findViewById(id);
+		view.setVisibility(visibility);
+		return view;
+	}
+
+	/**
 	 * 进入我的订单时显示
 	 * 
 	 * @return
