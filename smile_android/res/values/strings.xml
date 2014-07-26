@@ -15,7 +15,6 @@
     <string name="choose_color">选择颜色：</string>
     <string name="good_desc">物品描述</string>
     <string name="shopping_cart">购物车</string>
-    <!-- <string name="more">更多</string> -->
     <string name="more">我</string>
     <string name="order_inform">确认订单信息</string>
     <string name="buy_qty">购买数量</string>
@@ -51,9 +50,14 @@
     <string name="get_pwd">找回密码</string>
     <string name="set_login">登录设置 </string>
     
+    <!-- 身份证管理 -->
+    <string name="manger_idcard_name">姓名</string>
+    <string name="manger_idcard_number">身份证号 </string>
+    
 	<string name="my_orders">我的订单</string>
 	<string name="my_coupons">我的优惠券</string>
 	<string name="my_idcards">我的身份证</string>
+	<string name="my_idcards_add">新增身份证信息</string>
 	<string name="clear_cache">清理缓存</string>
 	<string name="contact_us">联系我们</string>
 	
@@ -73,4 +77,49 @@
     <string name="zongliang">总量</string>
     <string name="showurl">http://h5.m.taobao.com/awp/base/buy.htm?itemId=</string>
     <string name="service_email">service@tiantianhaigou.com</string>
+    
+    
+    
+    <string name="login_autologin_info">自动登录</string>
+    <string name="login_username_hint_info">手机号/邮箱</string>
+    <string name="login_password_hint_info">请输入密码</string>
+    <string name="login_username_hint">请输入用户名</string>
+    <string name="login_password_hint">请输入密码</string>
+    <string name="login_btn_info">登 录</string>
+    <string name="login_error_info">帐号或密码错误</string>
+    <string name="login_user_name_blank">请输入账号</string>
+    <string name="login_user_password_blank">请输入密码</string>
+    <string name="login_user_name_password_blank">请输入账号和密码</string>
+    
+    <string name="regist_login_account">账户名称：</string>
+    <string name="regist_login_password">登录密码：</string>
+    <string name="regist_phone_tip">手机号</string>
+    <string name="regist_email_tip">邮箱</string>
+    <string name="regist_username_hint">请输入用户名</string>
+    <string name="regist_email_hint">请输入邮箱</string>
+    <string name="regist_username_null_msg">账户不能空，请确认</string>
+    <string name="regist_account_null_msg">请输入手机号码或邮箱注册</string>
+    <string name="regist_username_exception_msg">账户必须是邮箱或电话</string>
+    <string name="regist_password_null_msg">密码不能空，请确认</string>
+    <string name="regist_password_hint">6-20 位字母、数字、符号结合</string>
+    <string name="regist_success">恭喜你注册成功!</string>
+    <string name="regist_failed">注册失败，请稍后重试</string>
+    <string name="regist_network_failed">很遗憾，注册失败，请设置网络后重新再试</string>
+    <string name="regist_failed_exist">账号已存在，请直接登录!</string>
+    <string name="regist_extits">抱歉，用户已存在!</string>
+    <string name="regist_account_error_msg">请输入正确的手机或邮箱账号</string>
+    <string name="regist_account_number_error_msg">请输入11位手机号码</string>
+    <string name="regist_passlen_msg">密码长度不符</string>
+    <string name="regist_passs_numorletter_msg">密码必须为数字或英文字符</string>
+    <string name="regist_passs_format_error">密码必须为6-20位字母与数字组合</string>
+    <string name="regist_password_empty">请输入你的密码</string>
+    <string name="regist_submit">立即注册</string>
+    <string name="regist_tip">%s格式不正确</string>
+    <string name="regist_btn_info">注 册</string>
+    
+    <string name="account_account">账户:</string>
+    <string name="account_order_pre_pay">待支付</string>
+    <string name="account_order_pre_receive">待收货</string>
+    <string name="account_order_all">全部订单</string>
+    <string name="account_favourables">代金券</string>
 </resources>

@@ -65,7 +65,6 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 						.getSystemService(
 								Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(phoneEditText.getWindowToken(), 0);
-				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
 			}

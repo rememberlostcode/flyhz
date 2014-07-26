@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.tools.ClickUtil;
+import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.ToastUtils;
 
 /**
@@ -26,9 +27,17 @@ import com.holding.smile.tools.ToastUtils;
 public class MySmileActivity extends BaseActivity implements OnClickListener {
 
 	/**
-	 * 我的订单
+	 * 我的订单(全部)
 	 */
 	private LinearLayout	myOrdersLayout;
+	/**
+	 * 我的订单(待付款)
+	 */
+	private LinearLayout	myOrdersPayLayout;
+	/**
+	 * 我的订单(待收货)
+	 */
+	private LinearLayout	myOrdersResLayout;
 	/**
 	 * 优惠券
 	 */
@@ -45,46 +54,85 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 	 * 联系我们
 	 */
 	private LinearLayout	contactUsLayoutLayout;
-	/**
-	 * 消息接收
-	 */
-	private LinearLayout	messageLayoutLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.my_smile);
-
+	}
+	
+	@Override
+	public void onStart(){
+		super.onStart();
+		displayHeaderDescription().setText(R.string.more);
+		
+		if (MyApplication.getInstance().getCurrentUser() != null
+				&& MyApplication.getInstance().getCurrentUser().getUsername() != null
+				&& !"".equals(MyApplication.getInstance().getCurrentUser().getUsername())) {
+			((TextView) findViewById(R.id.my_smile_account)).setText(MyApplication.getInstance()
+																					.getCurrentUser()
+																					.getUsername());
+		}
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 
-		TextView textView = displayHeaderDescription();
-		textView.setText(R.string.more);
-
 		displayFooterMain(R.id.mainfooter_more);
 
+		myOrdersPayLayout = (LinearLayout) findViewById(R.id.mysmile_myorders_layout_pay);
+		myOrdersPayLayout.setOnClickListener(this);
+		myOrdersResLayout = (LinearLayout) findViewById(R.id.mysmile_myorders_layout_res);
+		myOrdersResLayout.setOnClickListener(this);
 		myOrdersLayout = (LinearLayout) findViewById(R.id.mysmile_myorders_layout);
+		myOrdersLayout.setOnClickListener(this);
+		
 		myCouponLayout = (LinearLayout) findViewById(R.id.mysmile_mycoupon_layout);
 		myCouponLayout.setVisibility(View.GONE);
-		settingLayout = (LinearLayout) findViewById(R.id.mysmile_setting_layout);
-		clearCacheLayout = (LinearLayout) findViewById(R.id.mysmile_clearcache_layout);
-		contactUsLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_contact_us_layout);
-		messageLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_message_layout);
-
-		myOrdersLayout.setOnClickListener(this);
 		myCouponLayout.setOnClickListener(this);
+		
+		settingLayout = (LinearLayout) findViewById(R.id.mysmile_setting_layout);
 		settingLayout.setOnClickListener(this);
+		
+		clearCacheLayout = (LinearLayout) findViewById(R.id.mysmile_clearcache_layout);
 		clearCacheLayout.setOnClickListener(this);
+		
+		contactUsLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_contact_us_layout);
 		contactUsLayoutLayout.setOnClickListener(this);
-		messageLayoutLayout.setOnClickListener(this);
 	}
-
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
 				setResult(RESULT_CANCELED, null);
 				finish();
+				break;
+			}
+			case R.id.mysmile_myorders_layout_pay: {
+				SUser user = MyApplication.getInstance().getCurrentUser();
+				Intent intent = new Intent();
+				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					intent.putExtra("class", MyOrdersActivity.class);
+					intent.setClass(context, LoginActivity.class);
+				} else {
+					intent.setClass(context, MyOrdersActivity.class);
+				}
+				intent.putExtra("status", Constants.OrderStateCode.FOR_PAYMENT);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+				break;
+			}
+			case R.id.mysmile_myorders_layout_res: {
+				SUser user = MyApplication.getInstance().getCurrentUser();
+				Intent intent = new Intent();
+				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					intent.putExtra("class", MyOrdersActivity.class);
+					intent.setClass(context, LoginActivity.class);
+				} else {
+					intent.setClass(context, MyOrdersActivity.class);
+				}
+				intent.putExtra("status", Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
 				break;
 			}
 			case R.id.mysmile_myorders_layout: {
@@ -123,13 +171,6 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 			}
 			case R.id.mysmile_contact_us_layout: {
 				ClickUtil.sendEmail(this);
-				break;
-			}
-			case R.id.mysmile_message_layout: {
-				Intent intent = new Intent();
-				intent.setClass(context, JPushActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
 				break;
 			}
 		}

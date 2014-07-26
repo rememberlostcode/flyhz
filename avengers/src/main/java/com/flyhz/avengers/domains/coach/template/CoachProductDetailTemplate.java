@@ -3,7 +3,7 @@ package com.flyhz.avengers.domains.coach.template;
 
 import java.util.Map;
 
-import com.flyhz.avengers.framework.Template;
+import com.flyhz.avengers.framework.lang.Template;
 
 public class CoachProductDetailTemplate implements Template {
 

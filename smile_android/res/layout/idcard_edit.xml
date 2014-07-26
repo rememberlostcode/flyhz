@@ -1,166 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:scrollbars="none" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/app_body_bg" >
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical" >
+        android:layout_height="fill_parent"
+        android:background="@color/app_body_bg"
+        android:fadingEdge="none" >
 
-        <LinearLayout
-            android:id="@+id/setting_idcard_edit_content"
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:background="@color/app_body_bg" >
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/new_personal_title_bg" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="12.0dip"
+                android:layout_marginLeft="12.0dip"
+                android:layout_marginRight="12.0dip"
+                android:layout_marginTop="10.0dip"
+                android:background="@drawable/new_table_row_bg"
                 android:orientation="vertical" >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
-                    android:text="根据国家海关规定，清关需提供收件人身份证正反面照片，请您输入真实的收件人信息，以确保顺利清关！"
-                    android:textColor="@drawable/red"
-                    android:textSize="12sp" />
+                <!-- 说明文字 -->
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal" >
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/new_personal_tab_center_pressed"
+                    android:gravity="center"
+                    android:padding="@dimen/favourable_text_margin" >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="6dp"
-                        android:text="*"
-                        android:textColor="@drawable/red"
-                        android:textSize="15sp" />
+                        android:text="根据国家海关规定，清关需提供收件人身份证正反面照片，请您输入真实的收件人信息，以确保顺利清关！"
+                        android:textColor="#fffd4ca3"
+                        android:textSize="@dimen/app_textsize_main_new" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.0px"
+                    android:layout_weight="1"
+                    android:background="@color/textarea_divider" />
+
+                <!-- 姓名 -->
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/new_personal_tab_center_pressed"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/favourable_text_margin" >
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="姓名"
-                        android:textColor="@drawable/shenhuise"
-                        android:textSize="15sp" />
+                        android:text="*"
+                        android:textColor="@drawable/red"
+                        android:textSize="@dimen/app_textsize_main" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4.0dip"
+                        android:text="证件姓名"
+                        android:textColor="@color/personal_text_color"
+                        android:textSize="@dimen/app_textsize_main" />
 
                     <EditText
                         android:id="@+id/idcard_name"
                         android:layout_width="0dp"
-                        android:layout_height="42dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15.0dip"
+                        android:layout_marginRight="5.0dip"
                         android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:hint="请输入身份证姓名"
+                        android:hint="请输入姓名"
                         android:imeOptions="actionNext"
                         android:inputType="text"
-                        android:maxLength="25"
-                        android:textSize="15sp" />
+                        android:textColor="#fffd4ca3"
+                        android:textSize="@dimen/app_textsize_main_new" />
                 </LinearLayout>
-            </LinearLayout>
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1.0dp"
-                android:background="@drawable/qianhuise" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
-                    android:text="*"
-                    android:textColor="@drawable/red"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="身份证"
-                    android:textColor="@drawable/shenhuise"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/idcard_number"
-                    android:layout_width="0dp"
-                    android:layout_height="42dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="8dp"
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.0px"
                     android:layout_weight="1"
-                    android:digits="1234567890x"
-                    android:gravity="center_vertical"
-                    android:hint="请输入身份证号"
-                    android:imeOptions="actionDone"
-                    android:inputType="text"
-                    android:maxLength="18"
-                    android:textSize="15sp" />
-            </LinearLayout>
+                    android:background="@color/textarea_divider" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1.0dp"
-                android:background="@drawable/qianhuise" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="110dp"
-                android:text="点击照片查看大图效果"
-                android:textColor="@drawable/lvse"
-                android:textSize="12sp" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="left"
-                android:orientation="vertical" >
+                <!-- 身份证号 -->
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal" >
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/new_personal_tab_center_pressed"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/favourable_text_margin" >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="6dp"
                         android:text="*"
                         android:textColor="@drawable/red"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/app_textsize_main" />
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
+                        android:layout_marginLeft="4.0dip"
+                        android:text="@string/manger_idcard_number"
+                        android:textColor="@color/personal_text_color"
+                        android:textSize="@dimen/app_textsize_main" />
+
+                    <EditText
+                        android:id="@+id/idcard_number"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15.0dip"
+                        android:layout_marginRight="5.0dip"
+                        android:layout_weight="1.0"
+                        android:digits="1234567890x"
+                        android:hint="请输入身份证号"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:textColor="#fffd4ca3"
+                        android:textSize="@dimen/app_textsize_main_new" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.0px"
+                    android:layout_weight="1"
+                    android:background="@color/textarea_divider" />
+
+                <!-- 身份证正面照片 -->
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/new_personal_tab_center_pressed"
+                    android:gravity="left|center_vertical"
+                    android:padding="@dimen/favourable_text_margin" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="*"
+                        android:textColor="@drawable/red"
+                        android:textSize="@dimen/app_textsize_main" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4.0dip"
                         android:text="证件正面"
-                        android:textColor="@drawable/shenhuise"
-                        android:textSize="15sp" />
+                        android:textColor="@color/personal_text_color"
+                        android:textSize="@dimen/app_textsize_main" />
 
                     <ImageView
                         android:id="@+id/idcard_idcard_img"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
+                        android:layout_marginLeft="15dp"
                         android:layout_marginRight="10dp"
                         android:layout_weight="1"
                         android:contentDescription="@string/my_idcards"
@@ -171,40 +190,48 @@
                         android:id="@+id/idcard_idcard_img_upload"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="15.0dip"
+                        android:layout_marginRight="5.0dip"
                         android:contentDescription="@string/my_idcards"
                         android:src="@drawable/upload_image" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.0px"
+                    android:layout_weight="1"
+                    android:background="@color/textarea_divider" />
+
+                <!-- 身份证反面照片 -->
+
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal" >
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/new_personal_tab_center_pressed"
+                    android:gravity="left|center_vertical"
+                    android:padding="@dimen/favourable_text_margin" >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="6dp"
                         android:text="*"
                         android:textColor="@drawable/red"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/app_textsize_main" />
 
                     <TextView
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="证件背面"
-                        android:textColor="@drawable/shenhuise"
-                        android:textSize="15sp" />
+                        android:layout_marginLeft="4.0dip"
+                        android:text="证件反面"
+                        android:textColor="@color/personal_text_color"
+                        android:textSize="@dimen/app_textsize_main" />
 
                     <ImageView
                         android:id="@+id/idcard_idcard_back_img"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
+                        android:layout_marginLeft="15dp"
                         android:layout_marginRight="10dp"
                         android:layout_weight="1"
                         android:contentDescription="@string/my_idcards"
@@ -215,40 +242,47 @@
                         android:id="@+id/idcard_idcard_back_img_upload"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="15.0dip"
+                        android:layout_marginRight="5.0dip"
                         android:contentDescription="@string/my_idcards"
                         android:src="@drawable/upload_image" />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.0px"
+                    android:layout_weight="1"
+                    android:background="@color/textarea_divider" />
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:orientation="horizontal" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="right"
+        android:orientation="horizontal" >
 
-            <Button
-                android:id="@+id/idcard_delete"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:layout_margin="10.0dp"
-                android:background="@drawable/dahong"
-                android:text="删除"
-                android:textColor="@drawable/baise"
-                android:textSize="15sp" />
+        <Button
+            android:id="@+id/idcard_delete"
+            android:layout_width="80.0dip"
+            android:layout_height="50.0dip"
+            android:layout_margin="10.0dp"
+            android:background="@drawable/submit_red_button"
+            android:text="删除"
+            android:textColor="@color/app_text_white"
+            android:textSize="@dimen/app_textsize_button" />
 
-            <Button
-                android:id="@+id/idcard_add_save"
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:layout_margin="10.0dp"
-                android:background="@drawable/lvse"
-                android:text="保存"
-                android:textColor="@drawable/baise"
-                android:textSize="15sp" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/idcard_add_save"
+            android:layout_width="80.0dip"
+            android:layout_height="50.0dip"
+            android:layout_margin="10.0dp"
+            android:background="@drawable/submit_green_button"
+            android:text="保存"
+            android:textColor="@color/app_text_white"
+            android:textSize="@dimen/app_textsize_button" />
     </LinearLayout>
 
-</ScrollView>
+</RelativeLayout>

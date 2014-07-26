@@ -562,6 +562,7 @@ public class BaseActivity extends Activity {
 		return view;
 	}
 
+	private int seconds = 0;
 	/**
 	 * 显示loading图片，最少显示一秒
 	 */
@@ -569,6 +570,7 @@ public class BaseActivity extends Activity {
 		dialogLoading = new HKDialogLoading(this, R.style.HKDialog);
 		dialogLoading.show(); // 显示加载中对话框
 		canClosed = false;
+		seconds = 0;
 
 		time = new Timer(true);
 		loadingTimerTask = new TimerTask() {
@@ -581,6 +583,7 @@ public class BaseActivity extends Activity {
 					loadingTimerTask.cancel();
 					return;
 				} else {
+					seconds ++;
 					countTime--;
 				}
 			}
@@ -593,7 +596,11 @@ public class BaseActivity extends Activity {
 	 * 关闭loading图片，关闭会有延迟，最长延迟一秒
 	 */
 	public void closeLoading() {
-		canClosed = true;
+		if(seconds > 0){//持续时间已经有1秒了，立即关闭
+			closeImmediatelyLoading();
+		} else {
+			canClosed = true;
+		}
 	}
 
 	/**
@@ -601,9 +608,13 @@ public class BaseActivity extends Activity {
 	 */
 	public void closeImmediatelyLoading() {
 		canClosed = true;
-		dialogLoading.dismiss();
-		time.cancel();
-		loadingTimerTask.cancel();
+		try {
+			time.cancel();
+			loadingTimerTask.cancel();
+			dialogLoading.dismiss();
+		} catch (Exception e) {
+			Log.e(MyApplication.LOG_TAG, e.getMessage());
+		}
 	}
 
 }

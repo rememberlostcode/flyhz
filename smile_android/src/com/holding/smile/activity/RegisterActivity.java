@@ -39,18 +39,6 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.register);
-		ImageView backBtn = displayHeaderBack();
-		backBtn.setOnClickListener(this);
-		loginViewInit();
-	}
-
-	/**
-	 * 登录界面初始化
-	 * 
-	 * @param savedInstanceState
-	 */
-	private void loginViewInit() {
-		initView();// 初始化界面控件
 	}
 
 	/**
@@ -67,6 +55,17 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		btnToRegister.setOnClickListener(this);
 	}
 
+	@Override
+	public void onStart(){
+		super.onStart();
+		ImageView backBtn = displayHeaderBack();
+		backBtn.setOnClickListener(this);
+		
+		displayHeaderDescription().setText(R.string.btn_register);
+		
+		initView();
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -142,10 +141,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 																										.getSubmitService()
 																										.register(
 																												user);
-																		closeLoading();
+																		closeImmediatelyLoading();
 																		if (!CodeValidator.dealCode(
 																				context, rvd)) {
-																			loginViewInit();
+																			initView();
 																		} else {
 																			ToastUtils.showShort(
 																					context,

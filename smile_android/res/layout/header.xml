@@ -22,10 +22,9 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="12dip"
             android:src="@drawable/btn_back_bg"
-            
             android:visibility="gone" />
-        
     </LinearLayout>
 
     <LinearLayout
@@ -35,15 +34,16 @@
         android:gravity="center|center"
         android:orientation="horizontal" >
 
-        <!-- android:ellipsize="end" 当字符内容太长显示不下时可以省略号代替未显示的字符,省略号在结尾  -->
+        <!-- android:ellipsize="end" 当字符内容太长显示不下时可以省略号代替未显示的字符,省略号在结尾 -->
+
         <TextView
             android:id="@+id/header_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@drawable/xiguahong"
+            android:ellipsize="end"
+            android:textColor="@color/black"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:ellipsize="end"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -54,30 +54,29 @@
         android:gravity="center|center"
         android:orientation="horizontal" >
 
-         <TextView
+        <TextView
             android:id="@+id/header_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:textColor="@drawable/lvse"
             android:text=""
+            android:textColor="@drawable/lvse"
             android:textSize="22sp"
             android:visibility="gone" />
-         
-         <ImageView
+
+        <ImageView
             android:id="@+id/header_right_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:contentDescription="@string/gu"/>
-         
+            android:contentDescription="@string/gu"
+            android:visibility="gone" />
     </LinearLayout>
-    
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1px"
         android:layout_alignParentBottom="true"
         android:background="@drawable/qianhuise" >
     </View>
-    
+
 </RelativeLayout>

@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import org.apache.commons.cli.CommandLine;
@@ -81,40 +83,40 @@ import com.flyhz.avengers.framework.application.InitEnvApplication;
 @InterfaceStability.Unstable
 public class AvengersClient {
 
-	private static final Logger	LOG				= LoggerFactory.getLogger(AvengersClient.class);
+	private static final Logger				LOG				= LoggerFactory.getLogger(AvengersClient.class);
 
 	// Configuration
-	private Configuration		conf;
-	private YarnClient			yarnClient;
+	private Configuration					conf;
+	private YarnClient						yarnClient;
 
 	// App master priority
-	private int					amPriority		= 0;
+	private int								amPriority		= 0;
 	// Queue for App master
-	private String				amQueue			= "";
+	private String							amQueue			= "";
 	// Amt. of memory resource to request for to run the App Master
-	private int					amMemory		= 10;
+	private int								amMemory		= 10;
 
 	// log4j.properties file
 	// if available, add to local resources and set into classpath
-	private String				log4jPropFile	= "";
+	private String							log4jPropFile	= "";
 
 	// Start time for client
-	private final long			clientStartTime	= System.currentTimeMillis();
+	private final long						clientStartTime	= System.currentTimeMillis();
 	// Timeout threshold for client. Kill app after time interval expires.
-	private long				clientTimeout	= 1200000;
+	private long							clientTimeout	= 1200000;
 
 	// Command line options
-	private Options				opts;
+	private Options							opts;
 
-	private Long				batchId;
+	private Long							batchId;
 
-	private String				hdfsPath;
+	private String							hdfsPath;
 
-	private List<List<String>>	avengersProcessCmds;
+	private final Map<String, List<String>>	avengersProcessCmds;
 
-	private String				appJar;
+	private String							appJar;
 
-	private boolean				copy			= true;
+	private boolean							copy			= true;
 
 	/**
 	 * @param args
@@ -135,8 +137,9 @@ public class AvengersClient {
 				client.printUsage();
 				System.exit(-1);
 			}
-			for (List<String> cmds : client.avengersProcessCmds) {
-				if (!client.run(cmds))
+			for (Entry<String, List<String>> entry : client.avengersProcessCmds.entrySet()) {
+				result = client.run(entry.getKey(), entry.getValue());
+				if (!result)
 					break;
 			}
 
@@ -187,7 +190,7 @@ public class AvengersClient {
 		opts.addOption(fetch);
 		opts.addOption(analyze);
 
-		avengersProcessCmds = new ArrayList<List<String>>();
+		avengersProcessCmds = new LinkedHashMap<String, List<String>>();
 		this.hdfsPath = "avengers/" + batchId + "/avengers.jar";
 	}
 
@@ -234,18 +237,18 @@ public class AvengersClient {
 		appJar = cliParser.getOptionValue("jar");
 
 		if (cliParser.hasOption("all")) {
-			avengersProcessCmds.add(getInitEnvCmd());
-			avengersProcessCmds.add(getCrawlCmd());
-			avengersProcessCmds.add(getFetchCmd());
+			avengersProcessCmds.put("init_env", getInitEnvCmd());
+			avengersProcessCmds.put("crawl", getCrawlCmd());
+			avengersProcessCmds.put("fetch", getFetchCmd());
 			// avengersProcessCmds.add(runAnalyze());
 		} else {
 			if (cliParser.hasOption("crawl")) {
-				avengersProcessCmds.add(getInitEnvCmd());
-				avengersProcessCmds.add(getCrawlCmd());
+				avengersProcessCmds.put("init_env", getInitEnvCmd());
+				avengersProcessCmds.put("crawl", getCrawlCmd());
 			}
 			if (cliParser.hasOption("fetch")) {
-				avengersProcessCmds.add(getInitEnvCmd());
-				avengersProcessCmds.add(getFetchCmd());
+				avengersProcessCmds.put("init_env", getInitEnvCmd());
+				avengersProcessCmds.put("fetch", getFetchCmd());
 			}
 			// if (cliParser.hasOption("analyze")) {
 			// avengersProcessCmds.add(getInitEnvCmd());
@@ -383,7 +386,7 @@ public class AvengersClient {
 	 * @throws IOException
 	 * @throws YarnException
 	 */
-	private boolean run(List<String> commands) throws IOException, YarnException {
+	private boolean run(String appName, List<String> commands) throws IOException, YarnException {
 
 		LOG.info("Running Client");
 
@@ -438,7 +441,7 @@ public class AvengersClient {
 		// set the application name
 		ApplicationSubmissionContext appContext = app.getApplicationSubmissionContext();
 		ApplicationId appId = appContext.getApplicationId();
-		appContext.setApplicationName("avengers");
+		appContext.setApplicationName(appName);
 
 		// Set up the container launch context for the application master
 		ContainerLaunchContext amContainer = Records.newRecord(ContainerLaunchContext.class);
@@ -600,9 +603,9 @@ public class AvengersClient {
 
 		while (true) {
 
-			// Check app status every 1 second.
+			// Check app status every 10 second.
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 				LOG.debug("Thread sleep in monitoring loop interrupted");
 			}

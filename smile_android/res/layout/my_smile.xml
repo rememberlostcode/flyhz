@@ -1,161 +1,378 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent"
+    android:background="@color/app_body_bg" >
 
-    <!-- 我的订单 -->
-
-    <LinearLayout
-        android:id="@+id/mysmile_myorders_layout"
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
+        android:layout_height="fill_parent"
+        android:background="@color/app_body_bg"
+        android:fadingEdge="none" >
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/my_orders"
-            android:textColor="@drawable/shenhuise"
-            android:textSize="18sp" />
-    </LinearLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1.0dp"
-        android:background="@drawable/qianhuise" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/new_personal_title_bg" />
 
-    <!-- 我的优惠券 -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/mysmile_mycoupon_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/my_coupons"
-            android:textColor="@drawable/shenhuise"
-            android:textSize="18sp" />
-    </LinearLayout>
+                    <TableLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="50.0dip"
+                        android:layout_centerVertical="true"
+                        android:gravity="left|center" >
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1.0dp"
-        android:background="@drawable/qianhuise" />
+                        <TableRow
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" >
 
-    <!-- 个人设置 -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="22.0dip"
+                                android:shadowColor="@color/shadow_color"
+                                android:shadowDx="0.5"
+                                android:shadowDy="0.8"
+                                android:shadowRadius="1.0"
+                                android:singleLine="true"
+                                android:text="@string/account_account"
+                                android:textColor="@color/white"
+                                android:textSize="17.5sp" />
 
-    <LinearLayout
-        android:id="@+id/mysmile_setting_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
+                            <TextView
+                                android:id="@+id/my_smile_account"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/wallet_margin"
+                                android:layout_marginRight="5.0dip"
+                                android:lines="2"
+                                android:maxEms="8"
+                                android:shadowColor="@color/shadow_color"
+                                android:shadowDx="0.5"
+                                android:shadowDy="0.8"
+                                android:shadowRadius="1.0"
+                                android:singleLine="true"
+                                android:text="@string/app_name"
+                                android:textColor="@color/white"
+                                android:textSize="17.5sp" />
+                        </TableRow>
+                    </TableLayout>
+                </RelativeLayout>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/personal_information"
-            android:textColor="@drawable/shenhuise"
-            android:textSize="18sp" />
-    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12.0dip"
+                    android:layout_marginRight="12.0dip"
+                    android:background="@drawable/new_table_row_bg"
+                    android:orientation="horizontal"
+                    android:padding="0.0dip" >
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1.0dp"
-        android:background="@drawable/qianhuise" />
-    
-    <!-- 清理缓存 -->
-    <LinearLayout
-        android:id="@+id/mysmile_clearcache_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
+                    <LinearLayout
+                        android:id="@+id/mysmile_myorders_layout_pay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:background="@drawable/new_personal_status_tab_left_pressed"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10.0dip" >
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/clear_cache"
-            android:textColor="@drawable/shenhuise"
-            android:textSize="18sp" />
-    </LinearLayout>
-    
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1.0dp"
-        android:background="@drawable/qianhuise" />
-    
-    <!-- 联系我们 -->
-    <LinearLayout
-        android:id="@+id/mysmile_contact_us_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/new_ic_accout_pre_pay"
+                            android:gravity="right" >
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/contact_us"
-            android:textColor="@drawable/shenhuise"
-            android:textSize="18sp" />
-    </LinearLayout>
-    
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1.0dp"
-        android:background="@drawable/qianhuise" />
-    
-    <!-- 消息接收 -->
-    <LinearLayout
-        android:id="@+id/mysmile_message_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_accout_item_size"
+                                android:gravity="center"
+                                android:text="1"
+                                android:textColor="@color/white"
+                                android:visibility="gone" />
+                        </LinearLayout>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="消息接收"
-            android:textColor="@drawable/shenhuise"
-            android:textSize="18sp" />
-    </LinearLayout>
-    
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1.0dp"
-        android:background="@drawable/qianhuise" />
-    
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="2.0dip"
+                            android:text="@string/account_order_pre_pay"
+                            android:textColor="@color/personal_text_color"
+                            android:textSize="@dimen/app_textsize_main" />
+                    </LinearLayout>
 
-</LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:paddingBottom="10.0dip"
+                        android:paddingTop="10.0dip" >
+
+                        <View
+                            android:layout_width="1.0dip"
+                            android:layout_height="fill_parent"
+                            android:background="@drawable/repeat" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/mysmile_myorders_layout_res"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:background="@drawable/new_personal_status_tab_center_pressed"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10.0dip" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/new_ic_accout_pre_receive"
+                            android:gravity="right"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_accout_item_size"
+                                android:gravity="center"
+                                android:text="1"
+                                android:textColor="@color/white"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="2.0dip"
+                            android:text="@string/account_order_pre_receive"
+                            android:textColor="@color/personal_text_color"
+                            android:textSize="@dimen/app_textsize_main" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:paddingBottom="10.0dip"
+                        android:paddingTop="10.0dip" >
+
+                        <View
+                            android:layout_width="1.0dip"
+                            android:layout_height="fill_parent"
+                            android:background="@drawable/repeat" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/mysmile_myorders_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:background="@drawable/new_personal_status_tab_fight_pressed"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="10.0dip" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/new_ic_accout_order_finish"
+                            android:gravity="right"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:src="@drawable/bg_accout_item_size"
+                                android:text="1"
+                                android:textColor="@color/white"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="2.0dip"
+                            android:text="@string/account_order_all"
+                            android:textColor="@color/personal_text_color"
+                            android:textSize="@dimen/app_textsize_main" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12.0dip"
+                    android:layout_marginLeft="12.0dip"
+                    android:layout_marginRight="12.0dip"
+                    android:layout_marginTop="10.0dip"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/new_table_row_bg"
+                    android:orientation="vertical"
+                    android:padding="0.0dip" >
+
+                    <LinearLayout
+                        android:id="@+id/mysmile_setting_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/new_personal_tab_center_pressed"
+                        android:gravity="center"
+                        android:padding="@dimen/wallet_margin" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/new_menu_set_select" />
+
+                        <TextView
+                            android:layout_width="0.0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10.0dip"
+                            android:layout_weight="1.0"
+                            android:text="@string/personal_information"
+                            android:textColor="@color/personal_text_color"
+                            android:textSize="@dimen/app_textsize_main" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5.0dip"
+                            android:textColor="#fffd4ca3"
+                            android:textSize="@dimen/app_textsize_main_new" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/acs_right_arrwo" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1.0px"
+                        android:background="@color/textarea_divider" />
+
+                    <LinearLayout
+                        android:id="@+id/mysmile_mycoupon_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/new_personal_tab_center_pressed"
+                        android:gravity="center"
+                        android:padding="@dimen/wallet_margin" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/new_ic_accout_favourables" />
+
+                        <TextView
+                            android:layout_width="0.0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10.0dip"
+                            android:layout_weight="1.0"
+                            android:text="@string/account_favourables"
+                            android:textColor="@color/personal_text_color"
+                            android:textSize="@dimen/app_textsize_main" />
+
+                        <TextView
+                            android:id="@+id/favor_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5.0dip"
+                            android:textColor="#fffd4ca3"
+                            android:textSize="@dimen/app_textsize_main_new" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/acs_right_arrwo" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/mysmile_clearcache_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/new_personal_tab_center_pressed"
+                        android:gravity="center"
+                        android:padding="@dimen/wallet_margin" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/new_menu_set_select" />
+
+                        <TextView
+                            android:layout_width="0.0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10.0dip"
+                            android:layout_weight="1.0"
+                            android:text="@string/clear_cache"
+                            android:textColor="@color/personal_text_color"
+                            android:textSize="@dimen/app_textsize_main" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5.0dip"
+                            android:textColor="#fffd4ca3"
+                            android:textSize="@dimen/app_textsize_main_new" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/acs_right_arrwo" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mysmile_contact_us_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12.0dip"
+                    android:layout_marginLeft="12.0dip"
+                    android:layout_marginRight="12.0dip"
+                    android:background="@drawable/new_personal_tab"
+                    android:gravity="center"
+                    android:padding="@dimen/wallet_margin" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/new_ic_accout_custom" />
+
+                    <TextView
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10.0dip"
+                        android:layout_weight="1.0"
+                        android:text="@string/contact_us"
+                        android:textColor="@color/personal_text_color"
+                        android:textSize="@dimen/app_textsize_main" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/acs_right_arrwo" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

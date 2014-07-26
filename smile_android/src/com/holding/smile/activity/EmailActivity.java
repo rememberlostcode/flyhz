@@ -77,7 +77,6 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 						.getSystemService(
 								Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(emailEditText.getWindowToken(), 0);
-				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
 			}

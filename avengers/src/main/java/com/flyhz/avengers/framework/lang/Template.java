@@ -1,5 +1,5 @@
 
-package com.flyhz.avengers.framework;
+package com.flyhz.avengers.framework.lang;
 
 import java.util.Map;
 
