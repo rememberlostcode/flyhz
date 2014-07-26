@@ -20,6 +20,7 @@ import com.flyhz.avengers.framework.config.XConfiguration;
 import com.flyhz.avengers.framework.config.xml.XTemplate;
 import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
 import com.flyhz.avengers.framework.lang.Event;
+import com.flyhz.avengers.framework.lang.Template;
 import com.flyhz.avengers.framework.util.StringUtil;
 
 public class Analyze extends AvengersExecutor {
@@ -59,7 +60,7 @@ public class Analyze extends AvengersExecutor {
 		}
 		if (args.length == 0) {
 			printUsage(opts);
-			throw new IllegalArgumentException("No args specified for Fetch to initialize");
+			throw new IllegalArgumentException("No args specified for FetchOld to initialize");
 		}
 
 		if (cliParser.hasOption("help")) {

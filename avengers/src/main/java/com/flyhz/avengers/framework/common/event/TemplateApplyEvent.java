@@ -7,8 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.Analyze;
-import com.flyhz.avengers.framework.Template;
-import com.flyhz.avengers.framework.lang.AbstractEvent;
+import com.flyhz.avengers.framework.lang.Template;
 
 public class TemplateApplyEvent extends AbstractEvent {
 	public TemplateApplyEvent(Map<String, Object> context) {

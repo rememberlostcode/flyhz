@@ -91,9 +91,9 @@ import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.Crawl;
 import com.flyhz.avengers.framework.config.XConfiguration;
-import com.flyhz.avengers.framework.lang.AVTable;
-import com.flyhz.avengers.framework.lang.AVTable.AVColumn;
-import com.flyhz.avengers.framework.lang.AVTable.AVColumnFamily;
+import com.flyhz.avengers.framework.lang.HBaseAVTable;
+import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVColumn;
+import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVFamily;
 import com.google.common.annotations.VisibleForTesting;
 
 @InterfaceAudience.Public
@@ -290,58 +290,56 @@ public class CrawlApplication {
 		LOG.info("init hbase");
 		HConnection hConnection = null;
 		HBaseAdmin hbaseAdmin = null;
-		// HTable hVersion = null;
-		HTable hPage = null;
 		HTable hDomain = null;
 		try {
 			hConnection = HConnectionManager.createConnection(hbaseConf);
 			hbaseAdmin = new HBaseAdmin(hConnection);
 			// av_fetch
-			if (!hbaseAdmin.tableExists(AVTable.av_fetch.name())) {
+			if (!hbaseAdmin.tableExists(HBaseAVTable.av_fetch.name())) {
 				LOG.info("table[av_fetch] create it");
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf(AVTable.av_fetch.name()));
-				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
+						TableName.valueOf(HBaseAVTable.av_fetch.name()));
+				HColumnDescriptor info = new HColumnDescriptor(HBaseAVTable.HBaseAVFamily.i.name());
 				tableDesc.addFamily(info);
 				hbaseAdmin.createTable(tableDesc);
 			}
 
 			// av_page
-			if (!hbaseAdmin.tableExists(AVTable.av_page.name())) {
+			if (!hbaseAdmin.tableExists(HBaseAVTable.av_page.name())) {
 				LOG.info("table[av_page] create it");
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf(AVTable.av_page.name()));
-				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
+						TableName.valueOf(HBaseAVTable.av_page.name()));
+				HColumnDescriptor info = new HColumnDescriptor(HBaseAVTable.HBaseAVFamily.i.name());
 				tableDesc.addFamily(info);
 				hbaseAdmin.createTable(tableDesc);
 			}
 
 			// av_crawl
-			if (hbaseAdmin.tableExists(AVTable.av_crawl.name())) {
+			if (hbaseAdmin.tableExists(HBaseAVTable.av_crawl.name())) {
 				LOG.info("table[av_crawl] exist drop it");
-				if (hbaseAdmin.isTableEnabled(AVTable.av_crawl.name())) {
-					hbaseAdmin.disableTable(AVTable.av_crawl.name());
+				if (hbaseAdmin.isTableEnabled(HBaseAVTable.av_crawl.name())) {
+					hbaseAdmin.disableTable(HBaseAVTable.av_crawl.name());
 				}
-				hbaseAdmin.deleteTable(Bytes.toBytes(AVTable.av_crawl.name()));
+				hbaseAdmin.deleteTable(Bytes.toBytes(HBaseAVTable.av_crawl.name()));
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf(AVTable.av_crawl.name()));
-				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
+						TableName.valueOf(HBaseAVTable.av_crawl.name()));
+				HColumnDescriptor info = new HColumnDescriptor(HBaseAVTable.HBaseAVFamily.i.name());
 				tableDesc.addFamily(info);
 				LOG.info("table[av_crawl] dropped then create it");
 				hbaseAdmin.createTable(tableDesc);
 			} else {
 				LOG.info("table[av_crawl] create it");
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf(AVTable.av_crawl.name()));
-				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
+						TableName.valueOf(HBaseAVTable.av_crawl.name()));
+				HColumnDescriptor info = new HColumnDescriptor(HBaseAVTable.HBaseAVFamily.i.name());
 				tableDesc.addFamily(info);
 				hbaseAdmin.createTable(tableDesc);
 			}
 
-			if (!hbaseAdmin.tableExists(AVTable.av_domain.name())) {
+			if (!hbaseAdmin.tableExists(HBaseAVTable.av_domain.name())) {
 				HTableDescriptor tableDesc = new HTableDescriptor(
-						TableName.valueOf(AVTable.av_domain.name()));
-				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVColumnFamily.i.name());
+						TableName.valueOf(HBaseAVTable.av_domain.name()));
+				HColumnDescriptor info = new HColumnDescriptor(HBaseAVTable.HBaseAVFamily.i.name());
 				tableDesc.addFamily(info);
 				hbaseAdmin.createTable(tableDesc);
 			}
@@ -353,12 +351,12 @@ public class CrawlApplication {
 			configuration.setLong("hbase.client.scanner.caching", 1000);
 
 			Map<String, Object> context = XConfiguration.getAvengersContext();
-			hDomain = new HTable(hbaseConf, AVTable.av_domain.name());
+			hDomain = new HTable(hbaseConf, HBaseAVTable.av_domain.name());
 			for (String root : (Set<String>) context.get(XConfiguration.ROOTS)) {
 				Map<String, Object> domainMap = (Map<String, Object>) context.get(root);
 				Get hDomainGet = new Get(Bytes.toBytes(root));
-				hDomainGet.addColumn(Bytes.toBytes(AVColumnFamily.i.name()),
-						Bytes.toBytes(AVColumn.bid.name()));
+				hDomainGet.addColumn(Bytes.toBytes(HBaseAVFamily.i.name()),
+						Bytes.toBytes(HBaseAVColumn.bid.name()));
 				Result result = hDomain.get(hDomainGet);
 				LOG.info("root[{}] result.isEmpty -> {}", root,
 						result == null ? null : result.isEmpty());
@@ -384,13 +382,6 @@ public class CrawlApplication {
 		} catch (Throwable e) {
 			LOG.error("", e);
 		} finally {
-			if (hPage != null) {
-				try {
-					hPage.close();
-				} catch (IOException e) {
-					LOG.error("", e);
-				}
-			}
 			if (hbaseAdmin != null) {
 				try {
 					hbaseAdmin.close();
@@ -438,7 +429,6 @@ public class CrawlApplication {
 	 */
 	public boolean run() throws IOException, YarnException {
 		LOG.info("Starting CrawlApplication");
-
 		Credentials credentials = UserGroupInformation.getCurrentUser().getCredentials();
 		DataOutputBuffer dob = new DataOutputBuffer();
 		credentials.writeTokenStorageToStream(dob);

@@ -1,12 +1,12 @@
 
-package com.flyhz.avengers.framework.common.obj;
+package com.flyhz.avengers.framework.common.dto;
 
-public class XPair<T, E> {
+public class XPairDto<T, E> {
 
 	T	first;
 	E	second;
 
-	public XPair(T start, E end) {
+	public XPairDto(T start, E end) {
 		super();
 		this.first = start;
 		this.second = end;
