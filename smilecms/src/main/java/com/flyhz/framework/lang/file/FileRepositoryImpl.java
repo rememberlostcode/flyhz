@@ -149,7 +149,29 @@ public class FileRepositoryImpl implements FileRepository {
 		try {
 			file.createNewFile();
 			FileUtil.copy(in, new FileOutputStream(file));
-			return fileName;
+			return File.separator + fileName;
+		} catch (IOException exception) {
+			file.delete();
+			throw exception;
+		}
+	}
+
+	@Override
+	public String saveToTarget(InputStream in, String prefix, String fileName) throws IOException {
+		// 获得文件绝对路径
+		StringBuffer filePathBuffer = new StringBuffer();
+		filePathBuffer.append(
+				pathFileUpload.endsWith(File.separator) ? pathFileUpload
+						: (pathFileUpload + File.separator)).append(prefix).append(File.separator)
+						.append(fileName);
+		File file = new File(filePathBuffer.toString());
+		if (!file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		}
+		try {
+			file.createNewFile();
+			FileUtil.copy(in, new FileOutputStream(file));
+			return File.separator + fileName;
 		} catch (IOException exception) {
 			file.delete();
 			throw exception;

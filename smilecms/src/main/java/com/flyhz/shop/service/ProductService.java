@@ -101,14 +101,4 @@ public interface ProductService {
 	 * @return
 	 */
 	public void refreshProductImgs(Integer userId, Integer start, Integer end);
-
-	/**
-	 * 重新处理和缩放图片
-	 * 
-	 * @param userId
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public void refreshProductImgsNew(Integer userId, Integer start, Integer end);
 }

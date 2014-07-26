@@ -127,8 +127,6 @@
     <button onclick="addProductPage();" type="button" style="float:left;margin-top:3px;">添加产品</button>
 	<button onclick="copyProductPage();" type="button" style="float:left;margin-top:3px;">复制产品</button>
 	<button onclick="batchdel();" type="button" style="float:left;margin-top:3px;">批量删除</button>
-</div>
-<div>
 	<p class="search_con" style="float:right;">
 		<label>产品名称</label>
 		<input type="text" name="name" id="name" value="$!productParam.name"/>
@@ -162,7 +160,7 @@
     <table summary="" class="dateline" style="width:99%;margin-top: 5px;" id="en_table">
 		<thead>
             <th><input type="checkbox" onclick="allCheck(this);"/></th>
-			<th style="width:27%;">名称</th>
+			<th style="width:25%;">名称</th>
 			<th>品牌</th>
 			<th>分类</th>
 			<th>款号</th>
@@ -187,7 +185,7 @@
 							#if($!product.appImages)
                 				#foreach($appImage in $!product.appImages)
 									<div>
-										<img src="$!static_name$!appImage" class="productImgList"/><br/><br/>
+										<img src="$!proimg_name$!appImage" class="productImgList1"/><br/><br/>
 									</div>
                 				#end
 							#end
@@ -196,7 +194,7 @@
 							#if($!product.productImgs)
                 				#foreach($productImg in $!product.productImgs)
 									<div>
-										<img src="$!static_name$!productImg" class="productImgList"/><br/><br/>
+										<img src="$!proimg_name$!productImg" class="productImgList2"/><br/><br/>
 									</div>
                 				#end
 							#end

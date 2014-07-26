@@ -40,7 +40,8 @@ a:hover {
 /*===========框架样式start===========*/
 /*==========全局框架样式==========*/
 .mainbody {
-	width:980px;
+	/*width:980px;*/
+	min-width:1360px;
 	margin:0 auto;
 	background:#fff;
 	border:1px solid #d4e5fa;
@@ -67,9 +68,11 @@ a:hover {
 	}
 /*====头部====*/
 .topframe {
-	width:980px;
+	/*width:980px;*/
+	min-width:1360px;
 	text-align:center;
 	margin:0 auto;
+	/*background:url(images/blue/topframe_bg.jpg) no-repeat left top;*/
 	background:url(images/blue/topframe_bg.jpg) no-repeat left top;
 	position:relative;
 }
@@ -208,7 +211,8 @@ margin:0 auto;
 	
 }
 .type_mainframe {
-	width:980px;
+	/*width:980px;*/
+	min-width:1360px;
 	padding:5px 0;
 	margin:0 auto;
 	position:relative;
@@ -306,7 +310,7 @@ background:#fff;
 /*=======内容页全局样式end=======*/
 /*=====顶部logo相关信息=====*/
 .head {
-	width:976px;
+	/*width:976px;*/
 	margin:0 auto;
 	height:84px;
 }
@@ -480,7 +484,8 @@ padding:3px;
 	}
 /*========导航=======*/
 .topframe .menu {
-	width:980px;
+	/*width:980px;*/
+	min-width:1360px;
 	margin:0 auto;
 	height:36px;
 }
