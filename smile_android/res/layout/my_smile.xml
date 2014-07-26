@@ -269,11 +269,6 @@
                         android:layout_height="1.0px"
                         android:background="@color/textarea_divider" />
 
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="1.0px"
-                        android:background="@color/textarea_divider" />
-
                     <LinearLayout
                         android:id="@+id/mysmile_mycoupon_layout"
                         android:layout_width="fill_parent"

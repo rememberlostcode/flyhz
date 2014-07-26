@@ -54,7 +54,7 @@ public class MyIdcardAdapter extends BaseAdapter {
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = LayoutInflater.from(context).inflate(R.layout.idcard_list, null);
+			convertView = LayoutInflater.from(context).inflate(R.layout.idcard_list, parent, false);
 			holder = new ViewHolder();
 			holder.name = (TextView) convertView.findViewById(R.id.idcard_list_name);
 			holder.idcard = (TextView) convertView.findViewById(R.id.idcard_list_idcard);
@@ -65,14 +65,15 @@ public class MyIdcardAdapter extends BaseAdapter {
 		}
 
 		final Idcard idcard = (Idcard) getItem(position);
-			holder.name.setText(idcard.getName().trim());
+		holder.name.setText(idcard.getName().trim());
 
 		String idnum = idcard.getNumber().trim();
 		if (idnum.length() >= 15) {
-			if (idnum.length() > 15){
-				holder.idcard.setText(idnum.subSequence(0, 6) + "*********" + idnum.substring(15));
+			if (idnum.length() > 15) {
+				holder.idcard.setText(idnum.subSequence(0, 9) + "******" + idnum.substring(15));
 			} else {
-				holder.idcard.setText(idnum.subSequence(0, 6) + "******" + idnum.substring(idnum.length() -3));
+				holder.idcard.setText(idnum.subSequence(0, 9) + "***"
+						+ idnum.substring(idnum.length() - 3));
 			}
 		} else {
 			holder.idcard.setText(idnum);

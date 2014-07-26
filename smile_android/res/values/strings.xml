@@ -50,9 +50,14 @@
     <string name="get_pwd">找回密码</string>
     <string name="set_login">登录设置 </string>
     
+    <!-- 身份证管理 -->
+    <string name="manger_idcard_name">姓名</string>
+    <string name="manger_idcard_number">身份证号 </string>
+    
 	<string name="my_orders">我的订单</string>
 	<string name="my_coupons">我的优惠券</string>
 	<string name="my_idcards">我的身份证</string>
+	<string name="my_idcards_add">新增身份证信息</string>
 	<string name="clear_cache">清理缓存</string>
 	<string name="contact_us">联系我们</string>
 	

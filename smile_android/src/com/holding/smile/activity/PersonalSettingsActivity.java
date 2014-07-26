@@ -41,11 +41,11 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.personal_settings);
+		
+		init();
 	}
-
-	@Override
-	public void onStart(){
-		super.onStart();
+	
+	private void init(){
 		displayHeaderDescription().setText("个人设置");
 		displayHeaderBack().setOnClickListener(this);
 
@@ -78,6 +78,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 		// 再从服务器取数据
 		startTask();
 	}
+
 	@Override
 	public void loadData() {
 		RtnValueDto user = MyApplication.getInstance().getDataService().getUserInfo();
@@ -94,14 +95,13 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
-				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
 			}
 			case R.id.user_info_idcard_layout: {
 				Intent intent = new Intent();
 				intent.setClass(context, IdcardManagerActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;
 			}

@@ -68,7 +68,6 @@ public class IdcardManagerActivity extends BaseActivity implements OnClickListen
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_back: {
-				setResult(RESULT_CANCELED, null);
 				finish();
 				break;
 			}

@@ -37,7 +37,6 @@ public class ResetPwdActivity extends BaseActivity {
 		backBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				setResult(RESULT_CANCELED, null);
 				finish();
 			}
 		});
