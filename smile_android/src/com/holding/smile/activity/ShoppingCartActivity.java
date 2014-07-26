@@ -70,7 +70,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		editBtn.setOnClickListener(this);
 
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -138,10 +138,17 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 					editBtn.setText(R.string.finish);
 					editBtn.setTag("finish");
 					cartAdapter.setEditFlag(true);
+
+					showOrhideFooterMainTotal(View.GONE);
+					// 处理checkbox
+					allChecked.setSelected(false);
+					cartAdapter.setSelectAll(false);
 				} else {
 					editBtn.setText(R.string.edit);
 					editBtn.setTag("edit");
 					cartAdapter.setEditFlag(false);
+
+					showOrhideFooterMainTotal(View.VISIBLE);
 				}
 				break;
 			}
@@ -242,18 +249,19 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 														cartItemList.clear();
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if(CodeValidator.dealCode(context, obj)){
+															if (CodeValidator.dealCode(context, obj)) {
 																List<CartItem> cartItems = obj.getCartListData();
-																	if (cartItems != null
-																			&& !cartItems.isEmpty()) {
-																		for (CartItem cart : cartItems) {
-																			if (cart.getProduct() != null) {
-																				cartItemList.add(cart);
-																			}
+																if (cartItems != null
+																		&& !cartItems.isEmpty()) {
+																	for (CartItem cart : cartItems) {
+																		if (cart.getProduct() != null) {
+																			cartItemList.add(cart);
 																		}
-																	} else {
-																		ToastUtils.showShort(context, "暂无数据！");
 																	}
+																} else {
+																	ToastUtils.showShort(context,
+																			"暂无数据！");
+																}
 															}
 														}
 														initView();
@@ -320,7 +328,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																							.removeCart(
 																									itemId);
 														closeLoading();
-														if (CodeValidator.dealCode(context, rtnValue)) {
+														if (CodeValidator.dealCode(context,
+																rtnValue)) {
 															cartAdapter.getSelectIds().remove(
 																	itemId);
 															if (cartItemList != null
@@ -336,7 +345,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 															}
 															ToastUtils.showShort(context, "删除成功！");
 														} else {
-															ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
+															ToastUtils.showShort(context,
+																	Constants.MESSAGE_EXCEPTION);
 														}
 													}
 												}).setNegativeButton("取消", null).show();

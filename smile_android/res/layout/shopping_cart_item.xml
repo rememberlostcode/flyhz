@@ -21,14 +21,6 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/check_box"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:contentDescription="@string/gu"
-                />
-
-            <ImageView
                 android:id="@+id/p"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
@@ -53,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:orientation="horizontal" >
+                    android:orientation="vertical" >
 
                     <TextView
                         android:id="@+id/brand_style"
@@ -67,7 +59,6 @@
                         android:id="@+id/color_cate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
                         android:textColor="@drawable/qianhuise"
                         android:textSize="12sp"
                         android:textStyle="normal" />
@@ -129,9 +120,19 @@
                             android:src="@drawable/add_btn_bg" />
                     </LinearLayout>
                 </RelativeLayout>
+                
             </LinearLayout>
         </LinearLayout>
 
+         <ImageView
+               android:id="@+id/check_box"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="2dp"
+               android:layout_alignParentRight="true"
+               android:contentDescription="@string/gu"
+               />
+         
         <ImageView
             android:id="@+id/del_btn"
             android:layout_width="wrap_content"
@@ -139,7 +140,9 @@
             android:layout_marginRight="6dp"
             android:layout_alignParentRight="true"
             android:background="@drawable/icon_delete"
+            android:contentDescription="@string/gu"
             android:visibility="gone" />
+        
     </RelativeLayout>
 
     <View

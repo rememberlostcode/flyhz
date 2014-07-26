@@ -151,8 +151,10 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 
 		if (editFlag) {
 			holder.delBtn.setVisibility(View.VISIBLE);
+			holder.checkBox.setVisibility(View.GONE);
 		} else {
 			holder.delBtn.setVisibility(View.GONE);
+			holder.checkBox.setVisibility(View.VISIBLE);
 		}
 
 		final CartItem cartItem = (CartItem) getItem(position);
