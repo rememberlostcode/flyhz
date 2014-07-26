@@ -13,7 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
@@ -40,10 +39,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private EditText		userPwd;			// 用户密码
 	private Button			btnLogining;		// 登陆按钮
 	private Button			btnGetBackPwd;		// 取回密码按钮
-	private Button			btnSetLogin;		// 登录设置按钮
 	private Button			btnToRegister;		// 注册登录按钮
 
-	private LinearLayout	loginBySelf;
 	private boolean			isClose	= false;
 	private Integer			gid;
 
@@ -51,9 +48,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.login);
-		ImageView backBtn = displayHeaderBack();
-		backBtn.setOnClickListener(this);
-		loginViewInit();
 
 		try {
 			Intent intent = getIntent();
@@ -71,15 +65,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		}
 	}
 
-	/**
-	 * 登录界面初始化
-	 * 
-	 * @param savedInstanceState
-	 */
-	private void loginViewInit() {
-		initView();// 初始化界面控件
+	@Override
+	public void onStart(){
+		super.onStart();
+		ImageView backBtn = displayHeaderBack();
+		backBtn.setOnClickListener(this);
+		
+		displayHeaderDescription().setText(R.string.btn_login);
+		
+		initView();
 	}
-
 	/**
 	 * 初始化所有控件
 	 */
@@ -88,18 +83,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		userPwd = (EditText) findViewById(R.id.login_pwd);
 		btnLogining = (Button) findViewById(R.id.self_login);
 		btnGetBackPwd = (Button) findViewById(R.id.login_btn_getbackpwd);
-		btnSetLogin = (Button) findViewById(R.id.login_btn_setlogin);
 		btnToRegister = (Button) findViewById(R.id.login_btn_to_register);
 
 		userAccount.setSelection(userAccount.getText().toString().trim().length());
 
-		loginBySelf = (LinearLayout) findViewById(R.id.login_by_self);
-
-		loginBySelf.setVisibility(View.VISIBLE);
-
 		btnLogining.setOnClickListener(this);
 		btnGetBackPwd.setOnClickListener(this);
-		btnSetLogin.setOnClickListener(this);
 		btnToRegister.setOnClickListener(this);
 	}
 
@@ -199,7 +188,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																		}
 																		finish();
 																	} else {
-																		loginViewInit();
+																		initView();
 																	}
 																}
 																break;

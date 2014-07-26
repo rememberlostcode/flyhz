@@ -11,7 +11,6 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,11 +41,13 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.personal_settings);
-		ImageView backBtn = displayHeaderBack();
-		backBtn.setOnClickListener(this);
+	}
 
-		TextView textView = displayHeaderDescription();
-		textView.setText("个人设置");
+	@Override
+	public void onStart(){
+		super.onStart();
+		displayHeaderDescription().setText("个人设置");
+		displayHeaderBack().setOnClickListener(this);
 
 		idcardLayout = (LinearLayout) findViewById(R.id.user_info_idcard_layout);
 		emailLayout = (LinearLayout) findViewById(R.id.user_info_email_layout);
@@ -63,9 +64,20 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 		emailTextView = (TextView) findViewById(R.id.user_info_email);
 		phoneTextView = (TextView) findViewById(R.id.user_info_phone);
 
+		// 先从本地数据库取数据
+		SUser user = MyApplication.getInstance().getCurrentUser();
+		if (user != null) {
+			if (user.getEmail() != null && !"".equals(user.getEmail())) {
+				emailTextView.setText(user.getEmail());
+			}
+			if (user.getMobilephone() != null && !"".equals(user.getMobilephone())) {
+				phoneTextView.setText(user.getMobilephone());
+			}
+		}
+
+		// 再从服务器取数据
 		startTask();
 	}
-
 	@Override
 	public void loadData() {
 		RtnValueDto user = MyApplication.getInstance().getDataService().getUserInfo();

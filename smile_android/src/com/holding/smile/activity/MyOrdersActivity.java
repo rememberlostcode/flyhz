@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -50,8 +51,23 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.order_manager);
-		ImageView backBtn = displayHeaderBack();
-		backBtn.setOnClickListener(this);
+		
+		try {
+			Intent intent = getIntent();
+			if (intent.getExtras() != null && intent.getExtras().getSerializable("status") != null) {
+				status = intent.getExtras().getString("status");
+			}
+		} catch (Exception e) {
+			Log.e(MyApplication.LOG_TAG, e.getMessage());
+		}
+		
+		
+	}
+
+	@Override
+	public void onStart(){
+		super.onStart();
+		displayHeaderBack().setOnClickListener(this);
 
 		TextView textView = displayHeaderDescription();
 		textView.setText("订单管理");
@@ -109,7 +125,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 		listView = (MyListView) findViewById(R.id.list_orders_list);
 		startTask();
 	}
-
+	
 	@Override
 	public synchronized void loadData() {
 		RtnValueDto orders = MyApplication.getInstance().getDataService().getOrdersList(status);
