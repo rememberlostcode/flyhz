@@ -110,7 +110,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					ToastUtils.showShort(context, "密码不能为空！");
 					return;
 				}
-				startTask();
+				password = MD5.getMD5(password);
+				/* 关闭软键盘 */
+				InputMethodManager inputMgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+				inputMgr.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+						InputMethodManager.HIDE_NOT_ALWAYS);
+				SUser user = new SUser();
+				user.setUsername(username);
+				user.setPassword(password);
+				Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
+				msg.obj = user;
+				msg.sendToTarget();
 				break;
 			}
 			case R.id.login_btn_to_register: {
@@ -129,23 +139,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			}
 		}
 		super.onClick(v);
-	}
-
-	@Override
-	public synchronized void loadData() {
-		String username = userAccount.getText().toString();// 获取用户输入的账号
-		String password = userPwd.getText().toString();// 获取用户输入的密码
-		password = MD5.getMD5(password);
-		/* 关闭软键盘 */
-		InputMethodManager inputMgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-		inputMgr.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-				InputMethodManager.HIDE_NOT_ALWAYS);
-		SUser user = new SUser();
-		user.setUsername(username);
-		user.setPassword(password);
-		Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
-		msg.obj = user;
-		msg.sendToTarget();
 	}
 
 	private static final int	LOGIN_BY_SELF	= 1;

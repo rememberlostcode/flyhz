@@ -244,7 +244,9 @@ public class SolrDataImpl implements SolrData {
 		doc.addField("id", orderId);
 		doc.addField("user_id", userId);
 		doc.addField("status", status);
-		doc.addField("gmt_modify", gmtModify);
+		if(gmtModify!=null){
+			doc.addField("gmt_modify", gmtModify);
+		}
 
 		if (logisticsDto != null) {
 			doc.addField("address", logisticsDto.getAddress());

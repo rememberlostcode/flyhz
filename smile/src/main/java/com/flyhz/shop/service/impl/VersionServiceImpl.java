@@ -48,7 +48,7 @@ public class VersionServiceImpl implements VersionService {
 				String origName = file.getOriginalFilename();
 				origName = "apk/smile_" + versionModel.getVersionNew()
 						+ origName.substring(origName.lastIndexOf("."));
-				fileRepository.saveToTemp(file.getInputStream(), origName);
+				fileRepository.saveToTarget(file.getInputStream(), origName);
 				versionModel.setVersionApk("/" + origName);
 			}
 

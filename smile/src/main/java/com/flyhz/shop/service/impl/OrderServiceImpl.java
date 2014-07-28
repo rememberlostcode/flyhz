@@ -178,7 +178,7 @@ public class OrderServiceImpl implements OrderService {
 			log.debug("====={}", order.getId());
 			orderDto.setId(order.getId());
 			orderDto.setStatus(order.getStatus());
-			redisRepository.buildOrderToRedis(userId, orderDto.getId(),
+			redisRepository.buildOrderToRedis(userId, orderDto.getId(),order.getStatus(),order.getGmtModify(),
 					JSONUtil.getEntity2Json(orderDto));
 
 		}

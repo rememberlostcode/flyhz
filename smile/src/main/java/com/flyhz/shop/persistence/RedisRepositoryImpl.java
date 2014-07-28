@@ -1,6 +1,7 @@
 
 package com.flyhz.shop.persistence;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -112,7 +113,8 @@ public class RedisRepositoryImpl implements RedisRepository {
 	}
 
 	@Override
-	public void buildOrderToRedis(Integer userId, Integer orderId, String orderDetal)
+	public void buildOrderToRedis(Integer userId, Integer orderId, String status,
+			Date gmtModify, String orderDetal)
 			throws ValidateException {
 		if (userId == null) {
 			throw new ValidateException(130002);
@@ -127,7 +129,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 		cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId, String.valueOf(orderId),
 				orderDetal);
 		// solr建立订单索引
-		solrData.submitOrder(userId, orderId, null, null,null);
+		solrData.submitOrder(userId, orderId, status, gmtModify,null);
 	}
 
 	@Override
@@ -171,6 +173,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 							cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
 									String.valueOf(orderDto.getId()),
 									JSONUtil.getEntity2Json(orderDto));
+							solrData.submitOrder(orderDto.getUser().getId(), orderDto.getId(), orderDto.getStatus(), null, null);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

@@ -134,4 +134,25 @@ public class FileRepositoryImpl implements FileRepository {
 	public Collection<String> getFileTypesAllow() {
 		return fileTypesAllow;
 	}
+	
+	@Override
+	public String saveToTarget(InputStream in, String fileName) throws IOException {
+		// 获得文件绝对路径
+		StringBuffer filePathBuffer = new StringBuffer();
+		filePathBuffer.append(
+				pathFileUpload.endsWith(File.separator) ? pathFileUpload
+						: (pathFileUpload + File.separator)).append(fileName);
+		File file = new File(filePathBuffer.toString());
+		if (!file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		}
+		try {
+			file.createNewFile();
+			FileUtil.copy(in, new FileOutputStream(file));
+			return fileName;
+		} catch (IOException exception) {
+			file.delete();
+			throw exception;
+		}
+	}
 }

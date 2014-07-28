@@ -434,7 +434,7 @@ public class UserServiceImpl implements UserService {
 			String origName = multipartFile.getOriginalFilename();
 			origName = DateUtil.dateToStrMSec(new Date()) + consigneeId
 					+ origName.substring(origName.lastIndexOf("."));
-			fileRepository.saveToTemp(multipartFile.getInputStream(), origName);
+			fileRepository.saveToTarget(multipartFile.getInputStream(), origName);
 			// 更新收件人地址中身份证照片路径
 			consigneeModel.setIdcard(File.separator + origName);
 			consigneeDao.updateConsigneeIdCard(consigneeModel);

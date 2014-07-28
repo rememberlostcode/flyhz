@@ -21,4 +21,6 @@ public interface FileRepository {
 	public File getFile(String path);
 
 	public boolean checkFileType(String fileType);
+	
+	public String saveToTarget(InputStream in, String fileName) throws IOException;
 }

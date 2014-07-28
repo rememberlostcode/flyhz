@@ -46,7 +46,7 @@ public class IdcardServiceImpl implements IdcardService {
 				String origName = photo.getOriginalFilename();
 				origName = "idcard/" + DateUtil.dateToStrMSec(new Date())
 						+ origName.substring(origName.lastIndexOf("."));
-				fileRepository.saveToTemp(photo.getInputStream(), origName);
+				fileRepository.saveToTarget(photo.getInputStream(), origName);
 				// 更新收件人地址中身份证照片路径
 				idcardModel.setUrl("/" + origName);
 			}
@@ -56,7 +56,7 @@ public class IdcardServiceImpl implements IdcardService {
 				String origName = backPhoto.getOriginalFilename();
 				origName = "idcard/" + DateUtil.dateToStrMSec(new Date())
 						+ origName.substring(origName.lastIndexOf("."));
-				fileRepository.saveToTemp(backPhoto.getInputStream(), origName);
+				fileRepository.saveToTarget(backPhoto.getInputStream(), origName);
 				// 更新收件人地址中身份证照片路径
 				idcardModel.setBack_url("/" + origName);
 			}

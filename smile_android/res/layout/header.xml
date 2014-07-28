@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:background="@drawable/head_bg"
-    android:gravity="center|center"
+    android:gravity="center|left"
     android:orientation="horizontal"
     android:paddingBottom="0dp"
     android:paddingLeft="2dp"

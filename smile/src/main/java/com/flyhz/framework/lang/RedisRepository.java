@@ -1,6 +1,8 @@
 
 package com.flyhz.framework.lang;
 
+import java.util.Date;
+
 import com.flyhz.shop.dto.ProductDto;
 
 /**
@@ -40,11 +42,17 @@ public interface RedisRepository {
 	 *            用户ID
 	 * @param orderId
 	 *            订单ID
+	 * @param gmtModify
+	 *            订单修改时间
+	 * @param status
+	 *            状态，10待支付；11支付中；12已支付；13缺少身份证；14已有身份证；15发货中；20已发货；21国外清关；30国内清关
+	 *            ；40国内物流；50已关闭；60已完成；70已删除；
 	 * @param orderDetal
 	 *            订单详情
 	 * @throws ValidateException
 	 */
-	public void buildOrderToRedis(Integer userId, Integer orderId, String orderDetal)
+	public void buildOrderToRedis(Integer userId, Integer orderId, String status,
+			Date gmtModify, String orderDetal)
 			throws ValidateException;
 
 	/**
