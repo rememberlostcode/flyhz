@@ -11,9 +11,11 @@ Recently:yanyali(2010-04-02)
 .mainframe {
 	background:url(images/blue/def_main.jpg) repeat-x left top;
 }
+/*
 .topframe {
 	background:url(images/blue/topframe_bg.jpg) no-repeat left top;
 }
+*/
 .botframe {
 	background:url(images/blue/copybg.jpg) repeat-x left top;
 }

@@ -38,7 +38,7 @@ import com.flyhz.shop.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-	private Logger			log			= LoggerFactory.getLogger(UserServiceImpl.class);
+	private Logger			log	= LoggerFactory.getLogger(UserServiceImpl.class);
 	@Resource
 	private UserDao			userDao;
 	@Resource
@@ -91,8 +91,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto login(UserModel loginUserModel)
-			throws ValidateException {
+	public UserDto login(UserModel loginUserModel) throws ValidateException {
 		if (StringUtils.isBlank(loginUserModel.getUsername())) {
 			throw new ValidateException(140002);// 用户名不能为空
 		}
@@ -107,7 +106,7 @@ public class UserServiceImpl implements UserService {
 			userModel.setToken(token);
 			if (StringUtils.isBlank(loginUserModel.getRegistrationID())) {
 				log.warn(userModel.getUsername() + "登录时没有registrationID");
-//				throw new ValidateException(140002);// 用户名不能为空
+				// throw new ValidateException(140002);// 用户名不能为空
 			} else {
 				userModel.setRegistrationID(loginUserModel.getRegistrationID());
 			}
@@ -121,8 +120,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto loginAuto(UserModel loginUserModel)
-			throws ValidateException {
+	public UserDto loginAuto(UserModel loginUserModel) throws ValidateException {
 		if (StringUtils.isBlank(loginUserModel.getUsername())) {
 			throw new ValidateException(140002);// 用户名不能为空
 		}
@@ -137,9 +135,9 @@ public class UserServiceImpl implements UserService {
 			user.setId(userModel.getId());
 			user.setUsername(userModel.getUsername());
 			user.setToken(loginUserModel.getToken());
-			
+
 			if (StringUtils.isBlank(loginUserModel.getRegistrationID())) {
-//				throw new ValidateException(140002);// 用户名不能为空
+				// throw new ValidateException(140002);// 用户名不能为空
 				log.warn(userModel.getUsername() + "自动登录时没有registrationID");
 			} else {
 				userModel.setRegistrationID(loginUserModel.getRegistrationID());
@@ -531,7 +529,7 @@ public class UserServiceImpl implements UserService {
 			throw new ValidateException(101017);
 		}
 		// 更新用户密码
-		String password = RandomString.generateRandomString8();
+		String password = RandomString.generateRandomNumber6();
 		userModel.setPassword(MD5.getMD5(password));
 		userDao.updatePwd(userModel);
 		// 发送含新密码邮件

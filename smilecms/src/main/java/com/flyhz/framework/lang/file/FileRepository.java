@@ -30,4 +30,14 @@ public interface FileRepository {
 	 * @return FileRelativePath
 	 */
 	public String saveToTarget(InputStream in, String fileName) throws IOException;
+
+	/**
+	 * 保存文件
+	 * 
+	 * @param InputStream
+	 * @param fileName
+	 * @param prefix
+	 * @return FileRelativePath
+	 */
+	public String saveToTarget(InputStream in, String prefix, String fileName) throws IOException;
 }

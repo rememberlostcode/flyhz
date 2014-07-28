@@ -128,10 +128,14 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							jsStringBuffer.append("$('.back').eq(0).css('display','none');");
 							jsStringBuffer.append("});");
 						} else if (url.indexOf("https://mclient.alipay.com/cashierPay.htm?awid=") > -1) {
+							// Log.d("htmlTime1",
+							// String.valueOf(System.currentTimeMillis()));
 							view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
 							try {
 								Thread.sleep(500);
 								if (viewhtml != null) {
+									// Log.d("htmlTime3",
+									// String.valueOf(System.currentTimeMillis()));
 									// Log.d("paySmile", "html is not null");
 									if (viewhtml.indexOf("J-success am-message am-message-success fn-hide") < 0) {
 										// Log.d("paySmile", "pay success");
@@ -142,7 +146,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 																					number);
 										if (rtnValue != null
 												&& rtnValue.getOrderPayDto() != null
-												&& "12".equals(rtnValue.getOrderPayDto()
+												&& isPaySuccess(rtnValue.getOrderPayDto()
 																		.getStatus())) {
 											new Handler().postDelayed(new Runnable() {
 												public void run() {
@@ -228,7 +232,16 @@ public class WebViewActivity extends Activity implements OnClickListener {
 	final class InJavaScriptLocalObj {
 		public void showSource(String html) {
 			// Log.d("paySmile", "get html");
+			// Log.d("htmlTime2", String.valueOf(System.currentTimeMillis()));
 			viewhtml = html;
 		}
+	}
+
+	private boolean isPaySuccess(String status) {
+		boolean flag = false;
+		if ("12".equals(status) || "13".equals(status)) {
+			flag = true;
+		}
+		return flag;
 	}
 }

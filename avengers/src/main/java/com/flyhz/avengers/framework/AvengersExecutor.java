@@ -21,7 +21,7 @@ import com.flyhz.avengers.framework.config.XConfiguration;
 import com.flyhz.avengers.framework.lang.Event;
 import com.flyhz.avengers.framework.util.StringUtil;
 
-public abstract class AvengersExecutor implements Runnable {
+public abstract class AvengersExecutor {
 
 	/**
 	 * LONG
@@ -83,11 +83,6 @@ public abstract class AvengersExecutor implements Runnable {
 		for (Event event : events) {
 			event.call();
 		}
-	}
-
-	@Override
-	public void run() {
-		execute();
 	}
 
 	abstract Map<String, Object> initArgs(String[] args);

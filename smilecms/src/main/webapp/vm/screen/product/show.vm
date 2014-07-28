@@ -102,7 +102,7 @@
 				<td>
 					<div id="showColorImg">
     					#if($!product.colorimg)
-    						<img src="$!static_name$!product.colorimg" class="colorImg"/>
+    						<img src="$!colimg_name$!product.colorimg" class="colorImg"/>
     						<input type="button" onclick="javascript:reChooseImg();" value="重新上传" class="colorImg"/>
     					#else
         					<input id="colorimg" name="colorimg" type="file" style="display:none">
@@ -133,7 +133,7 @@
     						<div>
     							<input type="hidden" id="productImg_$count" name="productImgs" value="$!productImg"/>
     							<input type="hidden" id="productSrcImgs_$count" name="productSrcImgs" value="$!product.productSrcImgs[$count]"/>
-    							<img src="$!static_name$!productImg" class="productImg"/>
+    							<img src="$!proimg_name$!productImg" class="productImg"/>
 								<input type="button" onclick="javascript:delSrcImgs('tr_srcImg_$count','$count');" value="删除图片" class="colorImg"/>
     						</div>
                         </td>

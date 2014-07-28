@@ -55,9 +55,9 @@ public class TaobaoController {
 	}
 
 	@RequestMapping(value = "/paymentStatus")
-	public void paymentStatus(@Identify Integer userId,Model model, String numbers, Long tid) {
+	public void paymentStatus(@Identify Integer userId, Model model, String numbers, Long tid) {
 		String result = "0";
-		
+
 		Protocol protocol = new Protocol();
 		Integer code = 200000;
 		try {
@@ -77,7 +77,7 @@ public class TaobaoController {
 		protocol.setCode(code);
 		model.addAttribute("protocol", protocol);
 	}
-	
+
 	@RequestMapping(value = "/startMessage")
 	public void startMessage(Model model, HttpServletResponse response) {
 		try {

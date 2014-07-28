@@ -5,6 +5,20 @@
 	border-width:1px;
 	border-color:#000;
 }
+.productImgList1{
+	width:300px;
+	height:300px;
+	border-style:solid;
+	border-width:1px;
+	border-color:#000;
+}
+.productImgList2{
+	width:500px;
+	height:500px;
+	border-style:solid;
+	border-width:1px;
+	border-color:#000;
+}
 .productImg{
 	width:150px;
 	height:150px;

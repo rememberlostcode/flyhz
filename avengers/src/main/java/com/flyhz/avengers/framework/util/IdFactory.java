@@ -1,7 +1,7 @@
 
 package com.flyhz.avengers.framework.util;
 
-import com.flyhz.avengers.framework.lang.AVTable;
+import com.flyhz.avengers.framework.lang.HBaseAVTable;
 
 public class IdFactory {
 	private final long			id;
@@ -73,7 +73,7 @@ public class IdFactory {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(AVTable.av_fetch.name());
+		System.out.println(HBaseAVTable.av_fetch.name());
 	}
 
 }
