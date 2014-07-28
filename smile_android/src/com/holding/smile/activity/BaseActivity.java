@@ -45,6 +45,10 @@ public class BaseActivity extends Activity {
 	public static final int		SEARCH_CODE				= 10;
 	public static final int		UPLOAD_IMAGE_CODE		= 11;
 	/**
+	 * 个人设置操作代码
+	 */
+	public static final int		SETTINGS_CODE	= 151;
+	/**
 	 * 编辑邮箱操作代码
 	 */
 	public static final int		EMAIL_CODE				= 13;
@@ -227,9 +231,6 @@ public class BaseActivity extends Activity {
 	public void setContentLayout(int resId) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		contentView = inflater.inflate(resId, null);
-		// LayoutParams layoutParams = new LayoutParams();
-		// contentView.setLayoutParams(layoutParams);
-		// contentView.setBackgroundDrawable(null);
 		if (null != ly_content) {
 			ly_content.addView(contentView);
 		}
@@ -340,8 +341,23 @@ public class BaseActivity extends Activity {
 			// 取消监听
 			unregisterReceiver(connectionReceiver);
 		}
-		// MyApplication.getInstance().finishActivity(this);
-		// Log.e(MyApplication.LOG_TAG, "start onDestroy~~~");
+		
+		if (dialogLoading != null && dialogLoading.isShowing()) {
+			dialogLoading.dismiss();
+		}
+		dialogLoading = null;
+
+		if (time != null) {
+			time.cancel();
+		}
+		if (loadingTimerTask != null) {
+			loadingTimerTask.cancel();
+		}
+		
+		if (null != ly_content) {
+			ly_content = null;
+		}
+		Log.e(MyApplication.LOG_TAG, this.getClass() + " start onDestroy~~~");
 	}
 
 	long	waitTime	= 2000;
@@ -374,62 +390,7 @@ public class BaseActivity extends Activity {
 		}
 		return false;
 	}
-
-	/**
-	 * 开始异步执行任务，开始后会调用loadData方法
-	 */
-	protected void startTask() {
-		showLoading();
-
-		// progressBar.setVisibility(View.VISIBLE);
-		ly_content.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				loadData();
-			}
-		}, 1000);
-
-		// MyApplication.getThreadPool().submit(new Runnable() {
-		// @Override
-		// public void run() {
-		// loadData();
-		// }
-		// });
-	}
-
-	public void onClick(View v) {
-	}
-
-	/**
-	 * LoadTask调用的默认方法
-	 */
-	public synchronized void loadData() {
-		System.out.println("-------------------空方法-------------------");
-	}
-
-	/**
-	 * 异步执行任务，比如载入数据；使用时需要在activity中覆盖loadData方法，在loadData方法中编写获取数据代码
-	 * 
-	 * @author robin 2014年7月17日 下午2:19:10
-	 * 
-	 */
-	protected class LoadTask extends AsyncTask<String, Integer, String> {
-
-		@Override
-		protected String doInBackground(String... arg0) {
-			loadData();
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			// closeLoading();
-			if (this.isCancelled())
-				this.cancel(true);
-		}
-
-	}
-
+	
 	public View displayFooterMain(int idNow) {
 		setFootVisible();
 		int id = R.id.mainfooter;
@@ -560,6 +521,53 @@ public class BaseActivity extends Activity {
 		View view = (View) findViewById(id);
 		setVisible(id);
 		return view;
+	}
+
+	/**
+	 * 开始异步执行任务，开始后会调用loadData方法
+	 */
+	protected void startTask() {
+		showLoading();
+		
+		ly_content.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				loadData();
+			}
+		}, 1000);
+	}
+
+	public void onClick(View v) {
+	}
+
+	/**
+	 * LoadTask调用的默认方法
+	 */
+	public synchronized void loadData() {
+		System.out.println("-------------------空方法-------------------");
+	}
+
+	/**
+	 * 异步执行任务，比如载入数据；使用时需要在activity中覆盖loadData方法，在loadData方法中编写获取数据代码
+	 * 
+	 * @author robin 2014年7月17日 下午2:19:10
+	 * 
+	 */
+	protected class LoadTask extends AsyncTask<String, Integer, String> {
+
+		@Override
+		protected String doInBackground(String... arg0) {
+			loadData();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// closeLoading();
+			if (this.isCancelled())
+				this.cancel(true);
+		}
+
 	}
 
 	private int seconds = 0;

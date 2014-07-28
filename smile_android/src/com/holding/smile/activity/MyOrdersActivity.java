@@ -114,8 +114,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 		});		
 		
 		allButton = (TextView) findViewById(R.id.list_orders_button_all);
-		finshButton = (TextView) findViewById(R.id.list_orders_button_finsh);
-		unfinshButton = (TextView) findViewById(R.id.list_orders_button_unfinsh);
+		finshButton = (TextView) findViewById(R.id.list_orders_button_receive);
+		unfinshButton = (TextView) findViewById(R.id.list_orders_button_unsend);
 
 		allButton.setOnClickListener(this);
 		finshButton.setOnClickListener(this);
@@ -152,7 +152,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				startTask();
 				break;
 			}
-			case R.id.list_orders_button_finsh: {
+			case R.id.list_orders_button_receive: {
 				allButton.setSelected(false);
 				finshButton.setSelected(true);
 				unfinshButton.setSelected(false);
@@ -160,7 +160,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				startTask();
 				break;
 			}
-			case R.id.list_orders_button_unfinsh: {
+			case R.id.list_orders_button_unsend: {
 				allButton.setSelected(false);
 				finshButton.setSelected(false);
 				unfinshButton.setSelected(true);

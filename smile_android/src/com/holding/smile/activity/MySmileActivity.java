@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -154,15 +155,15 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 			}
 			case R.id.mysmile_setting_layout: {
 				SUser user = MyApplication.getInstance().getCurrentUser();
-				Intent intent = new Intent();
+				Intent intent = null;//new Intent();
 				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					intent = new Intent(this, LoginActivity.class);
 					intent.putExtra("class", PersonalSettingsActivity.class);
-					intent.setClass(context, LoginActivity.class);
 				} else {
-					intent.setClass(context, PersonalSettingsActivity.class);
+					intent = new Intent(this, PersonalSettingsActivity.class);
 				}
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				startActivityForResult(intent, SETTINGS_CODE);
 				break;
 			}
 			case R.id.mysmile_clearcache_layout: {
@@ -175,6 +176,21 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 			}
 		}
 		super.onClick(v);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.i(MyApplication.LOG_TAG, requestCode + "========================onActivityResult========================" + resultCode);
+		if (requestCode == SETTINGS_CODE && resultCode == RESULT_OK) {
+			Log.i(MyApplication.LOG_TAG, "关闭我页面...");
+			finish();
+//			Intent intent = new Intent();
+//			intent.setClass(context,
+//					LoginActivity.class);
+//			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//			startActivity(intent);
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override

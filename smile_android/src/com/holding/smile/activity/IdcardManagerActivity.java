@@ -23,7 +23,7 @@ import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.ToastUtils;
 
 /**
- * 收货地址管理
+ * 身份证管理
  * 
  * @author zhangb 2014年4月15日 下午3:22:11
  * 
