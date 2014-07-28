@@ -27,6 +27,13 @@ public class OrderController {
 	@Resource
 	private OrderService	orderService;
 
+	/**
+	 * 订单列表
+	 * 
+	 * @param userId
+	 * @param status
+	 * @param model
+	 */
 	@RequestMapping(value = "/list")
 	public void list(@Identify Integer userId, String status, Model model) {
 		Protocol protocol = new Protocol();
@@ -51,6 +58,12 @@ public class OrderController {
 		model.addAttribute("protocol", protocol);
 	}
 
+	/**
+	 * 
+	 * @param userId
+	 * @param num
+	 * @param model
+	 */
 	@RequestMapping(value = "/status")
 	public void status(@Identify Integer userId, @RequestParam String num, Model model) {
 		Protocol protocol = new Protocol();

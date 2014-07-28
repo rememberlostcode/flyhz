@@ -67,10 +67,10 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 		// 先从本地数据库取数据
 		SUser user = MyApplication.getInstance().getCurrentUser();
 		if (user != null) {
-			if (user.getEmail() != null && !"".equals(user.getEmail())) {
+			if (user.getEmail() != null && !"".equals(user.getEmail().trim())) {
 				emailTextView.setText(user.getEmail());
 			}
-			if (user.getMobilephone() != null && !"".equals(user.getMobilephone())) {
+			if (user.getMobilephone() != null && !"".equals(user.getMobilephone().trim())) {
 				phoneTextView.setText(user.getMobilephone());
 			}
 		}
@@ -150,12 +150,8 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 																							user.getId());
 																}
 																closeLoading();
+																setResult(RESULT_OK);
 																finish();
-																Intent intent = new Intent();
-																intent.setClass(context,
-																		LoginActivity.class);
-																intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-																startActivity(intent);
 															}
 														}).setNegativeButton("取消", null).show();
 				break;

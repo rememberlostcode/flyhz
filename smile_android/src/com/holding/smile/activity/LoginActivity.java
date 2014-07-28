@@ -34,15 +34,17 @@ import com.holding.smile.tools.ToastUtils;
 @SuppressWarnings("rawtypes")
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
-	private Class			goingActivityClass;
-	private EditText		userAccount;		// 用户的账号
-	private EditText		userPwd;			// 用户密码
-	private Button			btnLogining;		// 登陆按钮
-	private Button			btnGetBackPwd;		// 取回密码按钮
-	private Button			btnToRegister;		// 注册登录按钮
+	private Class		goingActivityClass;
+	private EditText	userAccount;			// 用户的账号
+	private EditText	userPwd;				// 用户密码
+	private Button		btnLogining;			// 登陆按钮
+	private Button		btnGetBackPwd;			// 取回密码按钮
+	private Button		btnToRegister;			// 注册登录按钮
+	private ImageView	autoImage;				// 自动登录标记
 
-	private boolean			isClose	= false;
-	private Integer			gid;
+	private boolean		isClose		= false;
+	private boolean		isAutoLogin	= true;
+	private Integer		gid;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,15 +68,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
-	public void onStart(){
+	public void onStart() {
 		super.onStart();
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
-		
+
 		displayHeaderDescription().setText(R.string.btn_login);
-		
+
 		initView();
 	}
+
 	/**
 	 * 初始化所有控件
 	 */
@@ -90,6 +93,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		btnLogining.setOnClickListener(this);
 		btnGetBackPwd.setOnClickListener(this);
 		btnToRegister.setOnClickListener(this);
+
+		autoImage = (ImageView) findViewById(R.id.auto_image);
+		autoImage.setOnClickListener(this);
+
+		SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+		if (user != null) {
+			userAccount.setText(user.getUsername());
+		}
 	}
 
 	@Override
@@ -118,6 +129,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				SUser user = new SUser();
 				user.setUsername(username);
 				user.setPassword(password);
+
+				showLoading();
+
 				Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
 				msg.obj = user;
 				msg.sendToTarget();
@@ -127,6 +141,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				Intent intent = new Intent(context, RegisterActivity.class);
 				startActivity(intent);
 				overridePendingTransition(0, 0);
+				break;
+			}
+			case R.id.auto_image: {
+				if (isAutoLogin) {
+					autoImage.setImageResource(R.drawable.new_cb_normal);
+					isAutoLogin = false;
+				} else {
+					autoImage.setImageResource(R.drawable.new_cb_checked);
+					isAutoLogin = true;
+				}
 				break;
 			}
 			case R.id.login_btn_getbackpwd: {
@@ -149,7 +173,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 														switch (msg.what) {
 															case LOGIN_BY_SELF: {
 																if (msg.obj != null) {
-																	showLoading();
 																	SUser user = (SUser) msg.obj;
 																	LoginService loginService = MyApplication.getInstance()
 																												.getLoginService();
@@ -158,7 +181,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																		user.setRegistrationID(MyApplication.getInstance()
 																											.getRegistrationID());
 																	}
-																	RtnValueDto rvd = loginService.login(user);
+																	RtnValueDto rvd = loginService.login(
+																			user, isAutoLogin);
 																	closeImmediatelyLoading();
 																	if (CodeValidator.dealCode(
 																			context, rvd)) {

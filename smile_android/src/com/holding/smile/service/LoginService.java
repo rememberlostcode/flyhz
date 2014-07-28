@@ -103,7 +103,7 @@ public class LoginService {
 	 * @param iuser
 	 * @return
 	 */
-	public RtnValueDto login(SUser iuser) {
+	public RtnValueDto login(SUser iuser,boolean isAutoLogin) {
 		if(CodeValidator.isNetworkError()){
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
@@ -130,9 +130,12 @@ public class LoginService {
 				if (user.getData() != null && user.getCode() == SUCCESS_CODE) {
 					try {
 						user.getData().setRegistrationID(iuser.getRegistrationID());
+						
 						setLoginUser(user.getData());
-						// 添加本地数据库用户信息
-						MyApplication.getInstance().getSqliteService().addUser();
+						if (isAutoLogin) {
+							// 添加本地数据库用户信息
+							MyApplication.getInstance().getSqliteService().addUser();
+						}
 					} catch (Exception e) {
 						System.out.println("SQLite出错了！");
 						e.printStackTrace();

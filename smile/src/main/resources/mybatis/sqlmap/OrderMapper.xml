@@ -77,6 +77,6 @@
 	</select>
 	<update id="updateStatusByNumber" parameterType="OrderModel">
 	    update `order` set status = #{status} 
-	    where number = #{number}
+	    where (status = '10' or status = '11') and number = #{number}
 	</update>
 </mapper>

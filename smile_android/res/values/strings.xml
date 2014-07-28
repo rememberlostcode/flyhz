@@ -119,7 +119,7 @@
     <string name="regist_btn_info">注 册</string>
     
     <string name="account_account">账户:</string>
-    <string name="account_order_pre_pay">待支付</string>
+    <string name="account_order_pre_pay">未发货</string>
     <string name="account_order_pre_receive">待收货</string>
     <string name="account_order_all">全部订单</string>
     <string name="account_favourables">代金券</string>

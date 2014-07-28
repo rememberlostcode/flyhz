@@ -336,7 +336,8 @@ public class SolrDataImpl implements SolrData {
 			if (status.equals("finsh")) {
 				para = para + " AND status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 等于已完成的
 			} else {
-				para = para + " AND -status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 不等于已完成的
+				para = para + " AND status:[10 13]";// 不等于已完成的
+//				para = para + " AND -status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 不等于已完成的
 			}
 		}
 
