@@ -11,6 +11,7 @@ import com.holding.smile.activity.MyApplication;
 public class MyViewPager extends ViewPager {
 
 	private int		cWidth	= (int) MyApplication.getInstance().getScreenWidth();
+	private int		cHeight	= (int) MyApplication.getInstance().getScreenHeight();
 	private boolean	imgFlag	= false;												// true为按长宽比1.9:1显示图片
 
 	public MyViewPager(Context context) {
@@ -30,7 +31,7 @@ public class MyViewPager extends ViewPager {
 			child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 			int h = child.getMeasuredHeight();
 			if (imgFlag) {
-				height = (int) (cWidth / 1.9);
+				height = (int) (cWidth / 2.5);
 			} else {
 				if (h > cWidth) {
 					height = cWidth;

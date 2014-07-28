@@ -96,7 +96,7 @@ public class BrandAdapter extends BaseAdapter {
 		if (para == null) {
 			para = holder.p.getLayoutParams();
 			para.width = MyApplication.getInstance().getScreenWidth();
-			para.height = (int) (para.width / 1.9);
+			para.height = (int) (para.width / 2.5);
 		}
 		holder.p.setLayoutParams(para);
 
