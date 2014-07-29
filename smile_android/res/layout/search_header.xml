@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/search"
+    android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:background="@drawable/head_bg"
@@ -20,10 +20,11 @@
         android:orientation="horizontal" >
 
         <ImageView
-            android:id="@+id/back_normal"
+            android:id="@+id/btn_back_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/gu"
+            android:layout_marginLeft="12dip"
+            android:contentDescription="@string/search"
             android:src="@drawable/btn_back_bg" />
     </LinearLayout>
 
@@ -32,7 +33,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
         android:layout_toRightOf="@+id/layout_back_normal"
         android:background="@drawable/search_bg"
         android:gravity="center"
@@ -59,15 +59,20 @@
             android:singleLine="true" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/search_pic_content_del"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:contentDescription="@string/delete"
-        android:src="@drawable/clear_click" />
+        android:gravity="center|center"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/header_right_btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/delete"
+            android:src="@drawable/clear_click" />
+    </LinearLayout>
 
     <View
         android:layout_width="fill_parent"

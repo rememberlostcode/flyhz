@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:gravity="center|center"
+        android:gravity="left|center"
         android:orientation="horizontal" >
 
         <!-- android:ellipsize="end" 当字符内容太长显示不下时可以省略号代替未显示的字符,省略号在结尾 -->
@@ -58,9 +58,10 @@
             android:id="@+id/header_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="5.0dip"
+            android:background="@drawable/new_head_btn"
             android:text=""
-            android:textColor="@drawable/lvse"
+            android:textColor="@android:color/white"
             android:textSize="22sp"
             android:visibility="gone" />
 

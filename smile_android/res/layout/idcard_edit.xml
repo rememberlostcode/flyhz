@@ -283,6 +283,17 @@
             android:text="保存"
             android:textColor="@color/app_text_white"
             android:textSize="@dimen/app_textsize_button" />
+
+        <Button
+            android:id="@+id/newAddress"
+            android:layout_width="61.0dip"
+            android:layout_height="35.0dip"
+            android:layout_gravity="right|center"
+            android:layout_marginRight="10.0dip"
+            android:background="@drawable/new_head_btn"
+            android:text="新增"
+            android:textColor="@android:color/white"
+            android:textSize="16.0sp" />
     </LinearLayout>
 
 </RelativeLayout>
