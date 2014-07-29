@@ -1,43 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:background="@color/app_body_bg" >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="10dp"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:background="@color/app_body_bg" >
 
-        <EditText
-            android:id="@+id/phone_address"
+        <View
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:hint="请输入手机号码"
-            android:imeOptions="actionDone"
-            android:inputType="phone"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:layout_alignParentTop="true"
+            android:background="@drawable/new_personal_title_bg" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="12.0dip"
+            android:layout_marginLeft="12.0dip"
+            android:layout_marginRight="12.0dip"
+            android:layout_marginTop="10.0dip"
+            android:background="@drawable/new_table_row_bg"
+            android:orientation="vertical" >
+
+            <!-- 原密码 -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/new_personal_tab_center_pressed"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/favourable_text_margin" >
+
+                <EditText
+                    android:id="@+id/phone_address"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:hint="请输入手机号码"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:textColor="#fffd4ca3"
+                    android:textSize="@dimen/app_textsize_main_new" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1.0px"
+                android:layout_weight="1"
+                android:background="@color/textarea_divider" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/phone_save"
             android:layout_width="fill_parent"
-            android:layout_height="40dp"
+            android:layout_height="50.0dip"
             android:layout_margin="10.0dp"
-            android:background="@drawable/lvse"
+            android:background="@drawable/submit_green_button"
             android:text="保存"
-            android:textColor="@drawable/baise"
-            android:textSize="18sp" />
+            android:textColor="@color/app_text_white"
+            android:textSize="@dimen/app_textsize_button" />
     </LinearLayout>
 
 </RelativeLayout>

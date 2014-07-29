@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:gravity="center|center"
+        android:gravity="left|center"
         android:orientation="horizontal" >
 
         <!-- android:ellipsize="end" 当字符内容太长显示不下时可以省略号代替未显示的字符,省略号在结尾 -->
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:textColor="@color/black"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone" />
     </LinearLayout>
@@ -56,12 +56,13 @@
 
         <TextView
             android:id="@+id/header_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:text=""
-            android:textColor="@drawable/lvse"
-            android:textSize="22sp"
+            android:layout_width="61.0dip"
+            android:layout_height="35.0dip"
+            android:layout_marginRight="10.0dip"
+            android:background="@drawable/new_head_btn"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
             android:visibility="gone" />
 
         <ImageView

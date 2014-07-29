@@ -197,7 +197,7 @@ public class BaseActivity extends Activity {
 	}
 
 	/**
-	 * 显示头部右边部分
+	 * 显示头部右边部分(绿色背景的文字按钮，可设置文字)
 	 * 
 	 * @return
 	 */
@@ -208,9 +208,9 @@ public class BaseActivity extends Activity {
 		setVisible(id);
 		return textView;
 	}
-
+	
 	/**
-	 * 显示头部右边部分
+	 * 显示头部右边部分（图片按钮，需自己设置图片；ImageView.setImageResource(R.drawable.leibie);）
 	 * 
 	 * @return
 	 */

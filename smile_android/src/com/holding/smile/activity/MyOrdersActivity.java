@@ -47,31 +47,34 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 	private View			footerView;
 
+	private final String	FINSH	= "finsh";
+	private final String	UNFINSH	= "unfinsh";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.order_manager);
-		
+
 		try {
 			Intent intent = getIntent();
 			if (intent.getExtras() != null && intent.getExtras().getSerializable("status") != null) {
 				status = intent.getExtras().getString("status");
+			} else {
+				status = UNFINSH;
 			}
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, e.getMessage());
 		}
-		
-		
+
 	}
 
 	@Override
-	public void onStart(){
+	public void onStart() {
 		super.onStart();
 		displayHeaderBack().setOnClickListener(this);
 
-		TextView textView = displayHeaderDescription();
-		textView.setText("订单管理");
-		
+		displayHeaderDescription().setText("订单管理");
+
 		if (footerView == null) {
 			footerView = displayFooterMainOrder();
 		}
@@ -83,7 +86,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onClick(View v) {
-				
+
 				if ("编辑".equals(editView.getText().toString())) {
 					editView.setText(R.string.finish);
 					adapter.showEdit(true);
@@ -98,21 +101,21 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 		allPayButton = (TextView) findViewById(R.id.footer_my_orders_all_pay);
 		allChecked = (ImageView) findViewById(R.id.footer_my_orders_all_checked);
-		
+
 		allChecked.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				boolean selected = allChecked.isSelected();
-				if(selected){
+				if (selected) {
 					allChecked.setSelected(false);
 					adapter.setSelectAll(false);
-				}else{
+				} else {
 					allChecked.setSelected(true);
 					adapter.setSelectAll(true);
 				}
 			}
-		});		
-		
+		});
+
 		allButton = (TextView) findViewById(R.id.list_orders_button_all);
 		finshButton = (TextView) findViewById(R.id.list_orders_button_receive);
 		unfinshButton = (TextView) findViewById(R.id.list_orders_button_unsend);
@@ -125,11 +128,11 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 		listView = (MyListView) findViewById(R.id.list_orders_list);
 		startTask();
 	}
-	
+
 	@Override
 	public synchronized void loadData() {
 		RtnValueDto orders = MyApplication.getInstance().getDataService().getOrdersList(status);
-		if(CodeValidator.dealCode(context, orders)){
+		if (CodeValidator.dealCode(context, orders)) {
 			Message msg = mUIHandler.obtainMessage(1);
 			msg.obj = orders;
 			msg.sendToTarget();
@@ -156,7 +159,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				allButton.setSelected(false);
 				finshButton.setSelected(true);
 				unfinshButton.setSelected(false);
-				status = "finsh";
+				status = FINSH;
 				startTask();
 				break;
 			}
@@ -164,7 +167,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				allButton.setSelected(false);
 				finshButton.setSelected(false);
 				unfinshButton.setSelected(true);
-				status = "unfinsh";
+				status = UNFINSH;
 				startTask();
 				break;
 			}
@@ -210,17 +213,18 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 											public void handleMessage(Message msg) {
 												switch (msg.what) {
 													case 1: {
-														if (status == null) {
-															allButton.setSelected(true);
-														} else if ("finsh".equals(status)) {
+														if (UNFINSH.equals(status)) {
+															unfinshButton.setSelected(true);
+														} else if (FINSH.equals(status)) {
 															finshButton.setSelected(true);
 														} else {
-															unfinshButton.setSelected(true);
+															allButton.setSelected(true);
 														}
-														
+
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
 
-														if (rvd.getOrderListData() == null || rvd.getOrderListData().size() == 0) {
+														if (rvd.getOrderListData() == null
+																|| rvd.getOrderListData().size() == 0) {
 															ToastUtils.showShort(context, "暂无数据！");
 														}
 
