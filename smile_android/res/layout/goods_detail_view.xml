@@ -7,173 +7,292 @@
     android:paddingTop="3dip"
     android:scrollbars="none" >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:gravity="center"
+        android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <include
-            android:id="@+id/pic_pager"
-            layout="@layout/pic_pager" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/qianhuise" />
-
         <RelativeLayout
+            android:id="@+id/product_gallery_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <include
+                android:id="@+id/pic_pager"
+                layout="@layout/pic_pager" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/info_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginTop="3dp" >
+            android:layout_below="@+id/product_gallery_layout"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/name_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_marginTop="15.0dip"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/b"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@drawable/shenhuise"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
                     android:id="@+id/n"
-                    android:layout_width="wrap_content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@drawable/shenhuise"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:layout_weight="1.0"
+                    android:text="@string/product_info_tip"
+                    android:textColor="#ff000000"
+                    android:textSize="@dimen/app_textsize_button" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/name_layout"
-                android:gravity="left|center_vertical"
-                android:orientation="vertical" >
+                android:layout_marginTop="5.0dip"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
 
                 <TextView
                     android:id="@+id/pp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@drawable/dahong"
+                    android:text=""
+                    android:textColor="#fff12383"
+                    android:textSize="16.0sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/rebate_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="即将揭晓"
+                    android:textColor="#fff12383"
+                    android:textSize="19.0sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/lp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5.0dip"
+                    android:text=""
+                    android:textColor="#ff858585"
+                    android:textSize="13.0sp" />
+
+                <TextView
+                    android:id="@+id/sn"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="20dp"
+                    android:gravity="right|center_vertical"
+                    android:textColor="@drawable/qianhuise"
                     android:textSize="16sp" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/dash1"
+                android:layout_width="fill_parent"
+                android:layout_height="2.0px"
+                android:layout_marginTop="10.0dip"
+                android:background="@color/detail_divider"
+                android:layerType="software" />
+
+            <LinearLayout
+                android:id="@+id/sku_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="10.0dip" >
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:orientation="horizontal" >
+                    android:layout_marginTop="10.0dip"
+                    android:gravity="center_vertical" >
 
                     <TextView
-                        android:id="@+id/lp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@drawable/qianhuise"
-                        android:textSize="15sp" />
+                        android:paddingRight="10.0dip"
+                        android:text="@string/choose_color"
+                        android:textColor="#ff000000"
+                        android:textSize="@dimen/app_textsize_price" />
 
                     <TextView
-                        android:id="@+id/sn"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_marginRight="20dp"
-                        android:gravity="right|center_vertical"
-                        android:textColor="@drawable/qianhuise"
-                        android:textSize="16sp" />
+                        android:id="@+id/select_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:gravity="left"
+                        android:textColor="@color/app_text_black"
+                        android:textSize="@dimen/app_textsize_price" />
                 </LinearLayout>
+
+                <com.holding.smile.myview.MyLinearLayout
+                    android:id="@+id/color_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10.0dip"
+                    android:layout_marginBottom="10dip"
+                    android:gravity="center_horizontal"
+                    android:paddingLeft="4dp" />
             </LinearLayout>
-        </RelativeLayout>
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/qianhuise" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|top"
-            android:gravity="left"
-            android:orientation="horizontal" >
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2.0px"
+                android:layout_marginBottom="10.0dip"
+                android:background="@color/detail_divider"
+                android:layerType="software" />
 
             <TextView
-                android:id="@+id/choose_color"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="left|top"
-                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5.0dip"
                 android:gravity="left"
-                android:text="@string/choose_color"
-                android:textColor="@drawable/shenhuise"
-                android:textSize="18sp" />
+                android:text="商品信息："
+                android:textColor="#ff000000"
+                android:textSize="@dimen/app_textsize_price"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/select_color"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="left|top"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:textColor="@drawable/shenhuise"
-                android:textSize="18sp" />
+            <LinearLayout
+                android:id="@+id/product_num_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10.0dip"
+                android:layout_marginTop="10.0dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="商品品牌："
+                    android:textColor="@color/detail_title"
+                    android:textSize="@dimen/app_textsize_price" />
+
+                <TextView
+                    android:id="@+id/b"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textColor="@color/detail_content"
+                    android:textSize="@dimen/app_textsize_price" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/product_b_lines"
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:background="@drawable/dash_driver"
+                android:layerType="software" />
+
+            <LinearLayout
+                android:id="@+id/product_num_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10.0dip"
+                android:layout_marginTop="10.0dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="商品编号："
+                    android:textColor="@color/detail_title"
+                    android:textSize="@dimen/app_textsize_price" />
+
+                <TextView
+                    android:id="@+id/p_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textColor="@color/detail_content"
+                    android:textSize="@dimen/app_textsize_price" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/product_num_lines"
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:background="@drawable/dash_driver"
+                android:layerType="software" />
+
+            <LinearLayout
+                android:id="@+id/product_des_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10.0dip"
+                android:layout_marginTop="10.0dip" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="@string/good_desc"
+                    android:textColor="@color/detail_title"
+                    android:textSize="@dimen/app_textsize_price" />
+
+                <TextView
+                    android:id="@+id/d"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textColor="@color/detail_content"
+                    android:textSize="@dimen/app_textsize_price" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/product_washing_lines"
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
+                android:background="@drawable/dash_driver"
+                android:layerType="software" />
+
+            <RelativeLayout
+                android:id="@+id/SafetyLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10.0dip"
+                android:layout_marginTop="10.0dip"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15.0dip"
+                    android:background="@drawable/rect_dash"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="60.0dip"
+                        android:layout_marginRight="5.0dip"
+                        android:layout_marginTop="7.0dip"
+                        android:lineSpacingExtra="7.0dip"
+                        android:text="天天海狗所售商品均为正品。"
+                        android:textColor="@color/app_text_black"
+                        android:textSize="12.0sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="60.0dip"
+                    android:layout_height="60.0dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_launcher" />
+            </RelativeLayout>
         </LinearLayout>
-
-        <com.holding.smile.myview.MyLinearLayout
-            android:id="@+id/color_list"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:gravity="center_horizontal"
-            android:paddingLeft="4dp" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/qianhuise" />
-
-        <TextView
-            android:id="@+id/desc"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="left|top"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="10dp"
-            android:gravity="left"
-            android:text="@string/good_desc"
-            android:textColor="@drawable/shenhuise"
-            android:textSize="20sp" />
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" >
-
-            <TextView
-                android:id="@+id/d"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="left|top"
-                android:layout_marginTop="5dp"
-                android:gravity="left"
-                android:textColor="@drawable/qianhuise"
-                android:textSize="14sp" />
-        </RelativeLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
 </ScrollView>

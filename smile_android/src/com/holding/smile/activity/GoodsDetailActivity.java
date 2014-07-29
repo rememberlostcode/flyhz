@@ -48,6 +48,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	// 装点点的ImageView数组
 	private ImageView[]		tips;
 	private TextView		b;										// 品牌名
+	private TextView		p_num;									// 商品编号
 	private TextView		n;										// 商品名
 	private TextView		pp;									// 价格
 	private TextView		lp;									// 原价格
@@ -94,6 +95,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			addCart.setOnClickListener(this);
 
 			b = (TextView) findViewById(R.id.b);
+			p_num = (TextView) findViewById(R.id.p_num);
 			n = (TextView) findViewById(R.id.n);
 			pp = (TextView) findViewById(R.id.pp);
 			lp = (TextView) findViewById(R.id.lp);
@@ -136,6 +138,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			if (jGoods == null)
 				return;
 
+			p_num.setText(bs);
 			if (jGoods.getBe() != null && !"".equals(jGoods.getBe().trim())) {
 				b.setText(jGoods.getBe().trim());
 			}
