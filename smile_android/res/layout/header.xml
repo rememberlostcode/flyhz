@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:textColor="@color/black"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone" />
     </LinearLayout>
@@ -56,13 +56,13 @@
 
         <TextView
             android:id="@+id/header_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5.0dip"
+            android:layout_width="61.0dip"
+            android:layout_height="35.0dip"
+            android:layout_marginRight="10.0dip"
             android:background="@drawable/new_head_btn"
-            android:text=""
+            android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="22sp"
+            android:textSize="14sp"
             android:visibility="gone" />
 
         <ImageView

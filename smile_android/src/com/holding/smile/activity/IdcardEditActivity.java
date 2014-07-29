@@ -47,7 +47,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 
 	private EditText	idcardName;
 	private EditText	idcardNumber;
-	private Button		idcardSave;
+	private TextView		idcardSave;
 	private Button		idcardDelete;
 	private ImageView	imageView;
 	private ImageView	imageBackView;
@@ -63,12 +63,14 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 
+		idcardSave = displayHeaderRight();
+		idcardSave.setText("保存");
+		
 		TextView textView = displayHeaderDescription();
 		textView.setText("身份证编辑");
 
 		idcardName = (EditText) findViewById(R.id.idcard_name);
 		idcardNumber = (EditText) findViewById(R.id.idcard_number);
-		idcardSave = (Button) findViewById(R.id.idcard_add_save);
 		idcardDelete = (Button) findViewById(R.id.idcard_delete);
 		imageView = (ImageView) findViewById(R.id.idcard_idcard_img);
 		imageBackView = (ImageView) findViewById(R.id.idcard_idcard_back_img);
@@ -177,7 +179,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				finish();
 				break;
 			}
-			case R.id.idcard_add_save: {
+			case R.id.header_right: {
 				String xm = idcardName.getText().toString();
 				if ("".equals(xm) || "".equals(xm.trim())) {
 					ToastUtils.showShort(this, "姓名不能为空");
