@@ -438,4 +438,6 @@
     <color name="color_for_order_pur">#ff8c7583</color>
     <color name="color_for_order_club">#fff0828f</color>
     <color name="color_for_favourable_item">#ffacacac</color>
+    
+    <color name="top_goods_bg">#ffebebeb</color>
 </resources>

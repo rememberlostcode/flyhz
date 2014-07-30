@@ -133,7 +133,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(R.layout.shopping_cart_item, null);
 			holder = new ViewHolder();
 			holder.n = (TextView) convertView.findViewById(R.id.n);
-			holder.n.setWidth((int) (sWidth - 190 * MyApplication.getInstance().getDensity()));
+			holder.n.setWidth((int) (sWidth - 160 * MyApplication.getInstance().getDensity()));
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 			holder.brandstyle = (TextView) convertView.findViewById(R.id.brand_style);
