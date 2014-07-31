@@ -17,12 +17,20 @@ public interface TaobaoData {
 	 * @return
 	 */
 	public Trade getTradeByTid(Long tid);
-	
+
+	/**
+	 * 获取淘宝卖家姓名
+	 * 
+	 * @param tid
+	 * @return
+	 */
+	public String getReceiverName(Long tid);
+
 	/**
 	 * 启动淘宝消息进程，以便接收淘宝的信息
 	 */
 	public void startMessageHandler();
-	
+
 	/**
 	 * 关闭淘宝消息进程
 	 */

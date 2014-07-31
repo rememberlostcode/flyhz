@@ -62,6 +62,7 @@
 	<string name="my_idcards_add">新增身份证信息</string>
 	<string name="clear_cache">清理缓存</string>
 	<string name="contact_us">联系我们</string>
+	<string name="miss_idcard">缺少身份证</string>
 	
     <string name="user_info_myaddress">我的收货地址</string>
     <string name="setting_logout">注销</string>
@@ -119,8 +120,8 @@
     <string name="regist_tip">%s格式不正确</string>
     <string name="regist_btn_info">注 册</string>
     
-    <string name="account_account">账户:</string>
-    <string name="account_order_pre_pay">未发货</string>
+    <string name="account_account">账户：</string>
+    <string name="account_order_pre_pay">待支付</string>
     <string name="account_order_pre_receive">待收货</string>
     <string name="account_order_all">全部订单</string>
     <string name="account_favourables">代金券</string>

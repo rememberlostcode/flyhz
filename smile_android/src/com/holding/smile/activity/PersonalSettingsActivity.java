@@ -184,7 +184,6 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 
 	@SuppressLint("HandlerLeak")
 	private final Handler	mUIHandler	= new Handler() {
-
 											@Override
 											public void handleMessage(Message msg) {
 												switch (msg.what) {
@@ -195,12 +194,15 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 															if (user != null) {
 																if (user.getEmail() != null
 																		&& !"".equals(user.getEmail())) {
+																	MyApplication.getInstance().getCurrentUser().setEmail(user.getEmail());
 																	emailTextView.setText(user.getEmail());
 																}
 																if (user.getMobilephone() != null
 																		&& !"".equals(user.getMobilephone())) {
+																	MyApplication.getInstance().getCurrentUser().setMobilephone(user.getMobilephone());
 																	phoneTextView.setText(user.getMobilephone());
 																}
+																MyApplication.getInstance().getSqliteService().updateUser();
 															}
 														} else {
 															ToastUtils.showShort(context, "暂无数据！");

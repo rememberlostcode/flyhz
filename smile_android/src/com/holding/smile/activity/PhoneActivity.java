@@ -82,6 +82,8 @@ public class PhoneActivity extends BaseActivity implements OnClickListener {
 												.setUserInfo("mphone", phone);
 				closeImmediatelyLoading();
 				if (rvd != null && 200000 == rvd.getCode()) {
+					MyApplication.getInstance().getCurrentUser().setMobilephone(phone);;
+					MyApplication.getInstance().getSqliteService().updateUser();
 					ToastUtils.showShort(context, "保存成功！");
 					Intent intent = new Intent();
 					intent.putExtra("phone", phone);

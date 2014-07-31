@@ -26,52 +26,43 @@
                 android:layout_alignParentTop="true"
                 android:orientation="vertical" >
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="50.0dip"
+                    android:gravity="left|center" >
 
-                    <TableLayout
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12.0dip"
+                        android:shadowColor="@color/shadow_color"
+                        android:shadowDx="0.5"
+                        android:shadowDy="0.8"
+                        android:shadowRadius="1.0"
+                        android:singleLine="true"
+                        android:text="@string/account_account"
+                        android:textColor="@color/white"
+                        android:textSize="17.5sp" />
+
+                    <TextView
+                        android:id="@+id/my_smile_account"
                         android:layout_width="fill_parent"
-                        android:layout_height="50.0dip"
-                        android:layout_centerVertical="true"
-                        android:gravity="left|center" >
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/wallet_margin"
+                        android:layout_marginRight="5.0dip"
+                        android:lines="2"
+                        android:maxEms="8"
+                        android:shadowColor="@color/shadow_color"
+                        android:shadowDx="0.5"
+                        android:shadowDy="0.8"
+                        android:shadowRadius="1.0"
+                        android:singleLine="true"
+                        android:text="@string/app_name"
+                        android:textColor="@color/white"
+                        android:textSize="17.5sp" />
+                </LinearLayout>
 
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content" >
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="22.0dip"
-                                android:shadowColor="@color/shadow_color"
-                                android:shadowDx="0.5"
-                                android:shadowDy="0.8"
-                                android:shadowRadius="1.0"
-                                android:singleLine="true"
-                                android:text="@string/account_account"
-                                android:textColor="@color/white"
-                                android:textSize="17.5sp" />
-
-                            <TextView
-                                android:id="@+id/my_smile_account"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/wallet_margin"
-                                android:layout_marginRight="5.0dip"
-                                android:lines="2"
-                                android:maxEms="8"
-                                android:shadowColor="@color/shadow_color"
-                                android:shadowDx="0.5"
-                                android:shadowDy="0.8"
-                                android:shadowRadius="1.0"
-                                android:singleLine="true"
-                                android:text="@string/app_name"
-                                android:textColor="@color/white"
-                                android:textSize="17.5sp" />
-                        </TableRow>
-                    </TableLayout>
-                </RelativeLayout>
+                <!-- 订单开始 -->
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -79,8 +70,8 @@
                     android:layout_marginLeft="12.0dip"
                     android:layout_marginRight="12.0dip"
                     android:background="@drawable/new_table_row_bg"
-                    android:orientation="horizontal"
-                    android:padding="0.0dip" >
+                    android:baselineAligned="false"
+                    android:orientation="horizontal" >
 
                     <LinearLayout
                         android:id="@+id/mysmile_myorders_layout_pay"
@@ -103,7 +94,6 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_accout_item_size"
                                 android:gravity="center"
-                                android:text="1"
                                 android:textColor="@color/white"
                                 android:visibility="gone" />
                         </LinearLayout>
@@ -111,7 +101,6 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
                             android:layout_marginTop="2.0dip"
                             android:text="@string/account_order_pre_pay"
                             android:textColor="@color/personal_text_color"
@@ -120,9 +109,7 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:paddingBottom="10.0dip"
-                        android:paddingTop="10.0dip" >
+                        android:layout_height="fill_parent" >
 
                         <View
                             android:layout_width="1.0dip"
@@ -152,7 +139,6 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_accout_item_size"
                                 android:gravity="center"
-                                android:text="1"
                                 android:textColor="@color/white"
                                 android:visibility="gone" />
                         </LinearLayout>
@@ -160,7 +146,6 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
                             android:layout_marginTop="2.0dip"
                             android:text="@string/account_order_pre_receive"
                             android:textColor="@color/personal_text_color"
@@ -169,9 +154,7 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:paddingBottom="10.0dip"
-                        android:paddingTop="10.0dip" >
+                        android:layout_height="fill_parent" >
 
                         <View
                             android:layout_width="1.0dip"
@@ -184,7 +167,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.0"
-                        android:background="@drawable/new_personal_status_tab_fight_pressed"
+                        android:background="@drawable/new_personal_tab_center_pressed"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:padding="10.0dip" >
@@ -201,7 +184,6 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:src="@drawable/bg_accout_item_size"
-                                android:text="1"
                                 android:textColor="@color/white"
                                 android:visibility="gone" />
                         </LinearLayout>
@@ -209,13 +191,16 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
                             android:layout_marginTop="2.0dip"
                             android:text="@string/account_order_all"
                             android:textColor="@color/personal_text_color"
                             android:textSize="@dimen/app_textsize_main" />
                     </LinearLayout>
                 </LinearLayout>
+                <!-- 订单结束 -->
+
+
+                <!-- 个人设置 -->
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -223,35 +208,37 @@
                     android:layout_marginBottom="12.0dip"
                     android:layout_marginLeft="12.0dip"
                     android:layout_marginRight="12.0dip"
-                    android:layout_marginTop="10.0dip"
-                    android:layout_weight="1.0"
+                    android:layout_marginTop="6.0dip"
                     android:background="@drawable/new_table_row_bg"
-                    android:orientation="vertical"
-                    android:padding="0.0dip" >
+                    android:orientation="vertical" >
 
                     <LinearLayout
-                        android:id="@+id/mysmile_setting_layout"
+                        android:id="@+id/mysmile_idcards_layout"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/new_personal_tab_center_pressed"
                         android:gravity="center"
-                        android:padding="@dimen/wallet_margin" >
+                        android:padding="@dimen/wallet_margin"
+                        android:visibility="gone" >
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/new_menu_set_select" />
+                            android:layout_marginLeft="3.0dip"
+                            android:contentDescription="@string/more"
+                            android:src="@drawable/acs_artificial" />
 
                         <TextView
                             android:layout_width="0.0dip"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10.0dip"
                             android:layout_weight="1.0"
-                            android:text="@string/personal_information"
+                            android:text="@string/miss_idcard"
                             android:textColor="@color/personal_text_color"
                             android:textSize="@dimen/app_textsize_main" />
 
                         <TextView
+                            android:id="@+id/mysmile_miss_idcard_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="5.0dip"
@@ -261,6 +248,47 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/more"
+                            android:src="@drawable/acs_right_arrwo" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/mysmile_idcards_layout_line"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1.0px"
+                        android:background="@color/textarea_divider"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/mysmile_setting_layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/new_personal_tab_center_pressed"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/mysmile_topandbuttom"
+                        android:paddingLeft="@dimen/wallet_margin"
+                        android:paddingRight="@dimen/wallet_margin"
+                        android:paddingTop="@dimen/mysmile_topandbuttom" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/more"
+                            android:src="@drawable/new_menu_set_select" />
+
+                        <TextView
+                            android:layout_width="0.0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="6.0dip"
+                            android:layout_weight="1.0"
+                            android:text="@string/personal_information"
+                            android:textColor="@color/personal_text_color"
+                            android:textSize="@dimen/app_textsize_main" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/more"
                             android:src="@drawable/acs_right_arrwo" />
                     </LinearLayout>
 
@@ -280,30 +308,29 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/more"
                             android:src="@drawable/new_ic_accout_favourables" />
 
                         <TextView
                             android:layout_width="0.0dip"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10.0dip"
+                            android:layout_marginLeft="8.0dip"
                             android:layout_weight="1.0"
                             android:text="@string/account_favourables"
                             android:textColor="@color/personal_text_color"
                             android:textSize="@dimen/app_textsize_main" />
 
-                        <TextView
-                            android:id="@+id/favor_num"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5.0dip"
-                            android:textColor="#fffd4ca3"
-                            android:textSize="@dimen/app_textsize_main_new" />
-
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/more"
                             android:src="@drawable/acs_right_arrwo" />
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="1.0px"
+                        android:background="@color/textarea_divider" />
 
                     <LinearLayout
                         android:id="@+id/mysmile_clearcache_layout"
@@ -311,32 +338,30 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/new_personal_tab_center_pressed"
                         android:gravity="center"
-                        android:padding="@dimen/wallet_margin" >
+                        android:paddingBottom="@dimen/mysmile_topandbuttom"
+                        android:paddingLeft="@dimen/wallet_margin"
+                        android:paddingRight="@dimen/wallet_margin"
+                        android:paddingTop="@dimen/mysmile_topandbuttom" >
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/more"
                             android:src="@drawable/new_menu_set_select" />
 
                         <TextView
                             android:layout_width="0.0dip"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10.0dip"
+                            android:layout_marginLeft="8.0dip"
                             android:layout_weight="1.0"
                             android:text="@string/clear_cache"
                             android:textColor="@color/personal_text_color"
                             android:textSize="@dimen/app_textsize_main" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5.0dip"
-                            android:textColor="#fffd4ca3"
-                            android:textSize="@dimen/app_textsize_main_new" />
-
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/more"
                             android:src="@drawable/acs_right_arrwo" />
                     </LinearLayout>
                 </LinearLayout>
@@ -355,12 +380,14 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5.0dip"
+                        android:contentDescription="@string/more"
                         android:src="@drawable/new_ic_accout_custom" />
 
                     <TextView
                         android:layout_width="0.0dip"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10.0dip"
+                        android:layout_marginLeft="8.0dip"
                         android:layout_weight="1.0"
                         android:text="@string/contact_us"
                         android:textColor="@color/personal_text_color"
@@ -369,6 +396,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:contentDescription="@string/more"
                         android:src="@drawable/acs_right_arrwo" />
                 </LinearLayout>
             </LinearLayout>

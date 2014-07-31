@@ -25,6 +25,7 @@ public class SUser implements Serializable {
 	private String				token;
 	private String				url;
 	private String				registrationID;
+	private String				ismissidcard;
 
 	/**
 	 * 当前登录人标识
@@ -160,5 +161,13 @@ public class SUser implements Serializable {
 
 	public void setRegistrationID(String registrationID) {
 		this.registrationID = registrationID;
+	}
+
+	public String getIsmissidcard() {
+		return ismissidcard;
+	}
+
+	public void setIsmissidcard(String ismissidcard) {
+		this.ismissidcard = ismissidcard;
 	}
 }

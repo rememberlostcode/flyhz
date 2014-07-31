@@ -212,7 +212,7 @@ public class SQLiteService {
 	public SUser getScurrentUser() {
 		SUser user = null;
 		Cursor cursor = db.query("user", new String[] { "cuid", "username", "token", "mobilephone",
-				"identitycard", "qq", "email", "weibo", "weixin" }, "flag = ?",
+				"identitycard", "qq", "email", "weibo", "weixin", "ismissidcard" }, "flag = ?",
 				new String[] { "1" }, null, null, null, "1");
 
 		while (cursor.moveToNext()) {
@@ -226,6 +226,7 @@ public class SQLiteService {
 			user.setEmail(cursor.getString(6));
 			user.setWeibo(cursor.getString(7));
 			user.setWeixin(cursor.getString(8));
+			user.setIsmissidcard(cursor.getString(9));
 		}
 		cursor.close();
 
@@ -254,10 +255,10 @@ public class SQLiteService {
 
 					// 插入新用户
 					db.execSQL(
-							"INSERT INTO user VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1)",
+							"INSERT INTO user VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 1,?)",
 							new Object[] { user.getId(), user.getUsername(), user.getToken(),
 									user.getMobilephone(), user.getIdentitycard(), user.getQq(),
-									user.getEmail(), user.getWeibo(), user.getWeixin() });
+									user.getEmail(), user.getWeibo(), user.getWeixin(),user.getIsmissidcard() });
 					db.setTransactionSuccessful(); // 设置事务成功完成
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -297,6 +298,7 @@ public class SQLiteService {
 				cv.put("weibo", user.getWeibo());
 				cv.put("weixin", user.getWeixin());
 				cv.put("flag", "1");
+				cv.put("ismissidcard", user.getIsmissidcard());
 				db.update("user", cv, "cuid = ?", new String[] { String.valueOf(user.getId()) });
 
 				MyApplication.getInstance().getCurrentUser().setFlag("1");
@@ -369,7 +371,7 @@ public class SQLiteService {
 	private SUser getUserById(int cuid) {
 		SUser user = new SUser();
 		Cursor cursor = db.query("user", new String[] { "cuid", "username", "token", "mobilephone",
-				"identitycard", "qq", "email", "weibo", "weixin", "flag" }, "cuid = ?",
+				"identitycard", "qq", "email", "weibo", "weixin", "flag", "ismissidcard" }, "cuid = ?",
 				new String[] { String.valueOf(cuid) }, null, null, null, "1");
 
 		while (cursor.moveToNext()) {
@@ -382,6 +384,7 @@ public class SQLiteService {
 			user.setEmail(cursor.getString(6));
 			user.setWeibo(cursor.getString(7));
 			user.setWeixin(cursor.getString(8));
+			user.setIsmissidcard(cursor.getString(9));
 		}
 		cursor.close();
 
@@ -399,7 +402,7 @@ public class SQLiteService {
 	public SUser getUserByUsername(String username) {
 		SUser user = new SUser();
 		Cursor cursor = db.query("user", new String[] { "cuid", "username", "token", "mobilephone",
-				"identitycard", "qq", "email", "weibo", "weixin", "flag" }, "username = ?",
+				"identitycard", "qq", "email", "weibo", "weixin", "flag", "ismissidcard" }, "username = ?",
 				new String[] { username }, null, null, null, "1");
 
 		while (cursor.moveToNext()) {
@@ -412,6 +415,7 @@ public class SQLiteService {
 			user.setEmail(cursor.getString(6));
 			user.setWeibo(cursor.getString(7));
 			user.setWeixin(cursor.getString(8));
+			user.setIsmissidcard(cursor.getString(9));
 		}
 		cursor.close();
 

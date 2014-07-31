@@ -55,6 +55,10 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 	 * 联系我们
 	 */
 	private LinearLayout	contactUsLayoutLayout;
+	/**
+	 * 缺少身份证
+	 */
+	private LinearLayout	missLayoutLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +102,14 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 		
 		contactUsLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_contact_us_layout);
 		contactUsLayoutLayout.setOnClickListener(this);
+		
+		if (MyApplication.getInstance().getCurrentUser() != null
+				&& "miss".equals(MyApplication.getInstance().getCurrentUser().getIsmissidcard())) {
+			missLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_idcards_layout);
+			missLayoutLayout.setVisibility(View.VISIBLE);
+			findViewById(R.id.mysmile_idcards_layout_line).setVisibility(View.VISIBLE);
+			missLayoutLayout.setOnClickListener(this);
+		}
 	}
 	
 	@Override
@@ -174,21 +186,29 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				ClickUtil.sendEmail(this);
 				break;
 			}
+			case R.id.mysmile_idcards_layout: {
+				SUser user = MyApplication.getInstance().getCurrentUser();
+				Intent intent = new Intent();
+				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					intent.putExtra("class", IdcardManagerActivity.class);
+					intent.setClass(context, LoginActivity.class);
+				} else {
+					intent.setClass(context, IdcardManagerActivity.class);
+				}
+				intent.putExtra("status", Constants.OrderStateCode.FOR_PAYMENT);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+				break;
+			}
 		}
 		super.onClick(v);
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i(MyApplication.LOG_TAG, requestCode + "========================onActivityResult========================" + resultCode);
 		if (requestCode == SETTINGS_CODE && resultCode == RESULT_OK) {
 			Log.i(MyApplication.LOG_TAG, "关闭我页面...");
 			finish();
-//			Intent intent = new Intent();
-//			intent.setClass(context,
-//					LoginActivity.class);
-//			intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//			startActivity(intent);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

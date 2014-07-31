@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.holding.smile.activity.HtmlUIActivity;
+import com.holding.smile.activity.IdcardManagerActivity;
 import com.holding.smile.activity.IndexActivity;
 import com.holding.smile.activity.LoginActivity;
 import com.holding.smile.activity.MyApplication;
@@ -93,6 +94,19 @@ public class MyReceiver extends BroadcastReceiver {
 				} else {
 					Intent i = new Intent();
 					i.setClass(context, ShoppingCartActivity.class);
+					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					context.startActivity(i);
+				}
+			} else if (alert.indexOf("身份证") > -1) {
+				if (!MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
+					Intent i = new Intent();
+					i.putExtra("class", IdcardManagerActivity.class);
+					i.setClass(context, LoginActivity.class);
+					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					context.startActivity(i);
+				} else {
+					Intent i = new Intent();
+					i.setClass(context, IdcardManagerActivity.class);
 					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					context.startActivity(i);
 				}

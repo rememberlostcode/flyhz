@@ -178,8 +178,8 @@ public class OrderServiceImpl implements OrderService {
 			log.debug("====={}", order.getId());
 			orderDto.setId(order.getId());
 			orderDto.setStatus(order.getStatus());
-			redisRepository.buildOrderToRedis(userId, orderDto.getId(),order.getStatus(),order.getGmtModify(),
-					JSONUtil.getEntity2Json(orderDto));
+			redisRepository.buildOrderToRedis(userId, orderDto.getId(), order.getStatus(),
+					order.getGmtModify(), JSONUtil.getEntity2Json(orderDto));
 
 		}
 		return orderDto;
@@ -315,22 +315,21 @@ public class OrderServiceImpl implements OrderService {
 			OrderModel orderModel = orderDao.getModelByNumber(number[i]);
 
 			if (orderModel != null) {
-				//累加订单总额
-				total = total.add(orderModel.getTotal());
-				log.info("total = "+ total);
-
-				if (userId == null) {
-					userId = orderModel.getUserId();
-				}
-				
 				//如果任一订单是已付款后面的状态，直接返回状态
 				if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())
 						|| Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())
 						|| Constants.OrderStateCode.HAS_BEEN_COMPLETED.code.equals(orderModel.getStatus())
 						|| Constants.OrderStateCode.HAVE_BEEN_CLOSED.code.equals(orderModel.getStatus())) {// 如果状态已经是已付款/卖家已发货则直接返回状态
 					return orderModel.getStatus();
-				} else {// mysql显示未付款时，需要调用淘宝接口查看
+				}// mysql显示未付款时，需要调用淘宝接口查看
+				
+				if (userId == null) {
+					userId = orderModel.getUserId();
 				}
+				
+				//累加订单总额
+				total = total.add(orderModel.getTotal());
+				log.info("total = "+ total);
 
 				//最后一单，处理查看淘宝的订单信息
 				if (i == number.length - 1) {
@@ -348,17 +347,26 @@ public class OrderServiceImpl implements OrderService {
 							} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
 								// 已付款
 								smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
-
+								String taobaoReceiverName = taobaoData.getReceiverName(tid);
+								if(StringUtils.isBlank(taobaoReceiverName)){
+									throw new ValidateException(700002);
+								}
 								// 买家已付款，需要验证身份证是否存在
 								IdcardModel im = new IdcardModel();
 								im.setUserId(userId);
 								List<IdcardModel> list = idcardDao.getModelList(im);
+								// 缺失身份证
+								smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
 								if (list == null || list.size() == 0) {
-									// 缺失身份证
-									smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
 								} else {
-									// 等待发货
-									smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
+									for(int k=0;k<list.size();k++){
+										if(list.get(k)!=null && StringUtils.isNotBlank(list.get(k).getName()) 
+												&& taobaoReceiverName.equals(list.get(k).getName())){
+											// 存在相同名字的身份证，状态改为“等待发货”
+											smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
+											break;
+										}
+									}
 								}
 							} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
 								// 已发货
@@ -395,22 +403,29 @@ public class OrderServiceImpl implements OrderService {
 		log.info("定时器改变订单" + orderModel.getNumber() + "状态为" + orderModel.getStatus());
 		orderDao.updateStatusByNumber(orderModel);
 	}
-	
+
 	public void updateStatusByNumberForMessage(OrderModel orderModel) {
 		log.info("淘宝消息改变订单" + orderModel.getNumber() + "状态为" + orderModel.getStatus());
 		OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
 		if (orderDto != null) {
 			orderDao.updateStatusByNumber(orderModel);
+			// 更新订单的状态（以及有物流信息的时更新物流）
+			solrData.submitOrder(orderDto.getUserId(), orderDto.getId(), orderModel.getStatus(),
+					new Date(), null);
 			if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
 				sendPaySuccess(orderModel.getNumber());
-				
-				solrData.submitOrder(orderDto.getUserId(), orderDto.getId(), orderModel.getStatus(), new Date(), null);
+			} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(orderModel.getStatus())) {// 缺少身份证的发送消息
+				// 获取用户信息并得到registrationID发送通知
+				UserDto user = userDao.getUserById(orderDto.getUserId());
+				if (user != null && user.getId() != null && user.getRegistrationID() != null) {
+					JPush jpush = new JPush();
+					Map<String, String> extras = new HashMap<String, String>();
+					extras.put("orderId", orderDto.getId().toString());
+					jpush.sendAndroidNotificationWithRegistrationID("由于海关需要，您的订单收件人缺少必要身份证，您需要上传！", extras,
+							user.getRegistrationID());
+				}
 			} else if (Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {// 已发货的发送消息
-				//更新订单的状态（以及有物流信息的时更新物流）
-				solrData.submitOrder(orderDto.getUserId(), orderDto.getId(), orderModel.getStatus(),
-						new Date(), null);
-	
-				//获取用户信息并得到registrationID发送通知
+				// 获取用户信息并得到registrationID发送通知
 				UserDto user = userDao.getUserById(orderDto.getUserId());
 				if (user != null && user.getId() != null && user.getRegistrationID() != null) {
 					JPush jpush = new JPush();
@@ -419,33 +434,33 @@ public class OrderServiceImpl implements OrderService {
 					jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras,
 							user.getRegistrationID());
 				}
-			} else if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
-				solrData.submitOrder(orderDto.getUserId(), orderDto.getId(), orderModel.getStatus(), orderDto.getGmtModify(), null);
 			}
 		}
 	}
-	
-//	/**
-//	 * 根据订单编号获取mysql数据库物流信息
-//	 * @param orderNumber
-//	 * @return
-//	 */
-//	private LogisticsDto getLogisticsDto(String orderNumber){
-//		LogisticsModel logisticsModel = logisticsDao.getLogisticsByOrderNumber(orderNumber);
-//		LogisticsDto logisticsDto = null;
-//		if (logisticsModel != null) {
-//			logisticsDto = new LogisticsDto();
-//			log.info("淘宝订单" + logisticsModel.getTid() + "已有物流信息:" + logisticsModel.getContent());
-//			logisticsDto.setId(logisticsModel.getId());
-//			logisticsDto.setCompanyName(logisticsModel.getCompanyName());
-//			logisticsDto.setLogisticsStatus(logisticsModel.getLogisticsStatus());
-//			logisticsDto.setTid(logisticsModel.getTid());
-//			logisticsDto.setAddress(logisticsModel.getAddress());
-//			if (StringUtils.isNotBlank(logisticsModel.getContent())) {
-//				String[] lls = logisticsModel.getContent().split("@#@");
-//				logisticsDto.setTransitStepInfoList(Arrays.asList(lls));
-//			}
-//		}
-//		return logisticsDto;
-//	}
+
+	// /**
+	// * 根据订单编号获取mysql数据库物流信息
+	// * @param orderNumber
+	// * @return
+	// */
+	// private LogisticsDto getLogisticsDto(String orderNumber){
+	// LogisticsModel logisticsModel =
+	// logisticsDao.getLogisticsByOrderNumber(orderNumber);
+	// LogisticsDto logisticsDto = null;
+	// if (logisticsModel != null) {
+	// logisticsDto = new LogisticsDto();
+	// log.info("淘宝订单" + logisticsModel.getTid() + "已有物流信息:" +
+	// logisticsModel.getContent());
+	// logisticsDto.setId(logisticsModel.getId());
+	// logisticsDto.setCompanyName(logisticsModel.getCompanyName());
+	// logisticsDto.setLogisticsStatus(logisticsModel.getLogisticsStatus());
+	// logisticsDto.setTid(logisticsModel.getTid());
+	// logisticsDto.setAddress(logisticsModel.getAddress());
+	// if (StringUtils.isNotBlank(logisticsModel.getContent())) {
+	// String[] lls = logisticsModel.getContent().split("@#@");
+	// logisticsDto.setTransitStepInfoList(Arrays.asList(lls));
+	// }
+	// }
+	// return logisticsDto;
+	// }
 }

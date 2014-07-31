@@ -1,6 +1,7 @@
 
 package com.flyhz.shop.persistence;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,9 +47,9 @@ import com.taobao.api.response.TradesSoldGetResponse;
 import com.taobao.top.link.LinkException;
 
 public class TaobaoDataImpl implements TaobaoData {
-	private Logger				log					= LoggerFactory.getLogger(TaobaoDataImpl.class);
+	private Logger				log			= LoggerFactory.getLogger(TaobaoDataImpl.class);
 
-	private final String		url					= "http://gw.api.taobao.com/router/rest";
+	private final String		url			= "http://gw.api.taobao.com/router/rest";
 	private String				appkey;
 	private String				appSecret;
 	private String				sessionKey;
@@ -68,38 +69,31 @@ public class TaobaoDataImpl implements TaobaoData {
 	@Resource
 	private LogisticsDao		logisticsDao;
 	@Resource
-	private IdcardDao idcardDao;
+	private IdcardDao			idcardDao;
 	@Resource
-	private OrderDao orderDao;
+	private OrderDao			orderDao;
 
-	private final Long			PAGE_SIZE			= 100L;
-
-	private static boolean		isBeenInitialized	= false;
+	private final Long			PAGE_SIZE	= 100L;
 
 	private static TmcClient	client;
-	
+
 	/**
 	 * 初始化参数
 	 */
 	private boolean checkAndInit() {
 		if ("1".equals(taobaoFlag)) {// 判断是否打开淘宝接口调用
-//			if (!isBeenInitialized) {
-				log.info("淘宝初始化参数开始...");
-				if (StringUtils.isBlank(Constants.propertiesFilePath)) {
-					Constants.propertiesFilePath = taobaoPropertiesFilePath;
-				}
+			log.info("淘宝初始化参数开始...");
+			if (StringUtils.isBlank(Constants.propertiesFilePath)) {
+				Constants.propertiesFilePath = taobaoPropertiesFilePath;
+			}
 
-				TaobaoTokenUtil.init();
-				appkey = TaobaoTokenUtil.getAppKey();
-				appSecret = TaobaoTokenUtil.getAppSecret();
-				sessionKey = TaobaoTokenUtil.getAccessToken();
-				sellerNick = TaobaoTokenUtil.getSellerNick();
+			TaobaoTokenUtil.init();
+			appkey = TaobaoTokenUtil.getAppKey();
+			appSecret = TaobaoTokenUtil.getAppSecret();
+			sessionKey = TaobaoTokenUtil.getAccessToken();
+			sellerNick = TaobaoTokenUtil.getSellerNick();
 
-				isBeenInitialized = true;
-				log.info("淘宝初始化参数结束");
-//			} else {
-//				 log.info("淘宝参数已经初始化，不需要重新初始化");
-//			}
+			log.info("淘宝初始化参数结束");
 			return true;
 		} else {
 			log.info("淘宝接口没有打开，已忽略调用！");
@@ -184,11 +178,11 @@ public class TaobaoDataImpl implements TaobaoData {
 								for (int g = 0; g < numbers.length; g++) {
 									if (StringUtils.isNotBlank(numbers[g])) {
 										orderModel.setNumber(numbers[g]);
-										
+
 										// 已付款
 										orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_PAID.code);
 										OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
-										
+
 										// 买家已付款，需要验证身份证是否存在
 										IdcardModel im = new IdcardModel();
 										im.setUserId(orderDto.getUserId());
@@ -423,6 +417,33 @@ public class TaobaoDataImpl implements TaobaoData {
 		return "";
 	}
 
+	/**
+	 * 获取淘宝买家姓名
+	 * 
+	 * @param client
+	 * @param tid
+	 * @return
+	 * @throws ApiException
+	 */
+	public String getReceiverName(Long tid) {
+		TaobaoClient taobaoClient = new DefaultTaobaoClient(url, appkey, appSecret);
+		LogisticsOrdersDetailGetRequest req = new LogisticsOrdersDetailGetRequest();
+		req.setFields("receiver_name");
+		req.setTid(tid);
+		LogisticsOrdersDetailGetResponse response;
+		try {
+			response = taobaoClient.execute(req, sessionKey);
+			if (response.getShippings() != null && response.getShippings().size() > 0) {
+				Shipping shipping = response.getShippings().get(0);
+				return shipping.getReceiverName();
+			}
+		} catch (ApiException e) {
+			log.error(e.getMessage());
+		}
+
+		return "";
+	}
+
 	public static void main(String[] args) throws ApiException {
 	}
 
@@ -463,83 +484,109 @@ public class TaobaoDataImpl implements TaobaoData {
 			if (!isRunning) {
 				log.info("淘宝消息进程即将启动！");
 				log.info("appkey=" + appkey + ",appSecret=" + appSecret);
-				
-				if(StringUtils.isNotBlank(appkey) && StringUtils.isNotBlank(appSecret)){
-					client = new TmcClient("ws://mc.api.taobao.com/", appkey, appSecret,
-							"smile");
+
+				if (StringUtils.isNotBlank(appkey) && StringUtils.isNotBlank(appSecret)) {
+					client = new TmcClient("ws://mc.api.taobao.com/", appkey, appSecret, "smile");
 					client.setMessageHandler(new MessageHandler() {
 						public void onMessage(Message message, MessageStatus status) {
 							try {
 								log.info(message.getContent());// {"buyer_nick":"sandbox_cilai_c","payment":"120.00","oid":192364827791084,"tid":192364827791084,"type":"guarantee_trade","seller_nick":"sandbox_c_20"}
 								log.info(message.getTopic());// taobao_trade_TradeCreate
 								if ("taobao_item_ItemUpshelf".equals(message.getTopic())) {
-	
+
 									JSONObject jobject = new JSONObject(message.getContent());
 									log.info("有商品上架了,id=" + jobject.getString("num_iid"));
-	
+
 								} else if ("taobao_item_ItemDownshelf".equals(message.getTopic())) {
-	
+
 									JSONObject jobject = new JSONObject(message.getContent());
 									log.info("有商品下架了,id=" + jobject.getString("num_iid"));
-	
+
 								} else if ("taobao_trade_TradeBuyerPay".equals(message.getTopic())) {
-	
+									// 买家已付款，需要验证身份证是否存在
+									IdcardModel im = new IdcardModel();
+
 									JSONObject jobject = new JSONObject(message.getContent());
-									log.info("买家付完款，或万人团买家付完尾款,tid=" + jobject.getString("tid"));
-	
+
+									Long tid = Long.valueOf(jobject.getString("tid"));
+
+									log.info("买家付完款，或万人团买家付完尾款,tid=" + tid);
+
 									// 获取smile系统订单编号
 									TaobaoClient client = new DefaultTaobaoClient(url, appkey,
 											appSecret);
-									String number = getOrderNumber(client,
-											Long.valueOf(jobject.getString("tid")));
-	
+									String number = getOrderNumber(client, tid);
+									BigDecimal payment = new BigDecimal(
+											jobject.getString("payment"));
+
 									if (StringUtils.isNotBlank(number)) {
+
 										String[] numbers = number.split(",");
-										// 修改订单状态
+										List<OrderModel> ordersList = new ArrayList<OrderModel>();
+										BigDecimal total = new BigDecimal(0);
 										OrderModel orderModel = new OrderModel();
+										String smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
+
 										for (int g = 0; g < numbers.length; g++) {
 											if (StringUtils.isNotBlank(numbers[g])) {
-												orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_PAID.code);
-												orderModel.setNumber(number);
-												orderService.updateStatusByNumberForMessage(orderModel);
+												orderModel = orderDao.getModelByNumber(numbers[g]);
+												if (orderModel != null) {
+													// 累加订单总额
+													total = total.add(orderModel.getTotal());
+
+													if (im.getUserId() == null) {
+														im.setUserId(orderModel.getUserId());
+													}
+													// 设置状态
+													ordersList.add(orderModel);
+												}
 											}
 										}
-									}
-	
-								} else if ("taobao_trade_TradeSuccess".equals(message.getTopic())) {
-	
-									JSONObject jobject = new JSONObject(message.getContent());
-									log.info("交易成功消息,tid=" + jobject.getString("tid"));
-	
-									// 获取smile系统订单编号
-									TaobaoClient client = new DefaultTaobaoClient(url, appkey,
-											appSecret);
-									String number = getOrderNumber(client,
-											Long.valueOf(jobject.getString("tid")));
-	
-									if (StringUtils.isNotBlank(number)) {
-										String[] numbers = number.split(",");
-										// 修改订单状态
-										OrderModel orderModel = new OrderModel();
-										for (int g = 0; g < numbers.length; g++) {
-											if (StringUtils.isNotBlank(numbers[g])) {
-												orderModel.setStatus(Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
-												orderModel.setNumber(number);
-												orderService.updateStatusByNumberForMessage(orderModel);
+
+										// 缺失身份证
+										smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
+
+										List<IdcardModel> list = null;
+										// 所有订单的金额和淘宝订单一样
+										if (total.equals(payment)) {
+											list = idcardDao.getModelList(im);
+											if (list == null || list.size() == 0) {
+											} else {
+												String taobaoReceiverName = getReceiverName(tid);
+												for (int k = 0; k < list.size(); k++) {
+													log.info(taobaoReceiverName+ "===?" + list.get(k)
+															.getName());
+													if (list.get(k) != null
+															&& StringUtils.isNotBlank(list.get(k)
+																							.getName())
+															&& taobaoReceiverName.equals(list.get(k)
+																								.getName())) {
+														// 存在相同名字的身份证，状态改为“等待发货”
+														smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
+														break;
+													}
+												}
 											}
 										}
+
+										// 循环更新数据库订单状态
+										for (int i = 0; i < ordersList.size(); i++) {
+											ordersList.get(i).setStatus(smileStatus);
+											orderDao.updateStatusByNumber(ordersList.get(i));
+										}
 									}
+
 								} else if ("taobao_trade_TradeSellerShip".equals(message.getTopic())) {
-	
+
 									JSONObject jobject = new JSONObject(message.getContent());
 									log.info("卖家发货消息,tid=" + jobject.getString("tid"));
-	
+
 									// 获取smile系统订单编号
 									TaobaoClient client = new DefaultTaobaoClient(url, appkey,
 											appSecret);
 									String number = getOrderNumber(client,
 											Long.valueOf(jobject.getString("tid")));
-	
+
 									if (StringUtils.isNotBlank(number)) {
 										String[] numbers = number.split(",");
 										// 修改订单状态
@@ -552,8 +599,30 @@ public class TaobaoDataImpl implements TaobaoData {
 											}
 										}
 									}
+								} else if ("taobao_trade_TradeSuccess".equals(message.getTopic())) {
+
+									JSONObject jobject = new JSONObject(message.getContent());
+									log.info("交易成功消息,tid=" + jobject.getString("tid"));
+
+									// 获取smile系统订单编号
+									TaobaoClient client = new DefaultTaobaoClient(url, appkey,
+											appSecret);
+									String number = getOrderNumber(client,
+											Long.valueOf(jobject.getString("tid")));
+
+									if (StringUtils.isNotBlank(number)) {
+										String[] numbers = number.split(",");
+										// 修改订单状态
+										OrderModel orderModel = new OrderModel();
+										for (int g = 0; g < numbers.length; g++) {
+											if (StringUtils.isNotBlank(numbers[g])) {
+												orderModel.setStatus(Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
+												orderModel.setNumber(number);
+												orderService.updateStatusByNumberForMessage(orderModel);
+											}
+										}
+									}
 								}
-	
 								log.info("一次消息结束");
 								// 默认不抛出异常则认为消息处理成功
 							} catch (Exception e) {

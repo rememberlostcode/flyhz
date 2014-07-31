@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String	DATABASE_NAME		= "smile.db";
-	private static final int	DATABASE_VERSION	= 6;
+	private static final int	DATABASE_VERSION	= 7;
 
 	public DBHelper(Context context) {
 		// CursorFactory设置为null,使用默认值
@@ -55,7 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL("drop table if exists consignee");
 
 		db.execSQL("create table search (id integer primary key autoincrement, content varchar,time timestamp,count integer)");
-		db.execSQL("create table user (cuid integer primary key autoincrement,username varchar,token varchar,mobilephone varchar,identitycard varchar,qq varchar,email varchar,weibo varchar,weixin varchar,flag varchar)");
+		db.execSQL("create table user (cuid integer primary key autoincrement,username varchar,token varchar,mobilephone varchar,identitycard varchar,qq varchar,email varchar,weibo varchar,weixin varchar,flag varchar,ismissidcard varchar)");
 		db.execSQL("create table contury (id integer primary key autoincrement,name varchar,sort integer)");
 		db.execSQL("create table province (id integer primary key autoincrement,name varchar,sort integer,type varchar,conturyid integer)");
 		db.execSQL("create table city (id integer primary key autoincrement,name varchar,sort integer,proid integer)");
