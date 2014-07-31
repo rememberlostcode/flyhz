@@ -280,7 +280,7 @@
                         android:layout_marginRight="5.0dip"
                         android:layout_marginTop="7.0dip"
                         android:lineSpacingExtra="7.0dip"
-                        android:text="天天海狗所售商品均为正品。"
+                        android:text="天天海狗所代购商品均为正品。"
                         android:textColor="@color/app_text_black"
                         android:textSize="12.0sp" />
                 </LinearLayout>
