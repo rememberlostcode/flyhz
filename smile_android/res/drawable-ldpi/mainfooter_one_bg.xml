@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/mainfooter_one" android:state_pressed="true"/>
-    <item android:drawable="@drawable/mainfooter_one" android:state_focused="true"/>
-    <item android:drawable="@drawable/mainfooter_one_click" android:state_selected="true"/>
-    <item android:drawable="@drawable/mainfooter_one"/>
+    <item android:drawable="@drawable/main_bottom_tab_home_normal" android:state_pressed="true"/>
+    <item android:drawable="@drawable/main_bottom_tab_home_normal" android:state_focused="true"/>
+    <item android:drawable="@drawable/main_bottom_tab_home_focus" android:state_selected="true"/>
+    <item android:drawable="@drawable/main_bottom_tab_home_normal"/>
 
 </selector>

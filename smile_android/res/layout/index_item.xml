@@ -5,7 +5,7 @@
     android:paddingLeft="10dip"
     android:paddingRight="10dip"
     android:paddingTop="10dip"
-    android:background="@drawable/qianhuise"
+    android:background="@drawable/rouse1"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 

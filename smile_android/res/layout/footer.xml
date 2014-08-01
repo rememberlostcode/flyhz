@@ -146,7 +146,7 @@
     <LinearLayout
         android:id="@+id/mainfooter"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dip"
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:visibility="gone" >
@@ -157,19 +157,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical" 
+            android:background="@drawable/mainfooter_bg">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/mainfooter_one_bg" />
-
+            <!-- 
             <TextView
                 android:id="@+id/mainfooter_jptj"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/recommend_goods"
                 android:textColor="@drawable/mainfooter_itemcolor" />
+             -->
         </LinearLayout>
 
         <LinearLayout
@@ -178,19 +180,23 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical" 
+            android:background="@drawable/mainfooter_bg">
             
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/mainfooter_two_bg" />
-
+            
+            <!-- 
             <TextView
                 android:id="@+id/mainfooter_phb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/the_charts"
                 android:textColor="@drawable/mainfooter_itemcolor" />
+             -->
+
         </LinearLayout>
 
         <LinearLayout
@@ -199,19 +205,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical" 
+            android:background="@drawable/mainfooter_bg">
             
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/mainfooter_three_bg" />
 
+            <!-- 
             <TextView
                 android:id="@+id/mainfooter_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/search"
                 android:textColor="@drawable/mainfooter_itemcolor" />
+             -->
         </LinearLayout>
 
         <LinearLayout
@@ -220,19 +229,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical" 
+            android:background="@drawable/mainfooter_bg">
             
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/mainfooter_four_bg" />
-
+            
+            <!-- 
             <TextView
                 android:id="@+id/mainfooter_grsz"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/shopping_cart"
                 android:textColor="@drawable/mainfooter_itemcolor" />
+             -->
         </LinearLayout>
 
         <LinearLayout
@@ -241,18 +253,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical" 
+            android:background="@drawable/mainfooter_bg">
             
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/mainfooter_five_bg" />
-
+	
+            <!--
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/more"
                 android:textColor="@drawable/mainfooter_itemcolor" />
+             -->
         </LinearLayout>
     </LinearLayout>
 
