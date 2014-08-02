@@ -15,7 +15,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
+import android.widget.Button;
 import cn.jpush.android.api.InstrumentedActivity;
 import cn.jpush.android.api.JPushInterface;
 
@@ -34,13 +34,16 @@ public class IndexActivity extends InstrumentedActivity {
 	private static final int	AUTO_LOGIN		= 2;
 	private static final int	CHECK_VERSION	= 3;
 
-	private ImageView			welcomeImage;
+	private Button				welcomeImage;
+	private Button				updateImage;
+	private UpdateManager		mUpdateManager;
+	private JVersion			jversion;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.index);
-		welcomeImage = (ImageView) findViewById(R.id.index_welcome);
+		welcomeImage = (Button) findViewById(R.id.index_welcome);
 		welcomeImage.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -48,6 +51,24 @@ public class IndexActivity extends InstrumentedActivity {
 				Intent intent = new Intent(IndexActivity.this, MainSmileActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
+			}
+		});
+
+		updateImage = (Button) findViewById(R.id.index_update);
+		updateImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (mUpdateManager == null) {
+					mUpdateManager = new UpdateManager(IndexActivity.this);
+				}
+				try {
+					mUpdateManager.setApkUrl(MyApplication.jgoods_img_url
+							+ jversion.getVersionApk());
+					mUpdateManager.checkUpdateInfo();
+				} catch (Exception e) {
+					Log.e(MyApplication.LOG_TAG, e.getMessage());
+				}
 			}
 		});
 
@@ -107,12 +128,12 @@ public class IndexActivity extends InstrumentedActivity {
 						packInfo = packageManager.getPackageInfo(getPackageName(), 0);
 						String version = packInfo.versionName;
 
-						JVersion jversion = rvd.getVersionData();
+						jversion = rvd.getVersionData();
 
 						if (!version.equals(jversion.getVersionNew())) {
 							// 这里来检测版本是否需要更新
 							Log.i(MyApplication.LOG_TAG, "检测到新版本需要更新");
-							UpdateManager mUpdateManager = new UpdateManager(IndexActivity.this);
+							mUpdateManager = new UpdateManager(IndexActivity.this);
 							mUpdateManager.setApkUrl(MyApplication.jgoods_img_url
 									+ jversion.getVersionApk());
 							mUpdateManager.checkUpdateInfo();
@@ -128,7 +149,7 @@ public class IndexActivity extends InstrumentedActivity {
 				}
 			}
 		}, 1000);
-		
+
 		// Message msg = mUIHandler.obtainMessage(CHECK_VERSION);
 		// msg.sendToTarget();
 	}

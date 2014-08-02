@@ -5,10 +5,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
 import android.os.AsyncTask;
@@ -86,37 +84,37 @@ public class BaseActivity extends Activity {
 	private Timer				time;
 	private TimerTask			loadingTimerTask;
 
-	protected BroadcastReceiver	connectionReceiver		= new BroadcastReceiver() {
-															@Override
-															public void onReceive(Context context,
-																	Intent intent) {
-																ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-																// mobile 3G
-																// Data
-																// Network
-																State mobile = conMan.getNetworkInfo(
-																		ConnectivityManager.TYPE_MOBILE)
-																						.getState();
-																State wifi = conMan.getNetworkInfo(
-																		ConnectivityManager.TYPE_WIFI)
-																					.getState();
-
-																// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
-																// 则进入Network
-																// Setting界面
-																// 由用户配置网络连接
-																if (mobile == State.CONNECTED
-																		|| mobile == State.CONNECTING
-																		|| wifi == State.CONNECTED
-																		|| wifi == State.CONNECTING) {
-																	MyApplication.setHasNetwork(true);
-																} else {
-																	MyApplication.setHasNetwork(false);
-																	ToastUtils.showShort(context,
-																			"网络异常，请检查网络！");
-																}
-															}
-														};
+//	protected BroadcastReceiver	connectionReceiver		= new BroadcastReceiver() {
+//															@Override
+//															public void onReceive(Context context,
+//																	Intent intent) {
+//																ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//																// mobile 3G
+//																// Data
+//																// Network
+//																State mobile = conMan.getNetworkInfo(
+//																		ConnectivityManager.TYPE_MOBILE)
+//																						.getState();
+//																State wifi = conMan.getNetworkInfo(
+//																		ConnectivityManager.TYPE_WIFI)
+//																					.getState();
+//
+//																// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
+//																// 则进入Network
+//																// Setting界面
+//																// 由用户配置网络连接
+//																if (mobile == State.CONNECTED
+//																		|| mobile == State.CONNECTING
+//																		|| wifi == State.CONNECTED
+//																		|| wifi == State.CONNECTING) {
+//																	MyApplication.setHasNetwork(true);
+//																} else {
+//																	MyApplication.setHasNetwork(false);
+//																	ToastUtils.showShort(context,
+//																			"网络异常，请检查网络！");
+//																}
+//															}
+//														};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -146,10 +144,10 @@ public class BaseActivity extends Activity {
 			MyApplication.getInstance().setDensity(density);
 		}
 
-		// 注册网络监听
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		registerReceiver(connectionReceiver, filter);
+//		// 注册网络监听
+//		IntentFilter filter = new IntentFilter();
+//		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//		registerReceiver(connectionReceiver, filter);
 	}
 
 	public void setVisible(int id) {
@@ -337,10 +335,10 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if (connectionReceiver != null) {
-			// 取消监听
-			unregisterReceiver(connectionReceiver);
-		}
+//		if (connectionReceiver != null) {
+//			// 取消监听
+//			unregisterReceiver(connectionReceiver);
+//		}
 		
 		if (dialogLoading != null && dialogLoading.isShowing()) {
 			dialogLoading.dismiss();
@@ -586,10 +584,13 @@ public class BaseActivity extends Activity {
 
 			public void run() {
 				if (canClosed || countTime <= 0) {
-					dialogLoading.dismiss();
-					time.cancel();
-					loadingTimerTask.cancel();
-					return;
+					try {
+						time.cancel();
+						loadingTimerTask.cancel();
+						dialogLoading.dismiss();
+					} catch (Exception e) {
+						Log.e(MyApplication.LOG_TAG, e.getMessage());
+					}
 				} else {
 					seconds ++;
 					countTime--;

@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent" >
 
     <ImageView
-        android:id="@+id/index_welcome"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:contentDescription="@string/image"
         android:src="@drawable/welcome" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/index_welcome"
+        android:layout_width="100dip"
+        android:layout_height="30.0dip"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="63dp"
+        android:background="@drawable/submit_red_button"
+        android:text="@string/app_start"
+        android:textColor="@color/app_text_white"
+        android:textSize="@dimen/app_textsize_button" />
+    
+    <Button
+        android:id="@+id/index_update"
+        android:layout_width="100dip"
+        android:layout_height="30.0dip"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="63dp"
+        android:background="@drawable/submit_red_button"
+        android:text="@string/app_update"
+        android:textColor="@color/app_text_white"
+        android:textSize="@dimen/app_textsize_button"
+        android:visibility="gone" />
+
+</RelativeLayout>

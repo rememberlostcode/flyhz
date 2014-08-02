@@ -11,6 +11,7 @@ import java.net.URL;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MainSmileActivity;
+import com.holding.smile.activity.MyApplication;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -21,8 +22,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -36,7 +39,6 @@ public class UpdateManager {
 
 	// 返回的安装包url
 	private String				apkUrl			= "";
-	private String				version			= "1.0.1";
 
 	private Dialog				noticeDialog;
 
@@ -145,6 +147,7 @@ public class UpdateManager {
 														int length = conn.getContentLength();
 														InputStream is = conn.getInputStream();
 
+														Log.i(MyApplication.LOG_TAG, "path="+Environment.getExternalStorageDirectory().getPath());
 														File file = new File(savePath);
 														if (!file.exists()) {
 															file.mkdir();

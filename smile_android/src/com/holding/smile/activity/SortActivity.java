@@ -26,6 +26,7 @@ import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JSort;
 import com.holding.smile.myview.MyLinearLayout;
+import com.holding.smile.tools.CodeValidator;
 
 /**
  * 
@@ -222,12 +223,16 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 														mListView.setAdapter(adapter);
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
-															List<JGoods> strings = obj.getData();
-															if (strings != null
-																	&& !strings.isEmpty()) {
-																for (int i = 0; i < strings.size(); i++) {
-																	JGoods each = strings.get(i);
-																	mStrings.add(each);
+															if (obj != null
+																	&& CodeValidator.dealCode(
+																			context, obj)) {
+																List<JGoods> strings = obj.getData();
+																if (strings != null
+																		&& !strings.isEmpty()) {
+																	for (int i = 0; i < strings.size(); i++) {
+																		JGoods each = strings.get(i);
+																		mStrings.add(each);
+																	}
 																}
 															}
 														}

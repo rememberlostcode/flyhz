@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import android.util.Log;
+
 import com.holding.smile.activity.MyApplication;
 
 public class URLUtil {
@@ -21,6 +23,10 @@ public class URLUtil {
 	public static String getStringByGet(String path, HashMap<String, String> param) {
 		if (path == null || "".equals(path.trim())) {
 			return null;
+		}
+		
+		if (!MyApplication.isHasNetwork()) {
+			return CodeValidator.getNoNetworkCodeResult();
 		}
 		StringBuffer result = new StringBuffer();
 		try {
@@ -70,15 +76,15 @@ public class URLUtil {
 					}
 				}
 			} catch (ConnectException e) {
-				result.append("{\"code\":\"888889\"}");
+				Log.e(MyApplication.LOG_TAG, e.getMessage());
+				result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 			}
 		} catch (SocketException e) {
-			result.delete(0, result.length());
-			result.append("{\"code\":999999}");
-			e.printStackTrace();
+			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 			return null;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(MyApplication.LOG_TAG, e.getMessage());
 			return null;
 		}
 		return result.toString();
@@ -88,6 +94,11 @@ public class URLUtil {
 		if (path == null || "".equals(path.trim())) {
 			return null;
 		}
+		
+		if (!MyApplication.isHasNetwork()) {
+			return CodeValidator.getNoNetworkCodeResult();
+		}
+		
 		StringBuffer result = new StringBuffer();
 		try {
 			StringBuffer paramsBuffer = new StringBuffer();
@@ -130,7 +141,8 @@ public class URLUtil {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 			return null;
 		}
 		return result.toString();
@@ -139,6 +151,10 @@ public class URLUtil {
 	public static String getStringByPostMulti(String path, HashMap<String, List<String>> param) {
 		if (path == null || "".equals(path.trim())) {
 			return null;
+		}
+		
+		if (!MyApplication.isHasNetwork()) {
+			return CodeValidator.getNoNetworkCodeResult();
 		}
 		StringBuffer result = new StringBuffer();
 		try {
@@ -184,7 +200,8 @@ public class URLUtil {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 			return null;
 		}
 		return result.toString();

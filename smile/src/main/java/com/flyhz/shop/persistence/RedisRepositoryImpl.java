@@ -113,9 +113,8 @@ public class RedisRepositoryImpl implements RedisRepository {
 	}
 
 	@Override
-	public void buildOrderToRedis(Integer userId, Integer orderId, String status,
-			Date gmtModify, String orderDetal)
-			throws ValidateException {
+	public void buildOrderToRedis(Integer userId, Integer orderId, String status, Date gmtModify,
+			String orderDetal) throws ValidateException {
 		if (userId == null) {
 			throw new ValidateException(130002);
 		}
@@ -129,7 +128,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 		cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId, String.valueOf(orderId),
 				orderDetal);
 		// solr建立订单索引
-		solrData.submitOrder(userId, orderId, status, gmtModify,null);
+		solrData.submitOrder(userId, orderId, status, gmtModify, null);
 	}
 
 	@Override
@@ -142,7 +141,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 			throw new ValidateException(130003);
 		}
 		// solr修改订单索引
-		solrData.submitOrder(userId, orderId, status, null,null);
+		solrData.submitOrder(userId, orderId, status, null, null);
 	}
 
 	public void chacheOrders() {
@@ -163,17 +162,17 @@ public class RedisRepositoryImpl implements RedisRepository {
 				if (detailList.get(i) != null && detailList.get(i).getDetail() != null
 						&& detailList.get(i).getId() != null) {
 					try {
-
 						// 转换后获取商品购买数量
 						orderDto = JSONUtil.getJson2Entity(detailList.get(i).getDetail(),
 								OrderDto.class);
-					if (orderDto != null && orderDto.getUser()!=null) {
+						if (orderDto != null && orderDto.getUser() != null) {
 							orderDto.setId(detailList.get(i).getId());
 							String userId = String.valueOf(orderDto.getUser().getId());
 							cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
 									String.valueOf(orderDto.getId()),
 									JSONUtil.getEntity2Json(orderDto));
-							solrData.submitOrder(orderDto.getUser().getId(), orderDto.getId(), orderDto.getStatus(), null, null);
+							solrData.submitOrder(orderDto.getUser().getId(), orderDto.getId(),
+									orderDto.getStatus(), null, null);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

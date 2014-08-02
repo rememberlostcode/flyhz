@@ -280,9 +280,10 @@ public class LoginService {
 					}
 					/* 获取 sessionid end */
 				} catch (ConnectException e) {
-					content = "{\"code\":\"888889\"}";
+					content = CodeValidator.getErrorNetworkCodeResult();
 				}
 			} catch (Exception ex) {
+				content = CodeValidator.getErrorNetworkCodeResult();
 				ex.printStackTrace();
 			} finally {
 				if (urlConnection != null) {

@@ -61,22 +61,23 @@
 		select count(1) count from `order` where (status=60 or status=70) <![CDATA[and gmt_modify >= #{startDate} and gmt_modify < #{endDate}]]>
     </select>
 	<select id="findFinshedOrders" parameterType="SolrPage" resultType="OrderModel">
-		select id,detail from `order` where (status=60 or status=70) <![CDATA[and gmt_modify >= #{startDate} and gmt_modify < #{endDate} ]]> limit #{start},#{num}
+		select id,number,detail from `order` where (status=60 or status=70) <![CDATA[and gmt_modify >= #{startDate} and gmt_modify < #{endDate} ]]> limit #{start},#{num}
     </select>
-    
     <select id="getAllOrdersCount" resultType="Integer" parameterType="SolrPage">
 		select count(1) count from `order`
     </select>
 	<select id="findAllOrders" parameterType="SolrPage" resultType="OrderModel">
-		select id,detail from `order` limit #{start},#{num}
+		select id,number,status,detail from `order` limit #{start},#{num}
     </select>
     <select id="getOrderByNumber" parameterType="String" resultType="OrderSimpleDto">
 	    select id,user_id userId,gmt_modify gmtModify,status
 	    from `order`
 	    where number = #{number}
 	</select>
+	
+	<!-- (status = '10' or status = '11') and -->
 	<update id="updateStatusByNumber" parameterType="OrderModel">
 	    update `order` set status = #{status} 
-	    where (status = '10' or status = '11') and number = #{number}
+	    where  number = #{number}
 	</update>
 </mapper>

@@ -60,6 +60,9 @@ public class FileUtils {
 	 * @return 返回响应的内容
 	 */
 	public static String uploadFile(File file, String RequestURL) {
+		if (!MyApplication.isHasNetwork()) {
+			return CodeValidator.getNoNetworkCodeResult();
+		}
 		String result = null;
 		String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
 		String PREFIX = "--", LINE_END = "\r\n";
@@ -146,6 +149,9 @@ public class FileUtils {
 	 */
 	public static String postBatchUploadFile(String actionUrl, Map<String, String> params,
 			FormFile[] files) {
+		if (!MyApplication.isHasNetwork()) {
+			return CodeValidator.getNoNetworkCodeResult();
+		}
 		String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
 		String PREFIX = "--", LINE_END = "\r\n";
 		String CONTENT_TYPE = "multipart/form-data"; // 内容类型
@@ -223,7 +229,9 @@ public class FileUtils {
 	 */
 	public static String batchUploadFile(String requestUrl, List<NameValuePair> params,
 			List<String> fileNameList) throws Exception {
-
+		if (!MyApplication.isHasNetwork()) {
+			return CodeValidator.getNoNetworkCodeResult();
+		}
 		HttpParams httpParams = new BasicHttpParams();
 		// 连接超时
 		httpParams.setParameter("http.connection.timeout", TIME_OUT);
@@ -326,7 +334,9 @@ public class FileUtils {
 	 * @throws Exception
 	 */
 	public static String uploadHeadPhoto(String requestUrl, String fileName) throws Exception {
-
+		if (!MyApplication.isHasNetwork()) {
+			return CodeValidator.getNoNetworkCodeResult();
+		}
 		HttpParams httpParams = new BasicHttpParams();
 		// 连接超时
 		httpParams.setParameter("http.connection.timeout", TIME_OUT);
@@ -418,7 +428,9 @@ public class FileUtils {
 	 */
 	public static String uploadIdcardPhoto(String requestUrl, List<NameValuePair> params,
 			String filePath,String backFilePath) throws Exception {
-
+		if (!MyApplication.isHasNetwork()) {
+			return CodeValidator.getNoNetworkCodeResult();
+		}
 		HttpParams httpParams = new BasicHttpParams();
 		// 连接超时
 		httpParams.setParameter("http.connection.timeout", 60000);

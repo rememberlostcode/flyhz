@@ -230,7 +230,6 @@ public class TaobaoDataImpl implements TaobaoData {
 										orderService.updateStatusByNumber(orderModel);
 									}
 								}
-								continue;
 							} else if ("TRADE_CLOSED".equals(status)) {// 交易关闭
 								for (int g = 0; g < numbers.length; g++) {
 									if (StringUtils.isNotBlank(numbers[g])) {
@@ -266,6 +265,11 @@ public class TaobaoDataImpl implements TaobaoData {
 							for (int j = 0; j < numbers.length; j++) {
 								OrderSimpleDto orderDto = orderService.getOrderDtoByNumber(numbers[j]);
 								if (orderDto != null) {
+									if (orderDto.getLogisticsDto() != null
+											&& "对方已签收".equals(orderDto.getLogisticsDto()
+																		.getLogisticsStatus())) {
+										log.info("mysql物流信息已经是“对方已签收”，无需个更新！");
+									}
 									// 详细收货地址
 									String address = getLogisticsOrderAddress(client, tid);
 
@@ -290,6 +294,8 @@ public class TaobaoDataImpl implements TaobaoData {
 												isAdd = true;
 											} else {
 												isAdd = false;
+												log.info("mysql物流信息:"
+														+ orderDto.getLogisticsDto().getContent());
 											}
 
 											orderDto.getLogisticsDto().setNumber(numbers[j]);

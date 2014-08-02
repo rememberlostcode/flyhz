@@ -6,8 +6,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo.State;
+import android.util.Log;
 import cn.jpush.android.api.JPushInterface;
 
 import com.holding.smile.R;
@@ -17,6 +22,7 @@ import com.holding.smile.service.DataService;
 import com.holding.smile.service.LoginService;
 import com.holding.smile.service.SQLiteService;
 import com.holding.smile.service.SubmitService;
+import com.holding.smile.tools.ToastUtils;
 
 /**
  * 
@@ -28,7 +34,7 @@ import com.holding.smile.service.SubmitService;
 public class MyApplication extends Application {
 
 	private static Date				sessionTime;
-	public static final String		LOG_TAG			= "smile";
+	public static final String		LOG_TAG				= "smile";
 	private static MyApplication	singleton;
 
 	private static ImageLoader		mImageLoader;
@@ -66,12 +72,46 @@ public class MyApplication extends Application {
 
 	// JSESSIONID=6CCC2F179859F7D98D2F8E35CEBD5CF4
 	private String					sessionId;
-	private String 					registrationID;
+	private String					registrationID;
 
 	/** 任务线程池 */
 	private static ExecutorService	threadPool;
 
-	private static boolean			isHasNetwork	= true;
+	private static boolean			isHasNetwork		= true;
+
+	private BroadcastReceiver		connectionReceiver	= new BroadcastReceiver() {
+															@Override
+															public void onReceive(Context context,
+																	Intent intent) {
+																ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+																// mobile 3G
+																// Data
+																// Network
+																State mobile = conMan.getNetworkInfo(
+																		ConnectivityManager.TYPE_MOBILE)
+																						.getState();
+																State wifi = conMan.getNetworkInfo(
+																		ConnectivityManager.TYPE_WIFI)
+																					.getState();
+
+																// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
+																// 则进入Network
+																// Setting界面
+																// 由用户配置网络连接
+																Log.i(MyApplication.LOG_TAG + ".State.mobile",mobile.toString());
+																Log.i(MyApplication.LOG_TAG + ".State.wifi",wifi.toString());
+																if (mobile == State.CONNECTED
+																		|| mobile == State.CONNECTING
+																		|| wifi == State.CONNECTED
+																		|| wifi == State.CONNECTING) {
+																	MyApplication.setHasNetwork(true);
+																} else {
+																	MyApplication.setHasNetwork(false);
+																	ToastUtils.showShort(context,
+																			"网络异常，请检查网络！");
+																}
+															}
+														};
 
 	@Override
 	public void onCreate() {
@@ -87,9 +127,14 @@ public class MyApplication extends Application {
 		sqliteService = new SQLiteService(context);// 初始化本地DB
 
 		jgoods_img_url = getString(R.string.prefix_url) + getString(R.string.img_static_url);
-		
-		JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
-        JPushInterface.init(this);     		// 初始化 JPush
+
+		JPushInterface.setDebugMode(true); // 设置开启日志,发布时请关闭日志
+		JPushInterface.init(this); // 初始化 JPush
+
+		// 注册网络监听
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		registerReceiver(connectionReceiver, filter);
 	}
 
 	public static ImageLoader getImageLoader() {

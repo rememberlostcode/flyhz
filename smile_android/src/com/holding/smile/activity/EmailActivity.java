@@ -110,6 +110,8 @@ public class EmailActivity extends BaseActivity implements OnClickListener {
 												.setUserInfo("email", "");
 				closeImmediatelyLoading();
 				if (CodeValidator.dealCode(context, rvd)) {
+					MyApplication.getInstance().getCurrentUser().setEmail("");
+					MyApplication.getInstance().getSqliteService().updateUser();
 					ToastUtils.showShort(this, "解绑成功！");
 					Intent intent = new Intent();
 					setResult(RESULT_OK, intent);

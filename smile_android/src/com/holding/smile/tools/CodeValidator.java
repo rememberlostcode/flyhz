@@ -44,7 +44,7 @@ public class CodeValidator {
 		boolean res = false;
 		if (rtnValueDto == null) {// rtnValueDto等于null时可能是网络问题，需要检查网络
 			if (MyApplication.isHasNetwork()) {
-				ToastUtils.showShort(context, "暂无数据！");
+				ToastUtils.showShort(context, "连接异常，请稍候重试！");
 			} else {
 				ToastUtils.showShort(context, "网络异常，请检查网络！");
 			}
@@ -153,12 +153,8 @@ public class CodeValidator {
 					case 888888:
 						ToastUtils.showShort(context, "网络异常，请检查网络设置！");
 						break;
-					case 888889:
-						ToastUtils.showShort(context, "连接超时，请稍候重试！");
-						break;
 					case 999999:
 						ToastUtils.showShort(context, "连接异常，请稍候重试！");
-						break;
 					case 600001:
 						// nodejs 缺少bid参数导致的
 						ToastUtils.showShort(context, "未获取当前的品牌，请点击后退键，重新打开！");
@@ -198,10 +194,24 @@ public class CodeValidator {
 		rtnValueDto.setCode(888888);
 		return rtnValueDto;
 	}
+	
+	/**
+	 * 未连接网络时的错误code返回结果，和getNetworkErrorRtnValueDto一直，这个是string类型
+	 * @return
+	 */
+	public static String getNoNetworkCodeResult() {
+		return "{\"code\":\"888888\"}";
+	}
+	
+	/**
+	 * 有网络但连接异常时的错误code返回结果
+	 * @return
+	 */
+	public static String getErrorNetworkCodeResult() {
+		return "{\"code\":\"999999\"}";
+	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -67,6 +67,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 		// 先从本地数据库取数据
 		SUser user = MyApplication.getInstance().getCurrentUser();
 		if (user != null) {
+			user = MyApplication.getInstance().getSqliteService().getScurrentUser();
 			if (user.getEmail() != null && !"".equals(user.getEmail().trim())) {
 				emailTextView.setText(user.getEmail());
 			}
