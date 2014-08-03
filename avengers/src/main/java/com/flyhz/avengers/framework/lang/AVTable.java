@@ -44,6 +44,9 @@ public enum AVTable {
 		// content
 		c,
 		bid,
+		/**
+		 * encoding
+		 */
 		e,
 		// root
 		r,

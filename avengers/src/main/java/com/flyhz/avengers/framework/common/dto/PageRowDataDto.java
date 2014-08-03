@@ -8,6 +8,7 @@ public class PageRowDataDto {
 	private String	encoding;
 	private Long	batchId;
 	private String	root;
+	private String	content;
 
 	public Long getId() {
 		return id;
@@ -47,5 +48,13 @@ public class PageRowDataDto {
 
 	public void setRoot(String root) {
 		this.root = root;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 }
