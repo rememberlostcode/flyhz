@@ -344,6 +344,14 @@ public class CrawlApplication {
 				hbaseAdmin.createTable(tableDesc);
 			}
 
+			if (!hbaseAdmin.tableExists(AVTable.av_color.name())) {
+				HTableDescriptor tableDesc = new HTableDescriptor(
+						TableName.valueOf(AVTable.av_color.name()));
+				HColumnDescriptor info = new HColumnDescriptor(AVTable.AVFamily.i.name());
+				tableDesc.addFamily(info);
+				hbaseAdmin.createTable(tableDesc);
+			}
+
 			Configuration configuration = HBaseConfiguration.create(hbaseConf);
 
 			configuration.setLong("hbase.rpc.timeout", 600000);

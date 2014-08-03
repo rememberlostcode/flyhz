@@ -28,13 +28,26 @@ public enum AVTable {
 	 * </tbody>
 	 * </table>
 	 */
-	av_fetch, av_crawl, av_domain, av_page;
+	av_fetch, av_crawl, av_domain, av_page, av_color;
 
 	public enum AVFamily {
 		i;
 	}
 
 	public enum AVColumn {
-		id, url, maxid, c, bid, e, r;
+		// id
+		id,
+		// url
+		url,
+		// maxid
+		maxid,
+		// content
+		c,
+		bid,
+		e,
+		// root
+		r,
+		// color
+		co;
 	}
 }

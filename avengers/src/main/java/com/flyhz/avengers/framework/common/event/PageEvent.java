@@ -46,7 +46,6 @@ public abstract class PageEvent extends AbstractEvent {
 		Long start = (Long) context.get(Fetch.FETCH_START_ROW_KEY);
 		Long end = (Long) context.get(Fetch.FETCH_END_ROW_KEY);
 		Scan scan = new Scan(Bytes.toBytes(start), Bytes.toBytes(end));
-		// Scan scan = new Scan();
 		byte[] family = Bytes.toBytes(AVFamily.i.name());
 		byte[] columnUrl = Bytes.toBytes(AVColumn.url.name());
 		byte[] columnBid = Bytes.toBytes(AVColumn.bid.name());
@@ -100,6 +99,7 @@ public abstract class PageEvent extends AbstractEvent {
 		return true;
 	}
 
-	abstract void processRowData(PageRowDataDto pageRowDataDto, Map<String, Object> context) throws Throwable;
+	abstract void processRowData(PageRowDataDto pageRowDataDto, Map<String, Object> context)
+			throws Throwable;
 
 }
