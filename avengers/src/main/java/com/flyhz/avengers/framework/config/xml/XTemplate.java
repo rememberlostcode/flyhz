@@ -21,10 +21,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * &lt;complexType name="xTemplate">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="templateApplyEvents" type="{http://www.flyhz.com/avengrs}xEvents" minOccurs="0"/>
- *       &lt;/all>
- *       &lt;attribute name="url" use="required" type="{http://www.w3.org/2001/XMLSchema}token" />
+ *       &lt;attribute name="apply" use="required" type="{http://www.w3.org/2001/XMLSchema}token" />
  *       &lt;attribute name="pattern" use="required" type="{http://www.w3.org/2001/XMLSchema}token" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,61 +31,37 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "xTemplate", propOrder = {
-
-})
+@XmlType(name = "xTemplate")
 public class XTemplate {
 
-	protected XEvents	templateApplyEvents;
 	@XmlAttribute(required = true)
 	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
 	@XmlSchemaType(name = "token")
-	protected String	url;
+	protected String	apply;
 	@XmlAttribute(required = true)
 	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
 	@XmlSchemaType(name = "token")
 	protected String	pattern;
 
 	/**
-	 * Gets the value of the templateApplyEvents property.
-	 * 
-	 * @return possible object is {@link XEvents }
-	 * 
-	 */
-	public XEvents getTemplateApplyEvents() {
-		return templateApplyEvents;
-	}
-
-	/**
-	 * Sets the value of the templateApplyEvents property.
-	 * 
-	 * @param value
-	 *            allowed object is {@link XEvents }
-	 * 
-	 */
-	public void setTemplateApplyEvents(XEvents value) {
-		this.templateApplyEvents = value;
-	}
-
-	/**
-	 * Gets the value of the url property.
+	 * Gets the value of the apply property.
 	 * 
 	 * @return possible object is {@link String }
 	 * 
 	 */
-	public String getUrl() {
-		return url;
+	public String getApply() {
+		return apply;
 	}
 
 	/**
-	 * Sets the value of the url property.
+	 * Sets the value of the apply property.
 	 * 
 	 * @param value
 	 *            allowed object is {@link String }
 	 * 
 	 */
-	public void setUrl(String value) {
-		this.url = value;
+	public void setApply(String value) {
+		this.apply = value;
 	}
 
 	/**

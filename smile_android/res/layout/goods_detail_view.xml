@@ -194,7 +194,6 @@
                 android:layerType="software" />
 
             <LinearLayout
-                android:id="@+id/product_num_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10.0dip"

@@ -27,8 +27,8 @@
 //
 //import com.flyhz.avengers.framework.FetchOld;
 //import com.flyhz.avengers.framework.lang.AbstractEvent;
-//import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVColumn;
-//import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVFamily;
+//import com.flyhz.avengers.framework.lang.AVTable.AVColumn;
+//import com.flyhz.avengers.framework.lang.AVTable.AVFamily;
 //import com.flyhz.avengers.framework.util.URLXConnectionUtil;
 //
 //public class URLFetchEventOldOld extends AbstractEvent {
@@ -105,10 +105,10 @@
 //			try {
 //				Put put = new Put(Bytes.toBytes(id));
 //				// 参数定义：列族、列、值
-//				put.add(Bytes.toBytes(HBaseAVFamily.i.name()),
-//						Bytes.toBytes(HBaseAVColumn.c.name()), Bytes.toBytes(sb.toString()));
-//				put.add(Bytes.toBytes(HBaseAVFamily.i.name()),
-//						Bytes.toBytes(HBaseAVColumn.bid.name()), Bytes.toBytes(batchId));
+//				put.add(Bytes.toBytes(AVFamily.i.name()),
+//						Bytes.toBytes(AVColumn.c.name()), Bytes.toBytes(sb.toString()));
+//				put.add(Bytes.toBytes(AVFamily.i.name()),
+//						Bytes.toBytes(AVColumn.bid.name()), Bytes.toBytes(batchId));
 //				LOG.info("insert into av_page rowkey > {}", id);
 //				hPage.put(put);
 //			} catch (RetriesExhaustedWithDetailsException e) {

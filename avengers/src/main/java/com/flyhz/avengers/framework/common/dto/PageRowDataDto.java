@@ -1,7 +1,7 @@
 
 package com.flyhz.avengers.framework.common.dto;
 
-public class FetchDto {
+public class PageRowDataDto {
 
 	private Long	id;
 	private String	url;

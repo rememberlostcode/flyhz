@@ -47,8 +47,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 	private View			footerView;
 
-	private final String	FINSH	= "finsh";
-	private final String	UNFINSH	= "unfinsh";
+	public static final String	NEED_RECEIVE	= "finsh";
+	public static final String	NEED_PAY	= "unfinsh";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 			if (intent.getExtras() != null && intent.getExtras().getSerializable("status") != null) {
 				status = intent.getExtras().getString("status");
 			} else {
-				status = UNFINSH;
+				status = NEED_PAY;
 			}
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, e.getMessage());
@@ -126,6 +126,14 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 		allPayButton.setOnClickListener(this);
 
 		listView = (MyListView) findViewById(R.id.list_orders_list);
+		
+		if (NEED_PAY.equals(status)) {
+			unfinshButton.setSelected(true);
+		} else if (NEED_RECEIVE.equals(status)) {
+			finshButton.setSelected(true);
+		} else {
+			allButton.setSelected(true);
+		}
 		startTask();
 	}
 
@@ -159,7 +167,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				allButton.setSelected(false);
 				finshButton.setSelected(true);
 				unfinshButton.setSelected(false);
-				status = FINSH;
+				status = NEED_RECEIVE;
 				startTask();
 				break;
 			}
@@ -167,7 +175,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				allButton.setSelected(false);
 				finshButton.setSelected(false);
 				unfinshButton.setSelected(true);
-				status = UNFINSH;
+				status = NEED_PAY;
 				startTask();
 				break;
 			}
@@ -213,14 +221,6 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 											public void handleMessage(Message msg) {
 												switch (msg.what) {
 													case 1: {
-														if (UNFINSH.equals(status)) {
-															unfinshButton.setSelected(true);
-														} else if (FINSH.equals(status)) {
-															finshButton.setSelected(true);
-														} else {
-															allButton.setSelected(true);
-														}
-
 														RtnValueDto rvd = (RtnValueDto) (msg.obj);
 
 														if (rvd.getOrderListData() == null

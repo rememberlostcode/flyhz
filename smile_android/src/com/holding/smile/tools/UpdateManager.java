@@ -93,7 +93,6 @@ public class UpdateManager {
 	private void showNoticeDialog() {
 		AlertDialog.Builder builder = new Builder(mContext);
 		builder.setTitle("软件版本更新");
-		builder.setMessage(updateMsg);
 		builder.setPositiveButton("下载", new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -101,22 +100,34 @@ public class UpdateManager {
 				showDownloadDialog();
 			}
 		});
-		builder.setNegativeButton("以后再说", new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				Intent intent = new Intent(mContext, MainSmileActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				mContext.startActivity(intent);
-			}
-		});
+		builder.setMessage(updateMsg);
+		if(!MyApplication.isMustUpdate()){
+			builder.setNegativeButton("以后再说", new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					Intent intent = new Intent(mContext, MainSmileActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					mContext.startActivity(intent);
+				}
+			});
+		} else {
+			builder.setMessage("此版本必须更新后才可继续使用，亲快下载吧~");
+		}
+		
 		noticeDialog = builder.create();
-		noticeDialog.show();
+		
+		if(!noticeDialog.isShowing()){
+			noticeDialog.show();
+		} else {
+			return;
+		}
 	}
 
 	private void showDownloadDialog() {
 		AlertDialog.Builder builder = new Builder(mContext);
 		builder.setTitle("软件版本更新");
+		Log.i(MyApplication.LOG_TAG, "path="+Environment.getExternalStorageDirectory().getPath());
 
 		final LayoutInflater inflater = LayoutInflater.from(mContext);
 		View v = inflater.inflate(R.layout.progress_version, null);
@@ -147,7 +158,6 @@ public class UpdateManager {
 														int length = conn.getContentLength();
 														InputStream is = conn.getInputStream();
 
-														Log.i(MyApplication.LOG_TAG, "path="+Environment.getExternalStorageDirectory().getPath());
 														File file = new File(savePath);
 														if (!file.exists()) {
 															file.mkdir();
@@ -179,6 +189,7 @@ public class UpdateManager {
 																}
 																fos.write(buf, 0, numread);
 															} while (!interceptFlag);// 点击取消就停止下载.
+															interceptFlag = false;
 															fos.close();
 															is.close();
 														}

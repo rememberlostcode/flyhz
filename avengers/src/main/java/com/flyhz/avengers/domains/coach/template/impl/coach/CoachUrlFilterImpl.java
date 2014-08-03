@@ -37,13 +37,13 @@ public class CoachUrlFilterImpl extends BaseUrlFilter {
 
 	public static void main(String[] args) {
 		XTemplate template = new XTemplate();
-		template.setUrl("^http://www.coach.com/online/handbags/-handbags_features_newarrivals_1-us-us-5000000000000015027-en?");
+		template.setPattern("^http://www.coach.com/online/handbags/-handbags_features_newarrivals_1-us-us-5000000000000015027-en?");
 		XTemplate template1 = new XTemplate();
-		template1.setUrl("^http://www.coach.com/online/handbags/-handbags_feature_madison-us-us-5000000000000049554-en?");
+		template1.setPattern("^http://www.coach.com/online/handbags/-handbags_feature_madison-us-us-5000000000000049554-en?");
 		XTemplate template2 = new XTemplate();
-		template2.setUrl("^http://www.coach.com/online/handbags/Product-");
+		template2.setPattern("^http://www.coach.com/online/handbags/Product-");
 		XTemplate template3 = new XTemplate();
-		template3.setUrl("^http://s7d2.scene7.com/is/image/Coach/");
+		template3.setPattern("^http://s7d2.scene7.com/is/image/Coach/");
 		List<XTemplate> templates = new ArrayList<XTemplate>();
 		templates.add(template);
 		templates.add(template1);

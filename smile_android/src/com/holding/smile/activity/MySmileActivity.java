@@ -129,7 +129,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, MyOrdersActivity.class);
 				}
-				intent.putExtra("status", Constants.OrderStateCode.FOR_PAYMENT);
+				intent.putExtra("status", MyOrdersActivity.NEED_PAY);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;
@@ -143,7 +143,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, MyOrdersActivity.class);
 				}
-				intent.putExtra("status", Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE);
+				intent.putExtra("status", MyOrdersActivity.NEED_RECEIVE);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;

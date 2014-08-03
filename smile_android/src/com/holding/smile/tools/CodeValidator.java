@@ -150,6 +150,9 @@ public class CodeValidator {
 					case 400001:
 						ToastUtils.showShort(context, "淘宝支付金额与订单金额不符，请联系客服！");
 						break;
+					case 777777:
+						ToastUtils.showShort(context, "您的客户端版本太低了，请更新后重试！");
+						break;
 					case 888888:
 						ToastUtils.showShort(context, "网络异常，请检查网络设置！");
 						break;

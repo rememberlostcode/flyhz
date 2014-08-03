@@ -22,6 +22,10 @@ public class ProductEntity implements Serializable {
 
 	private String				style;
 
+	private String				orignialPrice;
+
+	private String				presentPrice;
+
 	// n(name) d(description) b(brand) c(category) s(style) op(original_price)
 	// pp(present_price) co(color) coi(color_img) pi(product_img) u(url)
 	// bid(batchId)

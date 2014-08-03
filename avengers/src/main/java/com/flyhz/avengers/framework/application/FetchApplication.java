@@ -85,9 +85,9 @@ import org.slf4j.LoggerFactory;
 import com.flyhz.avengers.framework.Fetch;
 import com.flyhz.avengers.framework.common.dto.XPairDto;
 import com.flyhz.avengers.framework.config.XConfiguration;
-import com.flyhz.avengers.framework.lang.HBaseAVTable;
-import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVColumn;
-import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVFamily;
+import com.flyhz.avengers.framework.lang.AVTable;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumn;
+import com.flyhz.avengers.framework.lang.AVTable.AVFamily;
 import com.google.common.annotations.VisibleForTesting;
 
 @InterfaceAudience.Public
@@ -365,10 +365,10 @@ public class FetchApplication {
 			// 设置Scan缓存
 			configuration.setLong("hbase.client.scanner.caching", 1000);
 
-			hPage = new HTable(hbaseConf, HBaseAVTable.av_page.name());
+			hPage = new HTable(hbaseConf, AVTable.av_page.name());
 			Scan hPageScan = new Scan();
-			hPageScan.addColumn(Bytes.toBytes(HBaseAVFamily.i.name()),
-					Bytes.toBytes(HBaseAVColumn.bid.name()));
+			hPageScan.addColumn(Bytes.toBytes(AVFamily.i.name()),
+					Bytes.toBytes(AVColumn.bid.name()));
 			ResultScanner hPageRs = hPage.getScanner(hPageScan);
 			if (hPageRs != null) {
 				Long startKey = 0L;
@@ -376,26 +376,26 @@ public class FetchApplication {
 				for (Result result : hPageRs) {
 					Long id = Bytes.toLong(result.getRow());
 					Long batchId = Bytes.toLong(result.getValue(
-							Bytes.toBytes(HBaseAVFamily.i.name()),
-							Bytes.toBytes(HBaseAVColumn.bid.name())));
+							Bytes.toBytes(AVFamily.i.name()),
+							Bytes.toBytes(AVColumn.bid.name())));
 					if (this.batchId == batchId) {
 						LOG.info("rowkey -> {},batchId ->{}", id, batchId);
 						startKey = id;
 						break;
 					}
 				}
-				hDomain = new HTable(hbaseConf, HBaseAVTable.av_domain.name());
+				hDomain = new HTable(hbaseConf, AVTable.av_domain.name());
 				Scan hDomainScan = new Scan();
-				hDomainScan.addColumn(Bytes.toBytes(HBaseAVFamily.i.name()),
-						Bytes.toBytes(HBaseAVColumn.maxid.name()));
+				hDomainScan.addColumn(Bytes.toBytes(AVFamily.i.name()),
+						Bytes.toBytes(AVColumn.maxid.name()));
 				ResultScanner hDomainRs = hDomain.getScanner(hDomainScan);
 				if (hDomainRs == null) {
 					return;
 				}
 				for (Result result : hDomainRs) {
 					Long value = Bytes.toLong(result.getValue(
-							Bytes.toBytes(HBaseAVFamily.i.name()),
-							Bytes.toBytes(HBaseAVColumn.maxid.name())));
+							Bytes.toBytes(AVFamily.i.name()),
+							Bytes.toBytes(AVColumn.maxid.name())));
 					if (endKey.compareTo(value) < 0) {
 						endKey = value;
 					}

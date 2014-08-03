@@ -12,7 +12,7 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.common.event.TemplateApplyEvent;
+import com.flyhz.avengers.framework.common.event.ContentAnalyzeEvent;
 import com.flyhz.avengers.framework.common.event.URLFetchEvent;
 import com.flyhz.avengers.framework.config.XConfiguration;
 import com.flyhz.avengers.framework.lang.Event;
@@ -82,11 +82,10 @@ public class Fetch extends AvengersExecutor {
 
 	@Override
 	List<Event> initAvengersEvents() {
-		Map<String, Object> context = getContext();
 		// 默认调用URLFetchEvent
 		List<Event> events = new ArrayList<Event>();
-		events.add(new URLFetchEvent(context));
-		events.add(new TemplateApplyEvent(context));
+		events.add(new URLFetchEvent());
+		events.add(new ContentAnalyzeEvent());
 		return events;
 	}
 

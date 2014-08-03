@@ -46,7 +46,7 @@ public class BaseUrlFilter {
 			Set<String> validUrls = new HashSet<String>();
 			for (String waitFilterUrl : waitFilterUrls) {
 				for (XTemplate template : templates) {
-					String whiteRegex = template.getUrl();
+					String whiteRegex = template.getPattern();
 					if (StringUtils.isNotBlank(whiteRegex)) {
 						boolean result = Pattern.compile(whiteRegex).matcher(waitFilterUrl).find();
 						if (result) {

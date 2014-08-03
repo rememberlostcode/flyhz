@@ -22,11 +22,8 @@
 		    <value>^http://www.coach.com/online/handbags/Product</value>
 		</urlFilterAfterCrawl>
 		<templates>
-			<template url="^http://www.coach.com/online/handbags/Product-"
-				pattern="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
-				<templateApplyEvents>
-					
-				</templateApplyEvents>
+			<template pattern="^http://www.coach.com/online/handbags/Product-"
+				apply="com.flyhz.avengers.template.impl.coach.CoachTemplateImpl" >
 			</template>
 		</templates>
 	</domain>

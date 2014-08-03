@@ -1,6 +1,8 @@
 
 package com.flyhz.framework.util;
 
+import java.math.BigDecimal;
+
 public class Constants {
 	/***************************** solr start *************************/
 	/**
@@ -48,6 +50,8 @@ public class Constants {
 	public static final String	MESSAGE_LAST					= "已经是最后一条";
 	public static final String	MESSAGE_EXCEPTION				= "获取数据异常";
 	public static final String	MESSAGE_NET						= "获取数据失败，请检查网络";
+	
+	public static final String	TBHG_PREFIX			= "海狗订单号(不可修改)：";	// 淘宝卖家留言前缀
 
 	public static enum OrderStateCode {
 
@@ -80,4 +84,7 @@ public class Constants {
 	 * 淘宝配置文件全路径，taobao.properties
 	 */
 	public static String		propertiesFilePath;
+	
+	
+	public static final BigDecimal logisticsPriceEvery = new BigDecimal(150);
 }

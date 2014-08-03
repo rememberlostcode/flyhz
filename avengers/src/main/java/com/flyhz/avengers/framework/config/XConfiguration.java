@@ -24,6 +24,7 @@ import com.flyhz.avengers.framework.config.xml.XTemplate;
 import com.flyhz.avengers.framework.config.xml.XTemplates;
 import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
 import com.flyhz.avengers.framework.lang.Event;
+import com.flyhz.avengers.framework.lang.Template;
 import com.flyhz.avengers.framework.util.StringUtil;
 import com.flyhz.avengers.framework.util.XmlUtil;
 
@@ -98,11 +99,6 @@ public class XConfiguration {
 	 * List<Event>
 	 */
 	public static final String			TEMPLATE_EVENTS			= "template.events";
-
-	/**
-	 * List<Event>
-	 */
-	public static final String			ANALYZE_EVENTS			= "analyze.events";
 
 	/**
 	 * List<String>
@@ -237,34 +233,28 @@ public class XConfiguration {
 					XTemplates templates = domain.getTemplates();
 					if (templates != null) {
 						List<XTemplate> templateList = templates.getTemplate();
-						domainMap.put(DOMAIN_TEMPLATES, templateList);
-						for (XTemplate template : templateList) {
-							XEvents templateApplyEvents = template.getTemplateApplyEvents();
-							if (templateApplyEvents != null) {
-								List<XEvent> listEvent = templateApplyEvents.getEvent();
-								if (listEvent != null && !listEvent.isEmpty()) {
-									List<Event> templateEventList = new ArrayList<Event>();
-									try {
-										for (XEvent event : listEvent) {
-											Class<?> clazz = Class.forName(event.getClazz());
-											Event e = (Event) clazz.newInstance();
-											templateEventList.add(e);
-										}
-									} catch (Throwable e) {
-										LOG.error("root:" + root + "templateApply event配置出错", e);
-										throw new AvengersConfigurationException("", e);
-									}
-									domainMap.put(TEMPLATE_EVENTS + "." + template.getUrl(),
-											templateEventList);
+						if (templateList != null && !templateList.isEmpty()) {
+							List<TemplateConfig> templateConfigList = new ArrayList<TemplateConfig>();
+							domainMap.put(DOMAIN_TEMPLATES, templateConfigList);
+							try {
+								for (XTemplate xTemplate : templateList) {
+									Template template = (Template) Class.forName(
+											xTemplate.getApply()).newInstance();
+									TemplateConfig templateConfig = new TemplateConfig();
+									templateConfig.setPattern(xTemplate.getPattern());
+									templateConfig.setTemplate(template);
+									templateConfigList.add(templateConfig);
 								}
+							} catch (Exception e) {
+								LOG.error("root:" + root + "templateApply event配置出错", e);
+								throw new AvengersConfigurationException("", e);
 							}
+
 						}
+
 					}
 				}
 			}
-		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug(domains.toString());
 		}
 	}
 

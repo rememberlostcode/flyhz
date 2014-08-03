@@ -39,8 +39,8 @@
 //import com.flyhz.avengers.domains.abercrombie.AbercrombieImgUtil;
 //import com.flyhz.avengers.framework.Analyze;
 //import com.flyhz.avengers.framework.Template;
-//import com.flyhz.avengers.framework.lang.HBaseAVTable;
-//import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVFamily;
+//import com.flyhz.avengers.framework.lang.AVTable;
+//import com.flyhz.avengers.framework.lang.AVTable.AVFamily;
 //import com.flyhz.avengers.framework.util.Constants;
 //import com.flyhz.avengers.framework.util.WebClientUtil;
 //
@@ -64,11 +64,11 @@
 //			HConnection hConnection = HConnectionManager.createConnection(hconf);
 //			HBaseAdmin hbaseAdmin = new HBaseAdmin(hConnection);
 //			// 判断av_page是否存在
-//			if (!hbaseAdmin.tableExists(HBaseAVTable.av_page.name())) {
+//			if (!hbaseAdmin.tableExists(AVTable.av_page.name())) {
 //				HTableDescriptor tableDesc = new HTableDescriptor(
-//						TableName.valueOf(HBaseAVTable.av_page.name()));
+//						TableName.valueOf(AVTable.av_page.name()));
 //				// 插入info列族
-//				HColumnDescriptor columnConfInfo = new HColumnDescriptor(HBaseAVFamily.i.name());
+//				HColumnDescriptor columnConfInfo = new HColumnDescriptor(AVFamily.i.name());
 //				tableDesc.addFamily(columnConfInfo);
 //				hbaseAdmin.createTable(tableDesc);
 //			}
