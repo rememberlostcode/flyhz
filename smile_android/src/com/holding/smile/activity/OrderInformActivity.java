@@ -41,17 +41,22 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private static final int		WHAT_DID_CONFIRMORDER_DATA	= 3;
 	private MyListView				listView;
 	private MyOrderInformAdapter	orderAdapter;
+	private TextView				logisticEvery;													// 单个物流费
+	private TextView				logisticsTotal;												// 总物流费
+	private TextView				pTotalNumber;													// 产品总数
+	private TextView				pTotalMoney;													// 产品合计总价格
 	private TextView				confirmBtn;
 	private TextView				totalNumber;
 	private TextView				totalMoney;
 	private OrderDto				order						= null;
 	private List<OrderDetailDto>	orderDetails				= new ArrayList<OrderDetailDto>();
 	private Integer					gid							= null;							// 商品ID
-	private Integer					addressId					= 1;								// 地址id
+	private Integer					addressId					= null;							// 地址id
 	private Integer					qty							= 1;								// 购买数量，默认是1
 	private List<String>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
 	private Integer					allQty						= 0;								// 结算总数量，默认是0
 	private BigDecimal				allTotal					= null;							// 结算总金额
+	private BigDecimal				logisticFee					= null;							// 单个物流费
 	private boolean					cartFlag					= false;							// 为true是指从购物车中结算的
 
 	@SuppressWarnings("unchecked")
@@ -85,15 +90,21 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private void initView() {
 		if (order == null)
 			return;
+		displayFooterMainOrderInform();
 		setContentLayout(R.layout.order_inform_view);
+		logisticEvery = (TextView) findViewById(R.id.logistic_every);
+		logisticsTotal = (TextView) findViewById(R.id.total_logistics);
+		pTotalNumber = (TextView) findViewById(R.id.product_total_number);
+		pTotalMoney = (TextView) findViewById(R.id.product_total_money);
+
 		confirmBtn = (TextView) findViewById(R.id.confirm_btn);
 		confirmBtn.setOnClickListener(this);
 		totalNumber = (TextView) findViewById(R.id.order_inform_total_number);
 		totalMoney = (TextView) findViewById(R.id.order_inform_total_money);
+		totalNumber = (TextView) findViewById(R.id.order_inform_total_number);
 
 		listView = (MyListView) findViewById(R.id.order_list);
-		orderAdapter = new MyOrderInformAdapter(context, orderDetails, null, mUIHandler,
-				cartFlag);
+		orderAdapter = new MyOrderInformAdapter(context, orderDetails, null, mUIHandler, cartFlag);
 		listView.setAdapter(orderAdapter);
 
 	}
@@ -107,7 +118,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 			}
 			RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
 												.getOrderInform(pidQty, cartIds, addressId);
-			
+
 			Message msg = mUIHandler.obtainMessage(WHAT_DID_LOAD_DATA);
 			msg.obj = rtnValue;
 			msg.sendToTarget();
@@ -186,11 +197,20 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		if (orderDetails != null && !orderDetails.isEmpty()) {
 			for (OrderDetailDto orderDetail : orderDetails) {
 				if (orderDetail != null) {
+					if (logisticFee == null)
+						logisticFee = orderDetail.getLogisticsPriceEvery();
 					allQty += (int) orderDetail.getQty();
 					allTotal = allTotal.add(orderDetail.getTotal());
 				}
 			}
 		}
+
+		if (logisticFee != null) {
+			logisticEvery.setText(logisticFee.doubleValue() + "");
+			logisticsTotal.setText(logisticFee.multiply(BigDecimal.valueOf(allQty)) + "");
+		}
+		pTotalNumber.setText(allQty + "");
+		pTotalMoney.setText(allTotal.doubleValue() + "");
 		totalNumber.setText(allQty + "");
 		totalMoney.setText(allTotal.doubleValue() + "");
 	}

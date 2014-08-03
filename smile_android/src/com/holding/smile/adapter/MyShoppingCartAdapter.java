@@ -280,8 +280,10 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 						sIds.remove(cartItem.getId());
 						v.setBackgroundResource(R.drawable.icon_no_choice);
 					}
-					if (sIds.isEmpty()) {
+					if (sIds.size() < cartItemList.size()) {
 						selectAll = false;
+					} else {
+						selectAll = true;
 					}
 					mUIHandler.sendEmptyMessage(3);
 				}

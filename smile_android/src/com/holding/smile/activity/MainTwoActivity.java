@@ -85,7 +85,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 	 */
 	private void initView() {
 		setContentLayout(R.layout.activity_main);
-		displayFooterMain(R.id.mainfooter_one);
 		setSortTypeLayout();// 设置排序标签
 
 		adapter = new MyJGoodsAdapter(context, mStrings);

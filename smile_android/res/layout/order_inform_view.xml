@@ -30,50 +30,7 @@
             android:background="@android:color/transparent"
             android:divider="@android:color/transparent"
             android:dividerHeight="1sp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="小计（"
-                android:textColor="@drawable/shenhuise"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/order_inform_total_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@drawable/shenhuise"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="个商品）："
-                android:textColor="@drawable/shenhuise"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="￥"
-                android:textColor="@drawable/dahong"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/order_inform_total_money"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@drawable/dahong"
-                android:textSize="14sp" />
-        </LinearLayout>
-
+        
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dp"
@@ -81,21 +38,114 @@
             android:layout_marginTop="5dp"
             android:background="@drawable/qianhuise"
             android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/confirm_btn"
-            android:layout_width="wrap_content"
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
-            android:background="@drawable/confirm_bg"
-            android:paddingBottom="4dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="4dp"
-            android:text="确定"
-            android:textColor="@drawable/baise" />
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="小计（"
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/product_total_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="个商品）："
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="￥"
+                    android:textColor="@drawable/dahong"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/product_total_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@drawable/dahong"
+                    android:textSize="14sp" />
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="单个商品的物流费："
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="14sp" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="￥"
+                    android:textColor="@drawable/dahong"
+                    android:textSize="14sp" />
+                
+                <TextView
+                    android:id="@+id/logistic_every"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="150"
+                    android:textColor="@drawable/shenhuise"
+                    android:textSize="14sp" />
+              </LinearLayout>
+                
+             <LinearLayout
+	              android:layout_width="fill_parent"
+	              android:layout_height="wrap_content"
+	              android:gravity="center_vertical"
+	              android:orientation="horizontal" >
+	              <TextView
+	                  android:layout_width="wrap_content"
+	                  android:layout_height="wrap_content"
+	                  android:text="合计物流费："
+	                  android:textColor="@drawable/shenhuise"
+	                  android:textSize="14sp" />
+	
+	              <TextView
+	                  android:layout_width="wrap_content"
+	                  android:layout_height="wrap_content"
+	                  android:gravity="center_vertical"
+	                  android:text="￥"
+	                  android:textColor="@drawable/dahong"
+	                  android:textSize="14sp" />
+	
+	              <TextView
+	                  android:id="@+id/total_logistics"
+	                  android:layout_width="wrap_content"
+	                  android:layout_height="wrap_content"
+	                  android:textColor="@drawable/dahong"
+	                  android:textSize="14sp" />
+             </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>

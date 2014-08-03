@@ -83,14 +83,13 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	private void initView() {
 		// displayFooterMain(R.id.mainfooter_four);
 		displayFooterMainTotal();
-
 		setContentLayout(R.layout.shopping_cart_view);
 		payoffBtn = (TextView) findViewById(R.id.payoff_btn);
 		payoffBtn.setOnClickListener(this);
 		totalNumber = (TextView) findViewById(R.id.totalnumber);
 		totalMoney = (TextView) findViewById(R.id.totalmoney);
 		allChecked = (ImageView) findViewById(R.id.all_checked);
-
+		allChecked.setSelected(false);
 		allChecked.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -212,7 +211,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	 * 计算总额
 	 */
 	private void calculateTotal() {
-		if (!cartAdapter.getSelectAll()) {
+		if (cartAdapter.getSelectAll()) {
+			allChecked.setSelected(true);
+		} else {
 			allChecked.setSelected(false);
 		}
 

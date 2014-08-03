@@ -45,7 +45,7 @@ public class BaseActivity extends Activity {
 	/**
 	 * 个人设置操作代码
 	 */
-	public static final int		SETTINGS_CODE	= 151;
+	public static final int		SETTINGS_CODE			= 151;
 	/**
 	 * 编辑邮箱操作代码
 	 */
@@ -84,37 +84,39 @@ public class BaseActivity extends Activity {
 	private Timer				time;
 	private TimerTask			loadingTimerTask;
 
-//	protected BroadcastReceiver	connectionReceiver		= new BroadcastReceiver() {
-//															@Override
-//															public void onReceive(Context context,
-//																	Intent intent) {
-//																ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//																// mobile 3G
-//																// Data
-//																// Network
-//																State mobile = conMan.getNetworkInfo(
-//																		ConnectivityManager.TYPE_MOBILE)
-//																						.getState();
-//																State wifi = conMan.getNetworkInfo(
-//																		ConnectivityManager.TYPE_WIFI)
-//																					.getState();
-//
-//																// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
-//																// 则进入Network
-//																// Setting界面
-//																// 由用户配置网络连接
-//																if (mobile == State.CONNECTED
-//																		|| mobile == State.CONNECTING
-//																		|| wifi == State.CONNECTED
-//																		|| wifi == State.CONNECTING) {
-//																	MyApplication.setHasNetwork(true);
-//																} else {
-//																	MyApplication.setHasNetwork(false);
-//																	ToastUtils.showShort(context,
-//																			"网络异常，请检查网络！");
-//																}
-//															}
-//														};
+	// protected BroadcastReceiver connectionReceiver = new BroadcastReceiver()
+	// {
+	// @Override
+	// public void onReceive(Context context,
+	// Intent intent) {
+	// ConnectivityManager conMan = (ConnectivityManager)
+	// context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	// // mobile 3G
+	// // Data
+	// // Network
+	// State mobile = conMan.getNetworkInfo(
+	// ConnectivityManager.TYPE_MOBILE)
+	// .getState();
+	// State wifi = conMan.getNetworkInfo(
+	// ConnectivityManager.TYPE_WIFI)
+	// .getState();
+	//
+	// // 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
+	// // 则进入Network
+	// // Setting界面
+	// // 由用户配置网络连接
+	// if (mobile == State.CONNECTED
+	// || mobile == State.CONNECTING
+	// || wifi == State.CONNECTED
+	// || wifi == State.CONNECTING) {
+	// MyApplication.setHasNetwork(true);
+	// } else {
+	// MyApplication.setHasNetwork(false);
+	// ToastUtils.showShort(context,
+	// "网络异常，请检查网络！");
+	// }
+	// }
+	// };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -144,10 +146,10 @@ public class BaseActivity extends Activity {
 			MyApplication.getInstance().setDensity(density);
 		}
 
-//		// 注册网络监听
-//		IntentFilter filter = new IntentFilter();
-//		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-//		registerReceiver(connectionReceiver, filter);
+		// // 注册网络监听
+		// IntentFilter filter = new IntentFilter();
+		// filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		// registerReceiver(connectionReceiver, filter);
 	}
 
 	public void setVisible(int id) {
@@ -206,7 +208,7 @@ public class BaseActivity extends Activity {
 		setVisible(id);
 		return textView;
 	}
-	
+
 	/**
 	 * 显示头部右边部分（图片按钮，需自己设置图片；ImageView.setImageResource(R.drawable.leibie);）
 	 * 
@@ -335,11 +337,11 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-//		if (connectionReceiver != null) {
-//			// 取消监听
-//			unregisterReceiver(connectionReceiver);
-//		}
-		
+		// if (connectionReceiver != null) {
+		// // 取消监听
+		// unregisterReceiver(connectionReceiver);
+		// }
+
 		if (dialogLoading != null && dialogLoading.isShowing()) {
 			dialogLoading.dismiss();
 		}
@@ -351,7 +353,7 @@ public class BaseActivity extends Activity {
 		if (loadingTimerTask != null) {
 			loadingTimerTask.cancel();
 		}
-		
+
 		if (null != ly_content) {
 			ly_content = null;
 		}
@@ -388,7 +390,7 @@ public class BaseActivity extends Activity {
 		}
 		return false;
 	}
-	
+
 	public View displayFooterMain(int idNow) {
 		setFootVisible();
 		int id = R.id.mainfooter;
@@ -509,6 +511,19 @@ public class BaseActivity extends Activity {
 	}
 
 	/**
+	 * 结算付款时显示
+	 * 
+	 * @return
+	 */
+	public View displayFooterMainOrderInform() {
+		setFootVisible();
+		int id = R.id.footer_order_inform;
+		View view = (View) findViewById(id);
+		setVisible(id);
+		return view;
+	}
+
+	/**
 	 * 进入我的订单时显示
 	 * 
 	 * @return
@@ -526,7 +541,7 @@ public class BaseActivity extends Activity {
 	 */
 	protected void startTask() {
 		showLoading();
-		
+
 		ly_content.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -568,7 +583,8 @@ public class BaseActivity extends Activity {
 
 	}
 
-	private int seconds = 0;
+	private int	seconds	= 0;
+
 	/**
 	 * 显示loading图片，最少显示一秒
 	 */
@@ -592,7 +608,7 @@ public class BaseActivity extends Activity {
 						Log.e(MyApplication.LOG_TAG, e.getMessage());
 					}
 				} else {
-					seconds ++;
+					seconds++;
 					countTime--;
 				}
 			}
@@ -605,7 +621,7 @@ public class BaseActivity extends Activity {
 	 * 关闭loading图片，关闭会有延迟，最长延迟一秒
 	 */
 	public void closeLoading() {
-		if(seconds > 0){//持续时间已经有1秒了，立即关闭
+		if (seconds > 0) {// 持续时间已经有1秒了，立即关闭
 			closeImmediatelyLoading();
 		} else {
 			canClosed = true;
