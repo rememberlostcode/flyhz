@@ -25,6 +25,7 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.MyShoppingCartAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.CartItem;
+import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
@@ -69,6 +70,16 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		editBtn.setTag("edit");
 		editBtn.setOnClickListener(this);
 
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		SUser user = MyApplication.getInstance().getCurrentUser();
+		if (user == null || MyApplication.getInstance().getSessionId() == null) {
+			finish();
+		}
+		return;
 	}
 
 	@Override

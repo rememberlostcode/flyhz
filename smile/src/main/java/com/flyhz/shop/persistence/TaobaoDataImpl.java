@@ -393,7 +393,7 @@ public class TaobaoDataImpl implements TaobaoData {
 		if (response.getTrade() == null) {
 			return "";
 		}
-		return response.getTrade().getBuyerMessage();
+		return response.getTrade().getBuyerMessage().replace(Constants.TBHG_PREFIX, "");
 	}
 
 	/**

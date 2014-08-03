@@ -6,6 +6,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:scaleType="fitXY"
         android:contentDescription="@string/image"
         android:src="@drawable/welcome" />
 
@@ -15,11 +16,12 @@
         android:layout_height="30.0dip"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="63dp"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/submit_red_button"
         android:text="@string/app_start"
         android:textColor="@color/app_text_white"
-        android:textSize="@dimen/app_textsize_button" />
+        android:textSize="@dimen/app_textsize_button"
+        android:visibility="gone" />
     
     <Button
         android:id="@+id/index_update"

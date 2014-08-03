@@ -9,6 +9,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.holding.smile.R;
+import com.holding.smile.activity.MyApplication;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.dto.ValidateDto;
 import com.holding.smile.entity.SortType;
@@ -628,9 +629,14 @@ public class DataService {
 					rvd.setCode(orders.getCode());
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				ValidateDto vd = new ValidateDto();
-				vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				if(rStr.indexOf("logisticsPriceTotal") > -1){
+					rvd = new RtnValueDto();
+					rvd.setCode(777777);
+				} else {
+					ValidateDto vd = new ValidateDto();
+					vd.setMessage(Constants.MESSAGE_EXCEPTION);
+				}
+				Log.e(MyApplication.LOG_TAG, e.getMessage());
 			}
 		} else {
 			ValidateDto vd = new ValidateDto();
