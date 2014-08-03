@@ -23,6 +23,7 @@
 	</element>
 	<complexType name="xDomain">
 		<all>
+			<element name="login" type="ave:xEvent" minOccurs="0"/>
 			<element name="urlFilterBeforeCrawl" type="ave:xFilter" minOccurs="0" />
 			<element name="crawlEvents" type="ave:xEvents" minOccurs="0"/>
 			<element name="urlFilterAfterCrawl" type="ave:xFilter" minOccurs="0"/>
@@ -60,10 +61,7 @@
 		</sequence>
 	</complexType>
 	<complexType name="xTemplate">
-		<all>
-			<element name="templateApplyEvents" type="ave:xEvents" minOccurs="0"/>
-		</all>
-		<attribute name="url" type="token" use="required"/>
+		<attribute name="apply" type="token" use="required"/>
 		<attribute name="pattern" type="token" use="required"/>
 	</complexType>
 	<complexType name="xEvents">

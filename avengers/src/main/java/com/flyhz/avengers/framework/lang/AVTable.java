@@ -1,7 +1,7 @@
 
 package com.flyhz.avengers.framework.lang;
 
-public enum HBaseAVTable {
+public enum AVTable {
 
 	/**
 	 * <table>
@@ -30,11 +30,11 @@ public enum HBaseAVTable {
 	 */
 	av_fetch, av_crawl, av_domain, av_page;
 
-	public enum HBaseAVFamily {
+	public enum AVFamily {
 		i;
 	}
 
-	public enum HBaseAVColumn {
+	public enum AVColumn {
 		id, url, maxid, c, bid, e, r;
 	}
 }

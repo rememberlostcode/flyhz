@@ -1,6 +1,8 @@
 
 package com.flyhz.avengers.domains.coachfactory.event;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +23,7 @@ public class CoachFactoryLoginEvent implements Event {
 	}
 
 	@Override
-	public boolean call() {
+	public boolean call(Map<String, Object> context) {
 		LOG.info("login ...... username = {} password = ", this.username, this.password);
 		return false;
 	}

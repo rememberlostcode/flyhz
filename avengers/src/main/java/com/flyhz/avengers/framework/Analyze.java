@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.flyhz.avengers.framework.common.event.TemplateApplyEvent;
+import com.flyhz.avengers.framework.common.event.ContentAnalyzeEvent;
 import com.flyhz.avengers.framework.config.XConfiguration;
 import com.flyhz.avengers.framework.config.xml.XTemplate;
 import com.flyhz.avengers.framework.lang.AvengersConfigurationException;
@@ -89,7 +89,7 @@ public class Analyze extends AvengersExecutor {
 		Map<String, Object> context = getContext();
 		// 默认调用TemplateApplyEvent
 		List<Event> events = new ArrayList<Event>();
-		events.add(new TemplateApplyEvent(context));
+		events.add(new ContentAnalyzeEvent());
 		// 查询是否有自定义TemplateEvent
 		String url = (String) context.get(ANALYZE_URL);
 		if (StringUtils.isNotBlank(url)) {
@@ -104,7 +104,7 @@ public class Analyze extends AvengersExecutor {
 						if (domain != null && domain.get(XConfiguration.DOMAIN_TEMPLATES) != null) {
 							List<XTemplate> templates = (List<XTemplate>) domain.get(XConfiguration.DOMAIN_TEMPLATES);
 							for (XTemplate xtemplate : templates) {
-								String templateUrl = xtemplate.getUrl();
+								String templateUrl = xtemplate.getPattern();
 								String pattern = xtemplate.getPattern();
 								// 模板URL不为空;模板URL匹配待分析URL
 								System.out.println(Pattern.compile(templateUrl).matcher(url).find());

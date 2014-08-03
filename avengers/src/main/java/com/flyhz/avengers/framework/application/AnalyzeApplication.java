@@ -80,9 +80,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.flyhz.avengers.framework.Analyze;
-import com.flyhz.avengers.framework.lang.HBaseAVTable;
-import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVColumn;
-import com.flyhz.avengers.framework.lang.HBaseAVTable.HBaseAVFamily;
+import com.flyhz.avengers.framework.lang.AVTable;
+import com.flyhz.avengers.framework.lang.AVTable.AVColumn;
+import com.flyhz.avengers.framework.lang.AVTable.AVFamily;
 import com.google.common.annotations.VisibleForTesting;
 
 @InterfaceAudience.Public
@@ -350,11 +350,11 @@ public class AnalyzeApplication {
 			// 设置Scan缓存
 			configuration.setLong("hbase.client.scanner.caching", 1000);
 
-			hPage = new HTable(hbaseConf, HBaseAVTable.av_page.name());
+			hPage = new HTable(hbaseConf, AVTable.av_page.name());
 
 			Scan scan = new Scan();
-			scan.addColumn(Bytes.toBytes(HBaseAVFamily.i.name()),
-					Bytes.toBytes(HBaseAVColumn.bid.name()));
+			scan.addColumn(Bytes.toBytes(AVFamily.i.name()),
+					Bytes.toBytes(AVColumn.bid.name()));
 			ResultScanner rs = hPage.getScanner(scan);
 			for (Result result : rs) {
 				for (Cell cell : result.rawCells()) {

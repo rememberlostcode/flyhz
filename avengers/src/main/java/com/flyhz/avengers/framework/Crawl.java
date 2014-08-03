@@ -71,7 +71,7 @@ public class Crawl extends AvengersExecutor {
 			list = (List<Event>) getContext().get(XConfiguration.CRAWL_EVENTS);
 		} else {
 			list = new ArrayList<Event>();
-			list.add(new URLCrawlEvent(getContext()));
+			list.add(new URLCrawlEvent());
 		}
 		return list;
 	}

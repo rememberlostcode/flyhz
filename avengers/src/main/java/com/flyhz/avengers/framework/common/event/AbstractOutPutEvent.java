@@ -1,12 +1,8 @@
 
 package com.flyhz.avengers.framework.common.event;
 
-import java.util.Map;
+import com.flyhz.avengers.framework.lang.Event;
 
+public abstract class AbstractOutPutEvent implements Event {
 
-public abstract class AbstractOutPutEvent extends AbstractEvent {
-
-	public AbstractOutPutEvent(Map<String, Object> context) {
-		super(context);
-	}
 }

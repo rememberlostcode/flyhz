@@ -39,10 +39,6 @@ public abstract class AvengersExecutor {
 		context.putAll(XConfiguration.getAvengersContext());
 	}
 
-	protected AvengersExecutor(Map<String, Object> context) {
-		this.context = context;
-	}
-
 	abstract Logger getLog();
 
 	void initAvengersContext(String[] args) {
@@ -81,7 +77,7 @@ public abstract class AvengersExecutor {
 
 	public void execute() {
 		for (Event event : events) {
-			event.call();
+			event.call(getContext());
 		}
 	}
 
