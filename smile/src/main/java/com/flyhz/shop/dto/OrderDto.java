@@ -14,8 +14,11 @@ public class OrderDto {
 
 	private List<OrderDetailDto>	details;
 
+	@JsonIgnore
 	private ConsigneeDetailDto		consignee;
 
+	private BigDecimal				logisticsPriceTotal;
+	
 	private BigDecimal				total;
 
 	private Integer					qty;
@@ -117,6 +120,14 @@ public class OrderDto {
 
 	public void setLogisticsDto(LogisticsDto logisticsDto) {
 		this.logisticsDto = logisticsDto;
+	}
+
+	public BigDecimal getLogisticsPriceTotal() {
+		return logisticsPriceTotal;
+	}
+
+	public void setLogisticsPriceTotal(BigDecimal logisticsPriceTotal) {
+		this.logisticsPriceTotal = logisticsPriceTotal;
 	}
 
 }

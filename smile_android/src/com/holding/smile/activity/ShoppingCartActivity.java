@@ -25,6 +25,7 @@ import com.holding.smile.R;
 import com.holding.smile.adapter.MyShoppingCartAdapter;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.CartItem;
+import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.Constants;
@@ -70,6 +71,16 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		editBtn.setOnClickListener(this);
 
 	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		SUser user = MyApplication.getInstance().getCurrentUser();
+		if (user == null || MyApplication.getInstance().getSessionId() == null) {
+			finish();
+		}
+		return;
+	}
 
 	@Override
 	protected void onStart() {
@@ -83,14 +94,13 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	private void initView() {
 		// displayFooterMain(R.id.mainfooter_four);
 		displayFooterMainTotal();
-
 		setContentLayout(R.layout.shopping_cart_view);
 		payoffBtn = (TextView) findViewById(R.id.payoff_btn);
 		payoffBtn.setOnClickListener(this);
 		totalNumber = (TextView) findViewById(R.id.totalnumber);
 		totalMoney = (TextView) findViewById(R.id.totalmoney);
 		allChecked = (ImageView) findViewById(R.id.all_checked);
-
+		allChecked.setSelected(false);
 		allChecked.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -212,7 +222,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	 * 计算总额
 	 */
 	private void calculateTotal() {
-		if (!cartAdapter.getSelectAll()) {
+		if (cartAdapter.getSelectAll()) {
+			allChecked.setSelected(true);
+		} else {
 			allChecked.setSelected(false);
 		}
 

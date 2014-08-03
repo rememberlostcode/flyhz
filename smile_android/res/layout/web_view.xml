@@ -9,92 +9,34 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="@drawable/head_bg"
-        android:gravity="center|center"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="0dp"
         android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:paddingTop="0dp" >
+        android:paddingRight="2dp">
 
         <ImageView
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_gravity="left|center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/btn_back_bg" />
 
-        <EditText  
-            android:layout_toRightOf="@+id/btn_back"
-		    android:id="@+id/show_vurl"    
-		    android:layout_width="fill_parent"   
-		    android:layout_height="wrap_content"
-		    android:singleLine="true"
-		    android:focusable="false"
-		    android:text="@string/showurl"
-		    />
-        
-        <LinearLayout
+        <EditText
+            android:id="@+id/show_vurl"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical" >
+            android:layout_height="40dip"
+            android:layout_marginTop="2dip"
+            android:layout_toRightOf="@+id/btn_back"
+            android:layout_centerVertical="true"
+            android:focusable="false"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/showurl" >
 
-            <!-- <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dingdanhao"
-                    android:textColor="@drawable/xiguahong"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-
-                <TextView
-                    android:id="@+id/number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="5dp"
-                    android:textColor="@drawable/xiguahong"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-            </LinearLayout> -->
-
-            <!-- <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/order_amount"
-                    android:textColor="@drawable/xiguahong"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-                
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="￥"
-                    android:textColor="@drawable/dahong"
-                    android:textSize="12sp"
-                    android:textStyle="normal" /> 
-
-                <TextView
-                    android:id="@+id/amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@drawable/dahong"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
-            </LinearLayout> -->
-        </LinearLayout>
+        </EditText>
     </RelativeLayout>
 
     <WebView
@@ -102,5 +44,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none" />
-
 </LinearLayout>

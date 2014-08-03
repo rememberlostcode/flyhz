@@ -49,6 +49,7 @@ import com.flyhz.shop.persistence.entity.LogisticsModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.OrderService;
+import com.flyhz.shop.service.common.OrderStatusService;
 import com.taobao.api.domain.Trade;
 
 @Service
@@ -109,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
 		// 处理商品信息
 		List<OrderDetailDto> orderDetails = new ArrayList<OrderDetailDto>();
 		BigDecimal total = new BigDecimal(0);
+		BigDecimal logisticsPriceTotal = new BigDecimal(0);
 		int allqty = 0;
 		for (String pidstr : productIds) {
 			if (StringUtils.isBlank(pidstr))
@@ -132,6 +134,12 @@ public class OrderServiceImpl implements OrderService {
 						orderDetailDto.setTotal(detailTotal);
 						allqty += qty;
 						total = total.add(detailTotal);
+						
+						//处理邮费
+						orderDetailDto.setLogisticsPriceEvery(Constants.logisticsPriceEvery);//每种商品单个物流费用
+						orderDetailDto.setLogisticsPriceTotal(Constants.logisticsPriceEvery.multiply(
+								BigDecimal.valueOf(qty)));//每种商品总有物流费用
+						logisticsPriceTotal = logisticsPriceTotal.add(orderDetailDto.getLogisticsPriceTotal());//累加订单总物流费用
 					}
 					orderDetails.add(orderDetailDto);
 				}
@@ -148,6 +156,10 @@ public class OrderServiceImpl implements OrderService {
 		OrderDto orderDto = new OrderDto();
 		orderDto.setDetails(orderDetails);
 		orderDto.setConsignee(consigneeDto);
+		
+		orderDto.setLogisticsPriceTotal(logisticsPriceTotal);
+		total = total.add(logisticsPriceTotal);//总价加上物流费用
+		
 		orderDto.setTotal(total);
 		orderDto.setQty(allqty);
 		orderDto.setUser(user);

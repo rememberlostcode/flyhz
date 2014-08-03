@@ -23,41 +23,6 @@
         android:padding="0.0dip" >
 
         <LinearLayout
-            android:id="@+id/user_info_idcard_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/new_personal_tab_center_pressed"
-            android:gravity="center"
-            android:padding="@dimen/wallet_margin" >
-
-            <TextView
-                android:layout_width="0.0dip"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10.0dip"
-                android:layout_weight="1.0"
-                android:text="@string/my_idcards"
-                android:textColor="@color/personal_text_color"
-                android:textSize="@dimen/app_textsize_main" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5.0dip"
-                android:textColor="#fffd4ca3"
-                android:textSize="@dimen/app_textsize_main_new" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/acs_right_arrwo" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1.0px"
-            android:background="@color/textarea_divider" />
-
-        <LinearLayout
             android:id="@+id/user_info_email_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

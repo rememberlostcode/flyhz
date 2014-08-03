@@ -72,6 +72,10 @@ public class IndexActivity extends InstrumentedActivity {
 			}
 		});
 
+		// 网络状态
+		MyApplication.getInstance().initReceiver();
+
+		// jpush消息接收器
 		registerMessageReceiver(); // used for receive msg
 	}
 
@@ -96,7 +100,7 @@ public class IndexActivity extends InstrumentedActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		Log.e(MyApplication.LOG_TAG, "start onStart~~~");
+		Log.e(MyApplication.LOG_TAG, "IndexActivity start onStart~~~");
 
 		/* 自动登录另起一个线程 */
 		mUIHandler.postDelayed(new Runnable() {
@@ -119,6 +123,8 @@ public class IndexActivity extends InstrumentedActivity {
 			@Override
 			public void run() {
 				RtnValueDto rvd = MyApplication.getInstance().getDataService().getLastestVersion();
+				if (rvd != null)
+					Log.i(MyApplication.LOG_TAG + ".version", rvd.getCode() + "");
 				if (CodeValidator.dealCode(getApplicationContext(), rvd)) {
 					try {
 						// 获取packagemanager的实例
@@ -132,10 +138,25 @@ public class IndexActivity extends InstrumentedActivity {
 
 						if (!version.equals(jversion.getVersionNew())) {
 							// 这里来检测版本是否需要更新
-							Log.i(MyApplication.LOG_TAG, "检测到新版本需要更新");
+							Log.i(MyApplication.LOG_TAG,
+									"检测到新版本需要更新：" + version + "->" + jversion.getVersionNew());
 							mUpdateManager = new UpdateManager(IndexActivity.this);
 							mUpdateManager.setApkUrl(MyApplication.jgoods_img_url
 									+ jversion.getVersionApk());
+
+							String[] nowVersions = jversion.getVersionNew().split("\\.");
+							String[] oldVersions = version.split("\\.");
+							if (nowVersions.length > 1
+									&& oldVersions.length > 1
+									&& (!nowVersions[0].equals(oldVersions[0]) || !nowVersions[1].equals(oldVersions[1]))) {
+								MyApplication.setMustUpdate(true);
+								welcomeImage.setVisibility(View.GONE);
+								updateImage.setVisibility(View.VISIBLE);
+							} else {
+								welcomeImage.setVisibility(View.VISIBLE);
+								updateImage.setVisibility(View.GONE);
+							}
+
 							mUpdateManager.checkUpdateInfo();
 						} else {
 							Log.i(MyApplication.LOG_TAG, "未检测到新版本");
@@ -172,6 +193,7 @@ public class IndexActivity extends InstrumentedActivity {
 		super.onDestroy();
 	}
 
+	/*************************** jpush start *********************/
 	// for receive customer msg from jpush server
 	private MessageReceiver		mMessageReceiver;
 	public static final String	MESSAGE_RECEIVED_ACTION	= "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
@@ -203,6 +225,8 @@ public class IndexActivity extends InstrumentedActivity {
 		}
 	}
 
+	/*************************** jpush end *********************/
+
 	@SuppressLint("HandlerLeak")
 	private final Handler	mUIHandler	= new Handler() {
 
@@ -214,12 +238,10 @@ public class IndexActivity extends InstrumentedActivity {
 															SUser user = (SUser) msg.obj;
 															LoginService loginService = MyApplication.getInstance()
 																										.getLoginService();
-															if (MyApplication.getInstance()
-																				.getRegistrationID() != null) {
-																user.setRegistrationID(MyApplication.getInstance()
-																									.getRegistrationID());
-															}
-															RtnValueDto rvd = loginService.autoLogin(user);
+															RtnValueDto rvd = loginService.autoLogin();
+															if (rvd != null)
+																Log.i(MyApplication.LOG_TAG,
+																		rvd.getCode() + "");
 															if (CodeValidator.dealCode(
 																	getApplicationContext(), rvd)) {
 																if (rvd != null

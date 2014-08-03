@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.dto.RtnValueDto;
+import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.TbUtil;
 
@@ -114,8 +115,10 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							jsStringBuffer.append("$('.c-btn-aw').eq(0).css('display','none');");
 							jsStringBuffer.append("setTimeout(function(){");
 							jsStringBuffer.append("$('.numTxt').eq(0).attr('readonly','readonly');");
-							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('value','"
-									+ number + "');");
+							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('value','")
+											.append(Constants.TBHG_PREFIX).append(number)
+											.append("');");
+							// + number + "');");
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('placeholder','');");
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('readonly','readonly');");
 							jsStringBuffer.append("},1000);");

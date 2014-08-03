@@ -11,6 +11,10 @@ public class OrderItem {
 
 	private ProductDto	product;
 
+	private BigDecimal	logisticsPriceEvery;
+	
+	private BigDecimal	logisticsPriceTotal;
+
 	private BigDecimal	total;
 
 	public Integer getId() {
@@ -43,6 +47,22 @@ public class OrderItem {
 
 	public void setTotal(BigDecimal total) {
 		this.total = total;
+	}
+
+	public BigDecimal getLogisticsPriceEvery() {
+		return logisticsPriceEvery;
+	}
+
+	public void setLogisticsPriceEvery(BigDecimal logisticsPriceEvery) {
+		this.logisticsPriceEvery = logisticsPriceEvery;
+	}
+
+	public BigDecimal getLogisticsPriceTotal() {
+		return logisticsPriceTotal;
+	}
+
+	public void setLogisticsPriceTotal(BigDecimal logisticsPriceTotal) {
+		this.logisticsPriceTotal = logisticsPriceTotal;
 	}
 
 }

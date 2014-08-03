@@ -12,12 +12,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.holding.smile.R;
@@ -42,6 +44,16 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private BigDecimal			total		= new BigDecimal(0);
 	private Boolean				selectAll	= false;
 	private Handler				mUIHandler;
+	
+	private int numTotal = 0;
+	private int selectTotal = 0;
+	private RelativeLayout footerMyOrders;
+	private ImageView allChecked;
+	
+	public void setNumZero(){
+		numTotal = 0;
+		selectTotal = 0;
+	}
 
 	// 自己定义的构造函数
 	public MyOrdersAdapter(Context context, List<OrderDto> orderList, Handler mUIHandler) {
@@ -50,17 +62,23 @@ public class MyOrdersAdapter extends BaseAdapter {
 		this.mUIHandler = mUIHandler;
 	}
 
-	public void setData(List<OrderDto> contacts) {
+	public void setData(List<OrderDto> contacts,RelativeLayout footerMyOrders,ImageView allChecked) {
 		if (contacts == null) {
 			this.orderList = new ArrayList<OrderDto>();
 		} else {
 			this.orderList = contacts;
 		}
-		notifyDataSetChanged();
+		
+		this.footerMyOrders = footerMyOrders;
+		this.allChecked = allChecked;
+		
+		setNumZero();
+//		notifyDataSetChanged();
 	}
 
 	public void showEdit(boolean showDelete) {
 		this.showDelete = showDelete;
+		setNumZero();
 		notifyDataSetChanged();
 	}
 
@@ -100,6 +118,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		final ViewHolder holder;
+		Log.i("order", "getView selectTotal/numTotal====" + selectTotal + "/" + numTotal);
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.order_list, null);
 			holder = new ViewHolder();
@@ -125,10 +144,12 @@ public class MyOrdersAdapter extends BaseAdapter {
 		if (order.getStatus().equals(Constants.OrderStateCode.FOR_PAYMENT.code + "")) {
 			if (numbers.contains(order.getNumber())) {
 				holder.checkBoxImage.setBackgroundResource(R.drawable.icon_choice);
+				selectTotal ++;
 			} else {
 				holder.checkBoxImage.setBackgroundResource(R.drawable.icon_no_choice);
 			}
 			holder.checkBoxImage.setVisibility(View.VISIBLE);
+			numTotal++;
 		} else {
 			holder.checkBoxImage.setVisibility(View.GONE);
 		}
@@ -161,13 +182,30 @@ public class MyOrdersAdapter extends BaseAdapter {
 					numbers.remove(order.getNumber());
 					v.setBackgroundResource(R.drawable.icon_no_choice);
 					total = total.subtract(order.getTotal());
+					
+					selectTotal --;
 				} else {
 					numbers.add(order.getNumber());
 					v.setBackgroundResource(R.drawable.icon_choice);
 					total = total.add(order.getTotal());
+					
+					selectTotal ++;
 				}
 				if (numbers.isEmpty()) {
 					selectAll = false;
+				}
+				
+				Log.i("order", "selectTotal/numTotal====" + selectTotal + "/" + numTotal);
+//				if(numTotal == selectTotal){
+//					allChecked.setBackgroundResource(R.drawable.icon_choice);
+//				} else {
+//					allChecked.setBackgroundResource(R.drawable.icon_no_choice);
+//				}
+				
+				if(selectTotal==0){
+					footerMyOrders.setVisibility(View.GONE);
+				} else {
+					footerMyOrders.setVisibility(View.VISIBLE);
 				}
 				// mUIHandler.sendEmptyMessage(3);
 			}

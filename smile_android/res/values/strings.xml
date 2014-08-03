@@ -83,8 +83,6 @@
     <string name="showurl">http://h5.m.taobao.com/awp/base/buy.htm?itemId=</string>
     <string name="service_email">service@tiantianhaigou.com</string>
     
-    
-    
     <string name="login_autologin_info">自动登录</string>
     <string name="login_username_hint_info">手机号/邮箱</string>
     <string name="login_password_hint_info">请输入密码</string>

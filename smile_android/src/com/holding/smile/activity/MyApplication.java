@@ -34,7 +34,7 @@ import com.holding.smile.tools.ToastUtils;
 public class MyApplication extends Application {
 
 	private static Date				sessionTime;
-	public static final String		LOG_TAG				= "smile";
+	public static final String		LOG_TAG			= "smile";
 	private static MyApplication	singleton;
 
 	private static ImageLoader		mImageLoader;
@@ -77,47 +77,57 @@ public class MyApplication extends Application {
 	/** 任务线程池 */
 	private static ExecutorService	threadPool;
 
-	private static boolean			isHasNetwork		= true;
+	/**
+	 * 是否有网络
+	 */
+	private static boolean			isHasNetwork	= true;
+	
+	private static boolean			isMustUpdate = false;
 
-	private BroadcastReceiver		connectionReceiver	= new BroadcastReceiver() {
-															@Override
-															public void onReceive(Context context,
-																	Intent intent) {
-																ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-																// mobile 3G
-																// Data
-																// Network
-																State mobile = conMan.getNetworkInfo(
-																		ConnectivityManager.TYPE_MOBILE)
-																						.getState();
-																State wifi = conMan.getNetworkInfo(
-																		ConnectivityManager.TYPE_WIFI)
-																					.getState();
+	/**
+	 * 网络状态接收器
+	 */
+	private BroadcastReceiver		connectionReceiver;
 
-																// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
-																// 则进入Network
-																// Setting界面
-																// 由用户配置网络连接
-																Log.i(MyApplication.LOG_TAG + ".State.mobile",mobile.toString());
-																Log.i(MyApplication.LOG_TAG + ".State.wifi",wifi.toString());
-																if (mobile == State.CONNECTED
-																		|| mobile == State.CONNECTING
-																		|| wifi == State.CONNECTED
-																		|| wifi == State.CONNECTING) {
-																	MyApplication.setHasNetwork(true);
-																} else {
-																	MyApplication.setHasNetwork(false);
-																	ToastUtils.showShort(context,
-																			"网络异常，请检查网络！");
-																}
-															}
-														};
+	public void initReceiver() {
+		Log.i(MyApplication.LOG_TAG, "启动网络状态接收器...");
+		if (connectionReceiver == null) {
+			connectionReceiver = new BroadcastReceiver() {
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+					// mobile 3G
+					// Data
+					// Network
+					State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+											.getState();
+					State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+
+					// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
+					// 则进入Network
+					// Setting界面
+					// 由用户配置网络连接
+					Log.i(MyApplication.LOG_TAG + ".State.mobile", mobile.toString());
+					Log.i(MyApplication.LOG_TAG + ".State.wifi", wifi.toString());
+					if (mobile == State.CONNECTED || mobile == State.CONNECTING
+							|| wifi == State.CONNECTED || wifi == State.CONNECTING) {
+						MyApplication.setHasNetwork(true);
+					} else {
+						MyApplication.setHasNetwork(false);
+						ToastUtils.showShort(context, "网络异常，请检查网络！");
+					}
+				}
+			};
+		}
+	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		singleton = this;
 		threadPool = Executors.newFixedThreadPool(2);
+		
+		initReceiver();
 
 		Context context = getApplicationContext();
 		dataService = new DataService(context);
@@ -254,5 +264,14 @@ public class MyApplication extends Application {
 	public void setRegistrationID(String registrationID) {
 		this.registrationID = registrationID;
 	}
+
+	public static boolean isMustUpdate() {
+		return isMustUpdate;
+	}
+
+	public static void setMustUpdate(boolean isMustUpdate) {
+		MyApplication.isMustUpdate = isMustUpdate;
+	}
+
 
 }

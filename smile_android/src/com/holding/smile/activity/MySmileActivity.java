@@ -103,12 +103,12 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 		contactUsLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_contact_us_layout);
 		contactUsLayoutLayout.setOnClickListener(this);
 		
+		missLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_idcards_layout);
+		missLayoutLayout.setVisibility(View.VISIBLE);
+		missLayoutLayout.setOnClickListener(this);
 		if (MyApplication.getInstance().getCurrentUser() != null
-				&& "miss".equals(MyApplication.getInstance().getCurrentUser().getIsmissidcard())) {
-			missLayoutLayout = (LinearLayout) findViewById(R.id.mysmile_idcards_layout);
-			missLayoutLayout.setVisibility(View.VISIBLE);
-			findViewById(R.id.mysmile_idcards_layout_line).setVisibility(View.VISIBLE);
-			missLayoutLayout.setOnClickListener(this);
+				&& "1".equals(MyApplication.getInstance().getCurrentUser().getIsmissidcard())) {
+			findViewById(R.id.mysmile_miss_idcard_text).setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -129,7 +129,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, MyOrdersActivity.class);
 				}
-				intent.putExtra("status", Constants.OrderStateCode.FOR_PAYMENT);
+				intent.putExtra("status", MyOrdersActivity.NEED_PAY);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;
@@ -143,7 +143,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, MyOrdersActivity.class);
 				}
-				intent.putExtra("status", Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE);
+				intent.putExtra("status", MyOrdersActivity.NEED_RECEIVE);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;
