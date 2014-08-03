@@ -51,12 +51,13 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private OrderDto				order						= null;
 	private List<OrderDetailDto>	orderDetails				= new ArrayList<OrderDetailDto>();
 	private Integer					gid							= null;							// 商品ID
-	private Integer					addressId					= null;							// 地址id
+	private Integer					addressId					= 1;								// 地址id
 	private Integer					qty							= 1;								// 购买数量，默认是1
 	private List<String>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
 	private Integer					allQty						= 0;								// 结算总数量，默认是0
 	private BigDecimal				allTotal					= null;							// 结算总金额
 	private BigDecimal				logisticFee					= null;							// 单个物流费
+	private BigDecimal				logisticsFeeTotal			= new BigDecimal(0);				// 总物流费
 	private boolean					cartFlag					= false;							// 为true是指从购物车中结算的
 
 	@SuppressWarnings("unchecked")
@@ -207,12 +208,13 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 		if (logisticFee != null) {
 			logisticEvery.setText(logisticFee.doubleValue() + "");
-			logisticsTotal.setText(logisticFee.multiply(BigDecimal.valueOf(allQty)) + "");
+			logisticsFeeTotal = logisticFee.multiply(BigDecimal.valueOf(allQty));
+			logisticsTotal.setText(logisticsFeeTotal.doubleValue() + "");
 		}
 		pTotalNumber.setText(allQty + "");
 		pTotalMoney.setText(allTotal.doubleValue() + "");
 		totalNumber.setText(allQty + "");
-		totalMoney.setText(allTotal.doubleValue() + "");
+		totalMoney.setText(allTotal.add(logisticsFeeTotal).doubleValue() + "");
 	}
 
 	@SuppressLint("HandlerLeak")
