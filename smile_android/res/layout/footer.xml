@@ -141,6 +141,17 @@
             android:paddingTop="4dp"
             android:text="结算"
             android:textColor="@drawable/baise" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/footer_my_orders_all_pay"
+            android:layout_alignBottom="@+id/footer_my_orders_all_pay"
+            android:layout_alignLeft="@+id/footer_my_orders_all_checked"
+            android:layout_marginLeft="14dp"
+            android:paddingLeft="20dp"
+            android:text="全选" />
+
     </RelativeLayout>
 
     <LinearLayout

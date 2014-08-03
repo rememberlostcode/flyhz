@@ -75,8 +75,6 @@ public class OrderServiceImpl implements OrderService {
 	private MailRepository	mailRepository;
 	@Resource
 	private TaobaoData		taobaoData;
-	@Resource
-	private OrderStatusService orderStatusService;
 
 	@Override
 	public OrderDto generateOrder(Integer userId, Integer consigneeId, String[] productIds,

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.holding.smile.R;
@@ -42,6 +43,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	private TextView		finshButton;
 	private TextView		unfinshButton;
 
+	private RelativeLayout footerMyOrders;
 	private ImageView		allChecked;
 	private TextView		allPayButton;
 
@@ -60,7 +62,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 			if (intent.getExtras() != null && intent.getExtras().getSerializable("status") != null) {
 				status = intent.getExtras().getString("status");
 			} else {
-				status = NEED_PAY;
+				status = "";
 			}
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, e.getMessage());
@@ -99,6 +101,9 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 			}
 		});
 
+		footerMyOrders = (RelativeLayout) findViewById(R.id.footer_my_orders);
+		footerMyOrders.setVisibility(View.GONE);
+		
 		allPayButton = (TextView) findViewById(R.id.footer_my_orders_all_pay);
 		allChecked = (ImageView) findViewById(R.id.footer_my_orders_all_checked);
 
@@ -229,18 +234,18 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 														}
 
 														list = rvd.getOrderListData();
-														if (adapter != null) {
-															adapter.setData(list);
-														} else {
+														if (adapter == null) {
 															adapter = new MyOrdersAdapter(
 																	MyOrdersActivity.this, list,
 																	mUIHandler);
 														}
+														adapter.setData(list, footerMyOrders, allChecked);
 
 														listView.setAdapter(adapter);
 														break;
 													}
 													case 3: {
+														adapter.setNumZero();
 														adapter.notifyDataSetChanged();
 														break;
 													}
