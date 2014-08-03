@@ -63,10 +63,9 @@ public class LoginService {
 		if (MyApplication.getSessionTime() == null) {//
 			SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
 			if (user != null) {
-				user.setRegistrationID(MyApplication.getInstance().getRegistrationID());
 				RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
-														.autoLogin(user);
-				if (rtnValueDto == null || !rtnValueDto.getCode().equals(200000)) {
+														.autoLogin();
+				if (rtnValueDto == null || !rtnValueDto.getCode().equals(SUCCESS_CODE)) {
 					MyApplication.getInstance().setCurrentUser(null);
 					MyApplication.getInstance().setSessionId(null);
 					isLogining = false;
@@ -78,10 +77,9 @@ public class LoginService {
 				Log.i(MyApplication.LOG_TAG, "超过20分钟，需要重新登录");
 				SUser user = MyApplication.getInstance().getCurrentUser();
 				if (user != null) {
-					user.setRegistrationID(MyApplication.getInstance().getRegistrationID());
 					RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
-															.autoLogin(user);
-					if (rtnValueDto == null || !rtnValueDto.getCode().equals(200000)) {
+															.autoLogin();
+					if (rtnValueDto == null || !rtnValueDto.getCode().equals(SUCCESS_CODE)) {
 						MyApplication.getInstance().setCurrentUser(null);
 						MyApplication.getInstance().setSessionId(null);
 						isLogining = false;
@@ -129,9 +127,20 @@ public class LoginService {
 				rvd.setCode(user.getCode());
 				if (user.getData() != null && user.getCode() == SUCCESS_CODE) {
 					try {
-						user.getData().setRegistrationID(iuser.getRegistrationID());
-						
-						setLoginUser(user.getData());
+						SUser suser = MyApplication.getInstance().getSqliteService().getScurrentUser();
+						if (iuser.getRegistrationID() != null) {
+							suser.setRegistrationID(iuser.getRegistrationID());
+						}
+						if(user.getData().getEmail()!=null){
+							suser.setEmail(user.getData().getEmail());
+						}
+						if(user.getData().getMobilephone()!=null){
+							suser.setMobilephone(user.getData().getMobilephone());
+						}
+						if(user.getData().getToken()!=null){
+							suser.setToken(user.getData().getToken());
+						}
+						setLoginUser(suser);
 						if (isAutoLogin) {
 							// 添加本地数据库用户信息
 							MyApplication.getInstance().getSqliteService().addUser();
@@ -149,9 +158,14 @@ public class LoginService {
 		return rvd;
 	}
 
-	public RtnValueDto autoLogin(SUser iuser) {
+	public RtnValueDto autoLogin() {
 		if(CodeValidator.isNetworkError()){
 			return CodeValidator.getNetworkErrorRtnValueDto();
+		}
+		SUser iuser = MyApplication.getInstance().getCurrentUser();
+		
+		if (MyApplication.getInstance().getRegistrationID() != null) {
+			iuser.setRegistrationID(MyApplication.getInstance().getRegistrationID());
 		}
 		RtnValueDto rvd = null;
 		if (iuser != null && iuser.getUsername() != null && iuser.getToken() != null) {
@@ -171,8 +185,20 @@ public class LoginService {
 					rvd.setCode(user.getCode());
 					if (user.getData() != null && user.getCode() == SUCCESS_CODE) {
 						try {
-							user.getData().setRegistrationID(iuser.getRegistrationID());
-							setLoginUser(user.getData());
+							SUser suser = MyApplication.getInstance().getSqliteService().getScurrentUser();
+							if (iuser.getRegistrationID() != null) {
+								suser.setRegistrationID(iuser.getRegistrationID());
+							}
+							if(user.getData().getEmail()!=null){
+								suser.setEmail(user.getData().getEmail());
+							}
+							if(user.getData().getMobilephone()!=null){
+								suser.setMobilephone(user.getData().getMobilephone());
+							}
+							if(user.getData().getToken()!=null){
+								suser.setToken(user.getData().getToken());
+							}
+							setLoginUser(suser);
 							// 添加本地数据库用户信息
 							MyApplication.getInstance().getSqliteService().addUser();
 						} catch (Exception e) {
@@ -201,6 +227,7 @@ public class LoginService {
 	private static void setLoginUser(SUser user) {
 		// 把返回的用户设置成当前用户
 		MyApplication.getInstance().setCurrentUser(user);
+		
 		if (MyApplication.getTb_url() == null || "".equals(MyApplication.getTb_url())) {
 			MyApplication.setTb_url(user.getUrl());
 		}

@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.holding.smile.activity.HtmlUIActivity;
-import com.holding.smile.activity.IdcardManagerActivity;
 import com.holding.smile.activity.IndexActivity;
 import com.holding.smile.activity.LoginActivity;
 import com.holding.smile.activity.MyApplication;
@@ -97,19 +96,6 @@ public class MyReceiver extends BroadcastReceiver {
 					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					context.startActivity(i);
 				}
-			} else if (alert.indexOf("身份证") > -1) {
-				if (!MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
-					Intent i = new Intent();
-					i.putExtra("class", IdcardManagerActivity.class);
-					i.setClass(context, LoginActivity.class);
-					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					context.startActivity(i);
-				} else {
-					Intent i = new Intent();
-					i.setClass(context, IdcardManagerActivity.class);
-					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					context.startActivity(i);
-				}
 			} else {
 				Log.i(TAG, "未进行任何操作");
 			}
@@ -147,8 +133,15 @@ public class MyReceiver extends BroadcastReceiver {
 
 	// send msg to MainActivity
 	private void processCustomMessage(Context context, Bundle bundle) {
+		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
+		if (message.indexOf("身份证") > -1) {
+			Log.e(MyApplication.LOG_TAG, "设置身份证缺少标记为1");
+			if (MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
+				MyApplication.getInstance().getCurrentUser().setIsmissidcard("1");
+				MyApplication.getInstance().getSqliteService().updateUser();
+			}
+		} 
 		if (IndexActivity.isForeground) {
-			String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
 			String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
 			Intent msgIntent = new Intent(IndexActivity.MESSAGE_RECEIVED_ACTION);
 			msgIntent.putExtra(IndexActivity.KEY_MESSAGE, message);

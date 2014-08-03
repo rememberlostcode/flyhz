@@ -238,12 +238,7 @@ public class IndexActivity extends InstrumentedActivity {
 															SUser user = (SUser) msg.obj;
 															LoginService loginService = MyApplication.getInstance()
 																										.getLoginService();
-															if (MyApplication.getInstance()
-																				.getRegistrationID() != null) {
-																user.setRegistrationID(MyApplication.getInstance()
-																									.getRegistrationID());
-															}
-															RtnValueDto rvd = loginService.autoLogin(user);
+															RtnValueDto rvd = loginService.autoLogin();
 															if (rvd != null)
 																Log.i(MyApplication.LOG_TAG,
 																		rvd.getCode() + "");

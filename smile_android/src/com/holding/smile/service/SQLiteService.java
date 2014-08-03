@@ -235,7 +235,7 @@ public class SQLiteService {
 
 	/**
 	 * 添加当前登录用户到本地数据库，添加后会把此用户标识设置成当前登录：先在MyApplication.getInstance().
-	 * getCurrentUser()中设置要修改的内容， 再调用此方法
+	 * getCurrentUser()中设置要修改的内容， 再调用此方法;本地数据库已经存在就修改
 	 * 
 	 * @param user
 	 *            用户信息
@@ -289,16 +289,27 @@ public class SQLiteService {
 				db.update("user", cv, "1 = 1", new String[] {});
 
 				cv.clear();
-				cv.put("username", user.getUsername());
-				cv.put("token", user.getToken());
-				cv.put("mobilephone", user.getMobilephone());
-				cv.put("identitycard", user.getIdentitycard());
-				cv.put("qq", user.getQq());
-				cv.put("email", user.getEmail());
-				cv.put("weibo", user.getWeibo());
-				cv.put("weixin", user.getWeixin());
 				cv.put("flag", "1");
-				cv.put("ismissidcard", user.getIsmissidcard());
+				
+				if (user.getUsername() != null)
+					cv.put("username", user.getUsername());
+				if (user.getToken() != null)
+					cv.put("token", user.getToken());
+				if (user.getMobilephone() != null)
+					cv.put("mobilephone", user.getMobilephone());
+				if (user.getIdentitycard() != null)
+					cv.put("identitycard", user.getIdentitycard());
+				if (user.getQq() != null)
+					cv.put("qq", user.getQq());
+				if (user.getEmail() != null)
+					cv.put("email", user.getEmail());
+				if (user.getWeibo() != null)
+					cv.put("weibo", user.getWeibo());
+				if (user.getWeixin() != null)
+					cv.put("weixin", user.getWeixin());
+				if (user.getIsmissidcard() != null)
+					cv.put("ismissidcard", user.getIsmissidcard());
+				
 				db.update("user", cv, "cuid = ?", new String[] { String.valueOf(user.getId()) });
 
 				MyApplication.getInstance().getCurrentUser().setFlag("1");
