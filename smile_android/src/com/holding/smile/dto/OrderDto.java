@@ -27,6 +27,8 @@ public class OrderDto implements Serializable {
 
 	private Consignee				consignee;
 
+	private BigDecimal				logisticsPriceTotal;
+
 	private BigDecimal				total;
 
 	private Integer					qty;
@@ -79,6 +81,14 @@ public class OrderDto implements Serializable {
 
 	public void setConsignee(Consignee consignee) {
 		this.consignee = consignee;
+	}
+
+	public BigDecimal getLogisticsPriceTotal() {
+		return logisticsPriceTotal;
+	}
+
+	public void setLogisticsPriceTotal(BigDecimal logisticsPriceTotal) {
+		this.logisticsPriceTotal = logisticsPriceTotal;
 	}
 
 	public BigDecimal getTotal() {
