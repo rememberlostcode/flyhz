@@ -44,13 +44,13 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private BigDecimal			total		= new BigDecimal(0);
 	private Boolean				selectAll	= false;
 	private Handler				mUIHandler;
-	
-	private int numTotal = 0;
-	private int selectTotal = 0;
-	private RelativeLayout footerMyOrders;
-	private ImageView allChecked;
-	
-	public void setNumZero(){
+
+	private int					numTotal	= 0;
+	private int					selectTotal	= 0;
+	private RelativeLayout		footerMyOrders;
+	private ImageView			allChecked;
+
+	public void setNumZero() {
 		numTotal = 0;
 		selectTotal = 0;
 	}
@@ -62,18 +62,18 @@ public class MyOrdersAdapter extends BaseAdapter {
 		this.mUIHandler = mUIHandler;
 	}
 
-	public void setData(List<OrderDto> contacts,RelativeLayout footerMyOrders,ImageView allChecked) {
+	public void setData(List<OrderDto> contacts, RelativeLayout footerMyOrders, ImageView allChecked) {
 		if (contacts == null) {
 			this.orderList = new ArrayList<OrderDto>();
 		} else {
 			this.orderList = contacts;
 		}
-		
+
 		this.footerMyOrders = footerMyOrders;
 		this.allChecked = allChecked;
-		
+
 		setNumZero();
-//		notifyDataSetChanged();
+		// notifyDataSetChanged();
 	}
 
 	public void showEdit(boolean showDelete) {
@@ -143,10 +143,10 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 		if (order.getStatus().equals(Constants.OrderStateCode.FOR_PAYMENT.code + "")) {
 			if (numbers.contains(order.getNumber())) {
-				holder.checkBoxImage.setBackgroundResource(R.drawable.icon_choice);
-				selectTotal ++;
+				holder.checkBoxImage.setBackgroundResource(R.drawable.new_cb_checked);
+				selectTotal++;
 			} else {
-				holder.checkBoxImage.setBackgroundResource(R.drawable.icon_no_choice);
+				holder.checkBoxImage.setBackgroundResource(R.drawable.new_cb_normal);
 			}
 			holder.checkBoxImage.setVisibility(View.VISIBLE);
 			numTotal++;
@@ -180,29 +180,29 @@ public class MyOrdersAdapter extends BaseAdapter {
 			public void onClick(View v) {
 				if (numbers.contains(order.getNumber())) {
 					numbers.remove(order.getNumber());
-					v.setBackgroundResource(R.drawable.icon_no_choice);
+					v.setBackgroundResource(R.drawable.new_cb_normal);
 					total = total.subtract(order.getTotal());
-					
-					selectTotal --;
+
+					selectTotal--;
 				} else {
 					numbers.add(order.getNumber());
-					v.setBackgroundResource(R.drawable.icon_choice);
+					v.setBackgroundResource(R.drawable.new_cb_checked);
 					total = total.add(order.getTotal());
-					
-					selectTotal ++;
+
+					selectTotal++;
 				}
 				if (numbers.isEmpty()) {
 					selectAll = false;
 				}
-				
+
 				Log.i("order", "selectTotal/numTotal====" + selectTotal + "/" + numTotal);
-//				if(numTotal == selectTotal){
-//					allChecked.setBackgroundResource(R.drawable.icon_choice);
-//				} else {
-//					allChecked.setBackgroundResource(R.drawable.icon_no_choice);
-//				}
-				
-				if(selectTotal==0){
+				// if(numTotal == selectTotal){
+				// allChecked.setBackgroundResource(R.drawable.new_cb_checked);
+				// } else {
+				// allChecked.setBackgroundResource(R.drawable.new_cb_normal);
+				// }
+
+				if (selectTotal == 0) {
 					footerMyOrders.setVisibility(View.GONE);
 				} else {
 					footerMyOrders.setVisibility(View.VISIBLE);

@@ -161,15 +161,15 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 		if (cartItem != null && cartItem.getProduct() != null) {
 
 			if (selectAll) {
-				holder.checkBox.setBackgroundResource(R.drawable.icon_choice);
+				holder.checkBox.setBackgroundResource(R.drawable.new_cb_checked);
 			} else {
-				holder.checkBox.setBackgroundResource(R.drawable.icon_no_choice);
+				holder.checkBox.setBackgroundResource(R.drawable.new_cb_normal);
 			}
 			if (sIds.contains(cartItem.getId())) {
-				holder.checkBox.setBackgroundResource(R.drawable.icon_choice);
+				holder.checkBox.setBackgroundResource(R.drawable.new_cb_checked);
 			} else {
 				selectAll = false;
-				holder.checkBox.setBackgroundResource(R.drawable.icon_no_choice);
+				holder.checkBox.setBackgroundResource(R.drawable.new_cb_normal);
 			}
 
 			final ProductDto jGoods = cartItem.getProduct();
@@ -274,11 +274,11 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 				public void onClick(View v) {
 					if (!sIds.contains(cartItem.getId())) {
 						sIds.add(cartItem.getId());
-						v.setBackgroundResource(R.drawable.icon_choice);
+						v.setBackgroundResource(R.drawable.new_cb_checked);
 					} else {
 						selectAll = false;
 						sIds.remove(cartItem.getId());
-						v.setBackgroundResource(R.drawable.icon_no_choice);
+						v.setBackgroundResource(R.drawable.new_cb_normal);
 					}
 					if (sIds.size() < cartItemList.size()) {
 						selectAll = false;

@@ -36,6 +36,13 @@
                 android:layout_marginLeft="2dp"
                 android:background="@drawable/checkbox_bg"
                 android:gravity="center_vertical" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="全选"
+                android:textColor="@drawable/shenhuise"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <LinearLayout
