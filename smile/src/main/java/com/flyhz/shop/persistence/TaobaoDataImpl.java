@@ -20,12 +20,10 @@ import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.TaobaoTokenUtil;
 import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
-import com.flyhz.shop.persistence.dao.IdcardDao;
 import com.flyhz.shop.persistence.dao.LogisticsDao;
-import com.flyhz.shop.persistence.dao.OrderDao;
-import com.flyhz.shop.persistence.entity.IdcardModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.OrderService;
+import com.flyhz.shop.service.common.OrderStatusService;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
@@ -69,9 +67,7 @@ public class TaobaoDataImpl implements TaobaoData {
 	@Resource
 	private LogisticsDao		logisticsDao;
 	@Resource
-	private IdcardDao			idcardDao;
-	@Resource
-	private OrderDao			orderDao;
+	private OrderStatusService	orderStatusService;
 
 	private final Long			PAGE_SIZE	= 100L;
 
@@ -112,7 +108,7 @@ public class TaobaoDataImpl implements TaobaoData {
 				log.info("第" + page + "页");
 				TaobaoClient client = new DefaultTaobaoClient(url, appkey, appSecret);
 				TradesSoldGetRequest req = new TradesSoldGetRequest();
-				req.setFields("status,tid");
+				req.setFields("status,tid,has_buyer_message");
 				req.setPageSize(PAGE_SIZE);
 
 				try {
@@ -120,9 +116,6 @@ public class TaobaoDataImpl implements TaobaoData {
 					List<Trade> trades = response.getTrades();
 					totalPage = response.getTotalResults() / PAGE_SIZE + 1L;
 
-					boolean isAdd = true;
-					String buyerMessage = null;
-					String[] numbers = null;
 					for (int i = 0; trades != null && i < trades.size(); i++) {
 						Long tid = trades.get(i).getTid();
 						String status = trades.get(i).getStatus();
@@ -141,209 +134,195 @@ public class TaobaoDataImpl implements TaobaoData {
 						 * WAIT_PRE_AUTH_CONFIRM(余额宝0元购合约中)/
 						 */
 
-						// 只有 等待买家付款、买家已付款、卖家部分发货、卖家已发货、买家已签收、交易成功、交易关闭、交易被淘宝关闭
-						if ("WAIT_BUYER_PAY".equals(status)
-								|| "WAIT_SELLER_SEND_GOODS".equals(status)
+						boolean has_buyer_message = false;
+						// 只有 买家已付款、卖家部分发货、卖家已发货、买家已签收、交易成功、交易关闭、交易被淘宝关闭
+						if ("WAIT_SELLER_SEND_GOODS".equals(status)
 								|| "SELLER_CONSIGNED_PART".equals(status)
 								|| "WAIT_BUYER_CONFIRM_GOODS".equals(status)
 								|| "TRADE_BUYER_SIGNED".equals(status)
 								|| "TRADE_FINISHED".equals(status) || "TRADE_CLOSED".equals(status)
 								|| "TRADE_CLOSED_BY_TAOBAO".equals(status)) {
+							has_buyer_message = trades.get(i).getHasBuyerMessage();
+						} else {
+							continue;
+						}
+
+						// 有留言
+						if (has_buyer_message) {
+
+							String buyerMessage = null;
+							String[] numbers = null;
 							// 先获取买家留言
 							try {
 								buyerMessage = getOrderNumber(client, tid);
 							} catch (ApiException e) {
 								log.error(e.getMessage());
 							}
-						} else {
-							buyerMessage = null;
-							continue;
-						}
+							if (StringUtils.isNotBlank(buyerMessage)) {
 
-						if (StringUtils.isNotBlank(buyerMessage)) {
-							// 通过留言获得smile订单号
-							numbers = buyerMessage.split(",");
-							OrderModel orderModel = new OrderModel();
+								// 通过留言获得smile订单号
+								numbers = buyerMessage.split(",");
+								if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 买家已付款,即:等待卖家发货
+									for (int g = 0; g < numbers.length; g++) {
+										if (StringUtils.isNotBlank(numbers[g])) {
+											OrderSimpleDto orderSimpleDto = orderService.getOrderDtoByNumber(numbers[g]);
 
-							if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
-								for (int g = 0; g < numbers.length; g++) {
-									if (StringUtils.isNotBlank(numbers[g])) {
-										orderModel.setNumber(numbers[g]);
-										orderModel.setStatus(Constants.OrderStateCode.FOR_PAYMENT.code);
-										orderService.updateStatusByNumber(orderModel);
-									}
-								}
-								continue;
-							} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 买家已付款,即:等待卖家发货
-								for (int g = 0; g < numbers.length; g++) {
-									if (StringUtils.isNotBlank(numbers[g])) {
-										orderModel.setNumber(numbers[g]);
+											// 如果是未付款才需要处理
+											if (g == 0
+													&& orderSimpleDto != null
+													&& orderSimpleDto.getStatus()
+																		.equals(Constants.OrderStateCode.FOR_PAYMENT.code)) {
+												String taobaoReceiverName = getReceiverName(tid);
+												Trade trade = getTradeByTid(tid);
 
-										// 已付款
-										orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_PAID.code);
-										OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
+												BigDecimal payment = new BigDecimal(
+														trade.getPayment());
 
-										// 买家已付款，需要验证身份证是否存在
-										IdcardModel im = new IdcardModel();
-										im.setUserId(orderDto.getUserId());
-										List<IdcardModel> list = idcardDao.getModelList(im);
-										if (list == null || list.size() == 0) {
-											// 缺失身份证
-											orderModel.setStatus(Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code);
-										} else {
-											// 等待发货
-											orderModel.setStatus(Constants.OrderStateCode.WAITING_FOR_DELIVERY.code);
-										}
-										orderService.updateStatusByNumber(orderModel);
-									}
-								}
-								continue;
-							} else if ("SELLER_CONSIGNED_PART".equals(status)) {// 卖家部分发货
-								for (int g = 0; g < numbers.length; g++) {
-									if (StringUtils.isNotBlank(numbers[g])) {
-										orderModel.setNumber(numbers[g]);
-										orderModel.setStatus(Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code);
-										orderService.updateStatusByNumber(orderModel);
-									}
-								}
-							} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 卖家已发货,即:等待买家确认收货
-								for (int g = 0; g < numbers.length; g++) {
-									if (StringUtils.isNotBlank(numbers[g])) {
-										orderModel.setNumber(numbers[g]);
-										orderModel.setStatus(Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code);
-										orderService.updateStatusByNumber(orderModel);
-									}
-								}
-							} else if ("TRADE_BUYER_SIGNED".equals(status)) {// 买家已签收,货到付款专用
-								for (int g = 0; g < numbers.length; g++) {
-									if (StringUtils.isNotBlank(numbers[g])) {
-										orderModel.setNumber(numbers[g]);
-										orderModel.setStatus(Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
-										orderService.updateStatusByNumber(orderModel);
-									}
-								}
-							} else if ("TRADE_FINISHED".equals(status)) {// 交易成功
-								for (int g = 0; g < numbers.length; g++) {
-									if (StringUtils.isNotBlank(numbers[g])) {
-										orderModel.setNumber(numbers[g]);
-										orderModel.setStatus(Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
-										orderService.updateStatusByNumber(orderModel);
-									}
-								}
-							} else if ("TRADE_CLOSED".equals(status)) {// 交易关闭
-								for (int g = 0; g < numbers.length; g++) {
-									if (StringUtils.isNotBlank(numbers[g])) {
-										orderModel.setNumber(numbers[g]);
-										orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_CLOSED.code);
-										orderService.updateStatusByNumber(orderModel);
-									}
-								}
-								continue;
-							} else if ("TRADE_CLOSED_BY_TAOBAO".equals(status)) {
-								for (int g = 0; g < numbers.length; g++) {
-									if (StringUtils.isNotBlank(numbers[g])) {
-										orderModel.setNumber(numbers[g]);
-										orderModel.setStatus(Constants.OrderStateCode.HAVE_BEEN_CLOSED.code);
-										orderService.updateStatusByNumber(orderModel);
-									}
-								}
-								continue;
-							} else if ("ALL_WAIT_PAY".equals(status)) {
-								continue;
-							} else if ("ALL_CLOSED".equals(status)) {
-								continue;
-							} else if ("WAIT_PRE_AUTH_CONFIRM".equals(status)) {
-								continue;
-							} else {
-								continue;
-							}
-
-							/***************************** 处理订单状态 end ***********************************/
-
-							/***************************** 处理物流 start *************************************/
-							log.info("同步淘宝物流...");
-							for (int j = 0; j < numbers.length; j++) {
-								OrderSimpleDto orderDto = orderService.getOrderDtoByNumber(numbers[j]);
-								if (orderDto != null) {
-									if (orderDto.getLogisticsDto() != null
-											&& "对方已签收".equals(orderDto.getLogisticsDto()
-																		.getLogisticsStatus())) {
-										log.info("mysql物流信息已经是“对方已签收”，无需个更新！");
-									}
-									// 详细收货地址
-									String address = getLogisticsOrderAddress(client, tid);
-
-									LogisticsTraceSearchResponse res = null;
-									try {
-										res = this.getTraceList(client, tid);
-									} catch (ApiException e) {
-										e.printStackTrace();
-									}
-									if (res != null) {
-										List<TransitStepInfo> traceList = res.getTraceList();
-										if (res != null && traceList != null
-												&& traceList.size() > 0) {
-											List<String> llist = new ArrayList<String>();
-											for (int k = 0; k < traceList.size(); k++) {
-												llist.add(traceList.get(k).getStatusTime() + " "
-														+ traceList.get(k).getStatusDesc());
-											}
-
-											if (orderDto.getLogisticsDto() == null) {
-												orderDto.setLogisticsDto(new LogisticsDto());
-												isAdd = true;
-											} else {
-												isAdd = false;
-												log.info("mysql物流信息:"
-														+ orderDto.getLogisticsDto().getContent());
-											}
-
-											orderDto.getLogisticsDto().setNumber(numbers[j]);
-											orderDto.getLogisticsDto().setCompanyName(
-													res.getCompanyName());
-											orderDto.getLogisticsDto().setTid(res.getTid());
-											orderDto.getLogisticsDto().setLogisticsStatus(
-													res.getStatus());
-											orderDto.getLogisticsDto()
-													.setTransitStepInfoList(llist);
-											orderDto.getLogisticsDto().setAddress(address);
-
-											StringBuilder content = new StringBuilder(50);
-											for (String c : orderDto.getLogisticsDto()
-																	.getTransitStepInfoList()) {
-												content.append(c);
-												content.append("@#@");
-											}
-											content.delete(content.length() - 3, content.length());
-											orderDto.getLogisticsDto().setContent(
-													content.toString());
-
-											if (isAdd) {
-												Date date = new Date();
-												orderDto.getLogisticsDto().setGmtCreate(date);
-												orderDto.getLogisticsDto().setGmtModify(date);
-												logisticsDao.insertLogistics(orderDto.getLogisticsDto());
-												log.info("插入物流信息，系统订单号为"
-														+ orderDto.getLogisticsDto().getNumber()
-														+ "，淘宝订单号为"
-														+ orderDto.getLogisticsDto().getTid());
-											} else {
-												orderDto.getLogisticsDto().setGmtModify(new Date());
-												logisticsDao.updateLogistics(orderDto.getLogisticsDto());
-												log.info("更新物流信息，系统订单号为"
-														+ orderDto.getLogisticsDto().getNumber()
-														+ "，淘宝订单号为"
-														+ orderDto.getLogisticsDto().getTid());
+												orderStatusService.paymentValidateAmountAndIdcard(
+														numbers, payment, taobaoReceiverName);
 											}
 										}
-										solrData.submitOrder(orderDto.getUserId(),
-												orderDto.getId(), orderDto.getStatus(),
-												orderDto.getGmtModify(), orderDto.getLogisticsDto());
 									}
+									continue;
+								} else if ("SELLER_CONSIGNED_PART".equals(status)
+										|| "WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 卖家已发货,即:等待买家确认收货
+									for (int g = 0; g < numbers.length; g++) {
+										if (StringUtils.isNotBlank(numbers[g])) {
+											OrderSimpleDto orderSimpleDto = orderService.getOrderDtoByNumber(numbers[g]);
+											// 如果是等待发货才需要处理
+											if (g == 0
+													&& orderSimpleDto != null
+													&& orderSimpleDto.getStatus()
+																		.equals(Constants.OrderStateCode.WAITING_FOR_DELIVERY.code)) {
+												orderStatusService.sendGoods(numbers);
+											}
+										}
+									}
+								} else if ("TRADE_BUYER_SIGNED".equals(status)
+										|| "TRADE_FINISHED".equals(status)) {// 买家已签收,货到付款专用/交易成功
+									orderStatusService.receiveGoods(numbers);
+								} else if ("TRADE_CLOSED".equals(status)) {// 交易关闭
+									orderStatusService.closeOrderById(numbers);
+									continue;
+								} else if ("TRADE_CLOSED_BY_TAOBAO".equals(status)) {// 淘宝自动关闭，如超过时间等等
+									orderStatusService.closeOrderById(numbers);
+									continue;
+								} else if ("ALL_WAIT_PAY".equals(status)) {
+									continue;
+								} else if ("ALL_CLOSED".equals(status)) {
+									continue;
+								} else if ("WAIT_PRE_AUTH_CONFIRM".equals(status)) {
+									continue;
+								} else {
+									continue;
 								}
+
+								/***************************** 处理订单状态 end ***********************************/
+
+								/***************************** 处理物流 start *************************************/
+								if ("SELLER_CONSIGNED_PART".equals(status)
+										|| "WAIT_BUYER_CONFIRM_GOODS".equals(status)
+										|| "TRADE_BUYER_SIGNED".equals(status)
+										|| "TRADE_FINISHED".equals(status)) {
+									log.info("同步淘宝物流...");
+									for (int j = 0; j < numbers.length; j++) {
+										OrderSimpleDto orderDto = orderService.getOrderDtoByNumber(numbers[j]);
+										if (orderDto != null) {
+											if (orderDto.getLogisticsDto() != null
+													&& "对方已签收".equals(orderDto.getLogisticsDto()
+																				.getLogisticsStatus())) {
+												log.info("mysql物流信息已经是“对方已签收”，无需更新！");
+												continue;
+											}
+											// 详细收货地址
+											String address = getLogisticsOrderAddress(client, tid);
+
+											LogisticsTraceSearchResponse res = null;
+											try {
+												res = this.getTraceList(client, tid);
+											} catch (ApiException e) {
+												e.printStackTrace();
+											}
+											if (res != null) {
+												List<TransitStepInfo> traceList = res.getTraceList();
+												if (res != null && traceList != null
+														&& traceList.size() > 0) {
+													List<String> llist = new ArrayList<String>();
+													for (int k = 0; k < traceList.size(); k++) {
+														llist.add(traceList.get(k).getStatusTime()
+																+ " "
+																+ traceList.get(k).getStatusDesc());
+													}
+
+													boolean isAdd = true;
+													if (orderDto.getLogisticsDto() == null) {
+														orderDto.setLogisticsDto(new LogisticsDto());
+														isAdd = true;
+													} else {
+														isAdd = false;
+														log.info("mysql物流信息:"
+																+ orderDto.getLogisticsDto()
+																			.getContent());
+													}
+
+													orderDto.getLogisticsDto()
+															.setNumber(numbers[j]);
+													orderDto.getLogisticsDto().setCompanyName(
+															res.getCompanyName());
+													orderDto.getLogisticsDto().setTid(res.getTid());
+													orderDto.getLogisticsDto().setLogisticsStatus(
+															res.getStatus());
+													orderDto.getLogisticsDto()
+															.setTransitStepInfoList(llist);
+													orderDto.getLogisticsDto().setAddress(address);
+
+													StringBuilder content = new StringBuilder(50);
+													for (String c : orderDto.getLogisticsDto()
+																			.getTransitStepInfoList()) {
+														content.append(c);
+														content.append("@#@");
+													}
+													content.delete(content.length() - 3,
+															content.length());
+													orderDto.getLogisticsDto().setContent(
+															content.toString());
+
+													if (isAdd) {
+														Date date = new Date();
+														orderDto.getLogisticsDto().setGmtCreate(
+																date);
+														orderDto.getLogisticsDto().setGmtModify(
+																date);
+														logisticsDao.insertLogistics(orderDto.getLogisticsDto());
+														log.info("插入物流信息，系统订单号为"
+																+ orderDto.getLogisticsDto()
+																			.getNumber()
+																+ "，淘宝订单号为"
+																+ orderDto.getLogisticsDto()
+																			.getTid());
+													} else {
+														orderDto.getLogisticsDto().setGmtModify(
+																new Date());
+														logisticsDao.updateLogistics(orderDto.getLogisticsDto());
+														log.info("更新物流信息，系统订单号为"
+																+ orderDto.getLogisticsDto()
+																			.getNumber()
+																+ "，淘宝订单号为"
+																+ orderDto.getLogisticsDto()
+																			.getTid());
+													}
+												}
+												solrData.submitOrder(orderDto.getUserId(),
+														orderDto.getId(), orderDto.getStatus(),
+														orderDto.getGmtModify(),
+														orderDto.getLogisticsDto());
+											}
+										}
+									}
+									log.info("同步淘宝物流结束");
+								}
+								/***************************** 处理物流 end ***********************************/
 							}
-							log.info("同步淘宝物流结束");
-							/***************************** 处理物流 end ***********************************/
 						}
 					}
 
@@ -509,77 +488,24 @@ public class TaobaoDataImpl implements TaobaoData {
 									log.info("有商品下架了,id=" + jobject.getString("num_iid"));
 
 								} else if ("taobao_trade_TradeBuyerPay".equals(message.getTopic())) {
-									// 买家已付款，需要验证身份证是否存在
-									IdcardModel im = new IdcardModel();
-
 									JSONObject jobject = new JSONObject(message.getContent());
-
 									Long tid = Long.valueOf(jobject.getString("tid"));
-
 									log.info("买家付完款，或万人团买家付完尾款,tid=" + tid);
 
 									// 获取smile系统订单编号
 									TaobaoClient client = new DefaultTaobaoClient(url, appkey,
 											appSecret);
 									String number = getOrderNumber(client, tid);
-									BigDecimal payment = new BigDecimal(
-											jobject.getString("payment"));
 
 									if (StringUtils.isNotBlank(number)) {
 
 										String[] numbers = number.split(",");
-										List<OrderModel> ordersList = new ArrayList<OrderModel>();
-										BigDecimal total = new BigDecimal(0);
-										OrderModel orderModel = new OrderModel();
-										String smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
+										String taobaoReceiverName = getReceiverName(tid);
+										BigDecimal payment = new BigDecimal(
+												jobject.getString("payment"));
 
-										for (int g = 0; g < numbers.length; g++) {
-											if (StringUtils.isNotBlank(numbers[g])) {
-												orderModel = orderDao.getModelByNumber(numbers[g]);
-												if (orderModel != null) {
-													// 累加订单总额
-													total = total.add(orderModel.getTotal());
-
-													if (im.getUserId() == null) {
-														im.setUserId(orderModel.getUserId());
-													}
-													// 设置状态
-													ordersList.add(orderModel);
-												}
-											}
-										}
-
-										// 缺失身份证
-										smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
-
-										List<IdcardModel> list = null;
-										// 所有订单的金额和淘宝订单一样
-										if (total.equals(payment)) {
-											list = idcardDao.getModelList(im);
-											if (list == null || list.size() == 0) {
-											} else {
-												String taobaoReceiverName = getReceiverName(tid);
-												for (int k = 0; k < list.size(); k++) {
-													log.info(taobaoReceiverName+ "===?" + list.get(k)
-															.getName());
-													if (list.get(k) != null
-															&& StringUtils.isNotBlank(list.get(k)
-																							.getName())
-															&& taobaoReceiverName.equals(list.get(k)
-																								.getName())) {
-														// 存在相同名字的身份证，状态改为“等待发货”
-														smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
-														break;
-													}
-												}
-											}
-										}
-
-										// 循环更新数据库订单状态
-										for (int i = 0; i < ordersList.size(); i++) {
-											ordersList.get(i).setStatus(smileStatus);
-											orderDao.updateStatusByNumber(ordersList.get(i));
-										}
+										orderStatusService.paymentValidateAmountAndIdcard(numbers,
+												payment, taobaoReceiverName);
 									}
 
 								} else if ("taobao_trade_TradeSellerShip".equals(message.getTopic())) {
@@ -595,15 +521,7 @@ public class TaobaoDataImpl implements TaobaoData {
 
 									if (StringUtils.isNotBlank(number)) {
 										String[] numbers = number.split(",");
-										// 修改订单状态
-										OrderModel orderModel = new OrderModel();
-										for (int g = 0; g < numbers.length; g++) {
-											if (StringUtils.isNotBlank(numbers[g])) {
-												orderModel.setStatus(Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code);
-												orderModel.setNumber(number);
-												orderService.updateStatusByNumberForMessage(orderModel);
-											}
-										}
+										orderStatusService.sendGoods(numbers);
 									}
 								} else if ("taobao_trade_TradeSuccess".equals(message.getTopic())) {
 

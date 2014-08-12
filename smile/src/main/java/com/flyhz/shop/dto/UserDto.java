@@ -15,6 +15,8 @@ public class UserDto {
 
 	private String	registrationID;
 
+	private String	email;
+
 	public String getUsername() {
 		return username;
 	}
@@ -53,6 +55,14 @@ public class UserDto {
 
 	public void setRegistrationID(String registrationID) {
 		this.registrationID = registrationID;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }

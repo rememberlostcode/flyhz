@@ -127,7 +127,7 @@
     	where username=#{username}
     </select>
     <select id="getUserById" parameterType="Integer" resultType="UserDto">
-    	select id,username,token,registrationID from user
+    	select id,username,token,registrationID,email from user
     	where id = #{id}
     </select>
 

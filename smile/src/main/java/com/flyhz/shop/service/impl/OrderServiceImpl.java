@@ -49,8 +49,6 @@ import com.flyhz.shop.persistence.entity.LogisticsModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.OrderService;
-import com.flyhz.shop.service.common.OrderStatusService;
-import com.taobao.api.domain.Trade;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -321,8 +319,8 @@ public class OrderServiceImpl implements OrderService {
 		String[] number = numbers.replaceAll(" ", "").split(",");
 		String smileStatus = "10";
 		
-		Integer userId = null;
-		BigDecimal total = new BigDecimal(0);
+//		Integer userId = null;
+//		BigDecimal total = new BigDecimal(0);
 		for (int i = 0; i < number.length; i++) {
 			OrderModel orderModel = orderDao.getModelByNumber(number[i]);
 
@@ -335,72 +333,72 @@ public class OrderServiceImpl implements OrderService {
 					return orderModel.getStatus();
 				}// mysql显示未付款时，需要调用淘宝接口查看
 				
-				if (userId == null) {
-					userId = orderModel.getUserId();
-				}
+//				if (userId == null) {
+//					userId = orderModel.getUserId();
+//				}
 				
-				//累加订单总额
-				total = total.add(orderModel.getTotal());
-				log.info("total = "+ total);
+//				//累加订单总额
+//				total = total.add(orderModel.getTotal());
+//				log.info("total = "+ total);
 
-				//最后一单，处理查看淘宝的订单信息
-				if (i == number.length - 1) {
-					Trade trade = taobaoData.getTradeByTid(tid);
-					if (trade == null) {
-						throw new ValidateException(400000);
-					} else {
-						String status = trade.getStatus();
-						BigDecimal payment = new BigDecimal(trade.getPayment());
-						log.info("淘宝状态：" + status);
-						if (total.equals(payment)) {
-							if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
-								// 未付款
-								smileStatus = Constants.OrderStateCode.FOR_PAYMENT.code;
-							} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
-								// 已付款
-								smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
-								String taobaoReceiverName = taobaoData.getReceiverName(tid);
-								if(StringUtils.isBlank(taobaoReceiverName)){
-									throw new ValidateException(700002);
-								}
-								// 买家已付款，需要验证身份证是否存在
-								IdcardModel im = new IdcardModel();
-								im.setUserId(userId);
-								List<IdcardModel> list = idcardDao.getModelList(im);
-								// 缺失身份证
-								smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
-								if (list == null || list.size() == 0) {
-								} else {
-									for(int k=0;k<list.size();k++){
-										if(list.get(k)!=null && StringUtils.isNotBlank(list.get(k).getName()) 
-												&& taobaoReceiverName.equals(list.get(k).getName())){
-											// 存在相同名字的身份证，状态改为“等待发货”
-											smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
-											break;
-										}
-									}
-								}
-							} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
-								// 已发货
-								smileStatus = Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code;
-							} else if ("TRADE_FINISHED".equals(status)) {// 交易成功
-								smileStatus = Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;
-							} else {
-								// 未知状态
-								log.error("淘宝是暂不处理的状态：" + status);
-								throw new ValidateException(400000);
-							}
-						} else {
-							log.error("淘宝订单价格和smile系统订单价格不相等" + payment + "?=" + total);
-							throw new ValidateException(400001);
-						}
-					}
-				}//淘宝结束
+//				//最后一单，处理查看淘宝的订单信息
+//				if (i == number.length - 1) {
+//					Trade trade = taobaoData.getTradeByTid(tid);
+//					if (trade == null) {
+//						throw new ValidateException(400000);
+//					} else {
+//						String status = trade.getStatus();
+//						BigDecimal payment = new BigDecimal(trade.getPayment());
+//						log.info("淘宝状态：" + status);
+//						if (total.equals(payment)) {
+//							if ("WAIT_BUYER_PAY".equals(status)) {// 等待买家付款
+//								// 未付款
+//								smileStatus = Constants.OrderStateCode.FOR_PAYMENT.code;
+//							} else if ("WAIT_SELLER_SEND_GOODS".equals(status)) {// 等待卖家发货,即:买家已付款
+//								// 已付款
+//								smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
+//								String taobaoReceiverName = taobaoData.getReceiverName(tid);
+//								if(StringUtils.isBlank(taobaoReceiverName)){
+//									throw new ValidateException(700002);
+//								}
+//								// 买家已付款，需要验证身份证是否存在
+//								IdcardModel im = new IdcardModel();
+//								im.setUserId(userId);
+//								List<IdcardModel> list = idcardDao.getModelList(im);
+//								// 缺失身份证
+//								smileStatus = Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code;
+//								if (list == null || list.size() == 0) {
+//								} else {
+//									for(int k=0;k<list.size();k++){
+//										if(list.get(k)!=null && StringUtils.isNotBlank(list.get(k).getName()) 
+//												&& taobaoReceiverName.equals(list.get(k).getName())){
+//											// 存在相同名字的身份证，状态改为“等待发货”
+//											smileStatus = Constants.OrderStateCode.WAITING_FOR_DELIVERY.code;
+//											break;
+//										}
+//									}
+//								}
+//							} else if ("WAIT_BUYER_CONFIRM_GOODS".equals(status)) {// 等待买家确认收货,即:卖家已发货
+//								// 已发货
+//								smileStatus = Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code;
+//							} else if ("TRADE_FINISHED".equals(status)) {// 交易成功
+//								smileStatus = Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;
+//							} else {
+//								// 未知状态
+//								log.error("淘宝是暂不处理的状态：" + status);
+//								throw new ValidateException(400000);
+//							}
+//						} else {
+//							log.error("淘宝订单价格和smile系统订单价格不相等" + payment + "?=" + total);
+//							throw new ValidateException(400001);
+//						}
+//					}
+//				}//淘宝结束
 			}
 			
 			//设置状态
-			orderModel.setStatus(smileStatus);
-			ordersList.add(orderModel);
+//			orderModel.setStatus(smileStatus);
+//			ordersList.add(orderModel);
 		}
 		
 		//循环更新数据库订单状态
