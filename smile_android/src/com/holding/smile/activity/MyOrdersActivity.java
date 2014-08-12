@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,6 +40,8 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 	private String			status;
 
 	private TextView		editView;
+	
+	private LinearLayout statusLayout;
 	private TextView		allButton;
 	private TextView		finshButton;
 	private TextView		unfinshButton;
@@ -88,15 +91,20 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onClick(View v) {
-
+				if(statusLayout==null){
+					statusLayout = (LinearLayout) findViewById(R.id.list_orders_status_layout);
+				}
+				
 				if ("编辑".equals(editView.getText().toString())) {
 					editView.setText(R.string.finish);
 					adapter.showEdit(true);
 					footerView.setVisibility(View.GONE);
+					statusLayout.setVisibility(View.GONE);
 				} else {
 					editView.setText(R.string.edit);
 					adapter.showEdit(false);
 					footerView.setVisibility(View.VISIBLE);
+					statusLayout.setVisibility(View.VISIBLE);
 				}
 			}
 		});
@@ -237,9 +245,10 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 														if (adapter == null) {
 															adapter = new MyOrdersAdapter(
 																	MyOrdersActivity.this, list,
-																	mUIHandler);
+																	mUIHandler,editView);
 														}
 														adapter.setData(list, footerMyOrders, allChecked);
+														
 
 														listView.setAdapter(adapter);
 														break;

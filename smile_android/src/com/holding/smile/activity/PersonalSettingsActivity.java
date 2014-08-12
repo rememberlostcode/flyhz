@@ -28,7 +28,7 @@ import com.holding.smile.tools.ToastUtils;
  */
 public class PersonalSettingsActivity extends BaseActivity implements OnClickListener {
 
-	private LinearLayout	idcardLayout;
+//	private LinearLayout	idcardLayout;
 	private LinearLayout	emailLayout;
 	private LinearLayout	mobileLayout;
 	private LinearLayout	userPwdLayout;
@@ -49,13 +49,13 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 		displayHeaderDescription().setText("个人设置");
 		displayHeaderBack().setOnClickListener(this);
 
-		idcardLayout = (LinearLayout) findViewById(R.id.user_info_idcard_layout);
+//		idcardLayout = (LinearLayout) findViewById(R.id.user_info_idcard_layout);
 		emailLayout = (LinearLayout) findViewById(R.id.user_info_email_layout);
 		mobileLayout = (LinearLayout) findViewById(R.id.user_info_phone_layout);
 		userPwdLayout = (LinearLayout) findViewById(R.id.user_info_pwd_layout);
 		logoutButton = (Button) findViewById(R.id.setting_logout_button);
 
-		idcardLayout.setOnClickListener(this);
+//		idcardLayout.setOnClickListener(this);
 		emailLayout.setOnClickListener(this);
 		mobileLayout.setOnClickListener(this);
 		userPwdLayout.setOnClickListener(this);
@@ -99,13 +99,13 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 				finish();
 				break;
 			}
-			case R.id.user_info_idcard_layout: {
-				Intent intent = new Intent();
-				intent.setClass(context, IdcardManagerActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
-				break;
-			}
+//			case R.id.user_info_idcard_layout: {
+//				Intent intent = new Intent();
+//				intent.setClass(context, IdcardManagerActivity.class);
+//				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//				startActivity(intent);
+//				break;
+//			}
 			case R.id.user_info_email_layout: {
 				Intent intent = new Intent(this, EmailActivity.class);
 				intent.putExtra("email", emailTextView.getText().toString());

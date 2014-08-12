@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,31 +37,32 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private List<OrderDto>		orderList;
 	private MyListView			listView;
 	private OrderDetailAdapter	orderAdapter;
-	private boolean				showDelete	= false;
 
 	private Set<String>			numbers		= new HashSet<String>();
 	private BigDecimal			total		= new BigDecimal(0);
 	private Boolean				selectAll	= false;
 	private Handler				mUIHandler;
 
-	private int					numTotal	= 0;
 	private int					selectTotal	= 0;
 	private RelativeLayout		footerMyOrders;
-	private ImageView			allChecked;
+	private TextView			editView;
+	private boolean isShowCheck = false;
 
 	public void setNumZero() {
-		numTotal = 0;
 		selectTotal = 0;
 	}
 
 	// 自己定义的构造函数
-	public MyOrdersAdapter(Context context, List<OrderDto> orderList, Handler mUIHandler) {
+	public MyOrdersAdapter(Context context, List<OrderDto> orderList, Handler mUIHandler,
+			TextView editView) {
 		this.orderList = orderList;
 		this.context = context;
 		this.mUIHandler = mUIHandler;
+		this.editView = editView;
 	}
 
-	public void setData(List<OrderDto> contacts, RelativeLayout footerMyOrders, ImageView allChecked) {
+	public void setData(List<OrderDto> contacts, RelativeLayout footerMyOrders,
+			ImageView allChecked) {
 		if (contacts == null) {
 			this.orderList = new ArrayList<OrderDto>();
 		} else {
@@ -70,14 +70,12 @@ public class MyOrdersAdapter extends BaseAdapter {
 		}
 
 		this.footerMyOrders = footerMyOrders;
-		this.allChecked = allChecked;
 
 		setNumZero();
 		// notifyDataSetChanged();
 	}
 
 	public void showEdit(boolean showDelete) {
-		this.showDelete = showDelete;
 		setNumZero();
 		notifyDataSetChanged();
 	}
@@ -118,7 +116,6 @@ public class MyOrdersAdapter extends BaseAdapter {
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		final ViewHolder holder;
-		Log.i("order", "getView selectTotal/numTotal====" + selectTotal + "/" + numTotal);
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.order_list, null);
 			holder = new ViewHolder();
@@ -135,6 +132,8 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
+		isShowCheck = "编辑".equals(editView.getText()!=null?editView.getText().toString():"编辑");
+		
 		final OrderDto order = (OrderDto) getItem(position);
 		holder.number.setText(order.getNumber());
 		holder.time.setText(order.getTime());
@@ -148,11 +147,15 @@ public class MyOrdersAdapter extends BaseAdapter {
 			} else {
 				holder.checkBoxImage.setBackgroundResource(R.drawable.new_cb_normal);
 			}
-			holder.checkBoxImage.setVisibility(View.VISIBLE);
-			numTotal++;
+			if(isShowCheck){
+				holder.checkBoxImage.setVisibility(View.VISIBLE);
+			} else {
+				holder.checkBoxImage.setVisibility(View.GONE);
+			}
 		} else {
 			holder.checkBoxImage.setVisibility(View.GONE);
 		}
+		
 		String status = order.getStatus();
 		holder.statusButton.setText(ClickUtil.getTextByStatus(status));
 		holder.statusButton.setBackgroundColor(ClickUtil.getBackgroundColorByStatus(status));
@@ -195,23 +198,16 @@ public class MyOrdersAdapter extends BaseAdapter {
 					selectAll = false;
 				}
 
-				Log.i("order", "selectTotal/numTotal====" + selectTotal + "/" + numTotal);
-				// if(numTotal == selectTotal){
-				// allChecked.setBackgroundResource(R.drawable.new_cb_checked);
-				// } else {
-				// allChecked.setBackgroundResource(R.drawable.new_cb_normal);
-				// }
-
-				if (selectTotal == 0) {
-					footerMyOrders.setVisibility(View.GONE);
-				} else {
+				if (isShowCheck && selectTotal > 0) {
 					footerMyOrders.setVisibility(View.VISIBLE);
+				} else {
+					footerMyOrders.setVisibility(View.GONE);
 				}
 				// mUIHandler.sendEmptyMessage(3);
 			}
 		});
 
-		if (showDelete
+		if (!isShowCheck
 				&& (Constants.OrderStateCode.FOR_PAYMENT.code + "").equals(order.getStatus())) {
 			holder.deleteButton.setVisibility(View.VISIBLE);
 			holder.deleteButton.setOnClickListener(new OnClickListener() {

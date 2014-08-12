@@ -27,12 +27,15 @@ public class ClickUtil {
 				text = "已支付";
 				break;
 			case 13:
-				text = "已支付，上传身份证";
+				text = "金额不对";
 				break;
 			case 14:
-				text = "已上传身份证";
+				text = "已支付，上传身份证";
 				break;
 			case 15:
+				text = "已上传身份证";
+				break;
+			case 16:
 				text = "发货中";
 				break;
 			case 20:
