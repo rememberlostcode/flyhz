@@ -24,7 +24,7 @@ public class URLUtil {
 		if (path == null || "".equals(path.trim())) {
 			return null;
 		}
-		
+
 		if (!MyApplication.isHasNetwork()) {
 			return CodeValidator.getNoNetworkCodeResult();
 		}
@@ -94,11 +94,11 @@ public class URLUtil {
 		if (path == null || "".equals(path.trim())) {
 			return null;
 		}
-		
+
 		if (!MyApplication.isHasNetwork()) {
 			return CodeValidator.getNoNetworkCodeResult();
 		}
-		
+
 		StringBuffer result = new StringBuffer();
 		try {
 			StringBuffer paramsBuffer = new StringBuffer();
@@ -152,7 +152,7 @@ public class URLUtil {
 		if (path == null || "".equals(path.trim())) {
 			return null;
 		}
-		
+
 		if (!MyApplication.isHasNetwork()) {
 			return CodeValidator.getNoNetworkCodeResult();
 		}
@@ -171,6 +171,7 @@ public class URLUtil {
 							paramsBuffer.append("&");
 						}
 						paramsBuffer.append(key + "=" + URLEncoder.encode(each, "UTF-8"));
+						count++;
 					}
 					count++;
 				}
