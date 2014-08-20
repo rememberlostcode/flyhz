@@ -110,8 +110,8 @@ public class MyTableLayout extends TableLayout {
 								row1.getChildAt(j).setSelected(false);
 							}
 						}
-						if (selectDiscount != null
-								&& !selectDiscount.getId().equals(discount.getId())) {
+						if (selectDiscount == null
+								|| !discount.getId().equals(selectDiscount.getId())) {
 							selectDiscount = discount;
 							if (selectDiscount != null) {
 								double disconut = StrUtils.div(selectDiscount.getDiscount(), 10, 2);
@@ -119,6 +119,9 @@ public class MyTableLayout extends TableLayout {
 								discountText.setText("￥" + dp.intValue() + "");
 							}
 							v.setSelected(true);
+						} else {
+							selectDiscount = null;
+							discountText.setText("");
 						}
 					}
 				});
@@ -168,7 +171,7 @@ public class MyTableLayout extends TableLayout {
 				if (rows > 1) {
 					v.setLayoutParams(paramsRow);
 				} else {
-					// v.setLayoutParams(paramsRow2);
+					v.setLayoutParams(paramsRow2);
 				}
 				row.addView(v);// 添加列
 				count += 1;
