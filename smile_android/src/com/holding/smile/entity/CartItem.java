@@ -4,6 +4,7 @@ package com.holding.smile.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.holding.smile.dto.DiscountDto;
 import com.holding.smile.dto.ProductDto;
 
 public class CartItem implements Serializable {
@@ -17,6 +18,8 @@ public class CartItem implements Serializable {
 	private ProductDto			product;
 
 	private BigDecimal			total;
+
+	private DiscountDto			discount;
 
 	public Integer getId() {
 		return id;
@@ -48,6 +51,14 @@ public class CartItem implements Serializable {
 
 	public void setTotal(BigDecimal total) {
 		this.total = total;
+	}
+
+	public DiscountDto getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(DiscountDto discount) {
+		this.discount = discount;
 	}
 
 }

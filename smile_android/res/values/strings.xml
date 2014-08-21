@@ -14,6 +14,9 @@
     <string name="the_charts">排行榜</string>
     <string name="personal_information">个人设置</string>
     <string name="good_detail">商品详情</string>
+    <string name="choose_discount">预约购买,按折扣选择：</string>
+    <string name="discount_price">折扣价格：</string>
+    <string name="discount_desc">折扣说明：按折扣选择时，折扣价格是指预约购买的价格。</string>
     <string name="choose_color">选择颜色：</string>
     <string name="good_desc">物品描述：</string>
     <string name="shopping_cart">购物车</string>

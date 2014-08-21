@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.holding.smile"
     android:versionCode="14"
-    android:versionName="1.4.12" >
+    android:versionName="1.5.1" >
 
     <uses-sdk android:minSdkVersion="8"/>
 
@@ -159,6 +159,11 @@
         </activity>
         <activity
             android:name="com.holding.smile.activity.WebViewActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.holding.smile.activity.ImageViewActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" >
         </activity>

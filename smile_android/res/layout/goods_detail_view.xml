@@ -90,27 +90,118 @@
                     android:gravity="right|center_vertical"
                     android:textColor="@drawable/qianhuise"
                     android:textSize="16sp" />
-
-                <View
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0" />
+                
             </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/show_discount_price"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="5.0dip" >
+                
+                <LinearLayout
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:paddingRight="10.0dip"
+	                android:orientation="horizontal">
+	                <TextView
+	                     android:layout_width="wrap_content"
+	                     android:layout_height="wrap_content"
+	                     android:text="@string/discount_price"
+	                     android:textColor="#ff000000"
+	                     android:textSize="@dimen/app_textsize_price" />
+	
+	                 <TextView
+	                     android:id="@+id/discount_p"
+	                     android:layout_width="wrap_content"
+	                     android:layout_height="wrap_content"
+	                     android:textColor="#fff12383"
+	                     android:textSize="14.0sp"
+	                     android:hint="选择折扣后才显示折扣价"
+	                     />
+                 </LinearLayout>
 
+                 <TextView
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:paddingTop="5.0dip" 
+                     android:gravity="left"
+                     android:text="@string/discount_desc"
+                     android:textColor="@color/app_text_gray"
+                     android:textSize="@dimen/app_textsize_price" />
+            </LinearLayout>  
+            
             <View
-                android:id="@+id/dash1"
                 android:layout_width="fill_parent"
                 android:layout_height="2.0px"
-                android:layout_marginTop="10.0dip"
+                android:paddingTop="5.0dip" 
                 android:background="@color/detail_divider"
                 android:layerType="software" />
+            
+            <LinearLayout
+                android:id="@+id/choose_discount_div"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="10.0dip" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10.0dip"
+                        android:text="@string/choose_discount"
+                        android:textColor="#ff000000"
+                        android:textSize="@dimen/app_textsize_price" />
+
+                    <TextView
+                        android:id="@+id/select_discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:gravity="left"
+                        android:textColor="@color/app_text_black"
+                        android:textSize="@dimen/app_textsize_price" />
+                </LinearLayout>
+
+                <!-- 
+                <com.holding.smile.myview.MyLinearLayout
+                    android:id="@+id/discount_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10.0dip"
+                    android:layout_marginBottom="10dip"
+                    android:gravity="center"
+                    android:paddingLeft="4dp" />
+                 -->
+                
+                <com.holding.smile.myview.MyTableLayout
+		            android:id="@+id/discount_table"  
+		            android:layout_width="fill_parent" 
+		            android:layout_height="wrap_content"  
+		            android:stretchColumns=";*"
+		            android:layout_marginTop="10.0dip"
+                    android:layout_marginBottom="10dip"
+                    android:gravity="center"
+                    android:paddingLeft="4dp" />
+                
+	            <View
+	                android:layout_width="fill_parent"
+	                android:layout_height="2.0px"
+	                android:background="@color/detail_divider"
+	                android:layerType="software" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/sku_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="10.0dip" >
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -135,12 +226,13 @@
                         android:textSize="@dimen/app_textsize_price" />
                 </LinearLayout>
 
-                <com.holding.smile.myview.MyLinearLayout
+                <com.holding.smile.myview.MyTableLayout
                     android:id="@+id/color_list"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10.0dip"
                     android:layout_marginBottom="10dip"
+                    android:stretchColumns=";*"
                     android:gravity="center_horizontal"
                     android:paddingLeft="4dp" />
             </LinearLayout>
@@ -148,14 +240,13 @@
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2.0px"
-                android:layout_marginBottom="10.0dip"
                 android:background="@color/detail_divider"
                 android:layerType="software" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5.0dip"
+                android:layout_marginTop="10.0dip"
                 android:gravity="left"
                 android:text="商品信息："
                 android:textColor="#ff000000"

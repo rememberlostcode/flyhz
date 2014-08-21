@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
     <string name="prefix_url">http://service.tiantianhaigou.com</string>
     <string name="login_url">https://service.tiantianhaigou.com:8443/smile/loginAuth.json</string>
     <string name="auto_login_url">https://service.tiantianhaigou.com:8443/smile/loginAuto.json</string>

@@ -51,7 +51,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 	private OrderDto				order						= null;
 	private List<OrderDetailDto>	orderDetails				= new ArrayList<OrderDetailDto>();
 	private Integer					gid							= null;							// 商品ID
-	private Integer					addressId					= 1;								// 地址id
+	private Integer					addressId					= null;							// 地址id
 	private Integer					qty							= 1;								// 购买数量，默认是1
 	private List<String>			cartIds						= null;							// 从购物车结算时用，保存选中的购物车ID
 	private Integer					allQty						= 0;								// 结算总数量，默认是0

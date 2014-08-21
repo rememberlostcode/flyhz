@@ -29,11 +29,11 @@ import com.holding.smile.tools.ToastUtils;
  */
 public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
-	private Button				payBtn;
-	private TextView			payMsgText;
-	private TextView			numberText;
-	private TextView			amountText;
-	private TextView			timeText;
+	private Button		payBtn;
+	private TextView	payMsgText;
+	private TextView	numberText;
+	private TextView	amountText;
+	private TextView	timeText;
 	private String		number;	// 订单号
 	private BigDecimal	amount;	// 总额
 
@@ -45,11 +45,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 
 		TextView headerDesc = displayHeaderDescription();
 		headerDesc.setText(R.string.order_pay);
-	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
+
 		showLoading();
 		Intent intent = getIntent();
 		try {
@@ -75,6 +71,37 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 		}
 		closeLoading();
 	}
+
+	// 注释原因：当点支付后，再从淘宝返回时会造成重复加载布局
+	// @Override
+	// public void onStart() {
+	// super.onStart();
+	// showLoading();
+	// Intent intent = getIntent();
+	// try {
+	// number = intent.getExtras().getString("number");// 订单号
+	// String time = intent.getExtras().getString("time");// 订单生成时间
+	// amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
+	// if (StrUtils.isNotEmpty(number) && StrUtils.isNotEmpty(time) && amount !=
+	// null) {
+	// setContentLayout(R.layout.order_pay_view);
+	// payBtn = (Button) findViewById(R.id.taobao_pay_btn);
+	// payBtn.setOnClickListener(this);
+	// payMsgText = (TextView) findViewById(R.id.pay_message);
+	// numberText = (TextView) findViewById(R.id.number);
+	// timeText = (TextView) findViewById(R.id.time);
+	// amountText = (TextView) findViewById(R.id.amount);
+	// numberText.setText(number);
+	// timeText.setText(time);
+	// amountText.setText("￥" + amount + "元");
+	// } else {
+	// ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
+	// }
+	// } catch (Exception e) {
+	// ToastUtils.showShort(context, Constants.MESSAGE_EXCEPTION);
+	// }
+	// closeLoading();
+	// }
 
 	@Override
 	public void onClick(View v) {

@@ -35,6 +35,7 @@
         <typeAlias alias="ActivityModel" type="com.flyhz.shop.persistence.entity.ActivityModel"/>
         <typeAlias alias="LogisticsModel" type="com.flyhz.shop.persistence.entity.LogisticsModel"/>
         <typeAlias alias="VersionModel" type="com.flyhz.shop.persistence.entity.VersionModel"/>
+        <typeAlias alias="DiscountModel" type="com.flyhz.shop.persistence.entity.DiscountModel"/>
         
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>

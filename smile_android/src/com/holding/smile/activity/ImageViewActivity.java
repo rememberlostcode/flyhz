@@ -22,11 +22,11 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingProgressListene
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 /**
- * Created by storm on 14-4-15.
+ * 查看大图
+ * @author zhangb
+ *
  */
 public class ImageViewActivity extends BaseActivity {
-	public static final String	IMAGE_URL	= "image_url";
-
 	PhotoView					photoView;
 
 	ProgressWheel				progressWheel;
@@ -49,7 +49,7 @@ public class ImageViewActivity extends BaseActivity {
 		});
 
 		Intent intent = getIntent();
-		String imageUrl = intent.getStringExtra(IMAGE_URL);
+		String imageUrl = "";
 		try {
 			List<String> picList = intent.getExtras().getStringArrayList("picList");
 			boolean local = intent.getBooleanExtra("local", false);

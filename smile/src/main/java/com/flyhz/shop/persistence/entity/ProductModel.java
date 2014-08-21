@@ -26,6 +26,10 @@ public class ProductModel implements Serializable {
 	private String				style;
 	private String				color;
 	private String				colorimg;
+	/**
+	 * 币种
+	 */
+	private String currency;
 
 	public ProductModel() {
 	}
@@ -140,5 +144,13 @@ public class ProductModel implements Serializable {
 
 	public void setColorimg(String colorimg) {
 		this.colorimg = colorimg;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 }

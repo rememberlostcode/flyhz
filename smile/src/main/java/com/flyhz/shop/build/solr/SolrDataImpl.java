@@ -30,11 +30,15 @@ import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.SolrData;
 import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.DateUtil;
+import com.flyhz.framework.util.JSONUtil;
 import com.flyhz.framework.util.StringUtil;
 import com.flyhz.framework.util.UrlUtil;
+import com.flyhz.shop.dto.DiscountDto;
 import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductBuildDto;
+import com.flyhz.shop.persistence.dao.DiscountDao;
+import com.flyhz.shop.persistence.entity.DiscountModel;
 
 @Service
 public class SolrDataImpl implements SolrData {
@@ -54,6 +58,8 @@ public class SolrDataImpl implements SolrData {
 	private RedisRepository			redisRepository;
 	private static HttpSolrServer	productServer	= null;
 	private static HttpSolrServer	orderServer		= null;
+	@Resource
+	private DiscountDao discountDao;
 
 	public HttpSolrServer getServer(String url) {
 		if (PRODUCT_URL.equals(url)) {
@@ -163,14 +169,28 @@ public class SolrDataImpl implements SolrData {
 		doc.addField("ci", productBuildDto.getCi());// 颜色图片
 
 		doc.addField("sf", productFraction.getProductFraction(productBuildDto));// 分数
-		/*doc.addField("st", productBuildDto.getSt());// 时间排序值
-		doc.addField("sd", productBuildDto.getSd());// 折扣排序值
-		doc.addField("ss", productBuildDto.getSs());// 总销售量排序值
-		doc.addField("sy", productBuildDto.getSy());// 月销售量排序值
-		doc.addField("sj", productBuildDto.getSj());// 价格排序值*/
 
 		doc.addField("sn", productBuildDto.getSn() != null ? productBuildDto.getSn() : 0);// 销售量
 		doc.addField("zsn", productBuildDto.getZsn() != null ? productBuildDto.getZsn() : 0);// 当月销售量
+		
+		doc.addField("cu", productBuildDto.getCu());// 币种
+		doc.addField("fs", productBuildDto.getFs());// 币种符号
+		
+		DiscountModel discountModel = new DiscountModel();
+		discountModel.setProductId(productBuildDto.getId());
+		List<DiscountModel> list = discountDao.getModelList(discountModel);
+		List<DiscountDto> disList = new ArrayList<DiscountDto>();
+		if (list != null) {
+			DiscountDto discountDto = null;
+			for(int i=0;i<list.size();i++){
+				discountDto = new DiscountDto();
+				discountDto.setId(list.get(i).getId());;
+				discountDto.setDiscount(list.get(i).getDiscount());
+				discountDto.setDp(productBuildDto.getPp().multiply(new BigDecimal(list.get(i).getDiscount())));
+				disList.add(discountDto);
+			}
+			doc.addField("discounts", JSONUtil.getEntity2Json(disList));// 折扣
+		}
 
 		return doc;
 	}

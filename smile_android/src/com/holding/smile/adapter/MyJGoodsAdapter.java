@@ -2,7 +2,7 @@
 package com.holding.smile.adapter;
 
 import java.util.List;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
@@ -59,6 +58,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 		TextView	sn;
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		ViewHolder holder;

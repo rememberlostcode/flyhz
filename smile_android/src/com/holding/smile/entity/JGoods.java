@@ -4,6 +4,8 @@ package com.holding.smile.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.holding.smile.dto.DiscountDto;
+
 public class JGoods implements Serializable {
 	private static final long	serialVersionUID	= -1956085742090097519L;
 
@@ -99,6 +101,19 @@ public class JGoods implements Serializable {
 	 * 原图数组
 	 */
 	private String[]			bp;
+
+	/**
+	 * 币种
+	 */
+	private String				cu;
+	/**
+	 * 币种符号
+	 */
+	private String				fs;
+	/**
+	 * 折扣
+	 */
+	private DiscountDto[]		discounts;
 
 	public String[] getBp() {
 		return bp;
@@ -290,6 +305,30 @@ public class JGoods implements Serializable {
 
 	public void set_version_(String _version_) {
 		this._version_ = _version_;
+	}
+
+	public String getCu() {
+		return cu;
+	}
+
+	public void setCu(String cu) {
+		this.cu = cu;
+	}
+
+	public String getFs() {
+		return fs;
+	}
+
+	public void setFs(String fs) {
+		this.fs = fs;
+	}
+
+	public DiscountDto[] getDiscounts() {
+		return discounts;
+	}
+
+	public void setDiscounts(DiscountDto[] discounts) {
+		this.discounts = discounts;
 	}
 
 }

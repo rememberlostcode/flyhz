@@ -105,6 +105,7 @@
                 android:layout_height="22dip"
                 android:background="@drawable/text_view_bg"
                 android:gravity="center"
+                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <ImageView

@@ -85,6 +85,14 @@ public class ProductBuildDto {
 	 * 国外美元价格
 	 */
 	private BigDecimal	foreighprice;
+	/**
+	 * 币种
+	 */
+	private String cu;
+	/**
+	 * 币种符号
+	 */
+	private String fs;
 	
 	
 	/**
@@ -95,31 +103,6 @@ public class ProductBuildDto {
 	 * 原为周销售数量，现在改为当月销售数量
 	 */
 	private Integer		zsn;
-	
-	
-	/****************各排序值********************/
-	/**
-	 * 时间排序值
-	 */
-	private Integer		st;
-	/**
-	 * 折扣排序值
-	 */
-	private Integer		sd;
-	/**
-	 * 总销售量排序值
-	 */
-	private Integer		ss;
-	/**
-	 * 价格排序值
-	 */
-	private Integer		sj;
-	/**
-	 * 月销售量排序值
-	 */
-	private Integer		sy;
-
-	
 	
 	public Integer getId() {
 		return id;
@@ -193,14 +176,6 @@ public class ProductBuildDto {
 		this.sf = sf;
 	}
 
-	public Integer getSt() {
-		return st;
-	}
-
-	public void setSt(Integer st) {
-		this.st = st;
-	}
-
 	public String getD() {
 		return d;
 	}
@@ -257,22 +232,6 @@ public class ProductBuildDto {
 		this.ci = ci;
 	}
 
-	public Integer getSd() {
-		return sd;
-	}
-
-	public void setSd(Integer sd) {
-		this.sd = sd;
-	}
-
-	public Integer getSs() {
-		return ss;
-	}
-
-	public void setSs(Integer ss) {
-		this.ss = ss;
-	}
-
 	public Integer getSn() {
 		return sn;
 	}
@@ -305,27 +264,27 @@ public class ProductBuildDto {
 		this.imgs = imgs;
 	}
 
-	public Integer getSj() {
-		return sj;
-	}
-
-	public void setSj(Integer sj) {
-		this.sj = sj;
-	}
-
-	public Integer getSy() {
-		return sy;
-	}
-
-	public void setSy(Integer sy) {
-		this.sy = sy;
-	}
-
 	public BigDecimal getForeighprice() {
 		return foreighprice;
 	}
 
 	public void setForeighprice(BigDecimal foreighprice) {
 		this.foreighprice = foreighprice;
+	}
+
+	public String getCu() {
+		return cu;
+	}
+
+	public void setCu(String cu) {
+		this.cu = cu;
+	}
+
+	public String getFs() {
+		return fs;
+	}
+
+	public void setFs(String fs) {
+		this.fs = fs;
 	}
 }

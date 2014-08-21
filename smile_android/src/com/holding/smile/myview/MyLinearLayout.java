@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.entity.JColor;
+import com.holding.smile.entity.JDiscount;
 import com.holding.smile.entity.JSort;
 import com.holding.smile.entity.SortType;
 import com.holding.smile.tools.StrUtils;
@@ -30,9 +31,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * 
  */
 public class MyLinearLayout extends LinearLayout {
-	int					mLeft, mRight, mTop, mBottom;
-	private Hashtable	map				= new Hashtable();
-	private Context		context;
+	int						mLeft, mRight, mTop, mBottom;
+	private Hashtable		map				= new Hashtable();
+	private Context			context;
+	private int				cWidth			= (int) (MyApplication.getInstance().getScreenWidth() - 28) / 3;
+	private LayoutParams	para;
 
 	public MyLinearLayout(Context context) {
 		super(context);
@@ -41,6 +44,7 @@ public class MyLinearLayout extends LinearLayout {
 
 	public MyLinearLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.context = context;
 	}
 
 	public void setSortTypeList(Context mcontext, List<SortType> sortTypeList) {
@@ -100,6 +104,23 @@ public class MyLinearLayout extends LinearLayout {
 		}
 	}
 
+	public void setDiscountList(Context context, List<JDiscount> discountList) {
+		this.context = context;
+		if (discountList != null && !discountList.isEmpty()) {
+			LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			int size = discountList.size();
+			for (int i = 0; i < size; i++) {
+				View v = mInflater.inflate(R.layout.my_discount_layout, null);
+				JDiscount discount = discountList.get(i);
+				TextView tv = (TextView) v.findViewById(R.id.my_discount);
+				tv.setText(discount.getDiscount() + "折");
+				v.setId(i);
+				v.setTag(discount.getDiscount());
+				this.addView(v, new LinearLayout.LayoutParams(cWidth, 40));
+			}
+		}
+	}
+
 	/**
 	 * 设置按下，其它不按下
 	 * 
@@ -112,7 +133,7 @@ public class MyLinearLayout extends LinearLayout {
 			View v = layout.getChildAt(0);
 			if (i == postion) {
 				v.setSelected(true);
-			}else{
+			} else {
 				v.setSelected(false);
 			}
 		}
@@ -120,6 +141,11 @@ public class MyLinearLayout extends LinearLayout {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+		// 注意这里,主要是把高度值改动了
+		// int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2,
+		// MeasureSpec.AT_MOST);
+		// super.onMeasure(widthMeasureSpec, expandSpec);
 
 		int mWidth = MeasureSpec.getSize(widthMeasureSpec);
 		int mCount = getChildCount();
@@ -148,7 +174,7 @@ public class MyLinearLayout extends LinearLayout {
 				mX = childw;
 				mY += childh;
 				j = i;
-				mLeft = 4;
+				mLeft = 6;
 				mRight = mLeft + child.getMeasuredWidth();
 				mTop = mY + 4;
 				// PS：如果发现高度还是有问题就得自己再细调了

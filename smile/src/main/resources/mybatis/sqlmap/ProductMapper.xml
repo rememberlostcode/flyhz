@@ -24,6 +24,8 @@
 		p.color c,
 		p.colorimg ci,
 		p.foreighprice,
+		p.currency cu,
+		curr.symbol fs,
 		c.name ce,
 		p.localprice - p.purchasingprice sp,
 		@rownum := @rownum + 1 st,
@@ -36,10 +38,10 @@
 		and s.gmt_modify >=date_format(now(),'%Y-%m')) zsn
 		from (select @rownum := 0) r,
 		product p,
-		brand b,
+		brand b,currency curr,
 		category c
 		where p.brand_id = b.id
-		and p.category_id = c.id
+		and p.category_id = c.id and p.currency = curr.for_short
 		and p.off_shelf = 'n' limit #{start}, #{num}
 	</select>
 	<select id="getModelById" parameterType="Integer" resultType="ProductModel">
@@ -55,7 +57,8 @@
 		p.category_id
 		categoryId,
 		p.color,
-		p.colorimg
+		p.colorimg,
+		p.currency
 		from product p
 		where p.id = #{id}
 	</select>

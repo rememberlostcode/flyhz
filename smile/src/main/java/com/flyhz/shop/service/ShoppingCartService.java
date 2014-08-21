@@ -15,7 +15,8 @@ public interface ShoppingCartService {
 	 * @param productId
 	 * @return
 	 */
-	public void addItem(Integer userId, Integer productId, Byte qty) throws ValidateException;
+	public void addItem(Integer userId, Integer productId, Byte qty, Integer discountId)
+			throws ValidateException;
 
 	/**
 	 * 删除购物车物品

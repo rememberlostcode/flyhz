@@ -191,8 +191,49 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 									user.getRegistrationID());
 						}
 					}
+					break;//执行一次就可以了
 				}
 			}
+		}
+	}
+	
+	private void sendEmail(Integer userId,BigDecimal total,String numbers){
+		UserDto user = userDao.getUserById(userId);
+		// 用户邮箱存在则发送邮件
+		if (user != null && StringUtils.isNotBlank(user.getEmail())) {
+			Map<String, Object> modelMap = new HashMap<String, Object>();
+			modelMap.put("orderId", numbers);
+			modelMap.put("total", total);
+			modelMap.put("username", user.getUsername());
+			mailRepository.sendWithTemplate(user.getEmail(), "订单支付成功",
+					"velocity/mailvm/pay_success_mail.vm", modelMap);
+		}
+	}
+	
+	
+	private void messageIdcard(String number) {
+		OrderSimpleDto orderDto = orderDao.getOrderByNumber(number);
+		UserDto user = userDao.getUserById(orderDto.getUserId());
+		// 获取用户信息并得到registrationID发送通知
+		if (user != null && user.getId() != null && user.getRegistrationID() != null) {
+			JPush jpush = new JPush();
+			Map<String, String> extras = new HashMap<String, String>();
+			extras.put("orderId", orderDto.getId().toString());
+			jpush.sendAndroidNotificationWithRegistrationID("由于海关需要，您的订单收件人缺少必要身份证，您需要上传！", extras,
+					user.getRegistrationID());
+		}
+	}
+
+	private void messageSellerSend(String number) {
+		OrderSimpleDto orderDto = orderDao.getOrderByNumber(number);
+		UserDto user = userDao.getUserById(orderDto.getUserId());
+		// 获取用户信息并得到registrationID发送通知
+		if (user != null && user.getId() != null && user.getRegistrationID() != null) {
+			JPush jpush = new JPush();
+			Map<String, String> extras = new HashMap<String, String>();
+			extras.put("orderId", orderDto.getId().toString());
+			jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras,
+					user.getRegistrationID());
 		}
 	}
 

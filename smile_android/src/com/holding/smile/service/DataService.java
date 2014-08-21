@@ -363,7 +363,6 @@ public class DataService {
 					rvd.setCode(pst.getCode());
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
 				Log.e("DataService", e.getMessage());
 			}
 		}

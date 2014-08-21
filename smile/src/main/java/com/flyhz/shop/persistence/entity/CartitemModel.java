@@ -16,6 +16,7 @@ public class CartitemModel implements Serializable {
 	private Integer				productId;
 	private Byte				qty;
 	private Integer				userId;
+	private Integer				discountId;
 
 	public CartitemModel() {
 	}
@@ -66,5 +67,13 @@ public class CartitemModel implements Serializable {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public Integer getDiscountId() {
+		return discountId;
+	}
+
+	public void setDiscountId(Integer discountId) {
+		this.discountId = discountId;
 	}
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.DiscountDao">
+    <select id="getModelById" parameterType="Integer" resultType="DiscountModel">
+		select b.id,
+			b.discount,
+			b.product_id productId,
+			b.time_discount_start timeDiscountStart,
+			b.time_discount_end timeDiscountEnd,
+			b.user_id userId,
+			b.status,
+			b.gmt_create gmtCreate,
+			b.gmt_modify gmtModify
+		from discount b 
+		where b.id=#{id}
+    </select>
+    
+    <select id="getModel" parameterType="DiscountModel" resultType="DiscountModel">
+		select b.id,
+			b.discount,
+			b.product_id productId,
+			b.time_discount_start timeDiscountStart,
+			b.time_discount_end timeDiscountEnd,
+			b.user_id userId,
+			b.status,
+			b.gmt_create gmtCreate,
+			b.gmt_modify gmtModify
+		from discount b 
+		where b.id=#{id}
+    </select>
+    
+    <select id="getModelList" parameterType="DiscountModel" resultType="DiscountModel">
+		select b.id,
+			b.discount,
+			b.product_id productId,
+			b.time_discount_start timeDiscountStart,
+			b.time_discount_end timeDiscountEnd,
+			b.user_id userId,
+			b.status,
+			b.gmt_create gmtCreate,
+			b.gmt_modify gmtModify
+		from discount b 
+		where 1=1 
+		<if test="id != null">
+			and b.id=#{id}
+		</if>
+		<if test="productId != null">
+			and b.product_id=#{productId}
+		</if>
+    </select>
+</mapper>

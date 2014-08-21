@@ -188,7 +188,7 @@ function indexsingle(query,response) {
         var result = '{"activitys":'+result2+'';
         result += ',"brands":';
         key ='smile@brands@all';
-        console.log('key='+key);
+//        console.log('key='+key);
         client.hvals(key, function(err, res) {
             console.log(res);
             if(res){
@@ -278,6 +278,7 @@ function brand(query,response) {
     } else {
         param += "&sort=sf+desc";
     }
+    param += '&rows=25';
 
     var bcparam = '';
     var bid = query.bid;
@@ -345,6 +346,12 @@ function brand(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 
@@ -391,6 +398,7 @@ function brandmore(query,response) {
     } else {
         param += "&sort=sf+desc";
     }
+    param += '&rows=25';
 
     var bcparam ='';
 
@@ -463,6 +471,12 @@ function brandmore(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 
@@ -598,6 +612,12 @@ function rankingsales(query,response) {
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 
@@ -672,6 +692,12 @@ function rankingmonthsales(query,response) {
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 
@@ -743,6 +769,12 @@ function rankingdiscount(query,response) {
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 
@@ -817,6 +849,12 @@ function rankingprice(query,response) {
                         result += JSON.stringify(docs[i].lp?docs[i].lp:null);
                         result += ',\"zsn\":';
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 
@@ -865,7 +903,7 @@ function search(query,response) {
         param += "&sort=sf+desc";
     }
 
-    //param += "&rows=5";
+    param += "&rows=25";
     var keywords = query.keywords;
     if(keywords==null || keywords==''){
         keywords = '*';
@@ -918,6 +956,12 @@ function search(query,response) {
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 
@@ -974,7 +1018,7 @@ function searchmore(query,response) {
         response.end();
     }
 
-    //param += "&rows=5";
+    param += '&rows=25';
     var keywords = query.keywords;
     if(keywords==null || keywords==''){
         keywords = '*';
@@ -1025,6 +1069,12 @@ function searchmore(query,response) {
                         result += JSON.stringify(docs[i].zsn?docs[i].zsn:0);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 
@@ -1062,7 +1112,7 @@ function goodsdetail(query,response) {
         response.write( '{"code":111112}');
         response.end();
     }
-    var urlPath = "/solr/smile_product/select?&sort=sf+desc&rows=30&q=bs%3A"+encodeURIComponent(bs);
+    var urlPath = "/solr/smile_product/select?&sort=sf+desc&rows=25&q=bs%3A"+encodeURIComponent(bs);
 
     //console.log("Got urlPath: " + urlPath);
     var options = {
@@ -1123,6 +1173,13 @@ function goodsdetail(query,response) {
                         result += JSON.stringify(docs[i].sn?docs[i].sn:0);
                         result += ',\"bs\":';
                         result += JSON.stringify(docs[i].bs);
+
+                        result += ',\"cu\":';
+                        result += docs[i].cu?JSON.stringify(docs[i].cu):null;
+                        result += ',\"fs\":';
+                        result += docs[i].fs?JSON.stringify(docs[i].fs):null;
+                        result += ',\"discounts\":';
+                        result += docs[i].discounts;
                         result += '}';
                     }
 

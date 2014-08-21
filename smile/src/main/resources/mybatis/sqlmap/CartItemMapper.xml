@@ -5,25 +5,29 @@
 		delete from cartitem where user_id=#{userId} and id=#{id}
     </delete>
     <update id="updateCartItem" parameterType="CartitemModel">
-    	update cartitem set qty=#{qty},gmt_modify=#{gmtModify} where user_id=#{userId} and id=#{id}
+    	update cartitem set qty=#{qty},gmt_modify=#{gmtModify}
+    	<if test="discountId != null">
+	    	,discount_id = #{discountId}
+    	</if>
+    	where user_id=#{userId} and id=#{id}
     </update>
     <insert id="insertCartItem" parameterType="CartitemModel">
-    	insert into cartitem(product_id,qty,user_id,gmt_create,gmt_modify) values(#{productId},#{qty},#{userId},#{gmtCreate},#{gmtModify})
+    	insert into cartitem(product_id,qty,user_id,discount_id,gmt_create,gmt_modify) values(#{productId},#{qty},#{userId},#{discountId},#{gmtCreate},#{gmtModify})
     </insert>
     <select id="getCartItem" parameterType="CartitemModel" resultType="CartitemModel">
-    	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
+    	select id,product_id productId,qty,user_id userId,discount_id discountId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
     	where user_id=#{userId} and id=#{id}
     </select>
     <select id="getCartItemByProductId" parameterType="CartitemModel" resultType="CartitemModel">
-    	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
+    	select id,product_id productId,qty,user_id userId,discount_id discountId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
     	where user_id=#{userId} and product_id=#{productId}
     </select>
     <select id="getCartItemList" parameterType="CartitemModel" resultType="CartitemModel">
-    	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
+    	select id,product_id productId,qty,user_id userId,discount_id discountId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
     	where user_id=#{userId} 
     </select>
     <select id="listItemsByUserIdAndIds" parameterType="CartItemParamDto" resultType="CartitemModel">
-    	select id,product_id productId,qty,user_id userId,gmt_create gmtCreate,gmt_modify gmtModify 
+    	select id,product_id productId,qty,user_id userId,discount_id discountId,gmt_create gmtCreate,gmt_modify gmtModify 
     	from cartitem  
     	where user_id=#{userId} and id in 
 	   	<foreach collection="itemIds" index="index" item="item" open="(" separator="," close=")">
