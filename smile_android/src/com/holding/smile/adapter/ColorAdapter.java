@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JColor;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 
@@ -26,7 +26,6 @@ import com.holding.smile.entity.JColor;
  */
 public class ColorAdapter extends BaseAdapter {
 
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private List<JColor>	colorList;
 	private Context			context;
 
@@ -68,7 +67,7 @@ public class ColorAdapter extends BaseAdapter {
 		if (colorList != null && !colorList.isEmpty()) {
 			String url = MyApplication.jgoods_img_url + colorList.get(position);
 			holder.p.setTag(url);
-			mImageLoader.DisplayImage(url, holder.p, false);
+			ImageLoader.getInstance().displayImage(url, holder.p);
 		}
 		return convertView;
 	}

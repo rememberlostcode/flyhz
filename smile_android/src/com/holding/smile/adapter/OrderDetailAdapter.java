@@ -18,17 +18,16 @@ import com.holding.smile.R;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.activity.OrderDetailActivity;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.dto.OrderDetailDto;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.ProductDto;
 import com.holding.smile.tools.StrUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class OrderDetailAdapter extends BaseAdapter {
 	private Context					context;
 	private OrderDto				orderDto;
 	private List<OrderDetailDto>	orderDetails;
-	private ImageLoader				mImageLoader	= MyApplication.getImageLoader();
 	private boolean					isNeedClick		= true;
 	private Integer					sWidth			= MyApplication.getInstance().getScreenWidth();
 	private ViewGroup				activityParent;
@@ -127,7 +126,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
-				mImageLoader.DisplayImage(url, holder.p, false);
+				ImageLoader.getInstance().displayImage(url, holder.p);
 			}
 
 			holder.p.setOnClickListener(new OnClickListener() {

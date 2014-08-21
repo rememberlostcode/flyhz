@@ -17,11 +17,11 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.MainTwoActivity;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.Brand;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.StrUtils;
 import com.holding.smile.tools.ToastUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 
@@ -32,11 +32,9 @@ import com.holding.smile.tools.ToastUtils;
  */
 public class BrandAdapter extends BaseAdapter {
 
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private LayoutInflater	mInflater;
 	private List<Brand>		brandList;
 	private Integer			cid;
-	private boolean			mBusy			= false;
 	private LayoutParams	para;
 
 	public BrandAdapter(List<Brand> brandList, Integer cid) {
@@ -107,11 +105,12 @@ public class BrandAdapter extends BaseAdapter {
 				if (StrUtils.isNotEmpty(brand.getImg_url())) {
 					String url = MyApplication.jgoods_img_url + brand.getImg_url();
 					holder.p.setTag(url);
-					if (!mBusy) {
-						mImageLoader.DisplayImage(url, holder.p, false);
-					} else {
-						mImageLoader.DisplayImage(url, holder.p, false);
-					}
+					ImageLoader.getInstance().displayImage(url, holder.p);
+//					if (!mBusy) {
+//						mImageLoader.DisplayImage(url, holder.p, false);
+//					} else {
+//						mImageLoader.DisplayImage(url, holder.p, false);
+//					}
 				}
 			}
 

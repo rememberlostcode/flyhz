@@ -17,6 +17,7 @@ import com.holding.smile.dto.OrderDto;
 import com.holding.smile.myview.MyListView;
 import com.holding.smile.tools.ClickUtil;
 import com.holding.smile.tools.Constants;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 订单详情
@@ -92,8 +93,10 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 							String url = MyApplication.jgoods_img_url
 									+ order.getConsignee().getIdentitycard().getUrl();
 							idcardImageView.setTag(url);
-							MyApplication.getImageLoader()
-											.DisplayImage(url, idcardImageView, false);
+							
+							ImageLoader.getInstance().displayImage(url, idcardImageView);
+//							MyApplication.getImageLoader()
+//											.DisplayImage(url, idcardImageView, false);
 						}
 					}
 

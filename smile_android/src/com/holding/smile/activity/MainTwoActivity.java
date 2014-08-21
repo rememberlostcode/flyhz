@@ -249,18 +249,18 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 														int scrollState) {
 													switch (scrollState) {
 														case OnScrollListener.SCROLL_STATE_FLING:
-															adapter.setFlagBusy(true);
+//															adapter.setFlagBusy(true);
 															break;
 														case OnScrollListener.SCROLL_STATE_IDLE:
-															adapter.setFlagBusy(false);
+//															adapter.setFlagBusy(false);
 															break;
 														case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-															adapter.setFlagBusy(false);
+//															adapter.setFlagBusy(false);
 															break;
 														default:
 															break;
 													}
-													adapter.notifyDataSetChanged();
+//													adapter.notifyDataSetChanged();
 												}
 
 												@Override
@@ -365,7 +365,6 @@ public class MainTwoActivity extends BaseActivity implements OnClickListener,
 																		mStrings.add(each);
 																	}
 																}
-																adapter.notifyDataSetChanged();
 															}
 															if (mPullToRefreshView != null) {
 																mPullToRefreshView.onFooterRefreshComplete();

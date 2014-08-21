@@ -33,6 +33,7 @@ import com.holding.smile.tools.BitmapUtils;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.IdcardValidator;
 import com.holding.smile.tools.ToastUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 身份证信息编辑
@@ -98,8 +99,9 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 						LayoutParams para = imageView.getLayoutParams();
 						para.height = MyApplication.getInstance().getScreenHeight() / 4;
 						imageView.setLayoutParams(para);
-						MyApplication.getImageLoader().DisplayImage(
-								MyApplication.jgoods_img_url + idcard.getUrl(), imageView, false);
+						
+						ImageLoader.getInstance().displayImage(
+								MyApplication.jgoods_img_url + idcard.getUrl(), imageView);
 					}
 					
 					if (idcard.getBack_url() != null && !"".equals(idcard.getBack_url())) {
@@ -107,8 +109,9 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 						LayoutParams paraBak = imageBackView.getLayoutParams();
 						paraBak.height = MyApplication.getInstance().getScreenHeight()/4;
 						imageBackView.setLayoutParams(paraBak);
-						MyApplication.getImageLoader().DisplayImage(
-								MyApplication.jgoods_img_url + idcard.getBack_url(), imageBackView, false);
+						
+						ImageLoader.getInstance().displayImage(
+								MyApplication.jgoods_img_url + idcard.getBack_url(), imageBackView);
 					}
 				}
 			}
@@ -241,12 +244,13 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				if (picturePath == null && idcard.getUrl() == null) {
 					ToastUtils.showShort(this, "您还未上传身份证!");
 				} else {
-					Intent intent = new Intent(this, GoodsBigImgActivity.class);
+					Intent intent = new Intent(this, ImageViewActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					List<String> picList = new ArrayList<String>();
 					if(picturePath == null){
 						picList.add(idcard.getUrl());
 					} else {
+						intent.putExtra("local", true);
 						picList.add(picturePath);
 					}
 					int position = 0;
@@ -260,12 +264,13 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				if (backPicturePath == null && idcard.getBack_url() == null) {
 					ToastUtils.showShort(this, "您还未上传身份证!");
 				} else {
-					Intent intent = new Intent(this, GoodsBigImgActivity.class);
+					Intent intent = new Intent(this, ImageViewActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					List<String> picList = new ArrayList<String>();
 					if(backPicturePath == null){
 						picList.add(idcard.getBack_url());
 					} else {
+						intent.putExtra("local", true);
 						picList.add(backPicturePath);
 					}
 					

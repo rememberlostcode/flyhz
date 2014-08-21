@@ -18,8 +18,8 @@ import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JGoods;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 
@@ -33,17 +33,11 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 	private LayoutInflater	mInflater;
 	private List<JGoods>	jGoodsList;
 	private Context			context;
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
-	private boolean			mBusy			= false;
 
 	public HorizontalGridViewAdapter(Context context, List<JGoods> jGoodsList) {
 		this.context = context;
 		this.mInflater = LayoutInflater.from(context);
 		this.jGoodsList = jGoodsList;
-	}
-
-	public void setFlagBusy(boolean busy) {
-		this.mBusy = busy;
 	}
 
 	@Override
@@ -87,11 +81,7 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 				if (jGoods.getP() != null && jGoods.getP().length > 0) {
 					String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
 					holder.im.setTag(url);
-					if (!mBusy) {
-						mImageLoader.DisplayImage(url, holder.im, false);
-					} else {
-						mImageLoader.DisplayImage(url, holder.im, false);
-					}
+					ImageLoader.getInstance().displayImage(url, holder.im);
 				}
 			}
 			convertView.setOnClickListener(new OnClickListener() {

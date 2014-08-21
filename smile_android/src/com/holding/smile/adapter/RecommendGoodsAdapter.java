@@ -13,25 +13,19 @@ import android.widget.ImageView;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JActivity;
 import com.holding.smile.tools.StrUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class RecommendGoodsAdapter extends BaseAdapter {
 
 	private List<JActivity>	jActivityList;
 	private Context			context;
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
-	private boolean			mBusy			= false;
-
+	
 	// 自己定义的构造函数
 	public RecommendGoodsAdapter(Context context, List<JActivity> contacts) {
 		this.context = context;
 		this.jActivityList = contacts;
-	}
-
-	public void setFlagBusy(boolean busy) {
-		this.mBusy = busy;
 	}
 
 	@Override
@@ -71,11 +65,12 @@ public class RecommendGoodsAdapter extends BaseAdapter {
 			if (StrUtils.isNotEmpty(jActivity.getP())) {
 				String url = MyApplication.jgoods_img_url + jActivity.getP();
 				holder.p.setTag(url);
-				if (!mBusy) {
-					mImageLoader.DisplayImage(url, holder.p, false);
-				} else {
-					mImageLoader.DisplayImage(url, holder.p, false);
-				}
+				ImageLoader.getInstance().displayImage(url, holder.p);
+//				if (!mBusy) {
+//					mImageLoader.DisplayImage(url, holder.p, false);
+//				} else {
+//					mImageLoader.DisplayImage(url, holder.p, false);
+//				}
 			}
 
 			convertView.setOnClickListener(new OnClickListener() {

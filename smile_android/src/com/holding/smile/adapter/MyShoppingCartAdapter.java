@@ -23,17 +23,15 @@ import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.dto.ProductDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.CartItem;
 import com.holding.smile.tools.StrUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MyShoppingCartAdapter extends BaseAdapter {
 	private Context			context;
 	private List<CartItem>	cartItemList;
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
-	private boolean			mBusy			= false;
 	private Integer			sWidth			= MyApplication.getInstance().getScreenWidth();
 	private ProgressBar		progressBar;
 	private Handler			mUIHandler;
@@ -41,10 +39,6 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 	private Set<Integer>	sIds			= new HashSet<Integer>();
 	private Boolean			editFlag		= false;
 	private Boolean			selectAll		= false;
-
-	public void setFlagBusy(boolean busy) {
-		this.mBusy = busy;
-	}
 
 	public void setEditFlag(boolean editFlag) {
 		this.editFlag = editFlag;
@@ -189,11 +183,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
-				if (!mBusy) {
-					mImageLoader.DisplayImage(url, holder.p, false);
-				} else {
-					mImageLoader.DisplayImage(url, holder.p, false);
-				}
+				ImageLoader.getInstance().displayImage(url, holder.p);
 			}
 
 			holder.p.setOnClickListener(new OnClickListener() {

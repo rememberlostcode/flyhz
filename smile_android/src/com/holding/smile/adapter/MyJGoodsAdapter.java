@@ -19,18 +19,12 @@ import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JGoods;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MyJGoodsAdapter extends BaseAdapter {
 	private Context			context;
 	private List<JGoods>	jGoodsList;
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
-	private boolean			mBusy			= false;
-
-	public void setFlagBusy(boolean busy) {
-		this.mBusy = busy;
-	}
 
 	// 自己定义的构造函数
 	public MyJGoodsAdapter(Context context, List<JGoods> contacts) {
@@ -72,8 +66,6 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(R.layout.home_list, null);
 			holder = new ViewHolder();
 			holder.n = (TextView) convertView.findViewById(R.id.n);
-			// holder.n.setWidth((int) (sWidth - 190 *
-			// MyApplication.getInstance().getDensity()));
 			holder.lp = (TextView) convertView.findViewById(R.id.lp);
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
@@ -106,11 +98,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			if (jGoods.getP() != null && jGoods.getP().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
 				holder.p.setTag(url);
-				if (!mBusy) {
-					mImageLoader.DisplayImage(url, holder.p, false);
-				} else {
-					mImageLoader.DisplayImage(url, holder.p, true);
-				}
+				ImageLoader.getInstance().displayImage(url, holder.p);
 			}
 		}
 

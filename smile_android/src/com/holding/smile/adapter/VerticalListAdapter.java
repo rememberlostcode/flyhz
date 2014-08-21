@@ -66,7 +66,6 @@ public class VerticalListAdapter extends BaseAdapter {
 
 	private static class ViewHolder {
 		private TextView		brand;
-		private TextView		moreText;
 		private RelativeLayout	relativeLayout;
 		private MyGridView		gridView;
 	}
@@ -85,7 +84,6 @@ public class VerticalListAdapter extends BaseAdapter {
 			mInflater = LayoutInflater.from(context);
 			convertView = mInflater.inflate(R.layout.horizontallistview, null);
 			holder.brand = (TextView) convertView.findViewById(R.id.list_brand);
-			holder.moreText = (TextView) convertView.findViewById(R.id.list_more);
 			holder.relativeLayout = (RelativeLayout) convertView.findViewById(R.id.brand_head);
 			holder.gridView = (MyGridView) convertView.findViewById(R.id.gridview);
 			convertView.setTag(holder);
@@ -114,13 +112,13 @@ public class VerticalListAdapter extends BaseAdapter {
 					public void onScrollStateChanged(AbsListView view, int scrollState) {
 						switch (scrollState) {
 							case OnScrollListener.SCROLL_STATE_FLING:
-								hlAdapter.setFlagBusy(true);
+//								hlAdapter.setFlagBusy(true);
 								break;
 							case OnScrollListener.SCROLL_STATE_IDLE:
-								hlAdapter.setFlagBusy(false);
+//								hlAdapter.setFlagBusy(false);
 								break;
 							case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-								hlAdapter.setFlagBusy(false);
+//								hlAdapter.setFlagBusy(false);
 								break;
 							default:
 								break;

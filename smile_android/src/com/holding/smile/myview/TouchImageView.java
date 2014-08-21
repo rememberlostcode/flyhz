@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.tools.BitmapUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 
@@ -53,7 +54,7 @@ public class TouchImageView extends ImageView {
 		this.context = context;
 		this.imagePath = imagePath;
 		if(this.imagePath.indexOf("http://") > -1) {
-			gintama = MyApplication.getImageLoader().getBitmap(this.imagePath, true);// true是取原图
+			gintama = ImageLoader.getInstance().loadImageSync(this.imagePath);
 		} else {
 			gintama = BitmapUtils.decodeFile(this.imagePath, 500, 500);
 		}

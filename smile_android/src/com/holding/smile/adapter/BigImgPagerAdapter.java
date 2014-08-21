@@ -6,10 +6,6 @@ import java.util.List;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
 
 /**
  * 
@@ -19,10 +15,7 @@ import com.holding.smile.cache.ImageLoader;
  * 
  */
 public class BigImgPagerAdapter extends PagerAdapter {
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private List<View>		mListViews;
-	private ImageView		currentImgView;
-	private int			width			= MyApplication.getInstance().getScreenWidth();
 
 	public BigImgPagerAdapter(List<View> mListViews) {
 		this.mListViews = mListViews;// 构造方法，参数是我们的页卡，这样比较方便。
@@ -43,10 +36,6 @@ public class BigImgPagerAdapter extends PagerAdapter {
 		View view = null;
 		if (mListViews != null && !mListViews.isEmpty()) {
 			view = mListViews.get(position);
-			// ImageView im = (ImageView) view;
-			// im.setImageResource(R.drawable.empty_photo);
-			// String url = im.getTag().toString();
-			// mImageLoader.DisplayImage(url, im, false);
 			container.addView(view, 0);// 添加页卡
 		}
 		return view;

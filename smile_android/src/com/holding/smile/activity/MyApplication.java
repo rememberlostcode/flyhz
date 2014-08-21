@@ -16,13 +16,18 @@ import android.util.Log;
 import cn.jpush.android.api.JPushInterface;
 
 import com.holding.smile.R;
-import com.holding.smile.cache.ImageLoader;
+//import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.service.DataService;
 import com.holding.smile.service.LoginService;
 import com.holding.smile.service.SQLiteService;
 import com.holding.smile.service.SubmitService;
 import com.holding.smile.tools.ToastUtils;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 /**
  * 
@@ -37,7 +42,7 @@ public class MyApplication extends Application {
 	public static final String		LOG_TAG			= "smile";
 	private static MyApplication	singleton;
 
-	private static ImageLoader		mImageLoader;
+//	private static ImageLoader		mImageLoader;
 
 	/**
 	 * 屏幕宽度
@@ -133,7 +138,7 @@ public class MyApplication extends Application {
 		dataService = new DataService(context);
 		submitService = new SubmitService(context);
 		loginService = new LoginService(context);
-		mImageLoader = new ImageLoader(context);
+//		mImageLoader = new ImageLoader(context);
 		sqliteService = new SQLiteService(context);// 初始化本地DB
 
 		jgoods_img_url = getString(R.string.prefix_url) + getString(R.string.img_static_url);
@@ -145,11 +150,31 @@ public class MyApplication extends Application {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		registerReceiver(connectionReceiver, filter);
+		
+		initImageLoader(getApplicationContext());
 	}
+	
+	// 初始化ImageLoader
+		public static void initImageLoader(Context context) {
+			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).threadPriority(
+					Thread.NORM_PRIORITY - 2)
+																							.denyCacheImageMultipleSizesInMemory()
+																							.memoryCache(
+																									new LruMemoryCache(
+																											2 * 1024 * 1024))
+																							.discCacheSize(
+																									20 * 1024 * 1024)
+																							.discCacheFileNameGenerator(
+																									new Md5FileNameGenerator())
+																							.tasksProcessingOrder(
+																									QueueProcessingType.LIFO)
+																							.build();
+			ImageLoader.getInstance().init(config);
+		}
 
-	public static ImageLoader getImageLoader() {
-		return mImageLoader;
-	}
+//	public static ImageLoader getImageLoader() {
+//		return mImageLoader;
+//	}
 
 	public static ExecutorService getThreadPool() {
 		return threadPool;

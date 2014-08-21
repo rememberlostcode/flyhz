@@ -230,13 +230,13 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 													int scrollState) {
 												switch (scrollState) {
 													case OnScrollListener.SCROLL_STATE_FLING:
-														adapter.setFlagBusy(true);
+//														adapter.setFlagBusy(true);
 														break;
 													case OnScrollListener.SCROLL_STATE_IDLE:
-														adapter.setFlagBusy(false);
+//														adapter.setFlagBusy(false);
 														break;
 													case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-														adapter.setFlagBusy(false);
+//														adapter.setFlagBusy(false);
 														break;
 													default:
 														break;

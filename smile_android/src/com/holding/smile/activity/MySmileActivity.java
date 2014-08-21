@@ -18,6 +18,7 @@ import com.holding.smile.entity.SUser;
 import com.holding.smile.tools.ClickUtil;
 import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.ToastUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 更多
@@ -229,8 +230,9 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 													public void onClick(DialogInterface dialog,
 															int which) {
 
-														MyApplication.getImageLoader()
-																		.clearFileCache();
+														ImageLoader.getInstance().clearDiscCache();
+//														MyApplication.getImageLoader()
+//																		.clearFileCache();
 														ToastUtils.showShort(context, "清理缓存成功！");
 
 													}

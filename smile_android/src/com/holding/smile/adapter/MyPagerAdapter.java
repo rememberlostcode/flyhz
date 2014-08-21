@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 
@@ -21,7 +21,6 @@ import com.holding.smile.cache.ImageLoader;
  * 
  */
 public class MyPagerAdapter extends PagerAdapter {
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private List<View>		mListViews;
 	private LayoutParams	para;
 	private boolean			imgFlag			= false;							// true为按长宽比1.9:1显示图片
@@ -64,7 +63,7 @@ public class MyPagerAdapter extends PagerAdapter {
 				im.setLayoutParams(para);
 				im.setImageResource(R.drawable.empty_photo);
 				String url = im.getTag().toString();
-				mImageLoader.DisplayImage(url, im, false);
+				ImageLoader.getInstance().displayImage(url, im);
 			}
 			container.addView(view, 0);// 添加页卡
 		}
@@ -82,7 +81,7 @@ public class MyPagerAdapter extends PagerAdapter {
 			im.setTag(imgPath);
 			im.setImageResource(R.drawable.empty_photo);
 			String url = im.getTag().toString();
-			mImageLoader.DisplayImage(url, im, false);
+			ImageLoader.getInstance().displayImage(url, im);
 		}
 	}
 

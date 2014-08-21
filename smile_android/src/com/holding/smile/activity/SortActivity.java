@@ -21,12 +21,12 @@ import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyJGoodsAdapter;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.JSort;
 import com.holding.smile.myview.MyLinearLayout;
 import com.holding.smile.tools.CodeValidator;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 
@@ -38,13 +38,13 @@ import com.holding.smile.tools.CodeValidator;
 public class SortActivity extends BaseActivity implements OnClickListener {
 
 	private static final int	WHAT_DID_LOAD_DATA	= 0;
-	private ImageLoader			mImageLoader		= MyApplication.getImageLoader();
+	// private ImageLoader mImageLoader = MyApplication.getImageLoader();
 	private MyJGoodsAdapter		adapter;
 	private List<JGoods>		mStrings			= new ArrayList<JGoods>();
 
 	private ListView			mListView;
-	private String				sortUrl				= null;							// 选中的排序URL
-	private List<JSort>			jSortList			= new ArrayList<JSort>();			// 排序类型列表
+	private String				sortUrl				= null;					// 选中的排序URL
+	private List<JSort>			jSortList			= new ArrayList<JSort>();	// 排序类型列表
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -165,19 +165,18 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 													int scrollState) {
 												switch (scrollState) {
 													case OnScrollListener.SCROLL_STATE_FLING:
-														adapter.setFlagBusy(true);
+														// adapter.setFlagBusy(true);
 														break;
 													case OnScrollListener.SCROLL_STATE_IDLE:
-														adapter.setFlagBusy(false);
+														// adapter.setFlagBusy(false);
 														pageImgLoad(_start_index, _end_index);
 														break;
 													case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-														adapter.setFlagBusy(true);
+														// adapter.setFlagBusy(true);
 														break;
 													default:
 														break;
 												}
-												adapter.notifyDataSetChanged();
 											}
 
 											@Override
@@ -201,13 +200,13 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 				if (itemView != null) {
 					ImageView imageView = (ImageView) itemView.findViewById(R.id.p);
 					if (imageView != null) {
-						mImageLoader.DisplayImage(MyApplication.jgoods_img_url
-								+ curr_item.getP()[0], imageView, false);
+						ImageLoader.getInstance().displayImage(
+								MyApplication.jgoods_img_url + curr_item.getP()[0], imageView);
 					}
 				}
 			}
 		}
-		adapter.notifyDataSetChanged();
+//		adapter.notifyDataSetChanged();
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -236,7 +235,9 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 																}
 															}
 														}
-														adapter.notifyDataSetChanged();
+														if (adapter != null) {
+															adapter.notifyDataSetChanged();
+														}
 														break;
 													}
 												}

@@ -294,7 +294,8 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 
 					@Override
 					public void onClick(View arg0) {
-						Intent intent = new Intent(context, GoodsBigImgActivity.class);
+						Intent intent = new Intent(context, ImageViewActivity.class);
+//						Intent intent = new Intent(context, GoodsBigImgActivity.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 						intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
 						intent.putExtra("position", position);

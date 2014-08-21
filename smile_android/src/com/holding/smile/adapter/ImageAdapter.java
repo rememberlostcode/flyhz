@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 
@@ -24,9 +24,6 @@ import com.holding.smile.cache.ImageLoader;
  */
 public class ImageAdapter extends BaseAdapter {
 
-	// private int maxWidth = MyApplication.getInstance().getScreenWidth();
-	// private int maxHeight = MyApplication.getInstance().getScreenHeight();
-	private ImageLoader		mImageLoader	= MyApplication.getImageLoader();
 	private List<String>	picList;
 	private Context			context;
 
@@ -67,7 +64,7 @@ public class ImageAdapter extends BaseAdapter {
 		if (picList != null && !picList.isEmpty()) {
 			String url = MyApplication.jgoods_img_url + picList.get(position);
 			holder.p.setTag(url);
-			mImageLoader.DisplayImage(url, holder.p, false);
+			ImageLoader.getInstance().displayImage(url, holder.p);
 		}
 		return convertView;
 	}

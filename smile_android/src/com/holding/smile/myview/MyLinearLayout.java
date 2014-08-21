@@ -16,11 +16,11 @@ import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.JColor;
 import com.holding.smile.entity.JSort;
 import com.holding.smile.entity.SortType;
 import com.holding.smile.tools.StrUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 
@@ -32,7 +32,6 @@ import com.holding.smile.tools.StrUtils;
 public class MyLinearLayout extends LinearLayout {
 	int					mLeft, mRight, mTop, mBottom;
 	private Hashtable	map				= new Hashtable();
-	private ImageLoader	mImageLoader	= MyApplication.getImageLoader();
 	private Context		context;
 
 	public MyLinearLayout(Context context) {
@@ -89,10 +88,9 @@ public class MyLinearLayout extends LinearLayout {
 				ImageView tv = (ImageView) v.findViewById(R.id.good_color);
 				if (StrUtils.isNotEmpty(color.getCi())) {
 					String url = MyApplication.jgoods_img_url + color.getCi();
-					tv.setTag(url);
-					Bitmap bitmap = mImageLoader.getBitmapFromCache(url);
-					tv.setImageBitmap(bitmap);
-					v.setTag(color.getCi());
+					ImageLoader.getInstance().displayImage(url,tv);
+//					tv.setTag(url);
+//					v.setTag(color.getCi());
 				} else {
 					tv.setImageResource(R.drawable.empty_photo);
 				}
