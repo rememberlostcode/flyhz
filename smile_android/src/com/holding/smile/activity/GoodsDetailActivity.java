@@ -322,8 +322,10 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 					startActivity(intent);
 					overridePendingTransition(0, 0);
 				} else {
-					RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
-														.addCart(gid, (short) 1);
+					RtnValueDto rtnValue = MyApplication.getInstance()
+														.getSubmitService()
+														.addCart(gid, (short) 1,
+																selectDiscount.getId());
 					if (CodeValidator.dealCode(this, rtnValue)) {
 						ToastUtils.showShort(this, "已加入购物车！");
 					}

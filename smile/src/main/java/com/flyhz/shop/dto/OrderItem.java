@@ -12,10 +12,12 @@ public class OrderItem {
 	private ProductDto	product;
 
 	private BigDecimal	logisticsPriceEvery;
-	
+
 	private BigDecimal	logisticsPriceTotal;
 
 	private BigDecimal	total;
+
+	private DiscountDto	discount;				// 折扣
 
 	public Integer getId() {
 		return id;
@@ -63,6 +65,14 @@ public class OrderItem {
 
 	public void setLogisticsPriceTotal(BigDecimal logisticsPriceTotal) {
 		this.logisticsPriceTotal = logisticsPriceTotal;
+	}
+
+	public DiscountDto getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(DiscountDto discount) {
+		this.discount = discount;
 	}
 
 }

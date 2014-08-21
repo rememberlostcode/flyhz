@@ -14,13 +14,17 @@ import org.springframework.stereotype.Service;
 import com.flyhz.framework.lang.JPush;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
+import com.flyhz.framework.util.StringUtil;
 import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.dto.CartItemParamDto;
+import com.flyhz.shop.dto.DiscountDto;
 import com.flyhz.shop.dto.ProductDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.dao.CartItemDao;
+import com.flyhz.shop.persistence.dao.DiscountDao;
 import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.CartitemModel;
+import com.flyhz.shop.persistence.entity.DiscountModel;
 import com.flyhz.shop.service.ShoppingCartService;
 
 @Service
@@ -31,9 +35,12 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 	private RedisRepository	redisRepository;
 	@Resource
 	private UserDao			userDao;
+	@Resource
+	private DiscountDao		discountDao;
 
 	@Override
-	public void addItem(Integer userId, Integer productId, Byte qty) throws ValidateException {
+	public void addItem(Integer userId, Integer productId, Byte qty, Integer discountId)
+			throws ValidateException {
 		// 登陆用户ID不能为空
 		if (userId == null) {
 			throw new ValidateException(101002);
@@ -53,6 +60,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		CartitemModel cartitemModelNew = cartItemDao.getCartItemByProductId(cartitemModel);
 		// 购物车无此商品
 		if (cartitemModelNew == null) {
+			cartitemModel.setDiscountId(discountId);
 			cartitemModel.setGmtCreate(new Date());
 			cartitemModel.setGmtModify(new Date());
 			cartitemModel.setQty(qty);
@@ -62,13 +70,15 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 			byte qtyNew = (byte) (cartitemModelNew.getQty() + qty);
 			cartitemModelNew.setQty(qtyNew);
 			cartitemModelNew.setGmtModify(new Date());
+			cartitemModelNew.setDiscountId(discountId);
 			cartItemDao.updateCartItem(cartitemModelNew);
 		}
-		
+
 		UserDto user = userDao.getUserById(userId);
-		if(user!=null && user.getId()!=null && user.getRegistrationID()!=null){
+		if (user != null && user.getId() != null && user.getRegistrationID() != null) {
 			JPush jpush = new JPush();
-			jpush.sendAndroidNotificationWithRegistrationID("您的购物车有新的商品！", new HashMap<String, String>(), user.getRegistrationID());
+			jpush.sendAndroidNotificationWithRegistrationID("您的购物车有新的商品！",
+					new HashMap<String, String>(), user.getRegistrationID());
 		}
 	}
 
@@ -128,6 +138,19 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 					BigDecimal detailTotal = productDto.getPurchasingPrice().multiply(
 							BigDecimal.valueOf(cartItemDto.getQty()));
 					cartItemDto.setTotal(detailTotal);
+
+					// 处理打折情况
+					if (cartitemModel.getDiscountId() != null) {
+						DiscountModel discountModel = discountDao.getModelById(cartitemModel.getDiscountId());
+						if (discountModel != null && discountModel.getDiscount() != 0) {
+							DiscountDto discount = new DiscountDto();
+							discount.setDiscount(discountModel);
+							double val = StringUtil.div(discountModel.getDiscount(), 10, 2);
+							detailTotal = detailTotal.multiply(BigDecimal.valueOf(val));
+							discount.setDp(detailTotal);
+							cartItemDto.setDiscount(discount);
+						}
+					}
 				}
 			}
 			cartItemDto.setProduct(productDto);
@@ -173,8 +196,16 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		if (list != null && !list.isEmpty()) {
 			String[] ids = new String[list.size()];
 			for (int i = 0; i < list.size(); i++) {
+				StringBuffer sb = new StringBuffer();
 				CartitemModel item = list.get(i);
-				ids[i] = item.getProductId() + "_" + item.getQty();
+				sb.append(item.getProductId());
+				sb.append("_");
+				sb.append(item.getQty());
+				if (item.getDiscountId() != null) {
+					sb.append("_");
+					sb.append(item.getDiscountId());
+				}
+				ids[i] = sb.toString();
 			}
 			return ids;
 		}

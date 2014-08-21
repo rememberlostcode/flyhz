@@ -57,6 +57,11 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.VersionDao"></property>
 	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
+	
+	<bean id="discountDao" name="discountDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	    <property name="mapperInterface" value="com.flyhz.shop.persistence.dao.DiscountDao"></property>
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+	</bean>
 </beans>
 
 

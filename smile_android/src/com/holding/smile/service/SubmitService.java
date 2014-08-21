@@ -420,9 +420,11 @@ public class SubmitService {
 	 * 
 	 * @param pid
 	 * @param qty
+	 * @param did
+	 *            折扣ID
 	 * @return
 	 */
-	public RtnValueDto addCart(Integer pid, short qty) {
+	public RtnValueDto addCart(Integer pid, short qty, Integer did) {
 		if (CodeValidator.isNetworkError()) {
 			return CodeValidator.getNetworkErrorRtnValueDto();
 		}
@@ -433,6 +435,9 @@ public class SubmitService {
 		}
 		if (qty != 0) {
 			param.put("qty", String.valueOf(qty));
+		}
+		if (did != null) {
+			param.put("did", String.valueOf(did));
 		}
 		String rvdString = URLUtil.getStringByPost(this.prefix_url + this.cart_add_url, param);
 		if (rvdString != null) {

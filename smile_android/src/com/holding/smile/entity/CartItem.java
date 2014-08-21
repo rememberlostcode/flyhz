@@ -18,6 +18,8 @@ public class CartItem implements Serializable {
 
 	private BigDecimal			total;
 
+	private JDiscount			discount;
+
 	public Integer getId() {
 		return id;
 	}
@@ -48,6 +50,14 @@ public class CartItem implements Serializable {
 
 	public void setTotal(BigDecimal total) {
 		this.total = total;
+	}
+
+	public JDiscount getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(JDiscount discount) {
+		this.discount = discount;
 	}
 
 }

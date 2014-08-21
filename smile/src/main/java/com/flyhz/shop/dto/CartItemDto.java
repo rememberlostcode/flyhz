@@ -13,6 +13,8 @@ public class CartItemDto {
 
 	private BigDecimal	total;
 
+	private DiscountDto	discount;	// 折扣
+
 	public Integer getId() {
 		return id;
 	}
@@ -43,6 +45,14 @@ public class CartItemDto {
 
 	public void setTotal(BigDecimal total) {
 		this.total = total;
+	}
+
+	public DiscountDto getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(DiscountDto discount) {
+		this.discount = discount;
 	}
 
 }

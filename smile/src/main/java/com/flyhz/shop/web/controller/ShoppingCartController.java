@@ -31,10 +31,10 @@ public class ShoppingCartController {
 	@RequestMapping(value = "/add")
 	public void addCartItem(@Identify Integer userId,
 			@RequestParam(value = "pid") Integer productId, @RequestParam(value = "qty") Byte qty,
-			Model model) {
+			Integer did, Model model) {
 		Protocol protocol = new Protocol();
 		try {
-			shoppingCartService.addItem(userId, productId, qty);
+			shoppingCartService.addItem(userId, productId, qty, did);
 			protocol.setCode(200000);
 		} catch (ValidateException e) {
 			protocol.setCode(e.getCode());
