@@ -129,7 +129,7 @@ public class LoginService {
 					try {
 						SUser suser = MyApplication.getInstance().getSqliteService().getScurrentUser();
 						if (suser == null) {
-							suser = new SUser();
+							suser = user.getData();
 						}
 						if (iuser.getRegistrationID() != null) {
 							suser.setRegistrationID(iuser.getRegistrationID());
@@ -190,7 +190,7 @@ public class LoginService {
 						try {
 							SUser suser = MyApplication.getInstance().getSqliteService().getScurrentUser();
 							if (suser == null) {
-								suser = new SUser();
+								suser = user.getData();
 							}
 							if (iuser.getRegistrationID() != null) {
 								suser.setRegistrationID(iuser.getRegistrationID());
