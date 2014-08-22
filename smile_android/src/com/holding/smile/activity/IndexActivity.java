@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +27,7 @@ import com.holding.smile.entity.JVersion;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.service.LoginService;
 import com.holding.smile.tools.CodeValidator;
+import com.holding.smile.tools.ToastUtils;
 import com.holding.smile.tools.UpdateManager;
 import com.holding.smile.tools.jpush.ExampleUtil;
 
@@ -72,15 +75,18 @@ public class IndexActivity extends InstrumentedActivity {
 			}
 		});
 
-		// 网络状态
-		MyApplication.getInstance().initReceiver();
-
+		initNetworkReceiver();
+		// 注册网络监听
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		registerReceiver(connectionReceiver, filter);
+		
 		// jpush消息接收器
 		registerMessageReceiver(); // used for receive msg
 	}
 
 	// 初始化 JPush。如果已经初始化，但没有登录成功，则执行重新登录。
-	private void init() {
+	private void initJpush() {
 		JPushInterface.init(MyApplication.getInstance());
 		try {
 			String registrationID = JPushInterface.getRegistrationID(MyApplication.getInstance());
@@ -106,7 +112,7 @@ public class IndexActivity extends InstrumentedActivity {
 		mUIHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				init();
+				initJpush();
 				SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
 				if (user != null) {
 					MyApplication.getInstance().setCurrentUser(user);
@@ -190,7 +196,46 @@ public class IndexActivity extends InstrumentedActivity {
 	@Override
 	public void onDestroy() {
 		unregisterReceiver(mMessageReceiver);
+		unregisterReceiver(connectionReceiver);
 		super.onDestroy();
+	}
+	
+	/**
+	 * 网络状态接收器
+	 */
+	private BroadcastReceiver		connectionReceiver;
+
+	public void initNetworkReceiver() {
+		Log.i(MyApplication.LOG_TAG, "启动网络状态接收器...");
+		if (connectionReceiver == null) {
+			connectionReceiver = new BroadcastReceiver() {
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+					// mobile 3G
+					// Data
+					// Network
+					State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+											.getState();
+					State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+
+					// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
+					// 则进入Network
+					// Setting界面
+					// 由用户配置网络连接
+					Log.i(MyApplication.LOG_TAG + ".State.wifi", wifi.toString());
+					if (mobile == State.CONNECTED || mobile == State.CONNECTING
+							|| wifi == State.CONNECTED || wifi == State.CONNECTING) {
+						MyApplication.setHasNetwork(true);
+						Log.i(MyApplication.LOG_TAG + ".network_state", "true");
+					} else {
+						MyApplication.setHasNetwork(false);
+						Log.i(MyApplication.LOG_TAG + ".network_state", "false");
+						ToastUtils.showShort(context, "网络异常，请检查网络！");
+					}
+				}
+			};
+		}
 	}
 
 	/*************************** jpush start *********************/

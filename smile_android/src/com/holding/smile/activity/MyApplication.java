@@ -6,12 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo.State;
 import android.util.Log;
 import cn.jpush.android.api.JPushInterface;
 
@@ -22,7 +17,6 @@ import com.holding.smile.service.DataService;
 import com.holding.smile.service.LoginService;
 import com.holding.smile.service.SQLiteService;
 import com.holding.smile.service.SubmitService;
-import com.holding.smile.tools.ToastUtils;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -85,52 +79,28 @@ public class MyApplication extends Application {
 	 */
 	private static boolean			isHasNetwork	= true;
 	
-	private static boolean			isMustUpdate = false;
-
 	/**
-	 * 网络状态接收器
+	 * 是否必须升级APP
 	 */
-	private BroadcastReceiver		connectionReceiver;
+	private static boolean			isMustUpdate = false;
+	
+	/**
+	 * DisplayImageOptions是用于设置图片显示的类
+	 */
+	public static DisplayImageOptions options;
 
-	public void initReceiver() {
-		Log.i(MyApplication.LOG_TAG, "启动网络状态接收器...");
-		if (connectionReceiver == null) {
-			connectionReceiver = new BroadcastReceiver() {
-				@Override
-				public void onReceive(Context context, Intent intent) {
-					ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-					// mobile 3G
-					// Data
-					// Network
-					State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-											.getState();
-					State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-
-					// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
-					// 则进入Network
-					// Setting界面
-					// 由用户配置网络连接
-					Log.i(MyApplication.LOG_TAG + ".State.mobile", mobile.toString());
-					Log.i(MyApplication.LOG_TAG + ".State.wifi", wifi.toString());
-					if (mobile == State.CONNECTED || mobile == State.CONNECTING
-							|| wifi == State.CONNECTED || wifi == State.CONNECTING) {
-						MyApplication.setHasNetwork(true);
-					} else {
-						MyApplication.setHasNetwork(false);
-						ToastUtils.showShort(context, "网络异常，请检查网络！");
-					}
-				}
-			};
-		}
-	}
+	
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		Log.i(MyApplication.LOG_TAG, "MyApplication init...");
 		singleton = this;
 		threadPool = Executors.newFixedThreadPool(2);
 		
-		initReceiver();
+		
+		
+		initImageLoader(getApplicationContext());
 
 		Context context = getApplicationContext();
 		dataService = new DataService(context);
@@ -140,21 +110,14 @@ public class MyApplication extends Application {
 
 		jgoods_img_url = getString(R.string.prefix_url) + getString(R.string.img_static_url);
 
-		JPushInterface.setDebugMode(true); // 设置开启日志,发布时请关闭日志
+		JPushInterface.setDebugMode(false); // 设置开启日志,发布时请关闭日志
 		JPushInterface.init(this); // 初始化 JPush
-
-		// 注册网络监听
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		registerReceiver(connectionReceiver, filter);
-		
-		initImageLoader(getApplicationContext());
 	}
 	
-	public static DisplayImageOptions options;        // DisplayImageOptions是用于设置图片显示的类
 	// 初始化ImageLoader
 	@SuppressWarnings("deprecation")
 	public void initImageLoader(Context context) {
+		Log.i(MyApplication.LOG_TAG, "初始化图片缓存工具...");
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).threadPriority(
 				Thread.NORM_PRIORITY)
 																						.denyCacheImageMultipleSizesInMemory()
@@ -169,6 +132,7 @@ public class MyApplication extends Application {
 																								QueueProcessingType.LIFO)
 																						.build();
 		ImageLoader.getInstance().init(config);
+
 		// 使用DisplayImageOptions.Builder()创建DisplayImageOptions  
         options = new DisplayImageOptions.Builder()
             .showStubImage(R.drawable.empty_photo)          // 设置图片下载期间显示的图片  
@@ -256,20 +220,6 @@ public class MyApplication extends Application {
 		MyApplication.tb_url = tb_url;
 	}
 
-	/**
-	 * 退出应用程序
-	 */
-	public void appExit() {
-		try {
-			/* 与按下HOME键效果一样 begin */
-			Intent intent = new Intent(Intent.ACTION_MAIN);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.addCategory(Intent.CATEGORY_HOME);
-			this.startActivity(intent);
-		} catch (Exception e) {
-		}
-	}
-
 	public static Date getSessionTime() {
 		return sessionTime;
 	}
@@ -301,6 +251,4 @@ public class MyApplication extends Application {
 	public static void setMustUpdate(boolean isMustUpdate) {
 		MyApplication.isMustUpdate = isMustUpdate;
 	}
-
-
 }

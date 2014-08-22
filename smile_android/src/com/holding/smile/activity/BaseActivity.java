@@ -5,8 +5,6 @@ package com.holding.smile.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo.State;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -81,40 +79,6 @@ public class BaseActivity extends Activity {
 //	private Timer				time;
 //	private TimerTask			loadingTimerTask;
 
-	// protected BroadcastReceiver connectionReceiver = new BroadcastReceiver()
-	// {
-	// @Override
-	// public void onReceive(Context context,
-	// Intent intent) {
-	// ConnectivityManager conMan = (ConnectivityManager)
-	// context.getSystemService(Context.CONNECTIVITY_SERVICE);
-	// // mobile 3G
-	// // Data
-	// // Network
-	// State mobile = conMan.getNetworkInfo(
-	// ConnectivityManager.TYPE_MOBILE)
-	// .getState();
-	// State wifi = conMan.getNetworkInfo(
-	// ConnectivityManager.TYPE_WIFI)
-	// .getState();
-	//
-	// // 如果3G网络和wifi网络都未连接，且不是处于正在连接状态
-	// // 则进入Network
-	// // Setting界面
-	// // 由用户配置网络连接
-	// if (mobile == State.CONNECTED
-	// || mobile == State.CONNECTING
-	// || wifi == State.CONNECTED
-	// || wifi == State.CONNECTING) {
-	// MyApplication.setHasNetwork(true);
-	// } else {
-	// MyApplication.setHasNetwork(false);
-	// ToastUtils.showShort(context,
-	// "网络异常，请检查网络！");
-	// }
-	// }
-	// };
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		context = getApplicationContext();
@@ -142,11 +106,6 @@ public class BaseActivity extends Activity {
 			float density = displayMetrics.density;
 			MyApplication.getInstance().setDensity(density);
 		}
-
-		// // 注册网络监听
-		// IntentFilter filter = new IntentFilter();
-		// filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-		// registerReceiver(connectionReceiver, filter);
 	}
 
 	public void setVisible(int id) {
@@ -283,21 +242,6 @@ public class BaseActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
-
-		ConnectivityManager conMan = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		// mobile 3G Data Network
-		State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-		State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
-		// 如果3G网络和wifi网络都未连接，且不是处于正在连接状态 则进入Network Setting界面 由用户配置网络连接
-		if (mobile == State.CONNECTED || mobile == State.CONNECTING || wifi == State.CONNECTED
-				|| wifi == State.CONNECTING) {
-			MyApplication.setHasNetwork(true);
-		} else {
-			MyApplication.setHasNetwork(false);
-			ToastUtils.showShort(this, "网络异常，请检查网络！");
-			return;
-		}
-
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
 				|| this.getClass().equals(MySmileActivity.class)

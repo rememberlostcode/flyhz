@@ -696,7 +696,6 @@ public class DataService {
 		RtnValueDto rvd = null;
 		String rvdString = URLUtil.getStringByGet(this.prefix_url + this.cart_list_url, null);
 		if (rvdString != null) {
-			Log.i(MyApplication.LOG_TAG+"cart_list", rvdString);
 			PCartItem pc = JSONUtil.getJson2Entity(rvdString, PCartItem.class);
 			if (pc != null) {
 				rvd = new RtnValueDto();
