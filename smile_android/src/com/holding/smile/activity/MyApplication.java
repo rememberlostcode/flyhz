@@ -43,8 +43,6 @@ public class MyApplication extends Application {
 	public static final String		LOG_TAG			= "smile";
 	private static MyApplication	singleton;
 
-//	private static ImageLoader		mImageLoader;
-
 	/**
 	 * 屏幕宽度
 	 */
@@ -76,7 +74,6 @@ public class MyApplication extends Application {
 	 */
 	private SUser					currentUser;
 
-	// JSESSIONID=6CCC2F179859F7D98D2F8E35CEBD5CF4
 	private String					sessionId;
 	private String					registrationID;
 
@@ -139,7 +136,6 @@ public class MyApplication extends Application {
 		dataService = new DataService(context);
 		submitService = new SubmitService(context);
 		loginService = new LoginService(context);
-//		mImageLoader = new ImageLoader(context);
 		sqliteService = new SQLiteService(context);// 初始化本地DB
 
 		jgoods_img_url = getString(R.string.prefix_url) + getString(R.string.img_static_url);
@@ -157,6 +153,7 @@ public class MyApplication extends Application {
 	
 	public static DisplayImageOptions options;        // DisplayImageOptions是用于设置图片显示的类
 	// 初始化ImageLoader
+	@SuppressWarnings("deprecation")
 	public void initImageLoader(Context context) {
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).threadPriority(
 				Thread.NORM_PRIORITY)
@@ -182,10 +179,6 @@ public class MyApplication extends Application {
 //            .displayer(new RoundedBitmapDisplayer(20))  // 设置成圆角图片  
             .build();                                   // 创建配置过得DisplayImageOption对象
 	}
-
-//	public static ImageLoader getImageLoader() {
-//		return mImageLoader;
-//	}
 
 	public static ExecutorService getThreadPool() {
 		return threadPool;

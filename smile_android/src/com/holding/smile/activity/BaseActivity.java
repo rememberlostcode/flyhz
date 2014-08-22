@@ -1,15 +1,12 @@
 
 package com.holding.smile.activity;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo.State;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -560,32 +557,6 @@ public class BaseActivity extends Activity {
 	public synchronized void loadData() {
 		System.out.println("-------------------空方法-------------------");
 	}
-
-//	/**
-//	 * 异步执行任务，比如载入数据；使用时需要在activity中覆盖loadData方法，在loadData方法中编写获取数据代码
-//	 * 
-//	 * @author robin 2014年7月17日 下午2:19:10
-//	 * 
-//	 */
-//	protected class LoadTask extends AsyncTask<String, Integer, String> {
-//
-//		@Override
-//		protected String doInBackground(String... arg0) {
-//			Log.i(MyApplication.LOG_TAG, "-------------------loadData-------------------");
-//			loadData();
-//			return null;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(String result) {
-//			// closeLoading();
-//			if (this.isCancelled())
-//				this.cancel(true);
-//		}
-//
-//	}
-
-	private int	seconds	= 0;
 
 	/**
 	 * 显示loading图片，最少显示一秒

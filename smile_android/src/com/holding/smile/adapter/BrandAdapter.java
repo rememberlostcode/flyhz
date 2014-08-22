@@ -2,7 +2,7 @@
 package com.holding.smile.adapter;
 
 import java.util.List;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +13,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.holding.smile.R;
 import com.holding.smile.activity.MainTwoActivity;
 import com.holding.smile.activity.MyApplication;
@@ -71,6 +70,7 @@ public class BrandAdapter extends BaseAdapter {
 		return position;
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final Context context = parent.getContext();

@@ -36,7 +36,6 @@ import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MainSmileActivity extends BaseActivity implements OnClickListener,
 		OnHeaderRefreshListener {
