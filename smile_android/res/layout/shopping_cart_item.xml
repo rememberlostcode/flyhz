@@ -12,6 +12,7 @@
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:paddingTop="5dp"
+        android:paddingBottom="5dip"
         android:gravity="top" >
 
         <LinearLayout
@@ -76,33 +77,50 @@
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" >
-
+                    
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:id="@+id/pp"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_marginBottom="4dp"
+	                    android:layout_alignParentLeft="true"
+	                    android:orientation="vertical" >
+	                    
+	                    <LinearLayout
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content"
+	                        android:orientation="horizontal" >
+	                        
+	                        <TextView
+	                            android:id="@+id/pp"
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="wrap_content"
+	                             android:textColor="@drawable/dahong"
+	                            android:textSize="16sp" />
+	                        
+	                        <TextView
+	                            android:id="@+id/show_product_qty"
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="wrap_content"
+	                            android:layout_marginLeft="50dp"
+	                            android:textColor="@drawable/shenhuise"
+	                            android:textSize="16sp" />
+	                    </LinearLayout>
+	                    
+	                    <TextView
+                            android:id="@+id/huise_pp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@drawable/dahong"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/show_product_qty"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="50dp"
                             android:textColor="@drawable/shenhuise"
-                            android:textSize="16sp" />
+                            android:textSize="14sp"
+                            android:visibility="gone"/>
+	                    
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
                         android:gravity="center"
                         android:orientation="horizontal" >
 
@@ -148,7 +166,8 @@
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/qianhuise" />
+        android:layout_height="1.0dip"
+        android:background="@drawable/dash_driver"
+        android:layerType="software" />
 
 </LinearLayout>

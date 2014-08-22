@@ -1,7 +1,6 @@
 
 package com.holding.smile.myview;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -34,8 +33,6 @@ public class MyTableLayout extends TableLayout {
 	private int							cWidth		= (int) (MyApplication.getInstance()
 																			.getScreenWidth() - 55) / 3;
 
-	private DiscountDto					selectDiscount;
-
 	@SuppressWarnings("deprecation")
 	private TableLayout.LayoutParams	params		= new TableLayout.LayoutParams(
 															TableLayout.LayoutParams.FILL_PARENT,
@@ -62,8 +59,7 @@ public class MyTableLayout extends TableLayout {
 		super.onMeasure(widthMeasureSpec, expandSpec);
 	}
 
-	public void setDiscountList(Context context, final TextView discountText,
-			List<DiscountDto> discountList, final BigDecimal pp) {
+	public void setDiscountList(Context context, List<DiscountDto> discountList) {
 		if (discountList != null && !discountList.isEmpty()) {
 			TableRow row = null;
 			int count = 0;
@@ -90,38 +86,12 @@ public class MyTableLayout extends TableLayout {
 				} else {
 					col.setLayoutParams(paramsRow2);
 				}
-				col.setId(discount.getId());
+				col.setId(i);
 				col.setText(discount.getDiscount() + "折");
 				col.setTextSize(15);
 				col.setGravity(Gravity.CENTER);
 				col.setBackgroundResource(R.drawable.my_discount_bg);
 				row.addView(col);// 添加列
-				col.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						int rowCount = getChildCount();
-						for (int i = 0; i < rowCount; i++) {
-							TableRow row1 = (TableRow) getChildAt(i);
-							int rowChildCount = row1.getChildCount();
-							for (int j = 0; j < rowChildCount; j++) {
-								row1.getChildAt(j).setSelected(false);
-							}
-						}
-						if (selectDiscount == null
-								|| !discount.getId().equals(selectDiscount.getId())) {
-							selectDiscount = discount;
-							if (selectDiscount != null) {
-								double disconut = StrUtils.div(selectDiscount.getDiscount(), 10, 2);
-								BigDecimal dp = pp.multiply(BigDecimal.valueOf(disconut));
-								discountText.setText("￥" + dp.intValue() + "");
-							}
-							v.setSelected(true);
-						} else {
-							selectDiscount = null;
-							discountText.setText("");
-						}
-					}
-				});
 				count += 1;
 			}
 			if (count != 3)
@@ -177,14 +147,6 @@ public class MyTableLayout extends TableLayout {
 			if (count != 3)
 				this.addView(row);// 添加行
 		}
-	}
-
-	public DiscountDto getSelectDiscount() {
-		return selectDiscount;
-	}
-
-	public void setSelectDiscount(DiscountDto selectDiscount) {
-		this.selectDiscount = selectDiscount;
 	}
 
 }

@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyShoppingCartAdapter;
+import com.holding.smile.dto.DiscountDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.CartItem;
 import com.holding.smile.entity.SUser;
@@ -71,9 +72,9 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		editBtn.setOnClickListener(this);
 
 	}
-	
+
 	@Override
-	public void onResume(){
+	public void onResume() {
 		super.onResume();
 		SUser user = MyApplication.getInstance().getCurrentUser();
 		if (user == null || MyApplication.getInstance().getSessionId() == null) {
@@ -118,7 +119,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		allQty = 0;
 		allTotal = new BigDecimal(0);
 		totalNumber.setText(allQty + "");
-		totalMoney.setText(allTotal.doubleValue() + "");
+		totalMoney.setText(allTotal.intValue() + "");
 
 		// initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.cart_list);
@@ -241,13 +242,18 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 				for (CartItem item : cartItemList) {
 					if (sIds.contains(item.getId())) {
 						allQty += (int) item.getQty();
-						allTotal = allTotal.add(item.getTotal());
+						DiscountDto discount = item.getDiscount();
+						if (discount != null && discount.getDp() != null) {
+							allTotal = allTotal.add(discount.getDp());
+						} else {
+							allTotal = allTotal.add(item.getTotal());
+						}
 					}
 				}
 			}
 		}
 		totalNumber.setText(allQty + "");
-		totalMoney.setText(allTotal.doubleValue() + "");
+		totalMoney.setText(allTotal.setScale(0, BigDecimal.ROUND_HALF_UP) + "");
 		cartAdapter.notifyDataSetChanged();
 	}
 
@@ -294,6 +300,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																					.equals(itemData.getId())) {
 																				item.setProduct(itemData.getProduct());
 																				item.setTotal(itemData.getTotal());
+																				item.setDiscount(itemData.getDiscount());
 																			}
 																		}
 																		// 计算总金额

@@ -1,6 +1,7 @@
 
 package com.holding.smile.adapter;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.Set;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.activity.MyApplication;
+import com.holding.smile.dto.DiscountDto;
 import com.holding.smile.dto.ProductDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.CartItem;
@@ -32,13 +35,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class MyShoppingCartAdapter extends BaseAdapter {
 	private Context			context;
 	private List<CartItem>	cartItemList;
-	private Integer			sWidth			= MyApplication.getInstance().getScreenWidth();
+	private Integer			sWidth		= MyApplication.getInstance().getScreenWidth();
 	private ProgressBar		progressBar;
 	private Handler			mUIHandler;
 
-	private Set<Integer>	sIds			= new HashSet<Integer>();
-	private Boolean			editFlag		= false;
-	private Boolean			selectAll		= false;
+	private Set<Integer>	sIds		= new HashSet<Integer>();
+	private Boolean			editFlag	= false;
+	private Boolean			selectAll	= false;
 
 	public void setEditFlag(boolean editFlag) {
 		this.editFlag = editFlag;
@@ -110,6 +113,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 	static class ViewHolder {
 		TextView	n;
 		TextView	pp;
+		TextView	huise_pp;
 		ImageView	p;
 		TextView	color;
 		TextView	brandstyle;
@@ -129,6 +133,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 			holder.n = (TextView) convertView.findViewById(R.id.n);
 			holder.n.setWidth((int) (sWidth - 160 * MyApplication.getInstance().getDensity()));
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
+			holder.huise_pp = (TextView) convertView.findViewById(R.id.huise_pp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 			holder.brandstyle = (TextView) convertView.findViewById(R.id.brand_style);
 			holder.color = (TextView) convertView.findViewById(R.id.color_cate);
@@ -177,8 +182,20 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 				holder.color.setText("颜色分类：" + jGoods.getColor());
 			}
 			if (jGoods.getPurchasingPrice() != null) {
-				holder.pp.setText("￥" + cartItem.getTotal());
+				DiscountDto discount = cartItem.getDiscount();
+				if (discount != null && discount.getDp() != null) {
+					holder.huise_pp.setVisibility(View.VISIBLE);
+					holder.huise_pp.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+					holder.pp.setText("￥" + discount.getDp().setScale(0, BigDecimal.ROUND_HALF_UP));
+					holder.huise_pp.setText("￥"
+							+ cartItem.getTotal().setScale(0, BigDecimal.ROUND_HALF_UP));
+				} else {
+					holder.huise_pp.setVisibility(View.GONE);
+					holder.pp.setText("￥"
+							+ cartItem.getTotal().setScale(0, BigDecimal.ROUND_HALF_UP));
+				}
 			}
+
 			holder.qty.setText(cartItem.getQty() + "");
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
@@ -291,5 +308,4 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 		}
 		return convertView;
 	}
-
 }

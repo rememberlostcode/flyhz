@@ -1,11 +1,13 @@
 
 package com.holding.smile.adapter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.GoodsDetailActivity;
 import com.holding.smile.activity.MyApplication;
+import com.holding.smile.dto.DiscountDto;
 import com.holding.smile.dto.OrderDetailDto;
 import com.holding.smile.dto.ProductDto;
 import com.holding.smile.dto.RtnValueDto;
@@ -29,10 +32,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class MyOrderInformAdapter extends BaseAdapter {
 	private Context					context;
 	private List<OrderDetailDto>	orderDetails;
-	private Integer					sWidth			= MyApplication.getInstance().getScreenWidth();
+	private Integer					sWidth		= MyApplication.getInstance().getScreenWidth();
 	private ProgressBar				progressBar;
 	private Handler					mUIHandler;
-	private boolean					cartFlag		= false;										// 为true时，说明是从购物车结算的，这时不能修改购买数量
+	private boolean					cartFlag	= false;										// 为true时，说明是从购物车结算的，这时不能修改购买数量
 
 	// 自己定义的构造函数
 	public MyOrderInformAdapter(Context context, List<OrderDetailDto> contacts,
@@ -67,6 +70,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 	static class ViewHolder {
 		TextView	n;
 		TextView	pp;
+		TextView	huise_pp;
 		TextView	spq;
 		ImageView	p;
 		TextView	color;
@@ -86,6 +90,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 			holder.n.setWidth((int) (sWidth - 190 * MyApplication.getInstance().getDensity()));
 			holder.spq = (TextView) convertView.findViewById(R.id.show_product_qty);
 			holder.pp = (TextView) convertView.findViewById(R.id.pp);
+			holder.huise_pp = (TextView) convertView.findViewById(R.id.huise_pp);
 			holder.p = (ImageView) convertView.findViewById(R.id.p);
 			holder.brandstyle = (TextView) convertView.findViewById(R.id.brand_style);
 			holder.color = (TextView) convertView.findViewById(R.id.color_cate);
@@ -115,18 +120,29 @@ public class MyOrderInformAdapter extends BaseAdapter {
 				holder.color.setText("颜色分类：" + jGoods.getColor());
 			}
 			if (jGoods.getPurchasingPrice() != null) {
-				holder.pp.setText("￥" + jGoods.getPurchasingPrice());
+				DiscountDto discount = orderDetail.getDiscount();
+				if (discount != null && discount.getDp() != null) {
+					holder.huise_pp.setVisibility(View.VISIBLE);
+					holder.huise_pp.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+					holder.pp.setText("￥" + discount.getDp().setScale(0, BigDecimal.ROUND_HALF_UP));
+					holder.huise_pp.setText("￥"
+							+ orderDetail.getTotal().setScale(0, BigDecimal.ROUND_HALF_UP));
+				} else {
+					holder.huise_pp.setVisibility(View.GONE);
+					holder.pp.setText("￥"
+							+ orderDetail.getTotal().setScale(0, BigDecimal.ROUND_HALF_UP));
+				}
 			}
 			holder.qty.setText(orderDetail.getQty() + "");
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
 				ImageLoader.getInstance().displayImage(url, holder.p);
-//				if (!mBusy) {
-//					mImageLoader.DisplayImage(url, holder.p, false);
-//				} else {
-//					mImageLoader.DisplayImage(url, holder.p, false);
-//				}
+				// if (!mBusy) {
+				// mImageLoader.DisplayImage(url, holder.p, false);
+				// } else {
+				// mImageLoader.DisplayImage(url, holder.p, false);
+				// }
 			}
 
 			holder.p.setOnClickListener(new OnClickListener() {
@@ -188,7 +204,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 
 	// 显示进度条
 	private void showPDialog() {
-		if(progressBar!=null)
+		if (progressBar != null)
 			progressBar.setVisibility(View.VISIBLE);
 		if (mUIHandler != null) {
 			mUIHandler.sendEmptyMessage(2);

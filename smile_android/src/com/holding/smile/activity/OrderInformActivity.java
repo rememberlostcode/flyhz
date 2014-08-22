@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.MyOrderInformAdapter;
+import com.holding.smile.dto.DiscountDto;
 import com.holding.smile.dto.OrderDetailDto;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.ProductDto;
@@ -201,7 +202,12 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 					if (logisticFee == null)
 						logisticFee = orderDetail.getLogisticsPriceEvery();
 					allQty += (int) orderDetail.getQty();
-					allTotal = allTotal.add(orderDetail.getTotal());
+					DiscountDto discount = orderDetail.getDiscount();
+					if (discount != null && discount.getDp() != null) {
+						allTotal = allTotal.add(discount.getDp());
+					} else {
+						allTotal = allTotal.add(orderDetail.getTotal());
+					}
 				}
 			}
 		}
@@ -209,12 +215,13 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		if (logisticFee != null) {
 			logisticEvery.setText(logisticFee.doubleValue() + "");
 			logisticsFeeTotal = logisticFee.multiply(BigDecimal.valueOf(allQty));
-			logisticsTotal.setText(logisticsFeeTotal.doubleValue() + "");
+			logisticsTotal.setText(logisticsFeeTotal.setScale(0, BigDecimal.ROUND_HALF_UP) + "");
 		}
 		pTotalNumber.setText(allQty + "");
-		pTotalMoney.setText(allTotal.doubleValue() + "");
+		pTotalMoney.setText(allTotal.setScale(0, BigDecimal.ROUND_HALF_UP) + "");
 		totalNumber.setText(allQty + "");
-		totalMoney.setText(allTotal.add(logisticsFeeTotal).doubleValue() + "");
+		totalMoney.setText(allTotal.add(logisticsFeeTotal).setScale(0, BigDecimal.ROUND_HALF_UP)
+				+ "");
 	}
 
 	@SuppressLint("HandlerLeak")

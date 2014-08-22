@@ -1,6 +1,7 @@
 
 package com.holding.smile.activity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,6 @@ import com.holding.smile.adapter.MyPagerAdapter;
 import com.holding.smile.dto.DiscountDto;
 import com.holding.smile.dto.RtnValueDto;
 import com.holding.smile.entity.JColor;
-import com.holding.smile.entity.JDiscount;
 import com.holding.smile.entity.JGoods;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.MyTableLayout;
@@ -45,28 +45,28 @@ import com.holding.smile.tools.ToastUtils;
  */
 public class GoodsDetailActivity extends BaseActivity implements OnClickListener {
 
-	private MyViewPager		mViewPager;
-	private List<View>		viewList		= new ArrayList<View>();
-	private MyPagerAdapter	pagerAdapter;
+	private MyViewPager			mViewPager;
+	private List<View>			viewList		= new ArrayList<View>();
+	private MyPagerAdapter		pagerAdapter;
 	// 装点点的ImageView数组
-	private ImageView[]		tips;
-	private TextView		b;												// 品牌名
-	private TextView		p_num;											// 商品编号
-	private TextView		n;												// 商品名
-	private TextView		pp;											// 价格
-	private TextView		lp;											// 原价格
-	private TextView		discountPrice;									// 折扣价格
-	private TextView		sn;											// 销售量
-	private TextView		d;												// 描述
-	private TextView		scolor;										// 选择的颜色
-	private List<JGoods>	details			= new ArrayList<JGoods>();
-	private JGoods			jGoods			= null;
-	private List<String>	picList			= new ArrayList<String>();
-	private List<DiscountDto>	discountList	= new ArrayList<DiscountDto>();	// 相同款号的商品颜色列表
-	private List<JColor>	colorList		= new ArrayList<JColor>();		// 相同款号的商品颜色列表
-	private Integer			gid				= null;						// 商品ID
-	private String			bs				= null;						// 款号
-	private JDiscount		selectDiscount	= null;						// 所选择的折扣
+	private ImageView[]			tips;
+	private TextView			b;												// 品牌名
+	private TextView			p_num;											// 商品编号
+	private TextView			n;												// 商品名
+	private TextView			pp;											// 价格
+	private TextView			lp;											// 原价格
+	private TextView			discountPrice;									// 折扣价格
+	private TextView			sn;											// 销售量
+	private TextView			d;												// 描述
+	private TextView			scolor;										// 选择的颜色
+	private List<JGoods>		details			= new ArrayList<JGoods>();
+	private JGoods				jGoods			= null;
+	private List<String>		picList			= new ArrayList<String>();
+	private List<DiscountDto>	discountList	= new ArrayList<DiscountDto>(); // 相同款号的商品颜色列表
+	private List<JColor>		colorList		= new ArrayList<JColor>();		// 相同款号的商品颜色列表
+	private Integer				gid				= null;						// 商品ID
+	private String				bs				= null;						// 款号
+	private DiscountDto			selectDiscount	= null;						// 所选择的折扣
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -280,15 +280,49 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 		if (jGoods == null)
 			return;
 
-		if(jGoods.getDiscounts() == null || jGoods.getDiscounts().length == 0){
+		if (jGoods.getDiscounts() == null || jGoods.getDiscounts().length == 0) {
 			return;
 		}
-		for (int i = 5; i < jGoods.getDiscounts().length; i++) {
+		for (int i = 0; i < jGoods.getDiscounts().length; i++) {
 			discountList.add(jGoods.getDiscounts()[i]);
 		}
 
 		final MyTableLayout tableLayout = (MyTableLayout) findViewById(R.id.discount_table);
-		tableLayout.setDiscountList(context, discountPrice, discountList, jGoods.getPp());
+		tableLayout.setDiscountList(context, discountList);
+		final int rowCount = tableLayout.getChildCount();
+		for (int i = 0; i < rowCount; i++) {
+			TableRow row1 = (TableRow) tableLayout.getChildAt(i);
+			int rowChildCount = row1.getChildCount();
+			for (int j = 0; j < rowChildCount; j++) {
+				View v = row1.getChildAt(j);
+				v.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						for (int i = 0; i < rowCount; i++) {
+							TableRow row1 = (TableRow) tableLayout.getChildAt(i);
+							int rowChildCount = row1.getChildCount();
+							for (int j = 0; j < rowChildCount; j++) {
+								row1.getChildAt(j).setSelected(false);
+							}
+						}
+						DiscountDto discount = discountList.get(v.getId());
+						if (selectDiscount == null
+								|| !discount.getId().equals(selectDiscount.getId())) {
+							selectDiscount = discount;
+							if (selectDiscount != null) {
+								double val = StrUtils.div(selectDiscount.getDiscount(), 10, 2);
+								BigDecimal dp = jGoods.getPp().multiply(BigDecimal.valueOf(val));
+								discountPrice.setText("￥" + dp.intValue() + "");
+							}
+							v.setSelected(true);
+						} else {
+							selectDiscount = null;
+							discountPrice.setText("");
+						}
+					}
+				});
+			}
+		}
 	}
 
 	@Override
@@ -323,10 +357,11 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 					startActivity(intent);
 					overridePendingTransition(0, 0);
 				} else {
-					RtnValueDto rtnValue = MyApplication.getInstance()
-														.getSubmitService()
-														.addCart(gid, (short) 1,
-																selectDiscount.getId());
+					Integer discountId = null;
+					if (selectDiscount != null)
+						discountId = selectDiscount.getId();
+					RtnValueDto rtnValue = MyApplication.getInstance().getSubmitService()
+														.addCart(gid, (short) 1, discountId);
 					if (CodeValidator.dealCode(this, rtnValue)) {
 						ToastUtils.showShort(this, "已加入购物车！");
 					}
@@ -357,7 +392,8 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 					@Override
 					public void onClick(View arg0) {
 						Intent intent = new Intent(context, ImageViewActivity.class);
-//						Intent intent = new Intent(context, GoodsBigImgActivity.class);
+						// Intent intent = new Intent(context,
+						// GoodsBigImgActivity.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 						intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
 						intent.putExtra("position", position);
