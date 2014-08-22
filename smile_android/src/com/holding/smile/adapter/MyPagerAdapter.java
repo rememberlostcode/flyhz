@@ -63,7 +63,7 @@ public class MyPagerAdapter extends PagerAdapter {
 				im.setLayoutParams(para);
 				im.setImageResource(R.drawable.empty_photo);
 				String url = im.getTag().toString();
-				ImageLoader.getInstance().displayImage(url, im);
+				ImageLoader.getInstance().displayImage(url, im,MyApplication.options);
 			}
 			container.addView(view, 0);// 添加页卡
 		}
@@ -81,7 +81,7 @@ public class MyPagerAdapter extends PagerAdapter {
 			im.setTag(imgPath);
 			im.setImageResource(R.drawable.empty_photo);
 			String url = im.getTag().toString();
-			ImageLoader.getInstance().displayImage(url, im);
+			ImageLoader.getInstance().displayImage(url, im,MyApplication.options);
 		}
 	}
 

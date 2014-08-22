@@ -92,9 +92,7 @@ public class MyLinearLayout extends LinearLayout {
 				ImageView tv = (ImageView) v.findViewById(R.id.good_color);
 				if (StrUtils.isNotEmpty(color.getCi())) {
 					String url = MyApplication.jgoods_img_url + color.getCi();
-					ImageLoader.getInstance().displayImage(url,tv);
-//					tv.setTag(url);
-//					v.setTag(color.getCi());
+					ImageLoader.getInstance().displayImage(url,tv,MyApplication.options);
 				} else {
 					tv.setImageResource(R.drawable.empty_photo);
 				}

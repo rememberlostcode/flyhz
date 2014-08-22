@@ -105,7 +105,7 @@ public class BrandAdapter extends BaseAdapter {
 				if (StrUtils.isNotEmpty(brand.getImg_url())) {
 					String url = MyApplication.jgoods_img_url + brand.getImg_url();
 					holder.p.setTag(url);
-					ImageLoader.getInstance().displayImage(url, holder.p);
+					ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
 //					if (!mBusy) {
 //						mImageLoader.DisplayImage(url, holder.p, false);
 //					} else {

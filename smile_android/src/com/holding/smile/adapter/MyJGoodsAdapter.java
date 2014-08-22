@@ -2,6 +2,7 @@
 package com.holding.smile.adapter;
 
 import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.holding.smile.R;
 import com.holding.smile.activity.BaseActivity;
 import com.holding.smile.activity.GoodsDetailActivity;
@@ -98,7 +100,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			if (jGoods.getP() != null && jGoods.getP().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
 				holder.p.setTag(url);
-				ImageLoader.getInstance().displayImage(url, holder.p);
+				ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
 			}
 		}
 

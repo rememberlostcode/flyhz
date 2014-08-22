@@ -94,7 +94,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 									+ order.getConsignee().getIdentitycard().getUrl();
 							idcardImageView.setTag(url);
 							
-							ImageLoader.getInstance().displayImage(url, idcardImageView);
+							ImageLoader.getInstance().displayImage(url, idcardImageView,MyApplication.options);
 //							MyApplication.getImageLoader()
 //											.DisplayImage(url, idcardImageView, false);
 						}
@@ -129,7 +129,6 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, e.getMessage());
 		}
-		closeLoading();
 	}
 
 	@Override

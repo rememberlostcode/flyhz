@@ -65,12 +65,7 @@ public class RecommendGoodsAdapter extends BaseAdapter {
 			if (StrUtils.isNotEmpty(jActivity.getP())) {
 				String url = MyApplication.jgoods_img_url + jActivity.getP();
 				holder.p.setTag(url);
-				ImageLoader.getInstance().displayImage(url, holder.p);
-//				if (!mBusy) {
-//					mImageLoader.DisplayImage(url, holder.p, false);
-//				} else {
-//					mImageLoader.DisplayImage(url, holder.p, false);
-//				}
+				ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
 			}
 
 			convertView.setOnClickListener(new OnClickListener() {

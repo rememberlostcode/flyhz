@@ -67,7 +67,7 @@ public class ColorAdapter extends BaseAdapter {
 		if (colorList != null && !colorList.isEmpty()) {
 			String url = MyApplication.jgoods_img_url + colorList.get(position);
 			holder.p.setTag(url);
-			ImageLoader.getInstance().displayImage(url, holder.p);
+			ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
 		}
 		return convertView;
 	}

@@ -230,6 +230,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 													public void onClick(DialogInterface dialog,
 															int which) {
 
+														ImageLoader.getInstance().clearMemoryCache();
 														ImageLoader.getInstance().clearDiscCache();
 //														MyApplication.getImageLoader()
 //																		.clearFileCache();

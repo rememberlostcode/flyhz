@@ -21,6 +21,31 @@ public class ProductDto {
 
 	private short		qty;
 
+	/**
+	 * 币种
+	 */
+	private String				currency;
+	/**
+	 * 币种符号
+	 */
+	private String				symbol;
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+	
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
+	}
+	
 	public Integer getId() {
 		return id;
 	}

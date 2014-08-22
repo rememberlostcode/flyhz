@@ -137,12 +137,7 @@ public class MyOrderInformAdapter extends BaseAdapter {
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
-				ImageLoader.getInstance().displayImage(url, holder.p);
-				// if (!mBusy) {
-				// mImageLoader.DisplayImage(url, holder.p, false);
-				// } else {
-				// mImageLoader.DisplayImage(url, holder.p, false);
-				// }
+				ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
 			}
 
 			holder.p.setOnClickListener(new OnClickListener() {

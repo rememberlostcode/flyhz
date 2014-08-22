@@ -58,6 +58,8 @@ public class RedisRepositoryImpl implements RedisRepository {
 				productDto.setPurchasingPrice(productModel.getPurchasingprice());
 				productDto.setBrandstyle(productModel.getBrandstyle());
 				productDto.setColor(productModel.getColor());
+				productDto.setCurrency(productModel.getCurrency());
+				productDto.setSymbol(productModel.getSymbol());
 
 				if (productModel.getImgs() != null && !"".equals(productModel.getImgs())) {
 					String[] p = JSONUtil.getJson2Entity(productModel.getImgs(), String[].class);

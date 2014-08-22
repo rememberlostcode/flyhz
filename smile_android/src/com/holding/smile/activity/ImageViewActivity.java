@@ -16,7 +16,6 @@ import android.view.View;
 import com.holding.smile.R;
 import com.holding.smile.myview.ProgressWheel;
 import com.holding.smile.tools.BitmapUtils;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
@@ -60,9 +59,7 @@ public class ImageViewActivity extends BaseActivity {
 					progressWheel.setVisibility(View.GONE);
 				} else {
 					imageUrl = MyApplication.jgoods_img_url + picList.get(0);
-					DisplayImageOptions options = new DisplayImageOptions.Builder().cacheOnDisc(
-							true).considerExifParams(true).build();
-					ImageLoader.getInstance().displayImage(imageUrl, photoView, options,
+					ImageLoader.getInstance().displayImage(imageUrl, photoView,MyApplication.options,
 							new SimpleImageLoadingListener() {
 								@Override
 								public void onLoadingComplete(String imageUri, View view,

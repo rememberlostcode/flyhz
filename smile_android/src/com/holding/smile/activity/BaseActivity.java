@@ -591,8 +591,10 @@ public class BaseActivity extends Activity {
 	 * 显示loading图片，最少显示一秒
 	 */
 	public void showLoading() {
-		dialogLoading = new HKDialogLoading(this, R.style.HKDialog);
-		dialogLoading.show(); // 显示加载中对话框
+		if (dialogLoading == null)
+			dialogLoading = new HKDialogLoading(this, R.style.HKDialog);
+		if (dialogLoading != null && !dialogLoading.isShowing())
+			dialogLoading.show(); // 显示加载中对话框
 //		canClosed = false;
 //		seconds = 0;
 //
@@ -629,7 +631,9 @@ public class BaseActivity extends Activity {
 //			canClosed = true;
 //		}
 		try {
-			dialogLoading.dismiss();
+			if (dialogLoading != null && dialogLoading.isShowing()){
+				dialogLoading.dismiss();
+			}
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, e.getMessage());
 		}

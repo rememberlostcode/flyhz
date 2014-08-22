@@ -58,8 +58,9 @@
 		categoryId,
 		p.color,
 		p.colorimg,
-		p.currency
-		from product p
-		where p.id = #{id}
+		p.currency,
+		c.symbol
+		from product p,currency c
+		where p.id = #{id} and p.currency = c.for_short
 	</select>
 </mapper>

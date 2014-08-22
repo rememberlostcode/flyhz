@@ -29,7 +29,27 @@ public class ProductModel implements Serializable {
 	/**
 	 * 币种
 	 */
-	private String currency;
+	private String				currency;
+	/**
+	 * 币种符号
+	 */
+	private String				symbol;
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+	
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
+	}
 
 	public ProductModel() {
 	}
@@ -144,13 +164,5 @@ public class ProductModel implements Serializable {
 
 	public void setColorimg(String colorimg) {
 		this.colorimg = colorimg;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
 	}
 }

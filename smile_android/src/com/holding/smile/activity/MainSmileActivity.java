@@ -36,6 +36,7 @@ import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 import com.holding.smile.tools.CodeValidator;
 import com.holding.smile.tools.StrUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MainSmileActivity extends BaseActivity implements OnClickListener,
 		OnHeaderRefreshListener {
@@ -70,6 +71,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 		startTask();
 	}
 
+	@SuppressLint("InflateParams")
 	private void initView() {
 		LinearLayout indexViewLayout = (LinearLayout) LayoutInflater.from(context).inflate(
 				R.layout.index_recommend, null);
@@ -175,6 +177,7 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 	/**
 	 * 添加页卡
 	 */
+	@SuppressLint("InflateParams")
 	private void addViewPager() {
 		if (viewList == null) {
 			viewList = new ArrayList<View>();
@@ -191,7 +194,6 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setContentDescription(jAct.getId() + "");
 				imageView.setTag(MyApplication.jgoods_img_url + jAct.getP());
-				imageView.setContentDescription(MyApplication.jgoods_img_url + jAct.getUrl());
 				imageView.setOnClickListener(new View.OnClickListener() {
 
 					@Override

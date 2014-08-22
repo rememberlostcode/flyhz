@@ -64,7 +64,7 @@ public class ImageAdapter extends BaseAdapter {
 		if (picList != null && !picList.isEmpty()) {
 			String url = MyApplication.jgoods_img_url + picList.get(position);
 			holder.p.setTag(url);
-			ImageLoader.getInstance().displayImage(url, holder.p);
+			ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
 		}
 		return convertView;
 	}

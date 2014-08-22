@@ -186,7 +186,7 @@ public class SolrDataImpl implements SolrData {
 				discountDto = new DiscountDto();
 				discountDto.setId(list.get(i).getId());;
 				discountDto.setDiscount(list.get(i).getDiscount());
-				discountDto.setDp(productBuildDto.getPp().multiply(new BigDecimal(list.get(i).getDiscount() / 10.0)));
+				discountDto.setDp(productBuildDto.getPp().multiply(new BigDecimal(list.get(i).getDiscount() / 10.0)).setScale(2,BigDecimal.ROUND_UP));//进位处理
 				disList.add(discountDto);
 			}
 			doc.addField("discounts", JSONUtil.getEntity2Json(disList));// 折扣

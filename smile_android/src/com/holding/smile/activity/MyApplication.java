@@ -25,6 +25,7 @@ import com.holding.smile.service.SubmitService;
 import com.holding.smile.tools.ToastUtils;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
@@ -154,23 +155,33 @@ public class MyApplication extends Application {
 		initImageLoader(getApplicationContext());
 	}
 	
+	public static DisplayImageOptions options;        // DisplayImageOptions是用于设置图片显示的类
 	// 初始化ImageLoader
-		public static void initImageLoader(Context context) {
-			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).threadPriority(
-					Thread.NORM_PRIORITY - 2)
-																							.denyCacheImageMultipleSizesInMemory()
-																							.memoryCache(
-																									new LruMemoryCache(
-																											2 * 1024 * 1024))
-																							.discCacheSize(
-																									20 * 1024 * 1024)
-																							.discCacheFileNameGenerator(
-																									new Md5FileNameGenerator())
-																							.tasksProcessingOrder(
-																									QueueProcessingType.LIFO)
-																							.build();
-			ImageLoader.getInstance().init(config);
-		}
+	public void initImageLoader(Context context) {
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).threadPriority(
+				Thread.NORM_PRIORITY)
+																						.denyCacheImageMultipleSizesInMemory()
+																						.memoryCache(
+																								new LruMemoryCache(
+																										5 * 1024 * 1024))
+																						.discCacheSize(
+																								20 * 1024 * 1024)
+																						.discCacheFileNameGenerator(
+																								new Md5FileNameGenerator())
+																						.tasksProcessingOrder(
+																								QueueProcessingType.LIFO)
+																						.build();
+		ImageLoader.getInstance().init(config);
+		// 使用DisplayImageOptions.Builder()创建DisplayImageOptions  
+        options = new DisplayImageOptions.Builder()
+            .showStubImage(R.drawable.empty_photo)          // 设置图片下载期间显示的图片  
+            .showImageForEmptyUri(R.drawable.empty_photo)  // 设置图片Uri为空或是错误的时候显示的图片  
+            .showImageOnFail(R.drawable.empty_photo)       // 设置图片加载或解码过程中发生错误显示的图片      
+            .cacheInMemory(true)                        // 设置下载的图片是否缓存在内存中  
+            .cacheOnDisc(true)                          // 设置下载的图片是否缓存在SD卡中  
+//            .displayer(new RoundedBitmapDisplayer(20))  // 设置成圆角图片  
+            .build();                                   // 创建配置过得DisplayImageOption对象
+	}
 
 //	public static ImageLoader getImageLoader() {
 //		return mImageLoader;

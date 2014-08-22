@@ -101,7 +101,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 						imageView.setLayoutParams(para);
 						
 						ImageLoader.getInstance().displayImage(
-								MyApplication.jgoods_img_url + idcard.getUrl(), imageView);
+								MyApplication.jgoods_img_url + idcard.getUrl(), imageView,MyApplication.options);
 					}
 					
 					if (idcard.getBack_url() != null && !"".equals(idcard.getBack_url())) {
@@ -111,7 +111,7 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 						imageBackView.setLayoutParams(paraBak);
 						
 						ImageLoader.getInstance().displayImage(
-								MyApplication.jgoods_img_url + idcard.getBack_url(), imageBackView);
+								MyApplication.jgoods_img_url + idcard.getBack_url(), imageBackView,MyApplication.options);
 					}
 				}
 			}

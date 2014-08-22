@@ -81,7 +81,7 @@ public class HorizontalGridViewAdapter extends BaseAdapter {
 				if (jGoods.getP() != null && jGoods.getP().length > 0) {
 					String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
 					holder.im.setTag(url);
-					ImageLoader.getInstance().displayImage(url, holder.im);
+					ImageLoader.getInstance().displayImage(url, holder.im,MyApplication.options);
 				}
 			}
 			convertView.setOnClickListener(new OnClickListener() {

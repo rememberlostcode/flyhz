@@ -201,7 +201,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 					ImageView imageView = (ImageView) itemView.findViewById(R.id.p);
 					if (imageView != null) {
 						ImageLoader.getInstance().displayImage(
-								MyApplication.jgoods_img_url + curr_item.getP()[0], imageView);
+								MyApplication.jgoods_img_url + curr_item.getP()[0], imageView,MyApplication.options);
 					}
 				}
 			}

@@ -200,7 +200,7 @@ public class MyShoppingCartAdapter extends BaseAdapter {
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
-				ImageLoader.getInstance().displayImage(url, holder.p);
+				ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
 			}
 
 			holder.p.setOnClickListener(new OnClickListener() {
