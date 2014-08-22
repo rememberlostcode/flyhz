@@ -213,7 +213,7 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 		}
 
 		if (logisticFee != null) {
-			logisticEvery.setText(logisticFee.doubleValue() + "");
+			logisticEvery.setText(logisticFee.setScale(0, BigDecimal.ROUND_HALF_UP) + "");
 			logisticsFeeTotal = logisticFee.multiply(BigDecimal.valueOf(allQty));
 			logisticsTotal.setText(logisticsFeeTotal.setScale(0, BigDecimal.ROUND_HALF_UP) + "");
 		}
