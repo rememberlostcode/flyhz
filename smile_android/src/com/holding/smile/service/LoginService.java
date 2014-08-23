@@ -56,7 +56,7 @@ public class LoginService {
 	}
 
 	/**
-	 * 判断session是否已经失效，如果失效重新登录;如重新登录失败，清除当前登录人信息
+	 * 判断session是否有效，如果失效重新登录;如重新登录失败，清除当前登录人信息
 	 */
 	public boolean isSessionInvalidated() {
 		boolean isLogining = true;
@@ -70,6 +70,8 @@ public class LoginService {
 					MyApplication.getInstance().setSessionId(null);
 					isLogining = false;
 				}
+			} else {
+				isLogining = false;
 			}
 		} else {
 			if (new Date().getTime() - MyApplication.getSessionTime().getTime() > SESSION_TIME) {// 超过20分钟需确认下是否登录失效
@@ -87,6 +89,8 @@ public class LoginService {
 					} else {
 						Log.i(MyApplication.LOG_TAG, "重新登录成功");
 					}
+				} else {
+					isLogining = false;
 				}
 			} else {
 				

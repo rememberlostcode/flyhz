@@ -21,7 +21,6 @@ import com.flyhz.framework.util.TaobaoTokenUtil;
 import com.flyhz.shop.dto.LogisticsDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.persistence.dao.LogisticsDao;
-import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.OrderService;
 import com.flyhz.shop.service.common.OrderStatusService;
 import com.taobao.api.ApiException;
@@ -536,15 +535,7 @@ public class TaobaoDataImpl implements TaobaoData {
 
 									if (StringUtils.isNotBlank(number)) {
 										String[] numbers = number.split(",");
-										// 修改订单状态
-										OrderModel orderModel = new OrderModel();
-										for (int g = 0; g < numbers.length; g++) {
-											if (StringUtils.isNotBlank(numbers[g])) {
-												orderModel.setStatus(Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
-												orderModel.setNumber(number);
-												orderService.updateStatusByNumberForMessage(orderModel);
-											}
-										}
+										orderStatusService.receiveGoods(numbers);
 									}
 								}
 								log.info("一次消息结束");

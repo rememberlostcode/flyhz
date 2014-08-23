@@ -454,4 +454,54 @@ public class SQLiteService {
 		return is;
 	}
 
+	public Integer getUserShoppingCount() {
+		SUser user = MyApplication.getInstance().getCurrentUser();
+		Integer count = null;
+		if (user != null && user.getId() != null && user.getId() != 0 && user.getUsername() != null) {
+			Cursor cursor = db.query("shopping", new String[] { "count" }, "userId = ?",
+					new String[] { String.valueOf(user.getId()) }, null, null, null, "1");
+
+			while (cursor.moveToNext()) {
+				count = cursor.getInt(0);
+			}
+			cursor.close();
+		}
+		return count;
+	}
+	
+	public void addUserShoppingCount(Integer addNum) {
+		Integer count = getUserShoppingCount();
+		SUser user = MyApplication.getInstance().getCurrentUser();
+		if (user!=null && count == null) {// 本地不存在就添加
+			try {
+				// 插入新数据
+				db.execSQL("INSERT INTO shopping VALUES(?,?)",
+						new Object[] { user.getId(), addNum });
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {// 已存在修改
+			ContentValues cv = new ContentValues();
+			cv.put("count", count + addNum + "");
+			db.update("shopping", cv, "userId=?", new String[] { user.getId() + "" });
+		}
+	}
+	
+	public void updateUserShoppingCount(Integer addNum) {
+		Integer count = getUserShoppingCount();
+		SUser user = MyApplication.getInstance().getCurrentUser();
+		if (user!=null && count == null) {// 本地不存在就添加
+			try {
+				// 插入新数据
+				db.execSQL("INSERT INTO shopping VALUES(?,?)",
+						new Object[] { user.getId(), addNum });
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {// 已存在修改
+			ContentValues cv = new ContentValues();
+			cv.put("count", addNum + "");
+			db.update("shopping", cv, "userId=?", new String[] { user.getId() + "" });
+		}
+	}
 }

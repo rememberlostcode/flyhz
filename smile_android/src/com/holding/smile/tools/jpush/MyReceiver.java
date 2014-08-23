@@ -5,11 +5,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.holding.smile.activity.HtmlUIActivity;
-import com.holding.smile.activity.IndexActivity;
+import com.holding.smile.activity.IdcardManagerActivity;
 import com.holding.smile.activity.LoginActivity;
 import com.holding.smile.activity.MyApplication;
 import com.holding.smile.activity.MyOrdersActivity;
-import com.holding.smile.activity.ShoppingCartActivity;
+import com.holding.smile.entity.SUser;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -83,19 +83,17 @@ public class MyReceiver extends BroadcastReceiver {
 				i.putExtra("url", url);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
-			} else if (alert.indexOf("购物车") > -1) {
-				if (!MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
-					Intent i = new Intent();
-					i.putExtra("class", ShoppingCartActivity.class);
-					i.setClass(context, LoginActivity.class);
-					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					context.startActivity(i);
+			} else if (alert.indexOf("身份证") > -1) {
+				SUser user = MyApplication.getInstance().getCurrentUser();
+				Intent i = null;
+				if (user == null || MyApplication.getInstance().getSessionId() == null) {
+					i = new Intent(context, LoginActivity.class);
+					i.putExtra("class", IdcardManagerActivity.class);
 				} else {
-					Intent i = new Intent();
-					i.setClass(context, ShoppingCartActivity.class);
-					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					context.startActivity(i);
+					i = new Intent(context, IdcardManagerActivity.class);
 				}
+				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(i);
 			} else {
 				Log.i(TAG, "未进行任何操作");
 			}
@@ -134,29 +132,44 @@ public class MyReceiver extends BroadcastReceiver {
 	// send msg to MainActivity
 	private void processCustomMessage(Context context, Bundle bundle) {
 		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
-		if (message.indexOf("身份证") > -1) {
+		/*if (message.indexOf("身份证") > -1) {
 			Log.e(MyApplication.LOG_TAG, "设置身份证缺少标记为1");
 			if (MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
 				MyApplication.getInstance().getCurrentUser().setIsmissidcard("1");
 				MyApplication.getInstance().getSqliteService().updateUser();
 			}
-		} 
-		if (IndexActivity.isForeground) {
-			String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
-			Intent msgIntent = new Intent(IndexActivity.MESSAGE_RECEIVED_ACTION);
-			msgIntent.putExtra(IndexActivity.KEY_MESSAGE, message);
-			if (!ExampleUtil.isEmpty(extras)) {
-				try {
-					JSONObject extraJson = new JSONObject(extras);
-					if (null != extraJson && extraJson.length() > 0) {
-						msgIntent.putExtra(IndexActivity.KEY_EXTRAS, extras);
-					}
-				} catch (JSONException e) {
-
+		} else */
+		if (message.indexOf("购物车") > -1) {
+			Log.e(MyApplication.LOG_TAG, "添加购物车数量");
+			try {
+				JSONObject extraJson = new JSONObject(message);
+				Integer addNum = extraJson.getInt("qty");
+				if (addNum != null
+						&& MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
+					MyApplication.getInstance().getSqliteService().addUserShoppingCount(addNum);
+				} else {
+					Log.w(MyApplication.LOG_TAG, "未登录，跳过添加购物车数量");
 				}
-
+			} catch (JSONException e) {
+				Log.d(MyApplication.LOG_TAG, e.getMessage());
 			}
-			context.sendBroadcast(msgIntent);
 		}
+//		if (IndexActivity.isForeground) {
+//			String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+//			Intent msgIntent = new Intent(IndexActivity.MESSAGE_RECEIVED_ACTION);
+//			msgIntent.putExtra(IndexActivity.KEY_MESSAGE, message);
+//			if (!ExampleUtil.isEmpty(extras)) {
+//				try {
+//					JSONObject extraJson = new JSONObject(extras);
+//					if (null != extraJson && extraJson.length() > 0) {
+//						msgIntent.putExtra(IndexActivity.KEY_EXTRAS, extras);
+//					}
+//				} catch (JSONException e) {
+//
+//				}
+//
+//			}
+//			context.sendBroadcast(msgIntent);
+//		}
 	}
 }

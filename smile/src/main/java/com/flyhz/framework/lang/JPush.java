@@ -7,6 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.flyhz.framework.util.JSONUtil;
+
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.common.APIConnectionException;
 import cn.jpush.api.common.APIRequestException;
@@ -44,28 +46,41 @@ public class JPush {
 
 	public static void main(String[] args) {
 		JPush jPush = new JPush();
-		String registrationID = "02097b1d5f5";
-		String alert = "测试alert";
-		String msgContent = "测试msgContent";
+		String registrationID = "0508a806f24";
+		
+//		String alert = "测试alert";
+//		String msgContent = "测试msgContent";
 
-		jPush.sendMessageAll(msgContent);
+		// jPush.sendMessageAll(msgContent);
+//		Map<String, String> map = new HashMap<String, String>();
+//		map.put("qty", "1");
+//		jPush.sendAndroidMessageWithRegistrationID("购物车", map, registrationID);
 
-		jPush.sendIosMessageWithRegistrationID(msgContent, registrationID);
+		// Map<String, String> extras = new HashMap<String, String>();
+		// extras.put("id", "1");
+		// extras.put("name", "zhangbin");
+		// jPush.sendAndroidNotificationWithRegistrationID(alert, extras,
+		// registrationID);
 
+		// Map<String, String> map = new HashMap<String, String>();
+		// map.put("qty","1");
+		// jPush.sendAndroidNotificationWithRegistrationID("您的购物车有新的商品！",
+		// map, registrationID);
+		
 		Map<String, String> extras = new HashMap<String, String>();
-		extras.put("id", "1");
-		extras.put("name", "zhangbin");
-		jPush.sendAndroidNotificationWithRegistrationID(alert, extras, registrationID);
+		extras.put("number", "2222222");
+		jPush.sendAndroidNotificationWithRegistrationID("由于海关需要，您的订单收件人缺少必要身份证，您需要上传！", extras,
+				registrationID);
 	}
 
 	/**
-	 * 发送到所有用户
+	 * 发送到所有用户通知
 	 * 
 	 * @param msgContent
 	 */
 	public void sendMessageAll(String msgContent) {
 		try {
-			jpush.sendMessageAll(msgContent);
+			jpush.sendNotificationAll(msgContent);
 		} catch (APIConnectionException e) {
 			log.error(e.getMessage());
 		} catch (APIRequestException e) {
@@ -73,9 +88,19 @@ public class JPush {
 		}
 	}
 
-	public void sendIosMessageWithRegistrationID(String msgContent, String registrationID) {
+	/**
+	 * 发送android自定义消息
+	 * 
+	 * @param alert
+	 * @param extras
+	 * @param registrationID
+	 */
+	public void sendAndroidMessageWithRegistrationID(String alert, Map<String, String> extras,
+			String registrationID) {
 		try {
-			jpush.sendAndroidMessageWithRegistrationID(title, msgContent, registrationID);
+			extras.put("message", alert);
+			jpush.sendAndroidMessageWithRegistrationID(title, JSONUtil.getEntity2Json(extras),
+					registrationID);
 		} catch (APIConnectionException e) {
 			log.error(e.getMessage());
 		} catch (APIRequestException e) {
@@ -83,10 +108,17 @@ public class JPush {
 		}
 	}
 
+	/**
+	 * 发送android通知
+	 * 
+	 * @param alert
+	 * @param extras
+	 * @param registrationID
+	 */
 	public void sendAndroidNotificationWithRegistrationID(String alert, Map<String, String> extras,
 			String registrationID) {
 		try {
-			jpush.sendAndroidNotificationWithRegistrationID("天天海狗", alert, extras, registrationID);
+			jpush.sendAndroidNotificationWithRegistrationID(title, alert, extras, registrationID);
 		} catch (APIConnectionException e) {
 			log.error(e.getMessage());
 		} catch (APIRequestException e) {

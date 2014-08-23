@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
 	private static final String	DATABASE_NAME		= "smile.db";
-	private static final int	DATABASE_VERSION	= 7;
+	private static final int	DATABASE_VERSION	= 8;
 
 	public DBHelper(Context context) {
 		// CursorFactory设置为null,使用默认值
@@ -53,6 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL("drop table if exists city");
 		db.execSQL("drop table if exists district");
 		db.execSQL("drop table if exists consignee");
+		db.execSQL("drop table if exists shopping");
 
 		db.execSQL("create table search (id integer primary key autoincrement, content varchar,time timestamp,count integer)");
 		db.execSQL("create table user (cuid integer primary key autoincrement,username varchar,token varchar,mobilephone varchar,identitycard varchar,qq varchar,email varchar,weibo varchar,weixin varchar,flag varchar,ismissidcard varchar)");
@@ -61,7 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL("create table city (id integer primary key autoincrement,name varchar,sort integer,proid integer)");
 		db.execSQL("create table district (id integer primary key autoincrement,name varchar,sort integer,cityid integer)");
 		db.execSQL("create table consignee (id integer primary key autoincrement,name varchar,contury_id integer,province_id integer,cityid integer,district_id integer,address varchar,zipcode varchar,mobilephone varchar,idcard varchar,user_id integer,is_default varchar)");
-
+		db.execSQL("create table shopping (userId integer primary key autoincrement,count integer)");//购物车
 		/********** 省市区 start **********/
 		List<String> conList = ProvinceCityUtil.getConturyList();
 		List<String> pList = ProvinceCityUtil.getProvinceList();

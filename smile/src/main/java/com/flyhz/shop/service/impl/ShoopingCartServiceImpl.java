@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -58,6 +59,7 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		cartitemModel.setProductId(productId);
 		cartitemModel.setUserId(userId);
 		CartitemModel cartitemModelNew = cartItemDao.getCartItemByProductId(cartitemModel);
+		
 		// 购物车无此商品
 		if (cartitemModelNew == null) {
 			cartitemModel.setDiscountId(discountId);
@@ -67,8 +69,8 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 			cartItemDao.insertCartItem(cartitemModel);
 		} else {
 			// 购物车有此商品
-			byte qtyNew = (byte) (cartitemModelNew.getQty() + qty);
-			cartitemModelNew.setQty(qtyNew);
+			qty = (byte) (cartitemModelNew.getQty() + qty);
+			cartitemModelNew.setQty(qty);
 			cartitemModelNew.setGmtModify(new Date());
 			cartitemModelNew.setDiscountId(discountId);
 			cartItemDao.updateCartItem(cartitemModelNew);
@@ -77,8 +79,10 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 		UserDto user = userDao.getUserById(userId);
 		if (user != null && user.getId() != null && user.getRegistrationID() != null) {
 			JPush jpush = new JPush();
-			jpush.sendAndroidNotificationWithRegistrationID("您的购物车有新的商品！",
-					new HashMap<String, String>(), user.getRegistrationID());
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("qty", qty+"");
+			jpush.sendAndroidMessageWithRegistrationID("您的购物车有新的商品！",
+					map, user.getRegistrationID());
 		}
 	}
 

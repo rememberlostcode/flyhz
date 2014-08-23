@@ -379,6 +379,13 @@ public class BaseActivity extends Activity {
 						}
 					});
 				} else if (o == R.id.mainfooter_four) {// 购物车
+					Integer shoppingCount = MyApplication.getInstance().getSqliteService().getUserShoppingCount();
+					if(shoppingCount!=null && !shoppingCount.equals(0)){
+						TextView mfft = (TextView) findViewById(R.id.mainfooter_four_text);
+						mfft.setText(shoppingCount+"");
+						mfft.setVisibility(View.VISIBLE);
+					}
+					
 					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {

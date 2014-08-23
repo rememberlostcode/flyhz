@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.tools.ClickUtil;
-import com.holding.smile.tools.Constants;
 import com.holding.smile.tools.ToastUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -196,7 +195,6 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 				} else {
 					intent.setClass(context, IdcardManagerActivity.class);
 				}
-				intent.putExtra("status", Constants.OrderStateCode.FOR_PAYMENT);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;

@@ -65,6 +65,7 @@ public class Constants {
 		FOREIGN_CUSTOMS_CLEARANCE("21"), // 21国外清关；
 		DOMESTIC_CUSTOMS_CLEARANCE("30"), // 30国内清关；
 		DOMESTIC_LOGISTICS("40"), // 40国内物流；
+		DELIVERY("41"), // 41已收货
 		HAVE_BEEN_CLOSED("50"), // 50已关闭；
 		HAS_BEEN_COMPLETED("60"), // 60已完成；
 		DELETED("70");// 70已删除；

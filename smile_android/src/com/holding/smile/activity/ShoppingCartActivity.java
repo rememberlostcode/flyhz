@@ -271,11 +271,14 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																List<CartItem> cartItems = obj.getCartListData();
 																if (cartItems != null
 																		&& !cartItems.isEmpty()) {
+																	int count = 0;
 																	for (CartItem cart : cartItems) {
 																		if (cart.getProduct() != null) {
+																			count += (cart.getQty()!=null?cart.getQty():0);
 																			cartItemList.add(cart);
 																		}
 																	}
+																	MyApplication.getInstance().getSqliteService().updateUserShoppingCount(count);
 																} else {
 																	ToastUtils.showShort(context,
 																			"暂无数据！");

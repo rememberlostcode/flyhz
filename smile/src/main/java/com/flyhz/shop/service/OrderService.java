@@ -7,7 +7,6 @@ import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.OrderPayDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
-import com.flyhz.shop.persistence.entity.OrderModel;
 
 public interface OrderService {
 
@@ -91,17 +90,17 @@ public interface OrderService {
 	 */
 	public String getOrderPayStatusByTid(String numbers, Long tid) throws ValidateException;
 
-	/**
-	 * 通过订单编号修改状态（更新数据库，不改变solr中的状态）
-	 * 
-	 * @param orderModel
-	 */
-	public void updateStatusByNumber(OrderModel orderModel);
-	
-	/**
-	 * 通过订单编号修改状态（会更新solr中的状态，发货发送通知；已付款会发送邮件；已完成只改状态）
-	 * @param orderModel
-	 */
-	public void updateStatusByNumberForMessage(OrderModel orderModel);
+//	/**
+//	 * 通过订单编号修改状态（更新数据库，不改变solr中的状态）
+//	 * 
+//	 * @param orderModel
+//	 */
+//	public void updateStatusByNumber(OrderModel orderModel);
+//	
+//	/**
+//	 * 通过订单编号修改状态（会更新solr中的状态，发货发送通知；已付款会发送邮件；已完成只改状态）
+//	 * @param orderModel
+//	 */
+//	public void updateStatusByNumberForMessage(OrderModel orderModel);
 
 }

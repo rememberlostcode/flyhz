@@ -161,35 +161,13 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 
 					if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
 						// 用户邮箱存在则发送邮件
-						if (user != null && StringUtils.isNotBlank(user.getEmail())) {
-							Map<String, Object> modelMap = new HashMap<String, Object>();
-							modelMap.put("orderId", orderModel.getNumber());
-							modelMap.put("total", orderModel.getTotal());
-							modelMap.put("username", user.getUsername());
-							mailRepository.sendWithTemplate(user.getEmail(), "订单支付成功",
-									"velocity/mailvm/pay_success_mail.vm", modelMap);
-						}
+						sendEmail(user.getUsername(),user.getEmail(),orderModel.getTotal(),orderModel.getNumber());
 					} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(orderModel.getStatus())) {// 缺少身份证的发送消息
 						// 获取用户信息并得到registrationID发送通知
-						if (user != null && user.getId() != null
-								&& user.getRegistrationID() != null) {
-							JPush jpush = new JPush();
-							Map<String, String> extras = new HashMap<String, String>();
-							extras.put("orderId", orderDto.getId().toString());
-							jpush.sendAndroidNotificationWithRegistrationID(
-									"由于海关需要，您的订单收件人缺少必要身份证，您需要上传！", extras,
-									user.getRegistrationID());
-						}
+						messageIdcard(orderModel.getNumber());
 					} else if (Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {// 已发货的发送消息
 						// 获取用户信息并得到registrationID发送通知
-						if (user != null && user.getId() != null
-								&& user.getRegistrationID() != null) {
-							JPush jpush = new JPush();
-							Map<String, String> extras = new HashMap<String, String>();
-							extras.put("orderId", orderDto.getId().toString());
-							jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras,
-									user.getRegistrationID());
-						}
+						messageSellerSend(orderModel.getNumber());
 					}
 					break;//执行一次就可以了
 				}
@@ -197,15 +175,14 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 		}
 	}
 	
-	private void sendEmail(Integer userId,BigDecimal total,String numbers){
-		UserDto user = userDao.getUserById(userId);
+	private void sendEmail(String userName,String email,BigDecimal total,String numbers){
 		// 用户邮箱存在则发送邮件
-		if (user != null && StringUtils.isNotBlank(user.getEmail())) {
+		if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(email)) {
 			Map<String, Object> modelMap = new HashMap<String, Object>();
 			modelMap.put("orderId", numbers);
 			modelMap.put("total", total);
-			modelMap.put("username", user.getUsername());
-			mailRepository.sendWithTemplate(user.getEmail(), "订单支付成功",
+			modelMap.put("username", userName);
+			mailRepository.sendWithTemplate(email, "订单支付成功",
 					"velocity/mailvm/pay_success_mail.vm", modelMap);
 		}
 	}
@@ -218,7 +195,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 		if (user != null && user.getId() != null && user.getRegistrationID() != null) {
 			JPush jpush = new JPush();
 			Map<String, String> extras = new HashMap<String, String>();
-			extras.put("orderId", orderDto.getId().toString());
+			extras.put("number", number);
 			jpush.sendAndroidNotificationWithRegistrationID("由于海关需要，您的订单收件人缺少必要身份证，您需要上传！", extras,
 					user.getRegistrationID());
 		}
@@ -231,16 +208,32 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 		if (user != null && user.getId() != null && user.getRegistrationID() != null) {
 			JPush jpush = new JPush();
 			Map<String, String> extras = new HashMap<String, String>();
-			extras.put("orderId", orderDto.getId().toString());
+			extras.put("number", number);
 			jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras,
 					user.getRegistrationID());
 		}
 	}
-
+	
 	@Override
 	public void receiveGoods(String[] numbers) {
 		// TODO Auto-generated method stub
-
+		try {
+			for (int g = 0; g < numbers.length; g++) {
+				if (StringUtils.isNotBlank(numbers[g])) {
+					OrderModel orderModel = orderDao.getModelByNumber(numbers[g]);
+					// 如果是等待发货才需要处理
+					if (g == 0
+							&& orderModel != null
+							&& !orderModel.getStatus().equals(
+									Constants.OrderStateCode.DELIVERY.code)) {
+						redisRepository.reBuildOrderToRedis(orderModel.getUserId(),
+								orderModel.getId(), Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
+					}
+				}
+			}
+		} catch (ValidateException e) {
+			log.error(e.getMessage());
+		}
 	}
 
 }
