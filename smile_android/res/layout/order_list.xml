@@ -157,8 +157,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:paddingBottom="4dp"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:paddingTop="4dp"
                 android:textColor="@drawable/baise"
                 android:textSize="18sp" />

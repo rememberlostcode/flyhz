@@ -36,7 +36,7 @@ public class ClickUtil {
 				text = "已上传身份证";
 				break;
 			case 16:
-				text = "发货中";
+				text = "等待发货";
 				break;
 			case 20:
 				text = "已发货";
@@ -90,6 +90,9 @@ public class ClickUtil {
 				break;
 			case 15:
 				//发货中";
+				break;
+			case 16:
+				//等待发货";
 				break;
 			case 20:
 				//已发货";
