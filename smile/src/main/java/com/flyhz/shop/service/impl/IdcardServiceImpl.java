@@ -6,8 +6,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import sun.util.logging.resources.logging;
 
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.TaobaoData;
@@ -23,6 +27,7 @@ import com.flyhz.shop.service.IdcardService;
 
 @Service
 public class IdcardServiceImpl implements IdcardService {
+	private Logger			log	= LoggerFactory.getLogger(IdcardServiceImpl.class);
 	@Resource
 	private IdcardDao		idcardDao;
 	@Resource
@@ -96,6 +101,7 @@ public class IdcardServiceImpl implements IdcardService {
 			for (int i = 0; i < list.size(); i++) {
 				if (list.get(i).getTid() != null) {
 					String reName = taobaoData.getReceiverName(list.get(i).getTid());
+					log.info("reName:" + reName + "====? " + idcardModel.getName());
 					if (idcardModel.getName().equals(reName)) {
 						list.get(i).setStatus(Constants.OrderStateCode.WAITING_FOR_DELIVERY.code);
 						orderDao.updateStatusByNumber(list.get(i));
@@ -108,6 +114,7 @@ public class IdcardServiceImpl implements IdcardService {
 
 		} catch (Exception e) {
 			// 文件保存失败
+			log.error(e.getMessage());
 			throw new ValidateException(122221);
 		}
 	}
