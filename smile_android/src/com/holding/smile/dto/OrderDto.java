@@ -40,6 +40,8 @@ public class OrderDto implements Serializable {
 	private String					time;
 
 	private String					status;
+	
+	private String					tid;
 
 	private LogisticsDto			logisticsDto;
 
@@ -137,5 +139,13 @@ public class OrderDto implements Serializable {
 
 	public void setLogisticsDto(LogisticsDto logisticsDto) {
 		this.logisticsDto = logisticsDto;
+	}
+
+	public String getTid() {
+		return tid;
+	}
+
+	public void setTid(String tid) {
+		this.tid = tid;
 	}
 }
