@@ -42,8 +42,8 @@ import com.flyhz.shop.persistence.entity.DiscountModel;
 
 @Service
 public class SolrDataImpl implements SolrData {
-	public static final String		PRODUCT_URL		= "/solr/#/smile_product";
-	public static final String		ORDER_URL		= "/solr/#/smile_order";
+	public static final String		PRODUCT_URL		= "/solr/smile_product";
+	public static final String		ORDER_URL		= "/solr/smile_order";
 	public static final String		SEARCH_URL		= "/select";
 
 	Logger							log				= LoggerFactory.getLogger(getClass());
@@ -89,10 +89,6 @@ public class SolrDataImpl implements SolrData {
 		} else {
 			return null;
 		}
-	}
-
-	public void reBuildOrder() {
-		UrlUtil.sendGet(solr_url + ORDER_URL + "/dataimport?full-import&commit=y&clean=y");
 	}
 
 	/**
@@ -261,6 +257,7 @@ public class SolrDataImpl implements SolrData {
 
 	public void submitOrder(Long tid, Integer userId, Integer orderId, String status,
 			Date gmtModify, LogisticsDto logisticsDto) {
+		log.info(tid + "," + userId + "," + orderId + "," + status);
 		if (StringUtil.isBlank(status)) {
 			status = Constants.OrderStateCode.FOR_PAYMENT.code;
 		}

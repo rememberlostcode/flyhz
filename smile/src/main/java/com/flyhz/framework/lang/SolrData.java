@@ -17,11 +17,6 @@ import com.flyhz.shop.dto.ProductBuildDto;
 public interface SolrData {
 
 	/**
-	 * 重新建立订单索引(用的dataimport方式)
-	 */
-	public void reBuildOrder();
-
-	/**
 	 * 从solr获得指定品牌和分类的商品，最外层有{}
 	 * 
 	 * @param cid
