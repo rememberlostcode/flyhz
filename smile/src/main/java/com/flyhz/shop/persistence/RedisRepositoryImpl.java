@@ -154,7 +154,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 
 		int maxOrderCount = orderDao.getAllOrdersCount(solrPage);
 		List<OrderModel> detailList = null;
-		OrderDto orderDto = null;
+//		OrderDto orderDto = null;
 		solrPage.setNum(mysqlSize);
 
 		while (orderStart < maxOrderCount) {
@@ -165,22 +165,24 @@ public class RedisRepositoryImpl implements RedisRepository {
 						&& detailList.get(i).getId() != null) {
 					try {
 						// 转换后获取商品购买数量
-						orderDto = JSONUtil.getJson2Entity(detailList.get(i).getDetail(),
-								OrderDto.class);
-						if (orderDto != null && orderDto.getUser() != null) {
-							orderDto.setId(detailList.get(i).getId());
-							String userId = String.valueOf(orderDto.getUser().getId());
-							cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
-									String.valueOf(orderDto.getId()),
-									JSONUtil.getEntity2Json(orderDto));
-							solrData.submitOrder(null,orderDto.getUser().getId(), orderDto.getId(),
-									detailList.get(i).getStatus(), null, null);
-						}
+//						orderDto = JSONUtil.getJson2Entity(detailList.get(i).getDetail(),
+//								OrderDto.class);
+//						if (orderDto != null && orderDto.getUser() != null) {
+//							orderDto.setId(detailList.get(i).getId());
+//						String userId = String.valueOf(orderDto.getUser().getId());
+//						cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
+//								String.valueOf(orderDto.getId()),
+//								JSONUtil.getEntity2Json(orderDto));
+//						solrData.submitOrder(null,orderDto.getUser().getId(), orderDto.getId(),
+//								detailList.get(i).getStatus(), null, null);
+						
+						solrData.submitOrder(null,detailList.get(i).getUserId(), detailList.get(i).getId(),
+								detailList.get(i).getStatus(), null, null);
+//						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						log.error(e.getMessage());
 					}
-
 				}
 			}
 
