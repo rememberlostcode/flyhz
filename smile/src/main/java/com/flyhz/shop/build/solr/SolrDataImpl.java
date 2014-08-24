@@ -42,8 +42,8 @@ import com.flyhz.shop.persistence.entity.DiscountModel;
 
 @Service
 public class SolrDataImpl implements SolrData {
-	public static final String		PRODUCT_URL		= "/solr/smile_product";
-	public static final String		ORDER_URL		= "/solr/smile_order";
+	public static final String		PRODUCT_URL		= "/solr/#/smile_product";
+	public static final String		ORDER_URL		= "/solr/#/smile_order";
 	public static final String		SEARCH_URL		= "/select";
 
 	Logger							log				= LoggerFactory.getLogger(getClass());
