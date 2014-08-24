@@ -38,6 +38,7 @@ public class IndexController {
 			log.info("top_session=" + taobaoParameters.getTop_session());
 			
 			TaobaoTokenUtil.setAccessToken(taobaoParameters.getTop_session());
+			TaobaoTokenUtil.writeToken();
 			
 			taobaoData.stopMessageHandler();
 			taobaoData.startMessageHandler();

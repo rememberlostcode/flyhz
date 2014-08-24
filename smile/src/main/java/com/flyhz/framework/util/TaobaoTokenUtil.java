@@ -160,19 +160,24 @@ public class TaobaoTokenUtil {
 		log.info("跳过，暂定不用此方式获取token!");
 //		getAccessTokenAndRefreshTokenByRefreshToken();
 		if (refreshToken != null && !"".equals(refreshToken.trim())) {
-			// 将accessToken和refreshToken写入taobao.properties
-			lastModifyTime = (new Date().getTime()) / 1000 + "";
-			config.put("accessToken", accessToken);
-			config.put("refreshToken", refreshToken);
-			config.put("expiresIn", expiresIn);
-			config.put("lastModifyTime",  lastModifyTime);
-			boolean writeResult = writeFile(config);
+			boolean writeResult = writeToken();
 			if (!writeResult) {
 				log.info("将accessToken和refreshToken写入taobao.properties失败!");
 				return null;
 			}
 		}
 		return accessToken;
+	}
+	
+	public static boolean writeToken(){
+		// 将accessToken和refreshToken写入taobao.properties
+		lastModifyTime = (new Date().getTime()) / 1000 + "";
+		config.put("accessToken", accessToken);
+		config.put("refreshToken", refreshToken);
+		config.put("expiresIn", expiresIn);
+		config.put("lastModifyTime",  lastModifyTime);
+		boolean writeResult = writeFile(config);
+		return writeResult;
 	}
 
 	/**
@@ -291,15 +296,6 @@ public class TaobaoTokenUtil {
 
 	public static void setAccessToken(String accessToken) {
 		TaobaoTokenUtil.accessToken = accessToken;
-		lastModifyTime = (new Date().getTime()) / 1000 + "";
-		config.put("accessToken", accessToken);
-		config.put("refreshToken", refreshToken);
-		config.put("expiresIn", expiresIn);
-		config.put("lastModifyTime",  lastModifyTime);
-		boolean writeResult = writeFile(config);
-		if (!writeResult) {
-			log.info("将accessToken和refreshToken写入taobao.properties失败!");
-		}
 	}
 
 	public static String getAccessToken() {

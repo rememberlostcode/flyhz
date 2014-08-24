@@ -496,6 +496,7 @@ public class TaobaoDataImpl implements TaobaoData {
 											appSecret);
 									String number = getOrderNumber(client, tid);
 
+									log.info("numbers=" + number);
 									if (StringUtils.isNotBlank(number)) {
 
 										String[] numbers = number.split(",");
