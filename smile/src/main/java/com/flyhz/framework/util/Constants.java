@@ -88,5 +88,5 @@ public class Constants {
 	public static String		propertiesFilePath;
 	
 	
-	public static final BigDecimal logisticsPriceEvery = new BigDecimal(150);
+	public static final BigDecimal logisticsPriceEvery = new BigDecimal(0);
 }
