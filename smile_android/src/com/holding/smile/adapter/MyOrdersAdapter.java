@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.IdcardManagerActivity;
 import com.holding.smile.activity.MyApplication;
+import com.holding.smile.activity.RefundActivity;
 import com.holding.smile.activity.WebViewActivity;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.RtnValueDto;
@@ -46,7 +47,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private int					selectTotal	= 0;
 	private RelativeLayout		footerMyOrders;
 	private TextView			editView;
-	private boolean isShowCheck = false;
+	private boolean				isShowCheck	= false;
 
 	public void setNumZero() {
 		selectTotal = 0;
@@ -61,8 +62,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		this.editView = editView;
 	}
 
-	public void setData(List<OrderDto> contacts, RelativeLayout footerMyOrders,
-			ImageView allChecked) {
+	public void setData(List<OrderDto> contacts, RelativeLayout footerMyOrders, ImageView allChecked) {
 		if (contacts == null) {
 			this.orderList = new ArrayList<OrderDto>();
 		} else {
@@ -107,6 +107,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		TextView	price;
 		TextView	totalnum;
 		ImageView	cover;
+		TextView	refundButton;
 		TextView	statusButton;
 		TextView	total;
 		ImageView	deleteButton;
@@ -123,6 +124,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder.number = (TextView) convertView.findViewById(R.id.order_list_number);
 			holder.time = (TextView) convertView.findViewById(R.id.order_list_time);
 			holder.price = (TextView) convertView.findViewById(R.id.order_list_price_value);
+			holder.refundButton = (TextView) convertView.findViewById(R.id.order_list_refund);
 			holder.totalnum = (TextView) convertView.findViewById(R.id.order_list_totalnum_value);
 			holder.statusButton = (TextView) convertView.findViewById(R.id.order_list_status);
 			holder.deleteButton = (ImageView) convertView.findViewById(R.id.order_list_delete);
@@ -132,8 +134,8 @@ public class MyOrdersAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		isShowCheck = "编辑".equals(editView.getText()!=null?editView.getText().toString():"编辑");
-		
+		isShowCheck = "编辑".equals(editView.getText() != null ? editView.getText().toString() : "编辑");
+
 		final OrderDto order = (OrderDto) getItem(position);
 		holder.number.setText(order.getNumber());
 		holder.time.setText(order.getTime());
@@ -147,7 +149,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 			} else {
 				holder.checkBoxImage.setBackgroundResource(R.drawable.new_cb_normal);
 			}
-			if(isShowCheck){
+			if (isShowCheck) {
 				holder.checkBoxImage.setVisibility(View.VISIBLE);
 			} else {
 				holder.checkBoxImage.setVisibility(View.GONE);
@@ -155,7 +157,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		} else {
 			holder.checkBoxImage.setVisibility(View.GONE);
 		}
-		
+
 		String status = order.getStatus();
 		holder.statusButton.setText(ClickUtil.getTextByStatus(status));
 		holder.statusButton.setBackgroundColor(ClickUtil.getBackgroundColorByStatus(status));
@@ -174,6 +176,18 @@ public class MyOrdersAdapter extends BaseAdapter {
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					context.startActivity(intent);
 				}
+			}
+		});
+
+		// 申请退款
+		holder.refundButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(context, RefundActivity.class);
+				intent.putExtra("tbOrderId", "779767688593659");
+				intent.putExtra("refund", "8");
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				context.startActivity(intent);
 			}
 		});
 

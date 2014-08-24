@@ -84,6 +84,7 @@
     <string name="zongjia">总价</string>
     <string name="zongliang">总量</string>
     <string name="showurl">http://h5.m.taobao.com/awp/base/buy.htm?itemId=</string>
+    <string name="refundurl">http://support.taobao.com/myservice/refund/refund_dispatcher.htm?bizOrderId=</string>
     <string name="service_email">service@tiantianhaigou.com</string>
     
     <string name="login_autologin_info">自动登录</string>
