@@ -186,11 +186,11 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					}
 				});
 				TbUtil.setNumber(amount.intValue());
-				TbUtil.cshTb();
-				// TbUtil.getWebView()
-				// .loadUrl(
-				// "http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
-				// + amount.intValue());
+				// TbUtil.cshTb();
+				TbUtil.getWebView()
+						.loadUrl(
+								"http://h5.m.taobao.com/awp/base/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=#!/awp/core/buy.htm?itemId=39544967909&item_num_id=39544967909&_input_charset=utf-8&buyNow=true&v=0&skuId=&quantity="
+										+ amount.intValue());
 			} else {
 				Toast.makeText(this, "订单号或金额为空！", Toast.LENGTH_SHORT).show();
 				setResult(RESULT_CANCELED, null);
