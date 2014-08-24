@@ -291,6 +291,15 @@ public class TaobaoTokenUtil {
 
 	public static void setAccessToken(String accessToken) {
 		TaobaoTokenUtil.accessToken = accessToken;
+		lastModifyTime = (new Date().getTime()) / 1000 + "";
+		config.put("accessToken", accessToken);
+		config.put("refreshToken", refreshToken);
+		config.put("expiresIn", expiresIn);
+		config.put("lastModifyTime",  lastModifyTime);
+		boolean writeResult = writeFile(config);
+		if (!writeResult) {
+			log.info("将accessToken和refreshToken写入taobao.properties失败!");
+		}
 	}
 
 	public static String getAccessToken() {
