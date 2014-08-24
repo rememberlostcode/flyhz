@@ -123,6 +123,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 					}
 				}
 
+				log.info("paymentValidateAmountAndIdcard 最终状态：" + smileStatus);
 				// 循环更新数据库订单状态
 				for (int i = 0; i < ordersList.size(); i++) {
 					

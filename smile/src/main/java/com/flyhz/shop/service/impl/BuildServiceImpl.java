@@ -89,8 +89,12 @@ public class BuildServiceImpl implements BuildService {
 
 		// solr建立订单索引
 		log.info("重建订单索引...");
-		solrData.reBuildOrder();
+//		solrData.reBuildOrder();
 		log.info("重建订单索引完成");
+		
+		/******** build用户订单 start *******/
+		redisRepository.chacheOrders();
+		/******** build用户订单 end *******/
 
 		log.info("buildSolr结束");
 	}
@@ -173,10 +177,6 @@ public class BuildServiceImpl implements BuildService {
 		}
 
 		/******** build商品品牌分类 end *******/
-
-		/******** build用户订单 start *******/
-		redisRepository.chacheOrders();
-		/******** build用户订单 end *******/
 		log.info("buildRedis结束");
 	}
 	

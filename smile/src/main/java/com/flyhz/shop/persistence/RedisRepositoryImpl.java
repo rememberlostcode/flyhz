@@ -174,7 +174,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 									String.valueOf(orderDto.getId()),
 									JSONUtil.getEntity2Json(orderDto));
 							solrData.submitOrder(null,orderDto.getUser().getId(), orderDto.getId(),
-									orderDto.getStatus(), null, null);
+									detailList.get(i).getStatus(), null, null);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
