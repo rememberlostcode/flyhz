@@ -37,7 +37,12 @@ public class IndexController {
 	private TaobaoData taobaoData;
 
 	@RequestMapping(value = { "index", "" })
-	public String index(Model model, TaobaoParameters taobaoParameters) {
+	public String index(Model model) {
+		return "index";
+	}
+	
+	@RequestMapping(value = { "taobaoapp", "" })
+	public String taobaoapp(Model model, TaobaoParameters taobaoParameters) {
 		if (taobaoParameters != null) {
 			log.info("top_appkey=" + taobaoParameters.getTop_appkey());
 			log.info("top_session=" + taobaoParameters.getTop_session());
