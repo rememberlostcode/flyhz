@@ -191,7 +191,7 @@ public class OrderServiceImpl implements OrderService {
 
 		String number = null;
 		if (flag) {
-			number = RandomString.generateRandomStringTime();
+			number = RandomString.generateRandomStringDate();
 			orderDto.setNumber(number);
 		}
 
@@ -256,7 +256,7 @@ public class OrderServiceImpl implements OrderService {
 		if (orderModel != null && orderModel.getStatus() != null
 				&& Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 表示已付款
 			flag = true;
-			redisRepository.reBuildOrderToRedis(null,userId, orderModel.getId(),
+			redisRepository.reBuildOrderToRedis(null, userId, orderModel.getId(),
 					Constants.OrderStateCode.HAVE_BEEN_PAID.code);
 		}
 		return flag;
@@ -275,7 +275,7 @@ public class OrderServiceImpl implements OrderService {
 		orderModel.setGmtModify(new Date());
 		int num = orderDao.update(orderModel);
 		if (num == 1) {
-			redisRepository.reBuildOrderToRedis(null,userId, orderModel.getId(), status);
+			redisRepository.reBuildOrderToRedis(null, userId, orderModel.getId(), status);
 		} else {
 			throw new ValidateException(201004);
 		}
@@ -437,44 +437,56 @@ public class OrderServiceImpl implements OrderService {
 		return smileStatus;
 	}
 
-//	public void updateStatusByNumber(OrderModel orderModel) {
-//		log.info("定时器改变订单" + orderModel.getNumber() + "状态为" + orderModel.getStatus());
-//		orderDao.updateStatusByNumber(orderModel);
-//	}
-//
-//	public void updateStatusByNumberForMessage(OrderModel orderModel) {
-//		log.info("淘宝消息改变订单" + orderModel.getNumber() + "状态为" + orderModel.getStatus());
-//		OrderSimpleDto orderDto = orderDao.getOrderByNumber(orderModel.getNumber());
-//		if (orderDto != null) {
-//			orderDao.updateStatusByNumber(orderModel);
-//			// 更新订单的状态（以及有物流信息的时更新物流）
-//			solrData.submitOrder(orderDto.getUserId(), orderDto.getId(), orderModel.getStatus(),
-//					new Date(), null);
-//			if (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 已付款的发送邮件
-//				sendPaySuccess(orderModel.getNumber());
-//			} else if (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(orderModel.getStatus())) {// 缺少身份证的发送消息
-//				// 获取用户信息并得到registrationID发送通知
-//				UserDto user = userDao.getUserById(orderDto.getUserId());
-//				if (user != null && user.getId() != null && user.getRegistrationID() != null) {
-//					JPush jpush = new JPush();
-//					Map<String, String> extras = new HashMap<String, String>();
-//					extras.put("number", orderModel.getNumber());
-//					jpush.sendAndroidNotificationWithRegistrationID("由于海关需要，您的订单收件人缺少必要身份证，您需要上传！",
-//							extras, user.getRegistrationID());
-//				}
-//			} else if (Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus())) {// 已发货的发送消息
-//				// 获取用户信息并得到registrationID发送通知
-//				UserDto user = userDao.getUserById(orderDto.getUserId());
-//				if (user != null && user.getId() != null && user.getRegistrationID() != null) {
-//					JPush jpush = new JPush();
-//					Map<String, String> extras = new HashMap<String, String>();
-//					extras.put("number", orderModel.getNumber());
-//					jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras,
-//							user.getRegistrationID());
-//				}
-//			}
-//		}
-//	}
+	// public void updateStatusByNumber(OrderModel orderModel) {
+	// log.info("定时器改变订单" + orderModel.getNumber() + "状态为" +
+	// orderModel.getStatus());
+	// orderDao.updateStatusByNumber(orderModel);
+	// }
+	//
+	// public void updateStatusByNumberForMessage(OrderModel orderModel) {
+	// log.info("淘宝消息改变订单" + orderModel.getNumber() + "状态为" +
+	// orderModel.getStatus());
+	// OrderSimpleDto orderDto =
+	// orderDao.getOrderByNumber(orderModel.getNumber());
+	// if (orderDto != null) {
+	// orderDao.updateStatusByNumber(orderModel);
+	// // 更新订单的状态（以及有物流信息的时更新物流）
+	// solrData.submitOrder(orderDto.getUserId(), orderDto.getId(),
+	// orderModel.getStatus(),
+	// new Date(), null);
+	// if
+	// (Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus()))
+	// {// 已付款的发送邮件
+	// sendPaySuccess(orderModel.getNumber());
+	// } else if
+	// (Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code.equals(orderModel.getStatus()))
+	// {// 缺少身份证的发送消息
+	// // 获取用户信息并得到registrationID发送通知
+	// UserDto user = userDao.getUserById(orderDto.getUserId());
+	// if (user != null && user.getId() != null && user.getRegistrationID() !=
+	// null) {
+	// JPush jpush = new JPush();
+	// Map<String, String> extras = new HashMap<String, String>();
+	// extras.put("number", orderModel.getNumber());
+	// jpush.sendAndroidNotificationWithRegistrationID("由于海关需要，您的订单收件人缺少必要身份证，您需要上传！",
+	// extras, user.getRegistrationID());
+	// }
+	// } else if
+	// (Constants.OrderStateCode.SHIPPED_ABROAD_CLEARANCE.code.equals(orderModel.getStatus()))
+	// {// 已发货的发送消息
+	// // 获取用户信息并得到registrationID发送通知
+	// UserDto user = userDao.getUserById(orderDto.getUserId());
+	// if (user != null && user.getId() != null && user.getRegistrationID() !=
+	// null) {
+	// JPush jpush = new JPush();
+	// Map<String, String> extras = new HashMap<String, String>();
+	// extras.put("number", orderModel.getNumber());
+	// jpush.sendAndroidNotificationWithRegistrationID("您的订单已发货！", extras,
+	// user.getRegistrationID());
+	// }
+	// }
+	// }
+	// }
 
 	// /**
 	// * 根据订单编号获取mysql数据库物流信息

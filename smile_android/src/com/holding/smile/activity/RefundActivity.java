@@ -37,8 +37,6 @@ public class RefundActivity extends Activity implements OnClickListener {
 			Intent intent = this.getIntent();
 			tbOrderId = intent.getExtras().getString("tbOrderId");
 			refund = Integer.parseInt(intent.getExtras().getString("refund"));
-			// tbOrderId = "778517876963659";
-			// refund = 8;
 			WebView web = (WebView) findViewById(R.id.refundView);
 			if (StrUtils.isNotEmpty(tbOrderId) && refund != null) {
 				// 获取webView控件
@@ -96,7 +94,7 @@ public class RefundActivity extends Activity implements OnClickListener {
 							// jsStringBuffer.append("},1000);");
 							jsStringBuffer.append("});");
 							view.loadUrl(jsStringBuffer.toString());
-							view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
+							// view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
 						} else if (url.indexOf("http://login.m.taobao.com/login.htm") > -1) {
 							// 设置首页按钮不显示
 							StringBuffer jsStringBuffer = new StringBuffer();
@@ -121,7 +119,6 @@ public class RefundActivity extends Activity implements OnClickListener {
 				finish();
 			}
 		} catch (Exception e) {
-			// Log.e(MyApplication.LOG_TAG, "去淘宝支付时出错：" + e.getMessage());
 			Toast.makeText(this, "淘宝订单号或退款金额为空！", Toast.LENGTH_SHORT).show();
 			setResult(RESULT_CANCELED, null);
 			finish();
@@ -161,7 +158,6 @@ public class RefundActivity extends Activity implements OnClickListener {
 
 	final class InJavaScriptLocalObj {
 		public void showSource(String html) {
-			System.out.println(html);
 			// viewhtml = html;
 		}
 	}

@@ -43,6 +43,9 @@ public class DateUtil {
 	/** 缺省长日期格式,精确到毫秒 */
 	public static final String	DEFAULT_DATETIME_FORMAT_M_SEC	= "yyyyMMddHHmmssSSS";
 
+	/** 缺省年月日格式,年份只取后两位 */
+	public static final String	DEFAULT_DATETIME_FORMAT_SHORT	= "yyMMdd";
+
 	/**
 	 * 得到yyyy-MM-dd'T'HH:mm:ssZ格式类型的时间用来solr查询
 	 * 
@@ -52,6 +55,21 @@ public class DateUtil {
 	public static String dateToStrLong(Date date) {
 		if (date != null) {
 			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			String currentDateTime = fmt.format(date);
+			return currentDateTime;
+		}
+		return null;
+	}
+
+	/**
+	 * 得到yyMMdd格式类型的时间
+	 * 
+	 * @param date
+	 * @return String
+	 */
+	public static String strToDateShort(Date date) {
+		if (date != null) {
+			SimpleDateFormat fmt = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT_SHORT);
 			String currentDateTime = fmt.format(date);
 			return currentDateTime;
 		}
@@ -187,5 +205,6 @@ public class DateUtil {
 
 	public static void main(String[] args) {
 		System.out.println(DateUtil.dateToStrMSec(new Date()));
+		System.out.println(DateUtil.strToDateShort(new Date()));
 	}
 }
