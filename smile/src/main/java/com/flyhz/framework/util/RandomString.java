@@ -61,7 +61,7 @@ public class RandomString {
 		if (count.intValue() > 99) {
 			count = new AtomicInteger(0);
 		}
-		stringBuilder.append(count.getAndIncrement());
+		stringBuilder.append(StringUtils.leftPad(String.valueOf(count.getAndIncrement()), 2, '0'));
 		return stringBuilder.toString();
 	}
 
