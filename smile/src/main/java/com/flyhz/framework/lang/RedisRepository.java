@@ -49,13 +49,13 @@ public interface RedisRepository {
 	 *            订单详情
 	 * @throws ValidateException
 	 */
-	public void buildOrderToRedis(Integer userId, Integer orderId, String status,
-			Date gmtModify, String orderDetal)
-			throws ValidateException;
+	public void buildOrderToRedis(Integer userId, Integer orderId, String status, Date gmtModify,
+			String orderDetal) throws ValidateException;
 
 	/**
 	 * 把订单build到redis（订单付款后使用）
 	 * 
+	 * @param tid
 	 * @param userId
 	 *            用户ID
 	 * @param orderId
@@ -63,7 +63,7 @@ public interface RedisRepository {
 	 * @param status
 	 * @throws ValidateException
 	 */
-	public void reBuildOrderToRedis(Integer userId, Integer orderId, String status)
+	public void reBuildOrderToRedis(Long tid, Integer userId, Integer orderId, String status)
 			throws ValidateException;
 
 	/**

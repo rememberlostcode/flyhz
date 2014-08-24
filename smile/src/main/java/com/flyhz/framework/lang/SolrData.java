@@ -1,3 +1,4 @@
+
 package com.flyhz.framework.lang;
 
 import java.util.Date;
@@ -55,14 +56,15 @@ public interface SolrData {
 	/**
 	 * 建立/修改单个订单索引
 	 * 
+	 * @param tid
 	 * @param userId
 	 * @param orderId
 	 * @param status
 	 * @param gmtModify
 	 * @param logisticsDto
 	 */
-	public void submitOrder(Integer userId, Integer orderId, String status,
-			Date gmtModify,LogisticsDto logisticsDto);
+	public void submitOrder(Long tid, Integer userId, Integer orderId, String status,
+			Date gmtModify, LogisticsDto logisticsDto);
 
 	/**
 	 * 查询指定用户的订单
@@ -73,16 +75,16 @@ public interface SolrData {
 	 *            状态
 	 * @return
 	 */
-	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId,
-			String status);
-	
+	public List<OrderSimpleDto> getOrderIdsFromSolr(Integer userId, String status);
+
 	/**
 	 * 清空商品索引
 	 */
 	public void cleanProduct();
-	
+
 	/**
 	 * 获取美元汇率
+	 * 
 	 * @return
 	 */
 	public double getDollarExchangeRate();

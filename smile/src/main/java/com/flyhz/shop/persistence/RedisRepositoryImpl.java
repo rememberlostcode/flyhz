@@ -130,11 +130,11 @@ public class RedisRepositoryImpl implements RedisRepository {
 		cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId, String.valueOf(orderId),
 				orderDetal);
 		// solr建立订单索引
-		solrData.submitOrder(userId, orderId, status, gmtModify, null);
+		solrData.submitOrder(null,userId, orderId, status, gmtModify, null);
 	}
 
 	@Override
-	public void reBuildOrderToRedis(Integer userId, Integer orderId, String status)
+	public void reBuildOrderToRedis(Long tid,Integer userId, Integer orderId, String status)
 			throws ValidateException {
 		if (userId == null) {
 			throw new ValidateException(130002);
@@ -143,7 +143,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 			throw new ValidateException(130003);
 		}
 		// solr修改订单索引
-		solrData.submitOrder(userId, orderId, status, null, null);
+		solrData.submitOrder(tid,userId, orderId, status, null, null);
 	}
 
 	public void chacheOrders() {
@@ -173,7 +173,7 @@ public class RedisRepositoryImpl implements RedisRepository {
 							cacheRepository.hset(Constants.PREFIX_ORDERS_USER + userId,
 									String.valueOf(orderDto.getId()),
 									JSONUtil.getEntity2Json(orderDto));
-							solrData.submitOrder(orderDto.getUser().getId(), orderDto.getId(),
+							solrData.submitOrder(null,orderDto.getUser().getId(), orderDto.getId(),
 									orderDto.getStatus(), null, null);
 						}
 					} catch (Exception e) {

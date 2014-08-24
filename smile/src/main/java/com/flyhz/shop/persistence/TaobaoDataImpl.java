@@ -178,7 +178,7 @@ public class TaobaoDataImpl implements TaobaoData {
 														trade.getPayment());
 
 												orderStatusService.paymentValidateAmountAndIdcard(
-														numbers, payment, taobaoReceiverName);
+														numbers, payment, taobaoReceiverName,tid);
 											}
 										}
 									}
@@ -201,10 +201,10 @@ public class TaobaoDataImpl implements TaobaoData {
 										|| "TRADE_FINISHED".equals(status)) {// 买家已签收,货到付款专用/交易成功
 									orderStatusService.receiveGoods(numbers);
 								} else if ("TRADE_CLOSED".equals(status)) {// 交易关闭
-									orderStatusService.closeOrderById(numbers);
+									orderStatusService.closeOrderById(tid,numbers);
 									continue;
 								} else if ("TRADE_CLOSED_BY_TAOBAO".equals(status)) {// 淘宝自动关闭，如超过时间等等
-									orderStatusService.closeOrderById(numbers);
+									orderStatusService.closeOrderById(tid,numbers);
 									continue;
 								} else if ("ALL_WAIT_PAY".equals(status)) {
 									continue;
@@ -311,7 +311,7 @@ public class TaobaoDataImpl implements TaobaoData {
 																			.getTid());
 													}
 												}
-												solrData.submitOrder(orderDto.getUserId(),
+												solrData.submitOrder(tid,orderDto.getUserId(),
 														orderDto.getId(), orderDto.getStatus(),
 														orderDto.getGmtModify(),
 														orderDto.getLogisticsDto());
@@ -504,7 +504,7 @@ public class TaobaoDataImpl implements TaobaoData {
 												jobject.getString("payment"));
 
 										orderStatusService.paymentValidateAmountAndIdcard(numbers,
-												payment, taobaoReceiverName);
+												payment, taobaoReceiverName,tid);
 									}
 
 								} else if ("taobao_trade_TradeSellerShip".equals(message.getTopic())) {

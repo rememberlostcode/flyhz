@@ -54,7 +54,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 	private TaobaoData		taobaoData;
 
 	@Override
-	public void closeOrderById(String[] numbers) {
+	public void closeOrderById(Long tid,String[] numbers) {
 		// TODO Auto-generated method stub
 		try {
 			for (int g = 0; g < numbers.length; g++) {
@@ -65,7 +65,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 							&& orderModel != null
 							&& !orderModel.getStatus()
 												.equals(Constants.OrderStateCode.HAVE_BEEN_CLOSED.code)) {
-						redisRepository.reBuildOrderToRedis(orderModel.getUserId(), orderModel.getId(),
+						redisRepository.reBuildOrderToRedis(tid,orderModel.getUserId(), orderModel.getId(),
 								Constants.OrderStateCode.HAVE_BEEN_CLOSED.code);
 					}
 				}
@@ -76,7 +76,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 	}
 
 	@Override
-	public void paymentValidateAmountAndIdcard(String[] numbers, BigDecimal payment,String taobaoReceiverName) {
+	public void paymentValidateAmountAndIdcard(String[] numbers, BigDecimal payment,String taobaoReceiverName,Long tid) {
 		// TODO Auto-generated method stub
 		try {
 			List<OrderModel> ordersList = new ArrayList<OrderModel>();
@@ -127,9 +127,11 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 				for (int i = 0; i < ordersList.size(); i++) {
 					
 					ordersList.get(i).setStatus(smileStatus);
+					ordersList.get(i).setTid(tid.toString());
 					
 					orderDao.updateStatusByNumber(ordersList.get(i));
-					redisRepository.reBuildOrderToRedis(ordersList.get(i).getUserId(),
+					orderDao.updateTidByNumber(ordersList.get(i));
+					redisRepository.reBuildOrderToRedis(tid,ordersList.get(i).getUserId(),
 							ordersList.get(i).getId(), ordersList.get(i).getStatus());
 				}
 			}
@@ -154,7 +156,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 				if (orderDto != null) {
 
 					orderDao.updateStatusByNumber(orderModel);
-					solrData.submitOrder(orderDto.getUserId(), orderDto.getId(),
+					solrData.submitOrder(null,orderDto.getUserId(), orderDto.getId(),
 							orderModel.getStatus(), new Date(), null);
 
 					UserDto user = userDao.getUserById(orderDto.getUserId());
@@ -226,7 +228,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 							&& orderModel != null
 							&& !orderModel.getStatus().equals(
 									Constants.OrderStateCode.DELIVERY.code)) {
-						redisRepository.reBuildOrderToRedis(orderModel.getUserId(),
+						redisRepository.reBuildOrderToRedis(null,orderModel.getUserId(),
 								orderModel.getId(), Constants.OrderStateCode.HAS_BEEN_COMPLETED.code);
 					}
 				}

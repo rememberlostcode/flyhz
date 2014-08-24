@@ -32,6 +32,8 @@ public class OrderDto {
 
 	private String					status;
 	
+	private String					tid;
+	
 	private LogisticsDto logisticsDto;
 
 	public Integer getId() {
@@ -128,6 +130,14 @@ public class OrderDto {
 
 	public void setLogisticsPriceTotal(BigDecimal logisticsPriceTotal) {
 		this.logisticsPriceTotal = logisticsPriceTotal;
+	}
+
+	public String getTid() {
+		return tid;
+	}
+
+	public void setTid(String tid) {
+		this.tid = tid;
 	}
 
 }

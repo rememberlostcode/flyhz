@@ -59,7 +59,7 @@ public class SolrDataImpl implements SolrData {
 	private static HttpSolrServer	productServer	= null;
 	private static HttpSolrServer	orderServer		= null;
 	@Resource
-	private DiscountDao discountDao;
+	private DiscountDao				discountDao;
 
 	public HttpSolrServer getServer(String url) {
 		if (PRODUCT_URL.equals(url)) {
@@ -117,16 +117,18 @@ public class SolrDataImpl implements SolrData {
 				log.error("商品ID为" + productBuildDto.getId() + "的商品的代购价为空，不可build到solr");
 				return null;
 			} else {
-				if(productBuildDto.getForeighprice()==null){
+				if (productBuildDto.getForeighprice() == null) {
 					productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getPp().doubleValue() * 2 + 1000));
 				} else {
-					if(Constants.dollarExchangeRate == null){
+					if (Constants.dollarExchangeRate == null) {
 						log.info("获取美元汇率...");
 						Constants.dollarExchangeRate = getDollarExchangeRate();
-						log.info("获取美元汇率完成，汇率为"+Constants.dollarExchangeRate);
+						log.info("获取美元汇率完成，汇率为" + Constants.dollarExchangeRate);
 					}
-					productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getForeighprice().doubleValue() * Constants.dollarExchangeRate * 2 + 1000));
-					
+					productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getForeighprice()
+																			.doubleValue()
+							* Constants.dollarExchangeRate * 2 + 1000));
+
 				}
 				doc.addField("sp", productBuildDto.getLp().subtract(productBuildDto.getPp()));
 			}
@@ -172,21 +174,26 @@ public class SolrDataImpl implements SolrData {
 
 		doc.addField("sn", productBuildDto.getSn() != null ? productBuildDto.getSn() : 0);// 销售量
 		doc.addField("zsn", productBuildDto.getZsn() != null ? productBuildDto.getZsn() : 0);// 当月销售量
-		
+
 		doc.addField("cu", productBuildDto.getCu());// 币种
 		doc.addField("fs", productBuildDto.getFs());// 币种符号
-		
+
 		DiscountModel discountModel = new DiscountModel();
 		discountModel.setProductId(productBuildDto.getId());
 		List<DiscountModel> list = discountDao.getModelList(discountModel);
 		List<DiscountDto> disList = new ArrayList<DiscountDto>();
 		if (list != null) {
 			DiscountDto discountDto = null;
-			for(int i=0;i<list.size();i++){
+			for (int i = 0; i < list.size(); i++) {
 				discountDto = new DiscountDto();
-				discountDto.setId(list.get(i).getId());;
+				discountDto.setId(list.get(i).getId());
+				;
 				discountDto.setDiscount(list.get(i).getDiscount());
-				discountDto.setDp(productBuildDto.getPp().multiply(new BigDecimal(list.get(i).getDiscount() / 10.0)).setScale(2,BigDecimal.ROUND_UP));//进位处理
+				discountDto.setDp(productBuildDto.getPp()
+													.multiply(
+															new BigDecimal(
+																	list.get(i).getDiscount() / 10.0))
+													.setScale(2, BigDecimal.ROUND_UP));// 进位处理
 				disList.add(discountDto);
 			}
 			doc.addField("discounts", JSONUtil.getEntity2Json(disList));// 折扣
@@ -252,8 +259,8 @@ public class SolrDataImpl implements SolrData {
 		}
 	}
 
-	public void submitOrder(Integer userId, Integer orderId, String status, Date gmtModify,
-			LogisticsDto logisticsDto) {
+	public void submitOrder(Long tid, Integer userId, Integer orderId, String status,
+			Date gmtModify, LogisticsDto logisticsDto) {
 		if (StringUtil.isBlank(status)) {
 			status = Constants.OrderStateCode.FOR_PAYMENT.code;
 		}
@@ -264,15 +271,21 @@ public class SolrDataImpl implements SolrData {
 		doc.addField("id", orderId);
 		doc.addField("user_id", userId);
 		doc.addField("status", status);
-		if(gmtModify!=null){
+		if (gmtModify != null) {
 			doc.addField("gmt_modify", gmtModify);
+		}
+
+		if (tid != null) {
+			doc.addField("tid", logisticsDto.getTid());
 		}
 
 		if (logisticsDto != null) {
 			doc.addField("address", logisticsDto.getAddress());
 			doc.addField("logisticsStatus", logisticsDto.getLogisticsStatus());
 			doc.addField("companyName", logisticsDto.getCompanyName());
-			doc.addField("tid", logisticsDto.getTid());
+			if (tid == null) {
+				doc.addField("tid", logisticsDto.getTid());
+			}
 			if (logisticsDto.getTransitStepInfoList() != null
 					&& logisticsDto.getTransitStepInfoList().size() > 0) {
 				for (int i = 0; i < logisticsDto.getTransitStepInfoList().size(); i++) {
@@ -357,7 +370,8 @@ public class SolrDataImpl implements SolrData {
 				para = para + " AND status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 等于已完成的
 			} else {
 				para = para + " AND status:[10 13]";// 不等于已完成的
-//				para = para + " AND -status:" + Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 不等于已完成的
+				// para = para + " AND -status:" +
+				// Constants.OrderStateCode.HAS_BEEN_COMPLETED.code;// 不等于已完成的
 			}
 		}
 
@@ -402,6 +416,7 @@ public class SolrDataImpl implements SolrData {
 					OrderSimpleDto or = new OrderSimpleDto();
 					LogisticsDto logisticsDto = new LogisticsDto();
 					or.setId(orderId);
+					or.setTid(tid);
 					or.setStatus(status);
 					logisticsDto.setLogisticsStatus(logisticsStatus);
 					logisticsDto.setTid(tid);
@@ -440,7 +455,7 @@ public class SolrDataImpl implements SolrData {
 			// solrServer.shutdown();
 		}
 	}
-	
+
 	public double getDollarExchangeRate() {
 		log.info("开始获取美元汇率...");
 		double dollarExchangeRate = 6.50;
@@ -460,5 +475,5 @@ public class SolrDataImpl implements SolrData {
 		log.info("获取美元汇率结束");
 		return dollarExchangeRate;
 	}
-	
+
 }
