@@ -78,13 +78,14 @@ public class WebViewActivity extends Activity implements OnClickListener {
 				TbUtil.getWebView().setWebViewClient(new WebViewClient() {
 					@Override
 					public void onPageStarted(WebView view, String url, Bitmap favicon) {
+						Log.i(MyApplication.LOG_TAG+"onPageStarted", view.toString());
 						super.onPageStarted(view, url, favicon);
 					}
 
 					@Override
 					public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+						Log.i(MyApplication.LOG_TAG+"shouldInterceptRequest", view.toString());
 						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
-							TbUtil.setWebView(view);
 							view.reload();
 						} else if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
 							// 设置返回和刷新按钮不显示
@@ -102,6 +103,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 					@Override
 					public void onPageFinished(WebView view, String url) {
+						Log.i(MyApplication.LOG_TAG+"onPageFinished", view.toString());
 						// 设置webview头部显示url
 						TextView showVurl = (TextView) findViewById(R.id.show_vurl);
 						showVurl.setText(url);
@@ -179,6 +181,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					@Override
 					public void onReceivedError(WebView view, int errorCode, String description,
 							String failingUrl) {
+						Log.i(MyApplication.LOG_TAG+"onReceivedError", view.toString());
 						super.onReceivedError(view, errorCode, description, failingUrl);
 					}
 				});

@@ -51,11 +51,11 @@ public class ImageViewActivity extends BaseActivity {
 		String imageUrl = "";
 		try {
 			List<String> picList = intent.getExtras().getStringArrayList("picList");
-			boolean local = intent.getBooleanExtra("local", false);
+			boolean local = intent.getBooleanExtra("local", false);//是否是本地文件
 			if (picList != null && picList.size() > 0) {
 				if (local) {
 					imageUrl = picList.get(0);
-					photoView.setImageBitmap(BitmapUtils.decodeFile(imageUrl, 500, 500));
+					photoView.setImageBitmap(BitmapUtils.decodeFile(imageUrl, 800, 800));
 					progressWheel.setVisibility(View.GONE);
 				} else {
 					imageUrl = MyApplication.jgoods_img_url + picList.get(0);

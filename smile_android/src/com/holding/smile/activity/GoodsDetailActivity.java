@@ -62,6 +62,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 	private List<JGoods>		details			= new ArrayList<JGoods>();
 	private JGoods				jGoods			= null;
 	private List<String>		picList			= new ArrayList<String>();
+	private ArrayList<String>		imgList			= new ArrayList<String>();
 	private List<DiscountDto>	discountList	= new ArrayList<DiscountDto>(); // 相同款号的商品颜色列表
 	private List<JColor>		colorList		= new ArrayList<JColor>();		// 相同款号的商品颜色列表
 	private Integer				gid				= null;						// 商品ID
@@ -172,6 +173,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 			if (jGoods.getP() != null) {
 				for (int i = 0; i < jGoods.getP().length; i++) {
 					picList.add(jGoods.getP()[i]);
+					imgList.add(jGoods.getBp()[i]);
 				}
 			}
 
@@ -395,7 +397,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 						// Intent intent = new Intent(context,
 						// GoodsBigImgActivity.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-						intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
+						intent.putStringArrayListExtra("picList", imgList);
 						intent.putExtra("position", position);
 						startActivity(intent);
 					}
