@@ -2,7 +2,10 @@
 package com.flyhz.framework.util;
 
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.lang.StringUtils;
 
 public class RandomString {
 
@@ -62,9 +65,21 @@ public class RandomString {
 		return stringBuilder.toString();
 	}
 
+	public static String generateRandomStringDate() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(DateUtil.strToDateShort(new Date()));
+		if (count.intValue() > 9999) {
+			count = new AtomicInteger(0);
+		}
+		stringBuilder.append(StringUtils.leftPad(count.toString(), 4, '0'));
+		return stringBuilder.toString();
+	}
+
 	public static void main(String[] args) {
-		System.out.println(generateRandomStringTime());
-		System.out.println(generateRandomStringTime());
-		System.out.println(generateRandomNumber6());
+		// System.out.println(generateRandomStringTime());
+		// System.out.println(generateRandomStringTime());
+		// System.out.println(generateRandomNumber6());
+		System.out.println(generateRandomStringDate());
+		System.out.println(generateRandomStringDate());
 	}
 }
