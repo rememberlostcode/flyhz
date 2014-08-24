@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -36,6 +37,8 @@ import com.holding.smile.tools.ToastUtils;
  * 
  */
 public class OrderInformActivity extends BaseActivity implements OnClickListener {
+
+	private static final String		TAG							= "OrderInformActivity";
 
 	private static final int		WHAT_DID_LOAD_DATA			= 0;
 	private static final int		WHAT_DID_UPDATE_DATA		= 1;
@@ -229,145 +232,167 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 
 											@Override
 											public void handleMessage(Message msg) {
-												switch (msg.what) {
-													case WHAT_DID_LOAD_DATA: {
-														if (msg.obj != null) {
-															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (CodeValidator.dealCode(context, obj)) {
-																order = obj.getOrderData();
-																if (order == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		ToastUtils.showShort(
-																				context,
-																				obj.getValidate()
-																					.getMessage());
-																	} else {
-																		ToastUtils.showShort(
-																				context,
-																				Constants.MESSAGE_EXCEPTION);
-																	}
-																} else {
-																	orderDetails = order.getDetails();
-																	if (orderDetails != null
-																			&& !orderDetails.isEmpty()) {
-																		initView();// 初始化view
-																		calculateTotal();// 计算总额
-																	}
-																}
-															}
-														}
-														break;
-													}
-													case WHAT_DID_UPDATE_DATA: {
-														if (msg.obj != null) {
-															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (CodeValidator.dealCode(context, obj)) {
-																ProductDto product = obj.getProductData();
-																if (product == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		ToastUtils.showShort(
-																				context,
-																				obj.getValidate()
-																					.getMessage());
-																	} else {
-																		ToastUtils.showShort(
-																				context,
-																				Constants.MESSAGE_EXCEPTION);
-																	}
-																} else {
-																	if (orderDetails != null
-																			&& !orderDetails.isEmpty()) {
-																		for (OrderDetailDto orderDetail : orderDetails) {
-																			ProductDto p = orderDetail.getProduct();
-																			if (p.getId()
-																					.equals(product.getId())) {
-																				orderDetail.setQty(product.getQty());
-																				p.setPurchasingPrice(product.getPurchasingPrice()
-																											.divide(BigDecimal.valueOf(orderDetail.getQty())));
-																				orderDetail.setTotal(product.getPurchasingPrice());
-																				order.setTotal(orderDetail.getTotal());
-																				qty = (int) orderDetail.getQty();
-																				break;
-																			}
+												try {
+													switch (msg.what) {
+														case WHAT_DID_LOAD_DATA: {
+															if (msg.obj != null) {
+																RtnValueDto obj = (RtnValueDto) msg.obj;
+																if (CodeValidator.dealCode(context,
+																		obj)) {
+																	order = obj.getOrderData();
+																	if (order == null) {
+																		if (obj.getValidate() != null
+																				&& StrUtils.isNotEmpty(obj.getValidate()
+																											.getMessage())) {
+																			ToastUtils.showShort(
+																					context,
+																					obj.getValidate()
+																						.getMessage());
+																		} else {
+																			ToastUtils.showShort(
+																					context,
+																					Constants.MESSAGE_EXCEPTION);
 																		}
-																		// 计算总额
-																		calculateTotal();
-																		orderAdapter.notifyDataSetChanged();
-																	}
-																}
-															}
-														} else {
-															ToastUtils.showShort(context,
-																	Constants.MESSAGE_EXCEPTION);
-														}
-														break;
-													}
-													case WHAT_DID_CONFIRMORDER_DATA: {
-														if (msg.obj != null) {
-															RtnValueDto obj = (RtnValueDto) msg.obj;
-															if (CodeValidator.dealCode(context, obj)) {
-																order = obj.getOrderData();
-																if (order == null) {
-																	if (obj.getValidate() != null
-																			&& StrUtils.isNotEmpty(obj.getValidate()
-																										.getMessage())) {
-																		ToastUtils.showShort(
-																				context,
-																				obj.getValidate()
-																					.getMessage());
 																	} else {
-																		ToastUtils.showShort(
-																				context,
-																				Constants.MESSAGE_EXCEPTION);
-																	}
-																} else {
-																	if (order.getNumber() != null
-																			&& order.getTime() != null
-																			&& order.getTotal() != null) {
-																		Intent intent = new Intent(
-																				context,
-																				OrderPayActivity.class);
-																		intent.putExtra("number",
-																				order.getNumber());
-																		intent.putExtra("time",
-																				order.getTime());
-																		intent.putExtra("amount",
-																				order.getTotal());
-																		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-																		startActivity(intent);
-
-																		if (cartIds != null
-																				&& !cartIds.isEmpty()) {
-																			for (String cartId : cartIds) {
-																				MyApplication.getInstance()
-																								.getSubmitService()
-																								.removeCart(
-																										Integer.valueOf(cartId));
-																			}
-
-																			if (cartFlag) {// 从购物车结算时要返回刷新
-																				setResult(
-																						RESULT_OK,
-																						null);
-																			}
+																		orderDetails = order.getDetails();
+																		if (orderDetails != null
+																				&& !orderDetails.isEmpty()) {
+																			initView();// 初始化view
+																			calculateTotal();// 计算总额
 																		}
-																		finish();
-																	} else {
-																		ToastUtils.showShort(
-																				context,
-																				Constants.MESSAGE_EXCEPTION);
 																	}
 																}
 															}
+															break;
 														}
-														break;
+														case WHAT_DID_UPDATE_DATA: {
+															if (msg.obj != null) {
+																RtnValueDto obj = (RtnValueDto) msg.obj;
+																if (CodeValidator.dealCode(context,
+																		obj)) {
+																	ProductDto product = obj.getProductData();
+																	if (product == null) {
+																		if (obj.getValidate() != null
+																				&& StrUtils.isNotEmpty(obj.getValidate()
+																											.getMessage())) {
+																			ToastUtils.showShort(
+																					context,
+																					obj.getValidate()
+																						.getMessage());
+																		} else {
+																			ToastUtils.showShort(
+																					context,
+																					Constants.MESSAGE_EXCEPTION);
+																		}
+																	} else {
+																		if (orderDetails != null
+																				&& !orderDetails.isEmpty()) {
+																			for (OrderDetailDto orderDetail : orderDetails) {
+																				ProductDto p = orderDetail.getProduct();
+																				if (p.getId()
+																						.equals(product.getId())) {
+																					orderDetail.setQty(product.getQty());
+																					p.setPurchasingPrice(product.getPurchasingPrice()
+																												.divide(BigDecimal.valueOf(orderDetail.getQty())));
+																					orderDetail.setTotal(product.getPurchasingPrice());
+																					order.setTotal(orderDetail.getTotal());
+																					qty = (int) orderDetail.getQty();
+																					break;
+																				}
+																			}
+																			// 计算总额
+																			calculateTotal();
+																			orderAdapter.notifyDataSetChanged();
+																		}
+																	}
+																}
+															} else {
+																ToastUtils.showShort(context,
+																		Constants.MESSAGE_EXCEPTION);
+															}
+															break;
+														}
+														case WHAT_DID_CONFIRMORDER_DATA: {
+															if (msg.obj != null) {
+																RtnValueDto obj = (RtnValueDto) msg.obj;
+																if (CodeValidator.dealCode(context,
+																		obj)) {
+																	order = obj.getOrderData();
+																	if (order == null) {
+																		if (obj.getValidate() != null
+																				&& StrUtils.isNotEmpty(obj.getValidate()
+																											.getMessage())) {
+																			ToastUtils.showShort(
+																					context,
+																					obj.getValidate()
+																						.getMessage());
+																		} else {
+																			ToastUtils.showShort(
+																					context,
+																					Constants.MESSAGE_EXCEPTION);
+																		}
+																	} else {
+																		if (order.getNumber() != null
+																				&& order.getTime() != null
+																				&& order.getTotal() != null) {
+
+																			Intent intent = new Intent(
+																					context,
+																					OrderPayActivity.class);
+																			intent.putExtra(
+																					"number",
+																					order.getNumber());
+																			intent.putExtra("time",
+																					order.getTime());
+																			intent.putExtra(
+																					"amount",
+																					order.getTotal());
+																			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+																			startActivity(intent);
+
+																			if (cartIds != null
+																					&& !cartIds.isEmpty()) {
+																				for (String cartId : cartIds) {
+																					MyApplication.getInstance()
+																									.getSubmitService()
+																									.removeCart(
+																											Integer.valueOf(cartId));
+																				}
+
+																				// 更新购物车中的商品数量信息
+																				if (allQty != null) {
+																					MyApplication.getInstance()
+																									.getSqliteService()
+																									.addUserShoppingCount(
+																											0 - allQty);
+																				}
+
+																				if (cartFlag) {// 从购物车结算时要返回刷新
+																					setResult(
+																							RESULT_OK,
+																							null);
+																				}
+																			}
+																			finish();
+																		} else {
+																			ToastUtils.showShort(
+																					context,
+																					Constants.MESSAGE_EXCEPTION);
+																		}
+																	}
+																}
+															}
+															break;
+														}
 													}
+													closeLoading();
+												} catch (Exception e) {
+													Log.i(TAG, e.getMessage());
+													if (cartFlag) {// 从购物车结算时要返回刷新
+														setResult(RESULT_OK, null);
+													}
+													finish();
 												}
-												closeLoading();
 											}
 
 										};
