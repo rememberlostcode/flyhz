@@ -25,6 +25,7 @@
     <select id="getCartItemList" parameterType="CartitemModel" resultType="CartitemModel">
     	select id,product_id productId,qty,user_id userId,discount_id discountId,gmt_create gmtCreate,gmt_modify gmtModify from cartitem  
     	where user_id=#{userId} 
+    	order by id desc
     </select>
     <select id="listItemsByUserIdAndIds" parameterType="CartItemParamDto" resultType="CartitemModel">
     	select id,product_id productId,qty,user_id userId,discount_id discountId,gmt_create gmtCreate,gmt_modify gmtModify 
@@ -33,5 +34,6 @@
 	   	<foreach collection="itemIds" index="index" item="item" open="(" separator="," close=")">
 	        #{item}
 	    </foreach> 
+	    order by id desc
     </select>
 </mapper>
