@@ -174,6 +174,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 					intent.putExtra("cartIds", (Serializable) cartIds);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivityForResult(intent, ORDER_CODE);
+				} else {
+					ToastUtils.showShort(context, "请先选择要结算的商品！");
 				}
 				break;
 			}
@@ -274,11 +276,15 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																	int count = 0;
 																	for (CartItem cart : cartItems) {
 																		if (cart.getProduct() != null) {
-																			count += (cart.getQty()!=null?cart.getQty():0);
+																			count += (cart.getQty() != null ? cart.getQty()
+																					: 0);
 																			cartItemList.add(cart);
 																		}
 																	}
-																	MyApplication.getInstance().getSqliteService().updateUserShoppingCount(count);
+																	MyApplication.getInstance()
+																					.getSqliteService()
+																					.updateUserShoppingCount(
+																							count);
 																} else {
 																	ToastUtils.showShort(context,
 																			"暂无数据！");

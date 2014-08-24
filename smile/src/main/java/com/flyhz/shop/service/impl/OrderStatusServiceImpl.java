@@ -76,13 +76,13 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 	}
 
 	@Override
-	public void paymentValidateAmountAndIdcard(String[] numbers, BigDecimal payment,String taobaoReceiverName,Long tid) {
+	public String paymentValidateAmountAndIdcard(String[] numbers, BigDecimal payment,String taobaoReceiverName,Long tid) {
 		// TODO Auto-generated method stub
+		String smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
 		try {
 			List<OrderModel> ordersList = new ArrayList<OrderModel>();
 			BigDecimal total = new BigDecimal(0);
 			OrderModel orderModel = null;
-			String smileStatus = Constants.OrderStateCode.HAVE_BEEN_PAID.code;
 
 			// 买家已付款，需要验证身份证是否存在
 			IdcardModel idcardModel = new IdcardModel();
@@ -139,6 +139,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
+		return smileStatus;
 	}
 
 	@Override
