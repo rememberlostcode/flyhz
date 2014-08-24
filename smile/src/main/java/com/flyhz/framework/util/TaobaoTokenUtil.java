@@ -53,16 +53,16 @@ public class TaobaoTokenUtil {
 		timer.schedule(new MyTask(), delay, period);
 	}
 	
-	public static void init(){
+	public static boolean init(){
 		log.info("TaobaoTokenUtil init ...");
 		taobaoPropertiesFilePath = Constants.propertiesFilePath;
 
-		initPropertiesFromFile();
+		return initPropertiesFromFile();
 	}
 	/**
 	 * 从文件读取数据初始化参数
 	 */
-	private static void initPropertiesFromFile(){
+	private static boolean initPropertiesFromFile(){
 		StringBuffer sb = new StringBuffer();
 		Properties props = new Properties();
 		if (StringUtils.isNotBlank(taobaoPropertiesFilePath)) {
@@ -106,8 +106,10 @@ public class TaobaoTokenUtil {
 			expiresIn = config.get("expiresIn");
 			lastModifyTime = config.get("lastModifyTime");
 			sellerNick = config.get("sellerNick");
+			return true;
 		} else {
 			log.info("taobaoPropertiesFilePath is null!!!");
+			return false;
 		}
 	}
 
@@ -241,33 +243,38 @@ public class TaobaoTokenUtil {
 	 * @return
 	 */
 	public static boolean writeFile(HashMap<String, String> map) {
-		boolean result = false;
-		FileWriter fw = null;
-		try {
-			File file = new File(taobaoPropertiesFilePath);
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			fw = new FileWriter(file.getAbsolutePath());
-			Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
-				String key = entry.getKey();
-				String value = map.get(key);
-				fw.write(key + "=" + value + "\n");
-			}
-			result = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = false;
-		} finally {
+		if (init()) {
+			boolean result = false;
+			FileWriter fw = null;
 			try {
-				fw.close();
+				File file = new File(taobaoPropertiesFilePath);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				fw = new FileWriter(file.getAbsolutePath());
+				Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry<String, String> entry = (Map.Entry<String, String>) it.next();
+					String key = entry.getKey();
+					String value = map.get(key);
+					fw.write(key + "=" + value + "\n");
+				}
+				result = true;
 			} catch (Exception e) {
 				e.printStackTrace();
+				result = false;
+			} finally {
+				try {
+					fw.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+			return result;
+		} else {
+			return false;
 		}
-		return result;
+
 	}
 
 	public static String getAppKey() {

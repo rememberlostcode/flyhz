@@ -1,7 +1,11 @@
 
 package com.flyhz.shop.web.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.flyhz.framework.auth.Identify;
 import com.flyhz.framework.lang.TaobaoData;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.TaobaoTokenUtil;
@@ -44,6 +49,19 @@ public class IndexController {
 			taobaoData.startMessageHandler();
 		}
 		return "index";
+	}
+	
+	@RequestMapping(value = { "loginTest", "" })
+	public void loginTest(Model model, @Identify Integer userId, HttpServletResponse response) {
+		try {
+			PrintWriter writer = response.getWriter();
+			response.reset();
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html");
+			writer.println(userId!=null?userId:0);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@RequestMapping(value = { "search" })
