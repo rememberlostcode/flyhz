@@ -20,8 +20,9 @@ public interface OrderStatusService {
 	 * @param payment
 	 * @param taobaoReceiverName
 	 * @param tid
+	 * @return
 	 */
-	public void paymentValidateAmountAndIdcard(String[] numbers, BigDecimal payment,
+	public String paymentValidateAmountAndIdcard(String[] numbers, BigDecimal payment,
 			String taobaoReceiverName, Long tid);
 
 	/**

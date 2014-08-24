@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import sun.util.logging.resources.logging;
-
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.TaobaoData;
 import com.flyhz.framework.lang.ValidateException;
