@@ -7,9 +7,11 @@ public interface OrderStatusService {
 
 	/**
 	 * 关闭订单10->50
+	 * 
+	 * @param tid
 	 * @param numbers
 	 */
-	public void closeOrderById(String[] numbers);
+	public void closeOrderById(Long tid, String[] numbers);
 
 	/**
 	 * 已付款并验证金额和身份证 10->12/13/14/15/16
@@ -17,9 +19,10 @@ public interface OrderStatusService {
 	 * @param numbers
 	 * @param payment
 	 * @param taobaoReceiverName
+	 * @param tid
 	 */
 	public void paymentValidateAmountAndIdcard(String[] numbers, BigDecimal payment,
-			String taobaoReceiverName);
+			String taobaoReceiverName, Long tid);
 
 	/**
 	 * 发货 16->20

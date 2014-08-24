@@ -80,4 +80,10 @@
 	    update `order` set status = #{status} 
 	    where  number = #{number}
 	</update>
+	
+	<!-- 修改淘宝订单号 -->
+	<update id="updateTidByNumber" parameterType="OrderModel">
+	    update `order` set tid = #{tid} 
+	    where  number = #{number}
+	</update>
 </mapper>

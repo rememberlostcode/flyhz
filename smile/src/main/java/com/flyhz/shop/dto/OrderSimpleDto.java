@@ -4,16 +4,18 @@ package com.flyhz.shop.dto;
 import java.util.Date;
 
 public class OrderSimpleDto {
-	private Integer	id;
+	private Integer			id;
 
-	private String	status;
-	
-	private Integer userId;
-	
-	private Date gmtModify;
-	
-	private LogisticsDto logisticsDto;
-	
+	private String			status;
+
+	private Integer			userId;
+
+	private Date			gmtModify;
+
+	private Long			tid;
+
+	private LogisticsDto	logisticsDto;
+
 	public Integer getId() {
 		return id;
 	}
@@ -52,6 +54,14 @@ public class OrderSimpleDto {
 
 	public void setLogisticsDto(LogisticsDto logisticsDto) {
 		this.logisticsDto = logisticsDto;
+	}
+
+	public Long getTid() {
+		return tid;
+	}
+
+	public void setTid(Long tid) {
+		this.tid = tid;
 	}
 
 }

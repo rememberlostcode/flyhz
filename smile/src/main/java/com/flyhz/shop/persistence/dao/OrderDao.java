@@ -70,4 +70,11 @@ public interface OrderDao extends GenericDao<OrderModel> {
 	 */
 	public OrderModel getModelByNumber(String number);
 
+	/**
+	 * 保存淘宝订单号
+	 * 
+	 * @param orderModel
+	 */
+	public void updateTidByNumber(OrderModel orderModel);
+
 }

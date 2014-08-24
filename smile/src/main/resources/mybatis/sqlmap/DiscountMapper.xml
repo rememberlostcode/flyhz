@@ -40,7 +40,7 @@
 			b.gmt_create gmtCreate,
 			b.gmt_modify gmtModify
 		from discount b 
-		where 1=1 
+		where 1=1 and b.status=1 
 		<if test="id != null">
 			and b.id=#{id}
 		</if>

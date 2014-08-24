@@ -39,20 +39,20 @@ public class ImageViewActivity extends BaseActivity {
 		photoView = (PhotoView) findViewById(R.id.photoView);
 		progressWheel = (ProgressWheel) findViewById(R.id.progressWheel);
 
-		mAttacher = new PhotoViewAttacher(photoView);
-		mAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
-			@Override
-			public void onPhotoTap(View view, float x, float y) {
-				finish();
-			}
-		});
-
 		Intent intent = getIntent();
 		String imageUrl = "";
 		try {
 			List<String> picList = intent.getExtras().getStringArrayList("picList");
 			boolean local = intent.getBooleanExtra("local", false);//是否是本地文件
 			if (picList != null && picList.size() > 0) {
+				mAttacher = new PhotoViewAttacher(photoView);
+				mAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+					@Override
+					public void onPhotoTap(View view, float x, float y) {
+						finish();
+					}
+				});
+				
 				if (local) {
 					imageUrl = picList.get(0);
 					photoView.setImageBitmap(BitmapUtils.decodeFile(imageUrl, 800, 800));

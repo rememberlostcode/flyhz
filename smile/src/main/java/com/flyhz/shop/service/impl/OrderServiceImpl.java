@@ -256,7 +256,7 @@ public class OrderServiceImpl implements OrderService {
 		if (orderModel != null && orderModel.getStatus() != null
 				&& Constants.OrderStateCode.HAVE_BEEN_PAID.code.equals(orderModel.getStatus())) {// 表示已付款
 			flag = true;
-			redisRepository.reBuildOrderToRedis(userId, orderModel.getId(),
+			redisRepository.reBuildOrderToRedis(null,userId, orderModel.getId(),
 					Constants.OrderStateCode.HAVE_BEEN_PAID.code);
 		}
 		return flag;
@@ -275,7 +275,7 @@ public class OrderServiceImpl implements OrderService {
 		orderModel.setGmtModify(new Date());
 		int num = orderDao.update(orderModel);
 		if (num == 1) {
-			redisRepository.reBuildOrderToRedis(userId, orderModel.getId(), status);
+			redisRepository.reBuildOrderToRedis(null,userId, orderModel.getId(), status);
 		} else {
 			throw new ValidateException(201004);
 		}
