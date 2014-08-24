@@ -388,6 +388,9 @@ public class OrderInformActivity extends BaseActivity implements OnClickListener
 													closeLoading();
 												} catch (Exception e) {
 													Log.i(TAG, e.getMessage());
+													ToastUtils.showShort(context,
+															Constants.MESSAGE_EXCEPTION);
+
 													if (cartFlag) {// 从购物车结算时要返回刷新
 														setResult(RESULT_OK, null);
 													}
