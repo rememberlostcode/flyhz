@@ -5,6 +5,8 @@
     <string name="login_url">https://service.tiantianhaigou.com:8443/smile/loginAuth.json</string>
     <string name="auto_login_url">https://service.tiantianhaigou.com:8443/smile/loginAuto.json</string>
     
+    <string name="login_test">http://service.tiantianhaigou.com/smile/loginTest.json</string>
+    
     <string name="img_static_url">/smile/static</string>
     <string name="jGoods_index_url">/smile/node/index</string>
     <string name="jGoods_version_url">/smile/node/version</string>

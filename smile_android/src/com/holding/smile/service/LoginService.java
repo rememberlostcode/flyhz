@@ -37,6 +37,7 @@ public class LoginService {
 	private Context		context;
 	private String		login_url;
 	private String		auto_login_url;
+	private String		login_test;
 
 	/**
 	 * 成功的code
@@ -53,6 +54,7 @@ public class LoginService {
 
 		login_url = context.getString(R.string.login_url);
 		auto_login_url = context.getString(R.string.auto_login_url);
+		login_test = context.getString(R.string.login_test);
 	}
 
 	/**
@@ -75,7 +77,6 @@ public class LoginService {
 			}
 		} else {
 			if (new Date().getTime() - MyApplication.getSessionTime().getTime() > SESSION_TIME) {// 超过20分钟需确认下是否登录失效
-				System.out.println(MyApplication.getSessionTime());
 				Log.i(MyApplication.LOG_TAG, "超过20分钟，需要重新登录");
 				SUser user = MyApplication.getInstance().getCurrentUser();
 				if (user != null) {
@@ -93,7 +94,21 @@ public class LoginService {
 					isLogining = false;
 				}
 			} else {
-				
+				String rvdString = URLUtil.getStringByGet(login_test, null);
+				if("0".equals(rvdString)){
+					SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+					if (user != null) {
+						RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
+																.autoLogin();
+						if (rtnValueDto == null || !rtnValueDto.getCode().equals(SUCCESS_CODE)) {
+							MyApplication.getInstance().setCurrentUser(null);
+							MyApplication.getInstance().setSessionId(null);
+							isLogining = false;
+						}
+					} else {
+						isLogining = false;
+					}
+				}
 			}
 		}
 		return isLogining;

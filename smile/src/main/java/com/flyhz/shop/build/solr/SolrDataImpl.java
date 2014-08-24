@@ -276,7 +276,7 @@ public class SolrDataImpl implements SolrData {
 		}
 
 		if (tid != null) {
-			doc.addField("tid", logisticsDto.getTid());
+			doc.addField("tid", tid);
 		}
 
 		if (logisticsDto != null) {
