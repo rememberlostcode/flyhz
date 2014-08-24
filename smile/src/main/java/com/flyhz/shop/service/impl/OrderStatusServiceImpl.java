@@ -128,7 +128,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 				for (int i = 0; i < ordersList.size(); i++) {
 					
 					ordersList.get(i).setStatus(smileStatus);
-					ordersList.get(i).setTid(tid.toString());
+					ordersList.get(i).setTid(tid);
 					
 					orderDao.updateStatusByNumber(ordersList.get(i));
 					orderDao.updateTidByNumber(ordersList.get(i));

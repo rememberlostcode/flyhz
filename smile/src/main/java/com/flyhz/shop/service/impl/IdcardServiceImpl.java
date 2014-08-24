@@ -9,11 +9,16 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.flyhz.framework.lang.RedisRepository;
+import com.flyhz.framework.lang.TaobaoData;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.lang.file.FileRepository;
+import com.flyhz.framework.util.Constants;
 import com.flyhz.framework.util.DateUtil;
 import com.flyhz.shop.persistence.dao.IdcardDao;
+import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.entity.IdcardModel;
+import com.flyhz.shop.persistence.entity.OrderModel;
 import com.flyhz.shop.service.IdcardService;
 
 @Service
@@ -22,6 +27,12 @@ public class IdcardServiceImpl implements IdcardService {
 	private IdcardDao		idcardDao;
 	@Resource
 	private FileRepository	fileRepository;
+	@Resource
+	private OrderDao		orderDao;
+	@Resource
+	private TaobaoData		taobaoData;
+	@Resource
+	private RedisRepository	redisRepository;
 
 	@Override
 	public List<IdcardModel> getAllIdcardsByUserId(Integer userId) {
@@ -31,7 +42,7 @@ public class IdcardServiceImpl implements IdcardService {
 	}
 
 	@Override
-	public void saveIdcard(IdcardModel idcardModel, MultipartFile photo,MultipartFile backPhoto)
+	public void saveIdcard(IdcardModel idcardModel, MultipartFile photo, MultipartFile backPhoto)
 			throws ValidateException {
 		if (idcardModel == null) {
 			throw new ValidateException(111110);
@@ -50,7 +61,7 @@ public class IdcardServiceImpl implements IdcardService {
 				// 更新收件人地址中身份证照片路径
 				idcardModel.setUrl("/" + origName);
 			}
-			
+
 			if (backPhoto != null) {
 				// 生成新文件名
 				String origName = backPhoto.getOriginalFilename();
@@ -76,6 +87,25 @@ public class IdcardServiceImpl implements IdcardService {
 				idcardModel.setGmtModify(date);
 				idcardDao.insertIdcard(idcardModel);
 			}
+
+			// 判断那些订单是缺少身份证状态的，如果名字一样改成已上传身份证
+			OrderModel orderModel = new OrderModel();
+			orderModel.setUserId(idcardModel.getUserId());
+			orderModel.setStatus(Constants.OrderStateCode.THE_LACK_OF_IDENTITY_CARD.code);
+			List<OrderModel> list = orderDao.findOrdersByStatus(orderModel);
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).getTid() != null) {
+					String reName = taobaoData.getReceiverName(list.get(i).getTid());
+					if (idcardModel.getName().equals(reName)) {
+						list.get(i).setStatus(Constants.OrderStateCode.WAITING_FOR_DELIVERY.code);
+						orderDao.updateStatusByNumber(list.get(i));
+						redisRepository.reBuildOrderToRedis(list.get(i).getTid(),
+								list.get(i).getUserId(), list.get(i).getId(), list.get(i)
+																					.getStatus());
+					}
+				}
+			}
+
 		} catch (Exception e) {
 			// 文件保存失败
 			throw new ValidateException(122221);

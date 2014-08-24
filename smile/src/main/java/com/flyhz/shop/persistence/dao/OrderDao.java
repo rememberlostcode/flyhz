@@ -76,5 +76,7 @@ public interface OrderDao extends GenericDao<OrderModel> {
 	 * @param orderModel
 	 */
 	public void updateTidByNumber(OrderModel orderModel);
+	
+	public List<OrderModel> findOrdersByStatus(OrderModel orderModel);
 
 }

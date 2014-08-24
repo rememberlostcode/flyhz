@@ -22,7 +22,7 @@ public class OrderModel implements Serializable {
 
 	private Integer				userId;
 	
-	private String				tid;
+	private Long				tid;
 
 	public OrderModel() {
 	}
@@ -91,11 +91,11 @@ public class OrderModel implements Serializable {
 		this.userId = userId;
 	}
 
-	public String getTid() {
+	public Long getTid() {
 		return tid;
 	}
 
-	public void setTid(String tid) {
+	public void setTid(Long tid) {
 		this.tid = tid;
 	}
 

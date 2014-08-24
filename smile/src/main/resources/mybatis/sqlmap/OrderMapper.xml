@@ -67,7 +67,7 @@
 		select count(1) count from `order`
     </select>
 	<select id="findAllOrders" parameterType="SolrPage" resultType="OrderModel">
-		select id,number,status,detail,user_id userId from `order` limit #{start},#{num}
+		select id,number,status,user_id userId from `order` limit #{start},#{num}
     </select>
     <select id="getOrderByNumber" parameterType="String" resultType="OrderSimpleDto">
 	    select id,user_id userId,gmt_modify gmtModify,status
@@ -86,4 +86,8 @@
 	    update `order` set tid = #{tid} 
 	    where  number = #{number}
 	</update>
+	
+	<select id="findOrdersByStatus" parameterType="OrderModel" resultType="OrderModel">
+		select id,number,status,user_id userId,tid from `order` where status = #{status} and user_id= #{user_id}
+    </select>
 </mapper>
