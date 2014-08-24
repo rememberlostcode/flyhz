@@ -88,6 +88,6 @@
 	</update>
 	
 	<select id="findOrdersByStatus" parameterType="OrderModel" resultType="OrderModel">
-		select id,number,status,user_id userId,tid from `order` where status = #{status} and user_id= #{user_id}
+		select id,number,status,user_id userId,tid from `order` where status = #{status} and user_id= #{userId}
     </select>
 </mapper>
