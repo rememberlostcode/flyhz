@@ -304,7 +304,10 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																	if (itemData != null
 																			&& cartItemList != null
 																			&& !cartItemList.isEmpty()) {
+																		int count = 0;
 																		for (CartItem item : cartItemList) {
+																			count += (item.getQty() != null ? item.getQty()
+																					: 0);
 																			if (item.getId()
 																					.equals(itemData.getId())) {
 																				item.setProduct(itemData.getProduct());
@@ -312,6 +315,10 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																				item.setDiscount(itemData.getDiscount());
 																			}
 																		}
+																		MyApplication.getInstance()
+																						.getSqliteService()
+																						.updateUserShoppingCount(
+																								count);
 																		// 计算总金额
 																		calculateTotal();
 																	}
@@ -364,6 +371,11 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 																	&& !cartItemList.isEmpty()) {
 																for (CartItem item : cartItemList) {
 																	if (item.getId().equals(itemId)) {
+																		// 减去删除的数量
+																		MyApplication.getInstance()
+																						.getSqliteService()
+																						.addUserShoppingCount(
+																								-item.getQty());
 																		cartItemList.remove(item);
 																		break;
 																	}

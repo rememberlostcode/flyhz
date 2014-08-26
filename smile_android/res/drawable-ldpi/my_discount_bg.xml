@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/new_product_detail_item_narmal" android:state_pressed="true"/>
-    <item android:drawable="@drawable/new_product_detail_item_narmal" android:state_focused="true"/>
-    <item android:drawable="@drawable/new_product_detail_selectitem_normal" android:state_selected="true"/>
-    <item android:drawable="@drawable/new_product_detail_item_narmal"/>
+    <item android:drawable="@drawable/product_detail_color_size_normal" android:state_pressed="true"/>
+    <item android:drawable="@drawable/product_detail_color_size_normal" android:state_focused="true"/>
+    <item android:drawable="@drawable/product_detail_color_size_press" android:state_selected="true"/>
+    <item android:drawable="@drawable/product_detail_color_size_normal"/>
 
 </selector>

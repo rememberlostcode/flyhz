@@ -36,13 +36,10 @@ public class MyTableLayout extends TableLayout {
 	@SuppressWarnings("deprecation")
 	private TableLayout.LayoutParams	params		= new TableLayout.LayoutParams(
 															TableLayout.LayoutParams.FILL_PARENT,
-															TableLayout.LayoutParams.WRAP_CONTENT);
+															40);
 
-	private TableRow.LayoutParams		paramsRow	= new TableRow.LayoutParams(cWidth,
-															TableLayout.LayoutParams.WRAP_CONTENT,
-															1);
-	private TableRow.LayoutParams		paramsRow2	= new TableRow.LayoutParams(cWidth,
-															TableLayout.LayoutParams.WRAP_CONTENT);
+	private TableRow.LayoutParams		paramsRow	= new TableRow.LayoutParams(cWidth, 40, 1);
+	private TableRow.LayoutParams		paramsRow2	= new TableRow.LayoutParams(cWidth, 40);
 
 	public MyTableLayout(Context context) {
 		super(context);

@@ -146,6 +146,21 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 	}
 
 	@Override
+	protected void onRestart() {
+		super.onRestart();
+
+		// 显示购物车商品数量
+		Integer shoppingCount = MyApplication.getInstance().getSqliteService()
+												.getUserShoppingCount();
+		if (shoppingCount != null && !shoppingCount.equals(0)) {
+			TextView mfft = (TextView) findViewById(R.id.mainfooter_four_text);
+			mfft.setText(shoppingCount + "");
+			mfft.setVisibility(View.VISIBLE);
+		}
+
+	}
+
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (returnDesktop(keyCode, event)) {
 			return true;
