@@ -57,11 +57,11 @@ public class RandomString {
 	 */
 	public static String generateRandomStringTime() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(System.currentTimeMillis() * 100);
+		stringBuilder.append(System.currentTimeMillis());
 		if (count.intValue() > 99) {
 			count = new AtomicInteger(0);
 		}
-		stringBuilder.append(count.getAndIncrement());
+		stringBuilder.append(StringUtils.leftPad(String.valueOf(count.getAndIncrement()), 2, '0'));
 		return stringBuilder.toString();
 	}
 
@@ -76,10 +76,10 @@ public class RandomString {
 	}
 
 	public static void main(String[] args) {
-		// System.out.println(generateRandomStringTime());
-		// System.out.println(generateRandomStringTime());
+		System.out.println(generateRandomStringTime());
+		System.out.println(generateRandomStringTime());
 		// System.out.println(generateRandomNumber6());
-		System.out.println(generateRandomStringDate());
-		System.out.println(generateRandomStringDate());
+		// System.out.println(generateRandomStringDate());
+		// System.out.println(generateRandomStringDate());
 	}
 }

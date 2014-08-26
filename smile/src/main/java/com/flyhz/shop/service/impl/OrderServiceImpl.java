@@ -195,7 +195,7 @@ public class OrderServiceImpl implements OrderService {
 
 		String number = null;
 		if (flag) {
-			number = RandomString.generateRandomStringDate();
+			number = RandomString.generateRandomStringTime();
 			orderDto.setNumber(number);
 		}
 

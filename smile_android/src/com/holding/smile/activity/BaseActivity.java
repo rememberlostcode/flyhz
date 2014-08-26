@@ -1,7 +1,6 @@
 
 package com.holding.smile.activity;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -75,9 +74,10 @@ public class BaseActivity extends Activity {
 	protected String			filepath;
 
 	protected HKDialogLoading	dialogLoading;
-//	private boolean				canClosed				= false;
-//	private Timer				time;
-//	private TimerTask			loadingTimerTask;
+
+	// private boolean canClosed = false;
+	// private Timer time;
+	// private TimerTask loadingTimerTask;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -287,18 +287,18 @@ public class BaseActivity extends Activity {
 		}
 		dialogLoading = null;
 
-//		if (time != null) {
-//			time.cancel();
-//		}
-//		if (loadingTimerTask != null) {
-//			loadingTimerTask.cancel();
-//		}
+		// if (time != null) {
+		// time.cancel();
+		// }
+		// if (loadingTimerTask != null) {
+		// loadingTimerTask.cancel();
+		// }
 
 		if (null != ly_content) {
 			ly_content = null;
 		}
 		Log.e(MyApplication.LOG_TAG, this.getClass() + " start onDestroy~~~");
-		
+
 		super.onDestroy();
 	}
 
@@ -379,13 +379,14 @@ public class BaseActivity extends Activity {
 						}
 					});
 				} else if (o == R.id.mainfooter_four) {// 购物车
-					Integer shoppingCount = MyApplication.getInstance().getSqliteService().getUserShoppingCount();
-					if(shoppingCount!=null && !shoppingCount.equals(0)){
+					Integer shoppingCount = MyApplication.getInstance().getSqliteService()
+															.getUserShoppingCount();
+					if (shoppingCount != null && !shoppingCount.equals(0)) {
 						TextView mfft = (TextView) findViewById(R.id.mainfooter_four_text);
-						mfft.setText(shoppingCount+"");
+						mfft.setText(shoppingCount + "");
 						mfft.setVisibility(View.VISIBLE);
 					}
-					
+
 					view.getChildAt(i).setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
@@ -517,43 +518,43 @@ public class BaseActivity extends Activity {
 			dialogLoading = new HKDialogLoading(this, R.style.HKDialog);
 		if (dialogLoading != null && !dialogLoading.isShowing())
 			dialogLoading.show(); // 显示加载中对话框
-//		canClosed = false;
-//		seconds = 0;
-//
-//		time = new Timer(true);
-//		loadingTimerTask = new TimerTask() {
-//			int	countTime	= 10;
-//
-//			public void run() {
-//				if (canClosed || countTime <= 0) {
-//					try {
-//						time.cancel();
-//						loadingTimerTask.cancel();
-//						dialogLoading.dismiss();
-//					} catch (Exception e) {
-//						Log.e(MyApplication.LOG_TAG, e.getMessage());
-//					}
-//				} else {
-//					seconds++;
-//					countTime--;
-//				}
-//			}
-//
-//		};
-//		time.schedule(loadingTimerTask, 1000, 1000);
+		// canClosed = false;
+		// seconds = 0;
+		//
+		// time = new Timer(true);
+		// loadingTimerTask = new TimerTask() {
+		// int countTime = 10;
+		//
+		// public void run() {
+		// if (canClosed || countTime <= 0) {
+		// try {
+		// time.cancel();
+		// loadingTimerTask.cancel();
+		// dialogLoading.dismiss();
+		// } catch (Exception e) {
+		// Log.e(MyApplication.LOG_TAG, e.getMessage());
+		// }
+		// } else {
+		// seconds++;
+		// countTime--;
+		// }
+		// }
+		//
+		// };
+		// time.schedule(loadingTimerTask, 1000, 1000);
 	}
 
 	/**
 	 * 关闭loading图片，关闭会有延迟，最长延迟一秒
 	 */
 	public void closeLoading() {
-//		if (seconds > 0) {// 持续时间已经有1秒了，立即关闭
-//			closeImmediatelyLoading();
-//		} else {
-//			canClosed = true;
-//		}
+		// if (seconds > 0) {// 持续时间已经有1秒了，立即关闭
+		// closeImmediatelyLoading();
+		// } else {
+		// canClosed = true;
+		// }
 		try {
-			if (dialogLoading != null && dialogLoading.isShowing()){
+			if (dialogLoading != null && dialogLoading.isShowing()) {
 				dialogLoading.dismiss();
 			}
 		} catch (Exception e) {
@@ -565,10 +566,10 @@ public class BaseActivity extends Activity {
 	 * 立即关闭loading图片
 	 */
 	public void closeImmediatelyLoading() {
-//		canClosed = true;
+		// canClosed = true;
 		try {
-//			time.cancel();
-//			loadingTimerTask.cancel();
+			// time.cancel();
+			// loadingTimerTask.cancel();
 			dialogLoading.dismiss();
 		} catch (Exception e) {
 			Log.e(MyApplication.LOG_TAG, e.getMessage());
