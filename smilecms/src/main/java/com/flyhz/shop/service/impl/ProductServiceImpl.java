@@ -593,7 +593,7 @@ public class ProductServiceImpl implements ProductService {
 					for (String productSrcImg : productSrcImgs) {
 						if (StringUtils.isNotBlank(productSrcImg)) {
 							// 获得产品原图片文件
-							File imgFile = new File(path + productSrcImg);
+							File imgFile = new File(path + "/product" + productSrcImg);
 							// if (imgFile.exists() && imgFile.length() >=
 							// fileMinLen) {
 							if (imgFile.exists()) {
