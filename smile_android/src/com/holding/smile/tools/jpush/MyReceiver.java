@@ -132,13 +132,6 @@ public class MyReceiver extends BroadcastReceiver {
 	// send msg to MainActivity
 	private void processCustomMessage(Context context, Bundle bundle) {
 		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
-		/*if (message.indexOf("身份证") > -1) {
-			Log.e(MyApplication.LOG_TAG, "设置身份证缺少标记为1");
-			if (MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
-				MyApplication.getInstance().getCurrentUser().setIsmissidcard("1");
-				MyApplication.getInstance().getSqliteService().updateUser();
-			}
-		} else */
 		if (message.indexOf("购物车") > -1) {
 			Log.e(MyApplication.LOG_TAG, "添加购物车数量");
 			try {
@@ -154,22 +147,5 @@ public class MyReceiver extends BroadcastReceiver {
 				Log.d(MyApplication.LOG_TAG, e.getMessage());
 			}
 		}
-//		if (IndexActivity.isForeground) {
-//			String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
-//			Intent msgIntent = new Intent(IndexActivity.MESSAGE_RECEIVED_ACTION);
-//			msgIntent.putExtra(IndexActivity.KEY_MESSAGE, message);
-//			if (!ExampleUtil.isEmpty(extras)) {
-//				try {
-//					JSONObject extraJson = new JSONObject(extras);
-//					if (null != extraJson && extraJson.length() > 0) {
-//						msgIntent.putExtra(IndexActivity.KEY_EXTRAS, extras);
-//					}
-//				} catch (JSONException e) {
-//
-//				}
-//
-//			}
-//			context.sendBroadcast(msgIntent);
-//		}
 	}
 }

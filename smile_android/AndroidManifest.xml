@@ -180,11 +180,6 @@
         </activity>
         
         <!-- 极光推送配置开始 -->
-        <activity
-            android:name="com.holding.smile.activity.JPushActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateUnchanged|adjustPan" >
-        </activity>
         <!-- Required SDK核心功能-->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"

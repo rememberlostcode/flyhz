@@ -59,6 +59,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentLayout(R.layout.shopping_cart_view);
 		ImageView backBtn = displayHeaderBack();
 		backBtn.setOnClickListener(this);
 		TextView headerDesc = displayHeaderDescription();
@@ -95,7 +96,6 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	private void initView() {
 		// displayFooterMain(R.id.mainfooter_four);
 		displayFooterMainTotal();
-		setContentLayout(R.layout.shopping_cart_view);
 		payoffBtn = (TextView) findViewById(R.id.payoff_btn);
 		payoffBtn.setOnClickListener(this);
 		totalNumber = (TextView) findViewById(R.id.totalnumber);

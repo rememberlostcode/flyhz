@@ -115,13 +115,13 @@ public class MyApplication extends Application {
 	public void initImageLoader(Context context) {
 		Log.i(MyApplication.LOG_TAG, "初始化图片缓存工具...");
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).threadPriority(
-				Thread.NORM_PRIORITY - 2)
+				Thread.NORM_PRIORITY)
 																						.denyCacheImageMultipleSizesInMemory()
 																						.memoryCache(
 																								new LruMemoryCache(
-																										2 * 1024 * 1024))
+																										10 * 1024 * 1024))
 																						.discCacheSize(
-																								2 * 1024 * 1024)
+																								100 * 1024 * 1024)
 																						.discCacheFileNameGenerator(
 																								new Md5FileNameGenerator())
 																						.tasksProcessingOrder(
