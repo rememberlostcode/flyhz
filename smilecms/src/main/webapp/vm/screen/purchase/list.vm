@@ -1,0 +1,151 @@
+<script type="text/javascript">
+   $(document).ready(function(){
+       var locaUrl = decodeURIComponent(location.href);
+       var message = "";
+       if(locaUrl.indexOf("message=") > -1){
+          message = locaUrl.substring(locaUrl.indexOf("message=")+8);
+    	  showMessage(message);
+       }
+   });
+   
+   function searchNextPage(){
+      var url="$server_name/purchase/list";
+	  var orderNumber = $("#orderNumber").val().replace(/^\s*/, '');
+	  var name = $("#name").val().replace(/^\s*/, '');
+	  var brandstyle = $("#brandstyle").val().replace(/^\s*/, '');
+	  var brandId = $("#brandId").val();
+	  var status = $("#status").val();
+	  var params = "currentPage";
+	  var values = $("#currentPage").val();
+	  if(orderNumber != null && orderNumber != ''){
+	  	  params += ",orderNumber";
+		  values += "," + orderNumber;
+	  }
+	  if(name != null && name != ''){
+	  	  params += ",name";
+		  values += "," + name;
+	  }
+	  if(brandstyle != null && brandstyle != ''){
+	  	  params += ",brandstyle";
+		  values += "," + brandstyle;
+	  }
+	  if(brandId != null && brandId != ''){
+	  	  params += ",brandId";
+		  values += "," + brandId;
+	  }
+	  if(status != null && status != ''){
+	  	  params += ",status";
+		  values += "," + status;
+	  }
+	  GetWindowsUrl(url,params,values);		
+   }
+   
+   function showPurchase(purchaseId){
+   	  var url =  "$server_name/purchase/show?purchaseId=" + purchaseId;
+      jQuery.dialog({
+    	  id:'editPurchase',
+    	  title:'代购数据维护',
+    	  width: 670, 
+    	  height: 590,
+    	  max: false,
+    	  min: false,
+    	  lock: true,
+    	  content: "url:" + url
+      });
+   }
+</script>
+<input type="hidden"  id="selected" onclick="searchNextPage();"/>
+<div class="searchbox">
+	<p class="search_con" style="float:right;">
+		<label>海狗订单号</label>
+		<input type="text" name="orderNumber" id="orderNumber" value="$!purchaseParam.orderNumber"/>
+		&nbsp;
+		<label>产品名称</label>
+		<input type="text" name="name" id="name" value="$!purchaseParam.name"/>
+		&nbsp;
+		<label>产品款号</label>
+		<input type="text" name="brandstyle" id="brandstyle" value="$!purchaseParam.brandstyle"/>
+		&nbsp;
+		<label>产品品牌</label>
+		<select id="brandId" name="brandId">
+            <option value ="">全部</option>
+			#if($!brands && $!brands.size() > 0)
+				#foreach($brand in $!brands)
+					<option value ="$!brand.id" #if($!purchaseParam.brandId == $!brand.id) selected=true #end>$!brand.name</option>
+				#end
+			#end
+		</select>
+		&nbsp;
+		<label>代购状态</label>
+		<select id="status" name="status">
+			<option value ="">全部</option>
+			<option value ="0" #if($!purchaseParam.status == "0") selected=true #end>未购买</option>
+			<option value ="1" #if($!purchaseParam.status == "1") selected=true #end>购买成功</option>
+			<option value ="2" #if($!purchaseParam.status == "2") selected=true #end>购买失败</option>
+		</select>
+		<button onclick="searchNextPage()" type="button">查询</button>
+	</p>
+</div>
+<div class="formbox">
+    <table summary="" class="dateline" style="width:99%;margin-top: 5px;" id="en_table">
+		<thead>
+            <th><input type="checkbox" onclick="allCheck(this);"/></th>
+			<th>海狗订单号</th>
+			<th>产品名称</th>
+			<th>产品品牌</th>
+			<th>产品款号</th>
+            <th>产品图片</th>
+            <th>币种</th>
+			<th>预约价格</th>
+			<!--<th>淘宝订单号</th>-->
+            <th>物流单号</th>
+			<th>代购状态</th>
+            <th>操作</th>
+        </thead>
+		<tbody>
+	        #if($!page.totalRowsAmount > 0) 
+    			#foreach($purchase in $!purchases)
+                   <tr id="tr_$!purchase.id">
+						<td><input type="checkbox" id="checkbox" name="checkbox" value="$!purchase.id"/></td>
+						<td>$!purchase.orderNumber</td>
+						<td>$!purchase.productName</td>
+						<td>$!purchase.brandName</td>
+						<td>$!purchase.brandstyle</td>
+						<td>
+							#if($!purchase.appImages)
+                				#foreach($appImage in $!purchase.appImages)
+									<div>
+										<img src="$!proimg_name$!appImage" class="productImgList1"/><br/><br/>
+									</div>
+                				#end
+							#end
+						</td>
+						<td>$!purchase.currency</td>
+						<td>$!purchase.reservePrice</td>
+						<!--<td>$!purchase.tborderId</td>-->
+						<td>$!purchase.logisticsId</td>
+						<td>
+    						#if($!purchase.status == "0")
+    							未购买
+    						#elseif($!purchase.status == "1")
+    							购买成功
+    						#elseif($!purchase.status == "2")
+    							购买失败
+    						#else
+    							未购买
+    						#end
+						</td>
+                		<td>
+							<button onclick="javascript:showPurchase('$!purchase.id')" type="button" style="width:60px;">编辑</button>
+						</td>
+        		   </tr>
+        		#end
+			#else
+    			<tr>
+    				<td colspan="11" class="nothing">未查询到相关记录！</td>
+    			</tr>
+			#end
+		</tbody>
+	</table>
+	<div id="page">#parse('page.vm')</div>
+</div>

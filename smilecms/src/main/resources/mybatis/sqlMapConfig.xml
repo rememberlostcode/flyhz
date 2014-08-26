@@ -33,7 +33,9 @@
         <typeAlias alias="SalesvolumeModel" type="com.flyhz.shop.persistence.entity.SalesvolumeModel"/>
         <typeAlias alias="IdcardModel" type="com.flyhz.shop.persistence.entity.IdcardModel"/>
         <typeAlias alias="ProductLogModel" type="com.flyhz.shop.persistence.entity.ProductLogModel"/>
-        
+        <typeAlias alias="CurrencyModel" type="com.flyhz.shop.persistence.entity.CurrencyModel"/>
+        <typeAlias alias="PurchaseModel" type="com.flyhz.shop.persistence.entity.PurchaseModel"/>
+        <typeAlias alias="PurchaseLogModel" type="com.flyhz.shop.persistence.entity.PurchaseLogModel"/>
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>
         <typeAlias alias="OrderDto" type="com.flyhz.shop.dto.OrderDto"/>
@@ -44,6 +46,8 @@
         <typeAlias alias="CartItemParamDto" type="com.flyhz.shop.dto.CartItemParamDto"/>
         <typeAlias alias="ProductCmsDto" type="com.flyhz.shop.dto.ProductCmsDto"/>
         <typeAlias alias="ProductPageDto" type="com.flyhz.shop.dto.ProductPageDto"/>
+        <typeAlias alias="PurchaseDto" type="com.flyhz.shop.dto.PurchaseDto"/>
+        <typeAlias alias="PurchasePageDto" type="com.flyhz.shop.dto.PurchasePageDto"/>
         <!-- 配置build Dto别名 -->
         <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
         <typeAlias alias="CategoryBuildDto" type="com.flyhz.shop.dto.CategoryBuildDto"/>

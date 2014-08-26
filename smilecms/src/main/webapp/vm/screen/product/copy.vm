@@ -55,11 +55,23 @@
 			</tr>
 			-->
 			<tr>
-				<td>是否下架</td>
+				<td>是否下架:</td>
                 <td>
 					<select id="offShelf" name="offShelf" class="addpage">
 						<option value ="n" #if($!product.offShelf == "n") selected=true #end>否</option>
     					<option value ="y" #if($!product.offShelf == "y") selected=true #end>是</option>
+            		</select>
+				</td>
+			</tr>
+			<tr>
+				<td>币&nbsp;&nbsp;&nbsp;&nbsp;种:</td>
+				<td>
+					<select id="currency" name="currency" class="addpage">
+            			#if($!currencys && $!currencys.size() > 0)
+            				#foreach($currency in $!currencys)
+            					<option value ="$!currency" #if($!product.currency == $!currency) selected=true #end>$!currency</option>
+            				#end
+            			#end
             		</select>
 				</td>
 			</tr>
@@ -70,21 +82,29 @@
 				</td>
 			</tr>
 			<tr>
-                <td>国外价格:</td>
+				<td>币&nbsp;&nbsp;&nbsp;&nbsp;种:</td>
 				<td>
-					<!--<span style="font-weight:bolder;">$</span>-->
-					$<input type="text" id="foreighprice" name="foreighprice" #if($!product.foreighprice) value="$!product.foreighprice" #else value="请填写数字" #end class="addpage" onblur="javascript:checkPrice('foreighprice',this.value);" onfocus="if(this.value=='请填写数字'){this.value='';}"/>
-					<font id="foreighpriceMessage" color="red"  size="2"></font>
+					<select id="currency" name="currency" class="addpage">
+            			#if($!currencys && $!currencys.size() > 0)
+            				#foreach($currency in $!currencys)
+            					<option value ="$!currency" #if($!product.currency == $!currency) selected=true #end>$!currency</option>
+            				#end
+            			#end
+            		</select>
 				</td>
 			</tr>
 			<tr>
-                <td>推荐价格:</td>
+                <td>原始价格:</td>
 				<td>
-                    <!--<span style="font-weight:bolder;">¥</span>-->
-					¥<input type="text" id="recommendprice" name="recommendprice"  #if($!product.recommendprice) value="$!product.recommendprice" #else value="请填写数字" #end class="addpage" onblur="javascript:checkPrice('recommendprice',this.value);" onfocus="if(this.value=='请填写数字'){this.value='';}"/>
-					<font id="recommendpriceMessage" color="red"  size="2"></font>
-					<br/>
-                    <font color="red">注意：包含物流费用、税金、清关费等最终的一口价</font>
+					<input type="text" id="originprice" name="originprice" value="请填写数字" class="addpage" onblur="javascript:checkPrice('originprice',this.value);" onfocus="if(this.value=='请填写数字'){this.value='';}"/>
+					<font id="originpriceMessage" color="red"  size="2"></font>
+				</td>
+			</tr>
+			<tr>
+                <td>折扣价格:</td>
+				<td>
+					<input type="text" id="discountprice" name="discountprice" value="请填写数字" class="addpage" onblur="javascript:checkPrice('discountprice',this.value);" onfocus="if(this.value=='请填写数字'){this.value='';}"/>
+					<font id="discountpriceMessage" color="red"  size="2"></font>
 				</td>
 			</tr>
 			<tr>
@@ -119,9 +139,9 @@
                 <td>
                     <font color="red">
 						1、*代表必填项.<br/>
-						2、国外价格和推荐价格：填写大于1.00且小于99999999.99的数字<br/>&nbsp;
+						2、原始价格和折扣价格：填写大于1.00且小于99999999.99的数字<br/>&nbsp;
 						&nbsp;，小数点后最多2位<br/>
-						3、请上传大于100K的产品图片
+						3、请上传大于50K的产品图片
 					</font>
 				</td>
             </tr>

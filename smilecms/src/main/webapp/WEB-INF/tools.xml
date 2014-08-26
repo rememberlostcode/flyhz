@@ -25,8 +25,8 @@
     <data type="boolean" key="isSimple" value="true"/>
     <data type="number" key="version" value="2.0"/>
     <data type="string" key="server_name" value="http://cms.tiantianhaigou.com/smilecms"></data>
-    <data type="string" key="proimg_name" value="http://cms.tiantianhaigou.com/static/smile/product"></data>
-    <data type="string" key="colimg_name" value="http://cms.tiantianhaigou.com/static/smile/color"></data>
+    <data type="string" key="proimg_name" value="http://cms.tiantianhaigou.com/static/smile"></data>
+    <data type="string" key="colimg_name" value="http://cms.tiantianhaigou.com/static/smile"></data>
   	<tool>
 		<key>math</key>
   		<scope>application</scope>

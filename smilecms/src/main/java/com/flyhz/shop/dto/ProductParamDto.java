@@ -33,6 +33,9 @@ public class ProductParamDto {
 	private String				oldColorimg;		// 旧颜色图片地址
 	private List<String>		productImgs;		// 产品旧cover图片
 	private List<String>		productSrcImgs;	// 产品旧imgs
+	private String				currency;			// 币种
+	private BigDecimal			originprice;		// 产品原始价格
+	private BigDecimal			discountprice;		// 产品折扣价格
 
 	public Integer getId() {
 		return id;
@@ -200,5 +203,29 @@ public class ProductParamDto {
 
 	public void setCoverSmallDel(String coverSmallDel) {
 		this.coverSmallDel = coverSmallDel;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public BigDecimal getOriginprice() {
+		return originprice;
+	}
+
+	public void setOriginprice(BigDecimal originprice) {
+		this.originprice = originprice;
+	}
+
+	public BigDecimal getDiscountprice() {
+		return discountprice;
+	}
+
+	public void setDiscountprice(BigDecimal discountprice) {
+		this.discountprice = discountprice;
 	}
 }

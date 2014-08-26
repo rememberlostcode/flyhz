@@ -27,6 +27,7 @@ import com.flyhz.shop.dto.ProductShowDto;
 import com.flyhz.shop.persistence.entity.ProductModel;
 import com.flyhz.shop.service.BrandService;
 import com.flyhz.shop.service.CategoryService;
+import com.flyhz.shop.service.CurrencyService;
 import com.flyhz.shop.service.ProductService;
 
 /**
@@ -44,6 +45,8 @@ public class ProductController {
 	private BrandService	brandService;
 	@Resource
 	private CategoryService	categoryService;
+	@Resource
+	private CurrencyService	currencyService;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String listProducts(@Pagination Pager pager, ProductModel productParam, Model model) {
@@ -107,6 +110,8 @@ public class ProductController {
 		model.addAttribute("brands", brandService.getAllBrandBuildDtos());
 		// 查询分类列表
 		model.addAttribute("cates", categoryService.getAllCategoryBuildDtos());
+		// 查询币种列表
+		model.addAttribute("currencys", currencyService.getCurrencyShorts());
 		return "/product/show";
 	}
 
@@ -118,6 +123,8 @@ public class ProductController {
 		model.addAttribute("brands", brandService.getAllBrandBuildDtos());
 		// 查询分类列表
 		model.addAttribute("cates", categoryService.getAllCategoryBuildDtos());
+		// 查询币种列表
+		model.addAttribute("currencys", currencyService.getCurrencyShorts());
 		return "/product/copy";
 	}
 
@@ -127,6 +134,8 @@ public class ProductController {
 		model.addAttribute("brands", brandService.getAllBrandBuildDtos());
 		// 查询分类列表
 		model.addAttribute("cates", categoryService.getAllCategoryBuildDtos());
+		// 查询币种列表
+		model.addAttribute("currencys", currencyService.getCurrencyShorts());
 		return "/product/addpage";
 	}
 

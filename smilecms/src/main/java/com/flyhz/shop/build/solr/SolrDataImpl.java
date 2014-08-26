@@ -87,7 +87,7 @@ public class SolrDataImpl implements SolrData {
 	public void reBuildOrder() {
 		UrlUtil.sendGet(solr_url + ORDER_URL + "/dataimport?full-import&commit=y&clean=y");
 	}
-	
+
 	/**
 	 * 通过商品对象获得SolrInputDocument
 	 * 
@@ -110,16 +110,18 @@ public class SolrDataImpl implements SolrData {
 				log.error("商品ID为" + productBuildDto.getId() + "的商品的代购价为空，不可build到solr");
 				return null;
 			} else {
-				if(productBuildDto.getForeighprice()==null){
+				if (productBuildDto.getForeighprice() == null) {
 					productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getPp().doubleValue() * 2 + 1000));
 				} else {
-					if(Constants.dollarExchangeRate == null){
+					if (Constants.dollarExchangeRate == null) {
 						log.info("获取美元汇率...");
 						Constants.dollarExchangeRate = getDollarExchangeRate();
-						log.info("获取美元汇率完成，汇率为"+Constants.dollarExchangeRate);
+						log.info("获取美元汇率完成，汇率为" + Constants.dollarExchangeRate);
 					}
-					productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getForeighprice().doubleValue() * Constants.dollarExchangeRate * 2 + 1000));
-					
+					productBuildDto.setLp(BigDecimal.valueOf(productBuildDto.getForeighprice()
+																			.doubleValue()
+							* Constants.dollarExchangeRate * 2 + 1000));
+
 				}
 				doc.addField("sp", productBuildDto.getLp().subtract(productBuildDto.getPp()));
 			}
@@ -171,7 +173,6 @@ public class SolrDataImpl implements SolrData {
 
 	public void submitProduct(ProductBuildDto product) {
 		SolrInputDocument doc = getDocumentByProduct(product);
-
 		// 提交到solr
 		HttpSolrServer solrServer = getServer(PRODUCT_URL);
 		try {
@@ -347,7 +348,7 @@ public class SolrDataImpl implements SolrData {
 		}
 		return list;
 	}
-	
+
 	public double getDollarExchangeRate() {
 		log.info("开始获取美元汇率...");
 		double dollarExchangeRate = 6.50;

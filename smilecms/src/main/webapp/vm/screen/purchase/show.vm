@@ -1,0 +1,79 @@
+<form action="$server_name/purchase/edit" method="post" id="addProduct" target="_parent">
+    <div class="formbox" style="overflow-x:hidden;overflow-y:auto;">
+		<input type="hidden" id="id" name="id" value="$!purchase.id"/>
+        <table class="dateline" style="width:99%;margin-top: 5px;">
+            <tr>
+                <td>海狗订单号:</td>
+				<td>$!purchase.orderNumber</td>
+			</tr>
+			<tr>
+                <td>产品名称:</td>
+				<td>$!purchase.productName</td>
+			</tr>
+			<tr>
+                <td>产品品牌:</td>
+                <td>$!purchase.brandName</td>
+            </tr>
+			<tr>
+                <td>产品款号:</td>
+				<td>$!purchase.brandstyle</td>
+			</tr>
+			<tr>
+				<td>产品图片:</td>
+                <td>
+					#if($!purchase.appImages)
+        				#foreach($appImage in $!purchase.appImages)
+							<div>
+								<img src="$!proimg_name$!appImage" class="productImgList1"/><br/><br/>
+							</div>
+        				#end
+					#end
+				</td>
+			</tr>
+			<tr>
+				<td>币&nbsp;&nbsp;&nbsp;&nbsp;种:</td>
+				<td>$!purchase.currency</td>
+			</tr>
+			<tr>
+                <td>预约价格:</td>
+				<td>$!purchase.reservePrice</td>
+			</tr>
+			<tr>
+                <td>物流单号:</td>
+				<td>
+					<input type="text" id="logisticsId" name="logisticsId" value="$!purchase.logisticsId" class="addpage" onblur="javascript:checkPrice('logistics',this.value,20);"/>
+					<font id="logisticsMessage" color="red"  size="2"></font>
+				</td>
+			</tr>
+			<tr>
+                <td>代购状态:</td>
+				<td>
+					<select id="status" name="status" class="addpage">
+						<option value ="0" #if($!purchase.status == "0") selected=true #end>未购买</option>
+    					<option value ="1" #if($!purchase.status == "1") selected=true #end>购买成功</option>
+						<option value ="2" #if($!purchase.status == "2") selected=true #end>购买失败</option>
+            		</select>
+				</td>
+			</tr>
+			<!--
+			<tr>
+                <td>注意事项:</td>
+                <td>
+                    <font color="red">
+						1、*代表必填项.<br/>
+						2、原始价格和折扣价格：填写大于1.00且小于99999999.99的数字<br/>&nbsp;
+						&nbsp;，小数点后最多2位<br/>
+						3、请上传大于50K的产品图片
+					</font>
+				</td>
+			</tr>
+            -->
+            <tr>
+                <td colspan="2" align="center">
+					<button onclick="javascript:purchaseSave();" type="button">确定</button>
+					<button onclick="javascript:closeAddPage();" type="button">取消</button>
+				</td>
+			</tr>
+		</table>
+    </div>
+</form>

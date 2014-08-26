@@ -34,6 +34,9 @@ public class ProductModel implements Serializable {
 	private String				dataSrc;					// 数据来源：manual--手动；spider--爬虫
 	private String				offShelf;					// 是否下架：y--是；n--否
 	private String				sizedesc;					// 产品尺码描述
+	private String				currency;					// 币种
+	private BigDecimal			originprice;				// 产品原始价格
+	private BigDecimal			discountprice;				// 产品折扣价格
 
 	public ProductModel() {
 
@@ -213,5 +216,29 @@ public class ProductModel implements Serializable {
 
 	public void setSizedesc(String sizedesc) {
 		this.sizedesc = sizedesc;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public BigDecimal getOriginprice() {
+		return originprice;
+	}
+
+	public void setOriginprice(BigDecimal originprice) {
+		this.originprice = originprice;
+	}
+
+	public BigDecimal getDiscountprice() {
+		return discountprice;
+	}
+
+	public void setDiscountprice(BigDecimal discountprice) {
+		this.discountprice = discountprice;
 	}
 }

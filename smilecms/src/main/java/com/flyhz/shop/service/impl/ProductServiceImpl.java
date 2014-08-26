@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +27,8 @@ import com.flyhz.shop.dto.ProductBuildDto;
 import com.flyhz.shop.dto.ProductCmsDto;
 import com.flyhz.shop.dto.ProductPageDto;
 import com.flyhz.shop.dto.ProductParamDto;
+import com.flyhz.shop.enums.BrandPrefixEnum;
+import com.flyhz.shop.enums.CategoryPrefixEnum;
 import com.flyhz.shop.persistence.dao.BrandDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
 import com.flyhz.shop.persistence.entity.ProductLogModel;
@@ -50,9 +51,7 @@ public class ProductServiceImpl implements ProductService {
 	private static final String		OPERATE_DELETE		= "delete";
 	private static final String		COVER_SMALL_IS_DEL	= "1";
 	private static final String		NULL_IMGS			= "[]";
-	private static final long		FILE_MIN_LENGTH		= 102400;				// 产品图片最小为100K
-	private static final String		PRODUCT_PREFIX		= "product";			// 产品详细图片保存前缀
-	private static final String		COLOR_PREFIX		= "color";				// 产品颜色图片保存前缀
+	private static final long		FILE_MIN_LENGTH		= 51200;				// 产品图片最小为100K
 	private static AtomicInteger	IMAGE_COUNT			= new AtomicInteger(0);
 
 	public String getPathFileUpload() {
@@ -117,24 +116,13 @@ public class ProductServiceImpl implements ProductService {
 		}
 		productModel.setGmtCreate(new Date());
 		productModel.setGmtModify(new Date());
-		productModel.setForeighprice(productParamDto.getForeighprice());
-		productModel.setRecommendprice(productParamDto.getRecommendprice());
-		// productModel.setLocalprice(productParamDto.getForeighprice());
-		if (productParamDto.getForeighprice() != null) {
-			productModel.setPurchasingprice(productParamDto.getForeighprice().multiply(
-					new BigDecimal(9)));
-		} else {
-			productModel.setPurchasingprice(productParamDto.getRecommendprice());
-		}
+		productModel.setCurrency(productParamDto.getCurrency());
+		productModel.setOriginprice(productParamDto.getOriginprice());
+		productModel.setDiscountprice(productParamDto.getDiscountprice());
 		int maxStyle = productDao.getMaxStyle();
 		productModel.setStyle(String.valueOf(maxStyle + 1));
-		// 获得品牌名称
-		String brandName = null;
-		if (productParamDto.getBrandId() != null) {
-			brandName = brandDao.getBrandNameById(productParamDto.getBrandId());
-		}
 		// 处理颜色图片
-		dispostColorimg(productParamDto.getColorimg(), productModel, productParamDto, brandName);
+		dispostColorimg(productModel, productParamDto);
 		// 处理商品图片
 		dispostProductImgs(productParamDto.getImgs(), productModel);
 		productDao.addProduct(productModel);
@@ -259,22 +247,11 @@ public class ProductServiceImpl implements ProductService {
 			productModel.setDescription(productModel.getName().trim());
 		}
 		productModel.setGmtModify(new Date());
-		// productModel.setLocalprice(productParamDto.getForeighprice());
-		productModel.setForeighprice(productParamDto.getForeighprice());
-		productModel.setRecommendprice(productParamDto.getRecommendprice());
-		if (productParamDto.getForeighprice() != null) {
-			productModel.setPurchasingprice(productParamDto.getForeighprice().multiply(
-					new BigDecimal(9)));
-		} else {
-			productModel.setPurchasingprice(productParamDto.getRecommendprice());
-		}
-		// 获得品牌名称
-		String brandName = null;
-		if (productParamDto.getBrandId() != null) {
-			brandName = brandDao.getBrandNameById(productParamDto.getBrandId());
-		}
+		productModel.setCurrency(productParamDto.getCurrency());
+		productModel.setOriginprice(productParamDto.getOriginprice());
+		productModel.setDiscountprice(productParamDto.getDiscountprice());
 		// 处理颜色图片
-		dispostColorimg(productParamDto.getColorimg(), productModel, productParamDto, brandName);
+		dispostColorimg(productModel, productParamDto);
 		// 处理商品图片
 		dispostProductImgs(productParamDto.getImgs(), productModel, productParamDto);
 		productDao.editProduct(productModel);
@@ -416,21 +393,22 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
-	private void dispostColorimg(MultipartFile file, ProductModel productModel,
-			ProductParamDto productParamDto, String brandName) {
-		if (file != null && productModel != null && productParamDto != null
-				&& StringUtils.isNotBlank(brandName)
+	private void dispostColorimg(ProductModel productModel, ProductParamDto productParamDto) {
+		if (productModel != null && productParamDto != null
+				&& productParamDto.getColorimg() != null
 				&& StringUtils.isBlank(productParamDto.getOldColorimg())) {
+			MultipartFile file = productParamDto.getColorimg();
 			String origName = file.getOriginalFilename();
 			if (StringUtils.isNotBlank(origName)) {
 				StringBuffer newFileName = new StringBuffer();
-				newFileName.append(brandName).append(File.separatorChar)
+				newFileName.append(BrandPrefixEnum.getBrandPrefix(productParamDto.getBrandId()))
+							.append(File.separatorChar).append("color").append(File.separatorChar)
 							.append(productModel.getStyle())
 							.append(origName.substring(origName.lastIndexOf(".")));
 				try {
 					// 保存颜色图到指定文件路径里
 					String filename = fileRepository.saveToTarget(file.getInputStream(),
-							COLOR_PREFIX, newFileName.toString());
+							newFileName.toString());
 					productModel.setColorimg(filename);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -443,8 +421,13 @@ public class ProductServiceImpl implements ProductService {
 		if (files != null && !files.isEmpty() && productModel != null) {
 			List<String> bigImgUrls = new ArrayList<String>();
 			List<String> litImgUrls = new ArrayList<String>();
-			String currentDate = getCurrentDate();
-			String prefix = File.separator + currentDate + File.separator;
+			// 定义图片保存路径前缀
+			StringBuffer prefixBuffer = new StringBuffer();
+			prefixBuffer.append(File.separatorChar)
+						.append(BrandPrefixEnum.getBrandPrefix(productModel.getBrandId()))
+						.append(File.separatorChar)
+						.append(CategoryPrefixEnum.getCategoryPrefix(productModel.getCategoryId()))
+						.append(File.separatorChar);
 			try {
 				int count = 0;
 				for (MultipartFile multipartFile : files) {
@@ -455,36 +438,31 @@ public class ProductServiceImpl implements ProductService {
 							IMAGE_COUNT = new AtomicInteger(0);
 						}
 						StringBuffer newFileName = new StringBuffer();
-						newFileName.append(currentDate).append(File.separatorChar)
+						newFileName.append(prefixBuffer.toString())
 									.append(System.currentTimeMillis())
 									.append(IMAGE_COUNT.getAndIncrement())
 									.append(origName.substring(origName.lastIndexOf(".")));
 						// 处理物品大图
 						String bigPath = fileRepository.saveToTarget(
-								multipartFile.getInputStream(), PRODUCT_PREFIX,
-								newFileName.toString());
+								multipartFile.getInputStream(), newFileName.toString());
 						if (StringUtils.isNotBlank(bigPath)) {
-							bigImgUrls.add(bigPath);
+							bigImgUrls.add(newFileName.toString());
 						}
-						// 定义保存后源文件路径
-						newFileName.setLength(0);
-						newFileName.append(pathFileUpload).append(File.separator)
-									.append(PRODUCT_PREFIX).append(bigPath);
 						// 处理物品小图
 						if (count == 0) {
 							String litPath = disposeLitImgs(productModel.getBrandId(),
-									newFileName.toString());
+									pathFileUpload + newFileName.toString());
 							List<String> coverSmall = new ArrayList<String>();
 							if (StringUtils.isNotBlank(litPath)) {
-								coverSmall.add(prefix + litPath);
+								coverSmall.add(prefixBuffer.toString() + litPath);
 							}
 							productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 						}
 						// 缩放图片
-						String scalePath = ImageUtil.zoomInScale(newFileName.toString(), 500,
-								"scale");
+						String scalePath = ImageUtil.zoomInScale(
+								pathFileUpload + newFileName.toString(), 500, "scale");
 						if (StringUtils.isNotBlank(scalePath)) {
-							litImgUrls.add(prefix + scalePath);
+							litImgUrls.add(prefixBuffer.toString() + scalePath);
 						}
 						count++;
 					}
@@ -506,8 +484,13 @@ public class ProductServiceImpl implements ProductService {
 					: productParamDto.getProductImgs();
 			try {
 				if (files != null && !files.isEmpty()) {
-					String currentDate = getCurrentDate();
-					String prefix = File.separator + currentDate + File.separator;
+					// 定义图片保存路径前缀
+					StringBuffer prefixBuffer = new StringBuffer();
+					prefixBuffer.append(File.separatorChar)
+								.append(BrandPrefixEnum.getBrandPrefix(productModel.getBrandId()))
+								.append(File.separatorChar)
+								.append(CategoryPrefixEnum.getCategoryPrefix(productModel.getCategoryId()))
+								.append(File.separatorChar);
 					int count = 0;
 					for (MultipartFile multipartFile : files) {
 						String origName = multipartFile.getOriginalFilename();
@@ -517,43 +500,37 @@ public class ProductServiceImpl implements ProductService {
 								IMAGE_COUNT = new AtomicInteger(0);
 							}
 							StringBuffer newFileName = new StringBuffer();
-							newFileName.append(currentDate).append(File.separatorChar)
+							newFileName.append(prefixBuffer.toString())
 										.append(System.currentTimeMillis())
 										.append(IMAGE_COUNT.getAndIncrement())
 										.append(origName.substring(origName.lastIndexOf(".")));
 							// 处理物品大图
 							String bigPath = fileRepository.saveToTarget(
-									multipartFile.getInputStream(), PRODUCT_PREFIX,
-									newFileName.toString());
+									multipartFile.getInputStream(), newFileName.toString());
 							if (StringUtils.isNotBlank(bigPath)) {
-								bigImgUrls.add(bigPath);
+								bigImgUrls.add(newFileName.toString());
 							}
-							// 定义保存后源文件路径
-							newFileName.setLength(0);
-							newFileName.append(pathFileUpload).append(File.separator)
-										.append(PRODUCT_PREFIX).append(bigPath);
 							// 处理物品小图
 							if (count == 0
 									&& COVER_SMALL_IS_DEL.equals(productParamDto.getCoverSmallDel())) {
 								String filePath = null;
 								if (bigImgUrls != null && !bigImgUrls.isEmpty()) {
-									filePath = pathFileUpload + File.separator + PRODUCT_PREFIX
-											+ bigImgUrls.get(0);
+									filePath = pathFileUpload + bigImgUrls.get(0);
 								} else {
-									filePath = newFileName.toString();
+									filePath = pathFileUpload + newFileName.toString();
 								}
 								String litPath = disposeLitImgs(productModel.getBrandId(), filePath);
 								List<String> coverSmall = new ArrayList<String>();
 								if (StringUtils.isNotBlank(litPath)) {
-									coverSmall.add(prefix + litPath);
+									coverSmall.add(prefixBuffer.toString() + litPath);
 								}
 								productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 							}
 							// 缩放图片
-							String scalePath = ImageUtil.zoomInScale(newFileName.toString(), 500,
-									"scale");
+							String scalePath = ImageUtil.zoomInScale(
+									pathFileUpload + newFileName.toString(), 500, "scale");
 							if (StringUtils.isNotBlank(scalePath)) {
-								litImgUrls.add(prefix + scalePath);
+								litImgUrls.add(prefixBuffer.toString() + scalePath);
 							}
 							count++;
 						}
@@ -577,8 +554,10 @@ public class ProductServiceImpl implements ProductService {
 			String litPath = null;
 			try {
 				if (brandId != null && brandId.equals(9)) {
-					litPath = ImageUtil.createSquareImage(filePath, 300, "lit",
-							ImageUtil.TYPE_BOTTOM);
+					// litPath = ImageUtil.createSquareImage(filePath, 300,
+					// "lit",
+					// ImageUtil.TYPE_BOTTOM);
+					litPath = ImageUtil.createSquareImage(filePath, 300, "lit");
 				} else {
 					litPath = ImageUtil.createSquareImage(filePath, 300, "lit");
 				}
@@ -600,9 +579,14 @@ public class ProductServiceImpl implements ProductService {
 				if (productSrcImgs != null && !productSrcImgs.isEmpty()) {
 					List<String> bigImgUrls = new ArrayList<String>();
 					List<String> litImgUrls = new ArrayList<String>();
-					String currentDate = getCurrentDate();
-					String prefix = File.separator + currentDate + File.separator;
-					long fileMinLen = 81920;// 图片最小80K
+					// 定义图片保存路径前缀
+					StringBuffer prefixBuffer = new StringBuffer();
+					prefixBuffer.append(File.separatorChar)
+								.append(BrandPrefixEnum.getBrandPrefix(productModel.getBrandId()))
+								.append(File.separatorChar)
+								.append(CategoryPrefixEnum.getCategoryPrefix(productModel.getCategoryId()))
+								.append(File.separatorChar);
+					// long fileMinLen = 81920;// 图片最小80K
 					// 循环处理产品原图片
 					int count = 0;
 					String path = "/root/www/static/smile";
@@ -610,41 +594,38 @@ public class ProductServiceImpl implements ProductService {
 						if (StringUtils.isNotBlank(productSrcImg)) {
 							// 获得产品原图片文件
 							File imgFile = new File(path + productSrcImg);
-							if (imgFile.exists() && imgFile.length() >= fileMinLen) {
+							// if (imgFile.exists() && imgFile.length() >=
+							// fileMinLen) {
+							if (imgFile.exists()) {
 								if (IMAGE_COUNT.intValue() > 99) {
 									IMAGE_COUNT = new AtomicInteger(0);
 								}
 								StringBuffer newFileName = new StringBuffer();
-								newFileName.append(currentDate)
-											.append(File.separatorChar)
+								newFileName.append(prefixBuffer.toString())
 											.append(System.currentTimeMillis())
 											.append(IMAGE_COUNT.getAndIncrement())
 											.append(productSrcImg.substring(productSrcImg.lastIndexOf(".")));
 								// 处理物品大图
 								String bigPath = fileRepository.saveToTarget(new FileInputStream(
-										imgFile), PRODUCT_PREFIX, newFileName.toString());
+										imgFile), newFileName.toString());
 								if (StringUtils.isNotBlank(bigPath)) {
-									bigImgUrls.add(bigPath);
+									bigImgUrls.add(newFileName.toString());
 								}
-								// 定义保存后源文件路径
-								newFileName.setLength(0);
-								newFileName.append(pathFileUpload).append(File.separator)
-											.append(PRODUCT_PREFIX).append(bigPath);
 								// 处理物品小图
 								if (count == 0) {
 									String litPath = disposeLitImgs(productModel.getBrandId(),
-											newFileName.toString());
+											pathFileUpload + newFileName.toString());
 									List<String> coverSmall = new ArrayList<String>();
 									if (StringUtils.isNotBlank(litPath)) {
-										coverSmall.add(prefix + litPath);
+										coverSmall.add(prefixBuffer.toString() + litPath);
 									}
 									productModel.setCoverSmall(JSONUtil.getEntity2Json(coverSmall));
 								}
 								// 缩放图片
-								String scalePath = ImageUtil.zoomInScale(newFileName.toString(),
-										500, "scale");
+								String scalePath = ImageUtil.zoomInScale(pathFileUpload
+										+ newFileName.toString(), 500, "scale");
 								if (StringUtils.isNotBlank(scalePath)) {
-									litImgUrls.add(prefix + scalePath);
+									litImgUrls.add(prefixBuffer.toString() + scalePath);
 								}
 								count++;
 							}
@@ -666,7 +647,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	// 获得yyyyMMdd格式日期
-	private String getCurrentDate() {
+	public String getCurrentDate() {
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
 		String currentDateTime = fmt.format(new Date());
 		return currentDateTime;

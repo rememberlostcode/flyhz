@@ -14,18 +14,22 @@ api.button({
 function productSave(){
 	var name = $("#name").val();
 	var brandstyle = $("#brandstyle").val();
-	var foreighprice = $("#foreighprice").val();
-	var recommendprice = $("#recommendprice").val();
+	var originprice = $("#originprice").val();
+	var discountprice = $("#discountprice").val();
 	if(checkStr('name',name,128) & checkStr('brandstyle',brandstyle,16) 
-	    && checkPrice('foreighprice',foreighprice) && checkPrice('recommendprice',recommendprice)){
-		if(foreighprice == '请填写数字'){
-			 $("#foreighprice").val("");
+	    && checkPrice('originprice',originprice) && checkPrice('discountprice',discountprice)){
+		if(originprice == '请填写数字'){
+			 $("#originprice").val("");
 		}
-		if(recommendprice == '请填写数字'){
-			 $("#recommendprice").val("");
+		if(discountprice == '请填写数字'){
+			 $("#discountprice").val("");
 		}
 		$("#addProduct").submit();
 	}
+}
+
+function purchaseSave(){
+	$("#addProduct").submit(); 
 }
 
 function checkPrice(type,str){
@@ -35,36 +39,36 @@ function checkPrice(type,str){
 	}
 	//如果未填写价格，不校验
 	if(str.replace(/^\s*/, '') == ''){
-		if(type == 'foreighprice'){
-			$("#foreighprice").val("请填写数字");
-		}else if(type == 'recommendprice'){
-			$("#recommendprice").val("请填写数字");
+		if(type == 'originprice'){
+			$("#originprice").val("请填写数字");
+		}else if(type == 'discountprice'){
+			$("#discountprice").val("请填写数字");
 		}
 		return true;
 	}
 	var message = '';
 	var regex = /^[1-9][0-9]{0,7}$|[1-9][0-9]{0,7}[.]\d{1,2}$/;
 	if(!regex.test(str)){
-		if(type == 'foreighprice'){
-			message = '国外价格格式错误!';
-		}else if(type == 'recommendprice'){
-			message = '推荐价格格式错误!';
+		if(type == 'originprice'){
+			message = '原始价格格式错误!';
+		}else if(type == 'discountprice'){
+			message = '折扣价格格式错误!';
 		}
 	}
 	//设置提示信息
 	if(message != ''){
-		if(type == 'foreighprice'){
-			$("#foreighpriceMessage").html(message);
-		}else if(type == 'recommendprice'){
-			$("#recommendpriceMessage").html(message);
+		if(type == 'originprice'){
+			$("#originpriceMessage").html(message);
+		}else if(type == 'discountprice'){
+			$("#discountpriceMessage").html(message);
 		}
 		return false;
 	}
 	//校验信息无误
-	if(type == 'foreighprice'){
-		$("#foreighpriceMessage").html(message);
-	}else if(type == 'recommendprice'){
-		$("#recommendpriceMessage").html(message);
+	if(type == 'originprice'){
+		$("#originpriceMessage").html(message);
+	}else if(type == 'discountprice'){
+		$("#discountpriceMessage").html(message);
 	}
 	return true;
 }
@@ -76,14 +80,18 @@ function checkStr(type,str,len){
 			message = '产品名称不能为空!';
 		}else if(type == 'brandstyle'){
 			message = '产品款号不能为空!';
+		}else if(type == 'logistics'){
+			message = '';
 		}
 	}
 	//校验字符串是否过长
 	if(str.replace(/^\s*/, '').length > len){
 		if(type == 'name'){
-			message = '产品名称最长为128个字符!';
+			message = '产品名称最长为' + len + '个字符!';
 		}else if(type == 'brandstyle'){
-			message = '产品款号最长为16个字符!';
+			message = '产品款号最长为' + len + '个字符!';
+		}else if(type == 'logistics'){
+			message = '物流单号最长为' + len + '个字符!';
 		}
 	}
 	//设置提示信息
@@ -92,6 +100,8 @@ function checkStr(type,str,len){
 			$("#nameMessage").html(message);
 		}else if(type == 'brandstyle'){
 			$("#brandstyleMessage").html(message);
+		}else if(type == 'logistics'){
+			$("#logisticsMessage").html(message);
 		}
 		return false;
 	}
@@ -151,30 +161,4 @@ function delSrcImgs(divId,count){
 	}
 	var length = $("tr[id^=tr_srcImg_]").length + 1;
 	$("#rowProductImg").attr("rowspan",length);
-}
-
-//校验产品图片上传时是否大于100K
-function checkImgLength(){
-	var files = $("input[type=file][id^=imgs]");
-	var flag = true;
-	if(files.length > 0){
-		files.each(function(){
-			var filepath=$(this).val();
-			var id = $(this).attr("id");
-			alert(filepath);
-			alert(id);
-			if(filepath != null && filepath != ''){
-				var img = new Image();
-			    img.src = filepath;  
-				while(true){
-				   if(img.fileSize < 1024){
-				   		flag = false;
-				   		//增加提示信息
-				   		$("#div_" + id).append("&nbsp;&nbsp;<font color=\"red\">图片不能小于100K</font>");
-				   }
-			    }
-			}
-		});
-	} 
-	return flag;
 }
