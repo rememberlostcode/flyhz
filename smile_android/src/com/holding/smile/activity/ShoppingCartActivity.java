@@ -266,7 +266,12 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 											public void handleMessage(Message msg) {
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
-														cartItemList.clear();
+														if(cartItemList!=null){
+															cartItemList.clear();
+														} else {
+															cartItemList = new ArrayList<CartItem>();
+														}
+														
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
 															if (CodeValidator.dealCode(context, obj)) {

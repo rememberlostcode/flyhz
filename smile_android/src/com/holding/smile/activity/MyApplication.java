@@ -34,62 +34,60 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 public class MyApplication extends Application {
 
 	private static Date				sessionTime;
-	public static final String		LOG_TAG			= "smile";
-	private static MyApplication	singleton;
+	public static final String			LOG_TAG			= "smile";
+	private static MyApplication		singleton;
 
 	/**
 	 * 屏幕宽度
 	 */
-	private Integer					screenWidth;
+	private Integer						screenWidth;
 	/**
 	 * 屏幕高度
 	 */
-	private Integer					screenHeight;
+	private Integer						screenHeight;
 	/**
 	 * 屏幕密度
 	 */
-	private Float					density;
+	private Float						density;
 
-	private DataService				dataService;
-	private SubmitService			submitService;
+	private DataService					dataService;
+	private SubmitService				submitService;
 
 	/**
 	 * 本地数据库操作service
 	 */
-	private SQLiteService			sqliteService;
+	private SQLiteService				sqliteService;
 
-	private LoginService			loginService;
+	private LoginService				loginService;
 
-	public static String			jgoods_img_url;
-	private static String			tb_url;
+	public static String				jgoods_img_url;
+	private static String				tb_url;
 
 	/**
 	 * 当前登录用户
 	 */
-	private SUser					currentUser;
+	private SUser						currentUser;
 
-	private String					sessionId;
-	private String					registrationID;
+	private String						sessionId;
+	private String						registrationID;
 
 	/** 任务线程池 */
-	private static ExecutorService	threadPool;
+	private static ExecutorService		threadPool;
 
 	/**
 	 * 是否有网络
 	 */
-	private static boolean			isHasNetwork	= true;
-	
+	private static boolean				isHasNetwork	= true;
+
 	/**
 	 * 是否必须升级APP
 	 */
-	private static boolean			isMustUpdate = false;
-	
+	private static boolean				isMustUpdate	= false;
+
 	/**
 	 * DisplayImageOptions是用于设置图片显示的类
 	 */
-	public static DisplayImageOptions options;
-
-	
+	public static DisplayImageOptions	options;
 
 	@Override
 	public void onCreate() {
@@ -97,9 +95,7 @@ public class MyApplication extends Application {
 		Log.i(MyApplication.LOG_TAG, "MyApplication init...");
 		singleton = this;
 		threadPool = Executors.newFixedThreadPool(2);
-		
-		
-		
+
 		initImageLoader(getApplicationContext());
 
 		Context context = getApplicationContext();
@@ -113,35 +109,38 @@ public class MyApplication extends Application {
 		JPushInterface.setDebugMode(false); // 设置开启日志,发布时请关闭日志
 		JPushInterface.init(this); // 初始化 JPush
 	}
-	
+
 	// 初始化ImageLoader
 	@SuppressWarnings("deprecation")
 	public void initImageLoader(Context context) {
 		Log.i(MyApplication.LOG_TAG, "初始化图片缓存工具...");
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).threadPriority(
-				Thread.NORM_PRIORITY)
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).threadPriority(
+				Thread.NORM_PRIORITY - 2)
 																						.denyCacheImageMultipleSizesInMemory()
 																						.memoryCache(
 																								new LruMemoryCache(
-																										5 * 1024 * 1024))
+																										2 * 1024 * 1024))
 																						.discCacheSize(
-																								20 * 1024 * 1024)
+																								2 * 1024 * 1024)
 																						.discCacheFileNameGenerator(
 																								new Md5FileNameGenerator())
 																						.tasksProcessingOrder(
 																								QueueProcessingType.LIFO)
+																						.discCacheFileCount(
+																								30)
 																						.build();
 		ImageLoader.getInstance().init(config);
 
-		// 使用DisplayImageOptions.Builder()创建DisplayImageOptions  
-        options = new DisplayImageOptions.Builder()
-            .showStubImage(R.drawable.empty_photo)          // 设置图片下载期间显示的图片  
-            .showImageForEmptyUri(R.drawable.empty_photo)  // 设置图片Uri为空或是错误的时候显示的图片  
-            .showImageOnFail(R.drawable.empty_photo)       // 设置图片加载或解码过程中发生错误显示的图片      
-            .cacheInMemory(true)                        // 设置下载的图片是否缓存在内存中  
-            .cacheOnDisc(true)                          // 设置下载的图片是否缓存在SD卡中  
-//            .displayer(new RoundedBitmapDisplayer(20))  // 设置成圆角图片  
-            .build();                                   // 创建配置过得DisplayImageOption对象
+		// 使用DisplayImageOptions.Builder()创建DisplayImageOptions
+		options = new DisplayImageOptions.Builder().showStubImage(R.drawable.empty_photo) // 设置图片下载期间显示的图片
+													.showImageForEmptyUri(R.drawable.empty_photo) // 设置图片Uri为空或是错误的时候显示的图片
+													.showImageOnFail(R.drawable.empty_photo) // 设置图片加载或解码过程中发生错误显示的图片
+													.cacheInMemory(true) // 设置下载的图片是否缓存在内存中
+													.cacheOnDisc(true) // 设置下载的图片是否缓存在SD卡中
+													// .displayer(new
+													// RoundedBitmapDisplayer(20))
+													// // 设置成圆角图片
+													.build(); // 创建配置过得DisplayImageOption对象
 	}
 
 	public static ExecutorService getThreadPool() {
