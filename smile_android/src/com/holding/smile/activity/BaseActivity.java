@@ -228,20 +228,20 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.e(MyApplication.LOG_TAG, "start onStart~~~");
+//		Log.e(MyApplication.LOG_TAG, "start onStart~~~");
 	}
 
 	// 当按HOME键时，然后再次启动应用时，我们要恢复先前状态
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		Log.e(MyApplication.LOG_TAG, "start onRestart~~~");
+//		Log.e(MyApplication.LOG_TAG, "start onRestart~~~");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
+//		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
 				|| this.getClass().equals(MySmileActivity.class)
@@ -297,7 +297,7 @@ public class BaseActivity extends Activity {
 		if (null != ly_content) {
 			ly_content = null;
 		}
-		Log.e(MyApplication.LOG_TAG, this.getClass() + " start onDestroy~~~");
+//		Log.e(MyApplication.LOG_TAG, this.getClass() + " start onDestroy~~~");
 
 		super.onDestroy();
 	}
