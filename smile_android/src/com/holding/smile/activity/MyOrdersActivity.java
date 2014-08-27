@@ -195,6 +195,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 			case R.id.footer_my_orders_all_pay: {
 				Set<String> numbers = adapter.getSelectNumbers();
 				BigDecimal total = adapter.getTotal();
+				;
 
 				if (numbers.isEmpty()) {
 					ToastUtils.showShort(context, "请选择至少一个订单！");

@@ -53,6 +53,7 @@ public class OrderPayActivity extends BaseActivity implements OnClickListener {
 			String time = intent.getExtras().getString("time");// 订单生成时间
 			amount = (BigDecimal) intent.getExtras().getSerializable("amount");// 总金额
 			if (StrUtils.isNotEmpty(number) && StrUtils.isNotEmpty(time) && amount != null) {
+				amount = amount.setScale(0, BigDecimal.ROUND_HALF_UP);
 				setContentLayout(R.layout.order_pay_view);
 				payBtn = (Button) findViewById(R.id.taobao_pay_btn);
 				payBtn.setOnClickListener(this);

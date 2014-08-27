@@ -1,6 +1,7 @@
 
 package com.holding.smile.adapter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import android.app.Activity;
@@ -121,7 +122,8 @@ public class OrderDetailAdapter extends BaseAdapter {
 				holder.color.setText("颜色分类：" + jGoods.getColor());
 			}
 			if (jGoods.getPurchasingPrice() != null) {
-				holder.pp.setText("￥" + jGoods.getPurchasingPrice());
+				holder.pp.setText("￥"
+						+ jGoods.getPurchasingPrice().setScale(0, BigDecimal.ROUND_HALF_UP));
 			}
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];

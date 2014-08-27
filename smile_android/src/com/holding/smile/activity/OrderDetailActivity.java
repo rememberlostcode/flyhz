@@ -1,6 +1,8 @@
 
 package com.holding.smile.activity;
 
+import java.math.BigDecimal;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -101,7 +103,8 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 					}
 
 					total = (TextView) findViewById(R.id.order_detail_total);
-					total.setText("共计" + order.getQty() + "件商品，￥" + order.getTotal() + "元");
+					total.setText("共计" + order.getQty() + "件商品，￥"
+							+ order.getTotal().setScale(0, BigDecimal.ROUND_HALF_UP) + "元");
 
 					if (order.getStatus() != null && Integer.parseInt(order.getStatus()) >= 20
 							&& !order.getStatus().equals("50") && order.getLogisticsDto() != null

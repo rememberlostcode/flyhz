@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.holding.smile.R;
 import com.holding.smile.activity.IdcardManagerActivity;
 import com.holding.smile.activity.MyApplication;
-import com.holding.smile.activity.RefundActivity;
 import com.holding.smile.activity.WebViewActivity;
 import com.holding.smile.dto.OrderDto;
 import com.holding.smile.dto.RtnValueDto;
@@ -141,7 +140,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		final OrderDto order = (OrderDto) getItem(position);
 		holder.number.setText(order.getNumber());
 		holder.time.setText(order.getTime()!=null?order.getTime():"");
-		holder.price.setText(String.valueOf(order.getTotal()));
+		holder.price.setText(String.valueOf(order.getTotal().setScale(0, BigDecimal.ROUND_HALF_UP)));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 
 		if (order.getStatus().equals(Constants.OrderStateCode.FOR_PAYMENT.code + "")) {
@@ -299,7 +298,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 	}
 
 	public BigDecimal getTotal() {
-		return total;
+		return total.setScale(0, BigDecimal.ROUND_HALF_UP);
 	}
 
 	public Boolean getSelectAll() {
