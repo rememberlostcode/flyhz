@@ -45,6 +45,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private boolean		isClose		= false;
 	private boolean		isAutoLogin	= true;
 	private Integer		gid;
+	private SUser user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -126,15 +127,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				InputMethodManager inputMgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 				inputMgr.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
 						InputMethodManager.HIDE_NOT_ALWAYS);
-				SUser user = new SUser();
+				user = new SUser();
 				user.setUsername(username);
 				user.setPassword(password);
-
-				showLoading();
-
-				Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
-				msg.obj = user;
-				msg.sendToTarget();
+				
+				startTask();
 				break;
 			}
 			case R.id.login_btn_to_register: {
@@ -164,6 +161,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		}
 		super.onClick(v);
 	}
+	
+	@Override
+	public synchronized void loadData() {
+		Message msg = mUIHandler.obtainMessage(LOGIN_BY_SELF);
+		msg.obj = user;
+		msg.sendToTarget();
+	}
 
 	private static final int	LOGIN_BY_SELF	= 1;
 	@SuppressLint("HandlerLeak")
@@ -183,7 +187,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 																	}
 																	RtnValueDto rvd = loginService.login(
 																			user, isAutoLogin);
-																	closeImmediatelyLoading();
+																	closeLoading();
 																	if (CodeValidator.dealCode(
 																			context, rvd)) {
 																		if (!isClose) {

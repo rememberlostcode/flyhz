@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -114,6 +115,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 		ImageView	checkBoxImage;
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		final ViewHolder holder;
@@ -138,7 +140,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 		final OrderDto order = (OrderDto) getItem(position);
 		holder.number.setText(order.getNumber());
-		holder.time.setText(order.getTime());
+		holder.time.setText(order.getTime()!=null?order.getTime():"");
 		holder.price.setText(String.valueOf(order.getTotal()));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 
