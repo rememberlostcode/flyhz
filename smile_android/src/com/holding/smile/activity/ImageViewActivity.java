@@ -1,4 +1,3 @@
-
 package com.holding.smile.activity;
 
 import java.util.List;
@@ -16,21 +15,23 @@ import android.view.View;
 import com.holding.smile.R;
 import com.holding.smile.myview.ProgressWheel;
 import com.holding.smile.tools.BitmapUtils;
+import com.holding.smile.tools.ToastUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingProgressListener;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 /**
  * 查看大图
+ * 
  * @author zhangb
- *
+ * 
  */
 public class ImageViewActivity extends BaseActivity {
-	PhotoView					photoView;
+	PhotoView photoView;
 
-	ProgressWheel				progressWheel;
+	ProgressWheel progressWheel;
 
-	private PhotoViewAttacher	mAttacher;
+	private PhotoViewAttacher mAttacher;
 
 	@SuppressLint({ "NewApi", "SdCardPath" })
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,42 +41,76 @@ public class ImageViewActivity extends BaseActivity {
 		progressWheel = (ProgressWheel) findViewById(R.id.progressWheel);
 
 		Intent intent = getIntent();
-		String imageUrl = "";
 		try {
-			List<String> picList = intent.getExtras().getStringArrayList("picList");
-			boolean local = intent.getBooleanExtra("local", false);//是否是本地文件
-			if (picList != null && picList.size() > 0) {
-				mAttacher = new PhotoViewAttacher(photoView);
-				mAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
-					@Override
-					public void onPhotoTap(View view, float x, float y) {
-						finish();
-					}
-				});
-				
+			List<String> picList = intent.getExtras().getStringArrayList(
+					"picList");
+			Integer position = intent.getExtras().getInt("position");
+			String picture = intent.getExtras().getString("picture");
+			boolean local = intent.getBooleanExtra("local", false);// 是否是本地文件
+			if (picture != null) {
 				if (local) {
-					imageUrl = picList.get(0);
-					photoView.setImageBitmap(BitmapUtils.decodeFile(imageUrl, 800, 800));
+					photoView.setImageBitmap(BitmapUtils.decodeFile(picture,
+							800, 800));
 					progressWheel.setVisibility(View.GONE);
 				} else {
-					imageUrl = MyApplication.jgoods_img_url + picList.get(0);
-					ImageLoader.getInstance().displayImage(imageUrl, photoView,MyApplication.options,
+					ImageLoader.getInstance().displayImage(MyApplication.jgoods_img_url + picture, photoView,
+							MyApplication.options,
 							new SimpleImageLoadingListener() {
 								@Override
-								public void onLoadingComplete(String imageUri, View view,
-										Bitmap loadedImage) {
+								public void onLoadingComplete(String imageUri,
+										View view, Bitmap loadedImage) {
 									progressWheel.setVisibility(View.GONE);
 									mAttacher.update();
 								}
 							}, new ImageLoadingProgressListener() {
 								@Override
-								public void onProgressUpdate(String imageUri, View view,
-										int current, int total) {
-									progressWheel.setProgress(360 * current / total);
+								public void onProgressUpdate(String imageUri,
+										View view, int current, int total) {
+									progressWheel.setProgress(360 * current
+											/ total);
 								}
 							});
-					
+
 				}
+			} else if (picList != null && picList.size() > 0
+					&& position != null && picList.size() > position
+					&& picList.get(position) != null) {
+				mAttacher = new PhotoViewAttacher(photoView);
+				mAttacher
+						.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+							@Override
+							public void onPhotoTap(View view, float x, float y) {
+								finish();
+							}
+						});
+
+				if (local) {
+					photoView.setImageBitmap(BitmapUtils.decodeFile(picList.get(position),
+							800, 800));
+					progressWheel.setVisibility(View.GONE);
+				} else {
+					ImageLoader.getInstance().displayImage(MyApplication.jgoods_img_url + picList.get(position), photoView,
+							MyApplication.options,
+							new SimpleImageLoadingListener() {
+								@Override
+								public void onLoadingComplete(String imageUri,
+										View view, Bitmap loadedImage) {
+									progressWheel.setVisibility(View.GONE);
+									mAttacher.update();
+								}
+							}, new ImageLoadingProgressListener() {
+								@Override
+								public void onProgressUpdate(String imageUri,
+										View view, int current, int total) {
+									progressWheel.setProgress(360 * current
+											/ total);
+								}
+							});
+
+				}
+			} else {
+				progressWheel.setVisibility(View.GONE);
+				ToastUtils.showShort(context, "抱歉，未找到原图 ！");
 			}
 		} catch (Exception e) {
 			Log.e("参数转换异常：", e.getMessage());
@@ -85,9 +120,9 @@ public class ImageViewActivity extends BaseActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				finish();
-				return true;
+		case android.R.id.home:
+			finish();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

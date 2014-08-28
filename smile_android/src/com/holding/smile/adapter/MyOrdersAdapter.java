@@ -139,7 +139,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 		final OrderDto order = (OrderDto) getItem(position);
 		holder.number.setText(order.getNumber());
-		holder.time.setText(order.getTime()!=null?order.getTime():"");
+		holder.time.setText(order.getTime()!=null && order.getTime().length() > 10? order.getTime().substring(0,10):"");
 		holder.price.setText(String.valueOf(order.getTotal().setScale(0, BigDecimal.ROUND_HALF_UP)));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 

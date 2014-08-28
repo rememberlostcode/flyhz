@@ -149,6 +149,7 @@ public class PersonalSettingsActivity extends BaseActivity implements OnClickLis
 																					.getSqliteService()
 																					.setCurrentUserEmpty(
 																							user.getId());
+//																	unregisterReceiver(IndexActivity.mMessageReceiver);
 																}
 																closeLoading();
 																setResult(RESULT_OK);

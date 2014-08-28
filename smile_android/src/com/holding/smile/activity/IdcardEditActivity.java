@@ -246,16 +246,12 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				} else {
 					Intent intent = new Intent(this, ImageViewActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					List<String> picList = new ArrayList<String>();
 					if(picturePath == null){
-						picList.add(idcard.getUrl());
+						intent.putExtra("picture", idcard.getUrl());
 					} else {
 						intent.putExtra("local", true);
-						picList.add(picturePath);
+						intent.putExtra("picture", picturePath);
 					}
-					int position = 0;
-					intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
-					intent.putExtra("position", position);
 					startActivity(intent);
 				}
 				break;
@@ -266,17 +262,14 @@ public class IdcardEditActivity extends BaseActivity implements OnClickListener 
 				} else {
 					Intent intent = new Intent(this, ImageViewActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					List<String> picList = new ArrayList<String>();
+					
 					if(backPicturePath == null){
-						picList.add(idcard.getBack_url());
+						intent.putExtra("picture", idcard.getBack_url());
 					} else {
 						intent.putExtra("local", true);
-						picList.add(backPicturePath);
+						intent.putExtra("picture", backPicturePath);
 					}
 					
-					int position = 0;
-					intent.putStringArrayListExtra("picList", (ArrayList<String>) picList);
-					intent.putExtra("position", position);
 					startActivity(intent);
 				}
 				break;
