@@ -33,27 +33,27 @@ import com.holding.smile.tools.ToastUtils;
  * 
  */
 public class MyOrdersActivity extends BaseActivity implements OnClickListener {
-	private List<OrderDto>	list;
-	private MyOrdersAdapter	adapter;
-	private MyListView		listView;
+	private List<OrderDto>		list;
+	private MyOrdersAdapter		adapter;
+	private MyListView			listView;
 
-	private String			status;
+	private String				status;
 
-	private TextView		editView;
-	
-	private LinearLayout statusLayout;
-	private TextView		allButton;
-	private TextView		finshButton;
-	private TextView		unfinshButton;
+	private TextView			editView;
 
-	private RelativeLayout footerMyOrders;
-	private ImageView		allChecked;
-	private TextView		allPayButton;
+	private LinearLayout		statusLayout;
+	private TextView			allButton;
+	private TextView			finshButton;
+	private TextView			unfinshButton;
 
-	private View			footerView;
+	private RelativeLayout		footerMyOrders;
+	private ImageView			allChecked;
+	private TextView			allPayButton;
+
+	private View				footerView;
 
 	public static final String	NEED_RECEIVE	= "finsh";
-	public static final String	NEED_PAY	= "unfinsh";
+	public static final String	NEED_PAY		= "unfinsh";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +91,10 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onClick(View v) {
-				if(statusLayout==null){
+				if (statusLayout == null) {
 					statusLayout = (LinearLayout) findViewById(R.id.list_orders_status_layout);
 				}
-				
+
 				if ("编辑".equals(editView.getText().toString())) {
 					editView.setText(R.string.finish);
 					adapter.showEdit(true);
@@ -111,7 +111,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 		footerMyOrders = (RelativeLayout) findViewById(R.id.footer_my_orders);
 		footerMyOrders.setVisibility(View.GONE);
-		
+
 		allPayButton = (TextView) findViewById(R.id.footer_my_orders_all_pay);
 		allChecked = (ImageView) findViewById(R.id.footer_my_orders_all_checked);
 
@@ -139,7 +139,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 		allPayButton.setOnClickListener(this);
 
 		listView = (MyListView) findViewById(R.id.list_orders_list);
-		
+
 		if (NEED_PAY.equals(status)) {
 			unfinshButton.setSelected(true);
 		} else if (NEED_RECEIVE.equals(status)) {
@@ -195,7 +195,6 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 			case R.id.footer_my_orders_all_pay: {
 				Set<String> numbers = adapter.getSelectNumbers();
 				BigDecimal total = adapter.getTotal();
-				;
 
 				if (numbers.isEmpty()) {
 					ToastUtils.showShort(context, "请选择至少一个订单！");
@@ -246,10 +245,10 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 														if (adapter == null) {
 															adapter = new MyOrdersAdapter(
 																	MyOrdersActivity.this, list,
-																	mUIHandler,editView);
+																	mUIHandler, editView);
 														}
-														adapter.setData(list, footerMyOrders, allChecked);
-														
+														adapter.setData(list, footerMyOrders,
+																allChecked);
 
 														listView.setAdapter(adapter);
 														break;

@@ -119,7 +119,7 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 		allQty = 0;
 		allTotal = new BigDecimal(0);
 		totalNumber.setText(allQty + "");
-		totalMoney.setText(allTotal.intValue() + "");
+		totalMoney.setText(allTotal.setScale(0, BigDecimal.ROUND_HALF_UP) + "");
 
 		// initPDialog();// 初始化进度条
 		listView = (MyListView) findViewById(R.id.cart_list);
@@ -266,12 +266,12 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 											public void handleMessage(Message msg) {
 												switch (msg.what) {
 													case WHAT_DID_LOAD_DATA: {
-														if(cartItemList!=null){
+														if (cartItemList != null) {
 															cartItemList.clear();
 														} else {
 															cartItemList = new ArrayList<CartItem>();
 														}
-														
+
 														if (msg.obj != null) {
 															RtnValueDto obj = (RtnValueDto) msg.obj;
 															if (CodeValidator.dealCode(context, obj)) {

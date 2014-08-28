@@ -29,8 +29,8 @@ public class OrderDetailAdapter extends BaseAdapter {
 	private Context					context;
 	private OrderDto				orderDto;
 	private List<OrderDetailDto>	orderDetails;
-	private boolean					isNeedClick		= true;
-	private Integer					sWidth			= MyApplication.getInstance().getScreenWidth();
+	private boolean					isNeedClick	= true;
+	private Integer					sWidth		= MyApplication.getInstance().getScreenWidth();
 	private ViewGroup				activityParent;
 
 	/**
@@ -128,7 +128,7 @@ public class OrderDetailAdapter extends BaseAdapter {
 			if (jGoods.getImgs() != null && jGoods.getImgs().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getImgs()[0];
 				holder.p.setTag(url);
-				ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
+				ImageLoader.getInstance().displayImage(url, holder.p, MyApplication.options);
 			}
 
 			holder.p.setOnClickListener(new OnClickListener() {

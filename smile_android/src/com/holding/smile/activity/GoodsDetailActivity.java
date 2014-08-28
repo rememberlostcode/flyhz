@@ -167,10 +167,10 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 				n.setText(jGoods.getN().trim());
 			}
 			if (jGoods.getPp() != null) {
-				pp.setText("￥" + jGoods.getPp());
+				pp.setText("￥" + jGoods.getPp().setScale(0, BigDecimal.ROUND_HALF_UP));
 			}
 			if (jGoods.getLp() != null) {
-				lp.setText("￥" + jGoods.getLp());
+				lp.setText("￥" + jGoods.getLp().setScale(0, BigDecimal.ROUND_HALF_UP));
 				lp.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);// 中间横线
 			}
 			if (jGoods.getSn() != null) {
@@ -337,7 +337,8 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 							if (selectDiscount != null) {
 								double val = StrUtils.div(selectDiscount.getDiscount(), 10, 2);
 								BigDecimal dp = jGoods.getPp().multiply(BigDecimal.valueOf(val));
-								discountPrice.setText("￥" + dp.intValue() + "");
+								discountPrice.setText("￥"
+										+ dp.setScale(0, BigDecimal.ROUND_HALF_UP));
 							}
 							v.setSelected(true);
 						} else {

@@ -139,7 +139,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 		final OrderDto order = (OrderDto) getItem(position);
 		holder.number.setText(order.getNumber());
-		holder.time.setText(order.getTime()!=null?order.getTime():"");
+		holder.time.setText(order.getTime() != null ? order.getTime() : "");
 		holder.price.setText(String.valueOf(order.getTotal().setScale(0, BigDecimal.ROUND_HALF_UP)));
 		holder.totalnum.setText(String.valueOf(order.getQty()));
 
@@ -183,22 +183,22 @@ public class MyOrdersAdapter extends BaseAdapter {
 		holder.refundButton.setVisibility(View.GONE);
 
 		// 定义申请退款按钮是否显示
-		//if (Constants.OrderStateCode.FOR_PAYMENT.code.equals(status)
-				//|| Constants.OrderStateCode.HAVE_BEEN_CLOSED.code.equals(status)
-				//|| Constants.OrderStateCode.DELETED.code.equals(status)) {
-			//holder.refundButton.setVisibility(View.GONE);
-		//}
+		// if (Constants.OrderStateCode.FOR_PAYMENT.code.equals(status)
+		// || Constants.OrderStateCode.HAVE_BEEN_CLOSED.code.equals(status)
+		// || Constants.OrderStateCode.DELETED.code.equals(status)) {
+		// holder.refundButton.setVisibility(View.GONE);
+		// }
 		// 申请退款:订单状态不等于10、50、70的，均为已支付
-		//holder.refundButton.setOnClickListener(new OnClickListener() {
-			//@Override
-			//public void onClick(View v) {
-				//Intent intent = new Intent(context, RefundActivity.class);
-				//intent.putExtra("tbOrderId", "779767688593659");
-				//intent.putExtra("refund", "8");
-				//intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				//context.startActivity(intent);
-			//}
-		//});
+		// holder.refundButton.setOnClickListener(new OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// Intent intent = new Intent(context, RefundActivity.class);
+		// intent.putExtra("tbOrderId", "779767688593659");
+		// intent.putExtra("refund", "8");
+		// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		// context.startActivity(intent);
+		// }
+		// });
 
 		holder.checkBoxImage.setOnClickListener(new OnClickListener() {
 			@Override

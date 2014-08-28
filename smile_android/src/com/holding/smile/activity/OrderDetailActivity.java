@@ -95,10 +95,11 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 							String url = MyApplication.jgoods_img_url
 									+ order.getConsignee().getIdentitycard().getUrl();
 							idcardImageView.setTag(url);
-							
-							ImageLoader.getInstance().displayImage(url, idcardImageView,MyApplication.options);
-//							MyApplication.getImageLoader()
-//											.DisplayImage(url, idcardImageView, false);
+
+							ImageLoader.getInstance().displayImage(url, idcardImageView,
+									MyApplication.options);
+							// MyApplication.getImageLoader()
+							// .DisplayImage(url, idcardImageView, false);
 						}
 					}
 
