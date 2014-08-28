@@ -1,6 +1,7 @@
 
 package com.holding.smile.adapter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -84,10 +85,10 @@ public class MyJGoodsAdapter extends BaseAdapter {
 				holder.n.setText(jGoods.getN().trim());
 			}
 			if (jGoods.getPp() != null) {
-				holder.pp.setText("￥" + jGoods.getPp());
+				holder.pp.setText("￥" + jGoods.getPp().setScale(0, BigDecimal.ROUND_HALF_UP));
 			}
 			if (jGoods.getLp() != null) {
-				holder.lp.setText("￥" + jGoods.getLp());
+				holder.lp.setText("￥" + jGoods.getLp().setScale(0, BigDecimal.ROUND_HALF_UP));
 				holder.lp.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 			}
 			if (jGoods.getSn() != null) {
@@ -100,7 +101,7 @@ public class MyJGoodsAdapter extends BaseAdapter {
 			if (jGoods.getP() != null && jGoods.getP().length > 0) {
 				String url = MyApplication.jgoods_img_url + jGoods.getP()[0];
 				holder.p.setTag(url);
-				ImageLoader.getInstance().displayImage(url, holder.p,MyApplication.options);
+				ImageLoader.getInstance().displayImage(url, holder.p, MyApplication.options);
 			}
 		}
 

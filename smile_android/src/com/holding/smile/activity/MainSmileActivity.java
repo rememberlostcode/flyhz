@@ -20,7 +20,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.holding.smile.R;
 import com.holding.smile.adapter.BrandAdapter;
@@ -35,7 +34,6 @@ import com.holding.smile.myview.MyViewPager;
 import com.holding.smile.myview.PullToRefreshView;
 import com.holding.smile.myview.PullToRefreshView.OnHeaderRefreshListener;
 import com.holding.smile.tools.CodeValidator;
-import com.holding.smile.tools.StrUtils;
 
 public class MainSmileActivity extends BaseActivity implements OnClickListener,
 		OnHeaderRefreshListener {
@@ -208,30 +206,31 @@ public class MainSmileActivity extends BaseActivity implements OnClickListener,
 				ImageView imageView = (ImageView) view.findViewById(R.id.good_pic);
 				imageView.setContentDescription(jAct.getId() + "");
 				imageView.setTag(MyApplication.jgoods_img_url + jAct.getP());
-				imageView.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						String url = v.getContentDescription().toString();
-						if (StrUtils.isNotEmpty(url)) {
-							Intent intent = new Intent(context, HtmlUIActivity.class);
-							intent.putExtra("url", url);
-							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							startActivity(intent);
-						} else {
-							Toast.makeText(context, "该活动已结束了！", Toast.LENGTH_SHORT).show();
-							// if (jAct.getId().equals(2)) {
-							// intent.putExtra("url",
-							// MyApplication.jgoods_img_url
-							// + "/activity/index2.html");
-							// } else {
-							// intent.putExtra("url",
-							// MyApplication.jgoods_img_url
-							// + "/activity/index.html");
-							// }
-						}
-					}
-				});
+				// imageView.setOnClickListener(new View.OnClickListener() {
+				//
+				// @Override
+				// public void onClick(View v) {
+				// String url = v.getContentDescription().toString();
+				// if (StrUtils.isNotEmpty(url)) {
+				// Intent intent = new Intent(context, HtmlUIActivity.class);
+				// intent.putExtra("url", url);
+				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				// startActivity(intent);
+				// } else {
+				// Toast.makeText(context, "该活动已结束了！",
+				// Toast.LENGTH_SHORT).show();
+				// // if (jAct.getId().equals(2)) {
+				// // intent.putExtra("url",
+				// // MyApplication.jgoods_img_url
+				// // + "/activity/index2.html");
+				// // } else {
+				// // intent.putExtra("url",
+				// // MyApplication.jgoods_img_url
+				// // + "/activity/index.html");
+				// // }
+				// }
+				// }
+				// });
 				viewList.add(view);
 			}
 
