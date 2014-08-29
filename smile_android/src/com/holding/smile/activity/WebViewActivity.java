@@ -35,10 +35,11 @@ import com.holding.smile.tools.TbUtil;
  * 
  */
 public class WebViewActivity extends Activity implements OnClickListener {
-	private String		number;	// 订单号
-	private BigDecimal	amount;	// 总额
-	private String		viewhtml;	// 页面HTML
-	private Long		tid;		// 淘宝订单号
+	private String		number;		// 订单号
+	private BigDecimal	amount;		// 总额
+	private String		viewhtml;		// 页面HTML
+	private Long		tid;			// 淘宝订单号
+	private int			count	= 0;
 
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	@Override
@@ -83,9 +84,17 @@ public class WebViewActivity extends Activity implements OnClickListener {
 					}
 
 					@Override
+					public boolean shouldOverrideUrlLoading(WebView view, String url) {
+						Log.i(MyApplication.LOG_TAG, url);
+						return super.shouldOverrideUrlLoading(view, url);
+					}
+
+					@Override
 					public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
 						Log.i(MyApplication.LOG_TAG + "shouldInterceptRequest", view.toString());
-						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=jsonp2&type=jsonp&api=mtop.trade.buildOrder.ex") > -1) {
+						if (url.indexOf("http://api.m.taobao.com/rest/h5ApiUpdate.do?callback=mtopjsonp1&type=jsonp&api=mtop.trade.buildOrder.ex") > -1
+								&& count == 0) {
+							count++;
 							view.reload();
 						} else if (url.indexOf("http://login.m.taobao.com/login.htm?v=0&ttid=h5@iframe") > -1) {
 							// 设置返回和刷新按钮不显示
@@ -93,7 +102,7 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							view.loadUrl("javascript:document.getElementsByTagName('section')[3].style.display='none';");
 						} else if (url.indexOf("http://cdn.mmstat.com/aplus-proxy.html?v=20130115") > -1) {
 							// 设置首页按钮不显示
-							// view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
+							view.loadUrl("javascript:document.getElementsByClassName('back')[0].style.display='none';");
 						} else if (url.indexOf("http://maliprod.alipay.com/w/trade_pay.do?alipay_trade_no=") > -1) {
 							tid = Long.parseLong(url.substring(url.indexOf("pay_order_id=") + 13,
 									url.lastIndexOf("&")));
@@ -108,19 +117,17 @@ public class WebViewActivity extends Activity implements OnClickListener {
 						TextView showVurl = (TextView) findViewById(R.id.show_vurl);
 						showVurl.setText(url);
 						super.onPageFinished(view, url);
-						// TbUtil.setWebView(view);
 						// 给卖家留言设置订单编号和数量
 						if (url.indexOf("buyNow=true&v=0&skuId=&quantity=") > -1) {
 							// 加载js
 							StringBuffer jsStringBuffer = new StringBuffer();
 							jsStringBuffer.append("javascript:$(document).ready(function(){");
-							jsStringBuffer.append("$('.c-btn-aw').eq(0).css('display','none');");
 							jsStringBuffer.append("setTimeout(function(){");
+							jsStringBuffer.append("$('.c-btn-aw').eq(0).css('display','none');");
 							jsStringBuffer.append("$('.numTxt').eq(0).attr('readonly','readonly');");
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('value','")
 											.append(Constants.TBHG_PREFIX).append(number)
 											.append("');");
-							// + number + "');");
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('placeholder','');");
 							jsStringBuffer.append("$('.c-form-txt-normal').eq(1).attr('readonly','readonly');");
 							jsStringBuffer.append("},1000);");
@@ -133,17 +140,13 @@ public class WebViewActivity extends Activity implements OnClickListener {
 							jsStringBuffer.append("$('.back').eq(0).css('display','none');");
 							jsStringBuffer.append("});");
 						} else if (url.indexOf("https://mclient.alipay.com/cashierPay.htm?awid=") > -1) {
-							// Log.d("htmlTime1",
-							// String.valueOf(System.currentTimeMillis()));
 							view.loadUrl("javascript:window.localObj.showSource(document.body.innerHTML);");
 							try {
 								Thread.sleep(500);
 								if (viewhtml != null) {
-									// Log.d("htmlTime3",
-									// String.valueOf(System.currentTimeMillis()));
-									// Log.d("paySmile", "html is not null");
 									if (viewhtml.indexOf("J-success am-message am-message-success fn-hide") < 0) {
-										// Log.d("paySmile", "pay success");
+										// 沉睡500ms后获取订单状态
+										Thread.sleep(500);
 										// 获取订单状态
 										RtnValueDto rtnValue = MyApplication.getInstance()
 																			.getDataService()
@@ -165,11 +168,9 @@ public class WebViewActivity extends Activity implements OnClickListener {
 											}, 1000);
 										}
 									} else if (viewhtml.indexOf("J-error am-message am-message-error fn-hide") > -1) {
-										// Log.d("paySmile", "pay progress");
 										onPageFinished(view, url);
 									}
 								} else {
-									// Log.d("paySmile", "html is null");
 									onPageFinished(view, url);
 								}
 							} catch (InterruptedException e1) {
@@ -237,8 +238,6 @@ public class WebViewActivity extends Activity implements OnClickListener {
 
 	final class InJavaScriptLocalObj {
 		public void showSource(String html) {
-			// Log.d("paySmile", "get html");
-			// Log.d("htmlTime2", String.valueOf(System.currentTimeMillis()));
 			viewhtml = html;
 		}
 	}
