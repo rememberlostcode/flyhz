@@ -54,7 +54,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 
 	public static final String	NEED_RECEIVE	= "finsh";
 	public static final String	NEED_PAY		= "unfinsh";
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -105,6 +105,11 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 					adapter.showEdit(false);
 					footerView.setVisibility(View.VISIBLE);
 					statusLayout.setVisibility(View.VISIBLE);
+					
+					if(adapter.isEdited()){
+						adapter.setEdited(false);
+						startTask();
+					}
 				}
 			}
 		});

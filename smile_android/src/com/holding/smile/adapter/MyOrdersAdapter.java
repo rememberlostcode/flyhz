@@ -48,6 +48,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 	private RelativeLayout		footerMyOrders;
 	private TextView			editView;
 	private boolean				isShowCheck	= false;
+	private boolean isEdited = false;
 
 	public void setNumZero() {
 		selectTotal = 0;
@@ -242,6 +243,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 																public void onClick(
 																		DialogInterface dialog,
 																		int which) {
+																	isEdited = true;
 																	// 点击弹出层的关闭
 																	RtnValueDto rvd = MyApplication.getInstance()
 																									.getSubmitService()
@@ -253,6 +255,7 @@ public class MyOrdersAdapter extends BaseAdapter {
 																		String status = Constants.OrderStateCode.HAVE_BEEN_CLOSED.code;
 																		holder.statusButton.setText(ClickUtil.getTextByStatus(status));
 																		holder.statusButton.setBackgroundColor(ClickUtil.getBackgroundColorByStatus(status));
+																		holder.deleteButton.setVisibility(View.GONE);
 																	}
 																}
 															}).setNegativeButton("取消", null).show();
@@ -303,6 +306,14 @@ public class MyOrdersAdapter extends BaseAdapter {
 
 	public Boolean getSelectAll() {
 		return selectAll;
+	}
+
+	public boolean isEdited() {
+		return isEdited;
+	}
+
+	public void setEdited(boolean isEdited) {
+		this.isEdited = isEdited;
 	}
 
 }
