@@ -4,15 +4,12 @@ package com.flyhz.shop.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.flyhz.framework.lang.JPush;
 import com.flyhz.framework.lang.RedisRepository;
 import com.flyhz.framework.lang.ValidateException;
 import com.flyhz.framework.util.StringUtil;
@@ -20,7 +17,6 @@ import com.flyhz.shop.dto.CartItemDto;
 import com.flyhz.shop.dto.CartItemParamDto;
 import com.flyhz.shop.dto.DiscountDto;
 import com.flyhz.shop.dto.ProductDto;
-import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.persistence.dao.CartItemDao;
 import com.flyhz.shop.persistence.dao.DiscountDao;
 import com.flyhz.shop.persistence.dao.UserDao;
@@ -76,14 +72,14 @@ public class ShoopingCartServiceImpl implements ShoppingCartService {
 			cartItemDao.updateCartItem(cartitemModelNew);
 		}
 
-		UserDto user = userDao.getUserById(userId);
-		if (user != null && user.getId() != null && user.getRegistrationID() != null) {
-			JPush jpush = new JPush();
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("qty", qty+"");
-			jpush.sendAndroidMessageWithRegistrationID("您的购物车有新的商品！",
-					map, user.getRegistrationID());
-		}
+//		UserDto user = userDao.getUserById(userId);
+//		if (user != null && user.getId() != null && user.getRegistrationID() != null) {
+//			JPush jpush = new JPush();
+//			Map<String, String> map = new HashMap<String, String>();
+//			map.put("qty", qty+"");
+//			jpush.sendAndroidMessageWithRegistrationID("您的购物车有新的商品！",
+//					map, user.getRegistrationID());
+//		}
 	}
 
 	@Override
