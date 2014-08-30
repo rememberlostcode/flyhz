@@ -487,20 +487,20 @@ public class SQLiteService {
 		}
 	}
 	
-	public void updateUserShoppingCount(Integer addNum) {
+	public void updateUserShoppingCount(Integer updateNum) {
 		Integer count = getUserShoppingCount();
 		SUser user = MyApplication.getInstance().getCurrentUser();
 		if (user!=null && count == null) {// 本地不存在就添加
 			try {
 				// 插入新数据
 				db.execSQL("INSERT INTO shopping VALUES(?,?)",
-						new Object[] { user.getId(), addNum });
+						new Object[] { user.getId(), updateNum });
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {// 已存在修改
 			ContentValues cv = new ContentValues();
-			cv.put("count", addNum + "");
+			cv.put("count", updateNum + "");
 			db.update("shopping", cv, "userId=?", new String[] { user.getId() + "" });
 		}
 	}

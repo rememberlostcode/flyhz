@@ -11,7 +11,7 @@ import android.util.Log;
 public class NullHostNameVerifier implements HostnameVerifier {
 
 	public boolean verify(String hostname, SSLSession session) {
-		Log.i(MyApplication.LOG_TAG, "RestUtilImpl:Approving certificate for " + hostname);
+		Log.i(MyApplication.getClassName(this.getClass().getName()), "RestUtilImpl:Approving certificate for " + hostname);
 		return true;
 	}
 }

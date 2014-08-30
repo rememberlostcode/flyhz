@@ -37,7 +37,7 @@ public class MemoryCache {
 
 	public void setLimit(long new_limit) {
 		limit = new_limit;
-		Log.i(MyApplication.LOG_TAG, "MemoryCache will use up to " + limit / 1024. / 1024. + "MB");
+		Log.i(MyApplication.getClassName(this.getClass().getName()), "MemoryCache will use up to " + limit / 1024. / 1024. + "MB");
 	}
 
 	public Bitmap get(String id) {
@@ -67,7 +67,7 @@ public class MemoryCache {
 	 * 
 	 */
 	private void checkSize() {
-		Log.i(MyApplication.LOG_TAG, "cache size=" + size + " length=" + cache.size());
+		Log.i(MyApplication.getClassName(this.getClass().getName()), "cache size=" + size + " length=" + cache.size());
 		if (size > limit) {
 			// 先遍历最近最少使用的元素
 			Iterator<Entry<String, Bitmap>> iter = cache.entrySet().iterator();
@@ -78,7 +78,7 @@ public class MemoryCache {
 				if (size <= limit)
 					break;
 			}
-			Log.i(MyApplication.LOG_TAG, "Clean cache. New size " + cache.size());
+			Log.i(MyApplication.getClassName(this.getClass().getName()), "Clean cache. New size " + cache.size());
 		}
 	}
 

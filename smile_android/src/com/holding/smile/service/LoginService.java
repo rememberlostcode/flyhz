@@ -77,7 +77,7 @@ public class LoginService {
 			}
 		} else {
 			if (new Date().getTime() - MyApplication.getSessionTime().getTime() > SESSION_TIME) {// 超过20分钟需确认下是否登录失效
-				Log.i(MyApplication.LOG_TAG, "超过20分钟，需要重新登录");
+				Log.i(MyApplication.getClassName(this.getClass().getName()), "超过20分钟，需要重新登录");
 				SUser user = MyApplication.getInstance().getCurrentUser();
 				if (user != null) {
 					RtnValueDto rtnValueDto = MyApplication.getInstance().getLoginService()
@@ -86,9 +86,9 @@ public class LoginService {
 						MyApplication.getInstance().setCurrentUser(null);
 						MyApplication.getInstance().setSessionId(null);
 						isLogining = false;
-						Log.i(MyApplication.LOG_TAG, "重新登录失败");
+						Log.i(MyApplication.getClassName(this.getClass().getName()), "重新登录失败");
 					} else {
-						Log.i(MyApplication.LOG_TAG, "重新登录成功");
+						Log.i(MyApplication.getClassName(this.getClass().getName()), "重新登录成功");
 					}
 				} else {
 					isLogining = false;

@@ -34,7 +34,6 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 public class MyApplication extends Application {
 
 	private static Date				sessionTime;
-	public static final String			LOG_TAG			= "smile";
 	private static MyApplication		singleton;
 
 	/**
@@ -92,7 +91,7 @@ public class MyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.i(MyApplication.LOG_TAG, "MyApplication init...");
+		Log.i(MyApplication.getClassName(this.getClass().getName()), "MyApplication init...");
 		singleton = this;
 		threadPool = Executors.newFixedThreadPool(2);
 
@@ -113,7 +112,7 @@ public class MyApplication extends Application {
 	// 初始化ImageLoader
 	@SuppressWarnings("deprecation")
 	public void initImageLoader(Context context) {
-		Log.i(MyApplication.LOG_TAG, "初始化图片缓存工具...");
+		Log.i(MyApplication.getClassName(this.getClass().getName()), "初始化图片缓存工具...");
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).threadPriority(
 				Thread.NORM_PRIORITY)
 																						.denyCacheImageMultipleSizesInMemory()
@@ -249,5 +248,20 @@ public class MyApplication extends Application {
 
 	public static void setMustUpdate(boolean isMustUpdate) {
 		MyApplication.isMustUpdate = isMustUpdate;
+	}
+	
+	/**
+	 * 获取类名（不包括包名）
+	 * 
+	 * @param classAllName
+	 *            类名包括包名
+	 * @return
+	 */
+	public static String getClassName(String classAllName){
+		if(classAllName != null && classAllName.indexOf(".") > -1){
+			return classAllName.substring(classAllName.lastIndexOf(".")+1);
+		} else {
+			return classAllName;
+		}
 	}
 }

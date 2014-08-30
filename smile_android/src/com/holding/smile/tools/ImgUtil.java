@@ -49,7 +49,7 @@ public class ImgUtil {
 				is.close();
 				fos.close();
 			} else {
-				Log.d(MyApplication.LOG_TAG, "Get bitmap failed");
+				Log.d(MyApplication.getClassName(this.getClass().getName()), "Get bitmap failed");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

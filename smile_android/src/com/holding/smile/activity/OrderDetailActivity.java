@@ -131,7 +131,7 @@ public class OrderDetailActivity extends BaseActivity implements OnClickListener
 				}
 			}
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 		}
 	}
 

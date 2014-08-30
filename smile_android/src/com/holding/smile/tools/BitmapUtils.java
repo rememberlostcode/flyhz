@@ -216,8 +216,8 @@ public class BitmapUtils {
 			bitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height);
 		}
 
-		// Log.i(MyApplication.LOG_TAG, width + " width");
-		// Log.i(MyApplication.LOG_TAG, height + " height");
+		// Log.i(MyApplication.getClassName(this.getClass().getName()), width + " width");
+		// Log.i(MyApplication.getClassName(this.getClass().getName()), height + " height");
 
 		return bitmap;
 	}
@@ -306,9 +306,9 @@ public class BitmapUtils {
 			}
 			fos.flush();
 		} catch (FileNotFoundException exception) {
-			Log.e(MyApplication.LOG_TAG, "debug_log:" + exception.toString());
+			Log.e(MyApplication.getClassName(BitmapUtils.class.getName()), "debug_log:" + exception.toString());
 		} catch (IOException exception) {
-			Log.e(MyApplication.LOG_TAG, "debug_log:" + exception.toString());
+			Log.e(MyApplication.getClassName(BitmapUtils.class.getName()), "debug_log:" + exception.toString());
 		} finally {
 			try {
 				if (fos != null)

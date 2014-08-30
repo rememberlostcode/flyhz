@@ -206,7 +206,7 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == SETTINGS_CODE && resultCode == RESULT_OK) {
-			Log.i(MyApplication.LOG_TAG, "关闭我页面...");
+			Log.i(MyApplication.getClassName(this.getClass().getName()), "关闭我页面...");
 			finish();
 		}
 		super.onActivityResult(requestCode, resultCode, data);

@@ -76,15 +76,15 @@ public class URLUtil {
 					}
 				}
 			} catch (ConnectException e) {
-				Log.e(MyApplication.LOG_TAG, e.getMessage());
+				Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
 				result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 			}
 		} catch (SocketException e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
 			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 			return null;
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
 			return null;
 		}
 		return result.toString();
@@ -141,7 +141,7 @@ public class URLUtil {
 				}
 			}
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
 			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 			return null;
 		}
@@ -201,7 +201,7 @@ public class URLUtil {
 				}
 			}
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
 			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 			return null;
 		}

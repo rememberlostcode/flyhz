@@ -127,7 +127,7 @@ public class UpdateManager {
 	private void showDownloadDialog() {
 		AlertDialog.Builder builder = new Builder(mContext);
 		builder.setTitle("软件版本更新");
-		Log.i(MyApplication.LOG_TAG, "path="+Environment.getExternalStorageDirectory().getPath());
+		Log.i(MyApplication.getClassName(this.getClass().getName()), "path="+Environment.getExternalStorageDirectory().getPath());
 
 		final LayoutInflater inflater = LayoutInflater.from(mContext);
 		View v = inflater.inflate(R.layout.progress_version, null);

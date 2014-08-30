@@ -68,7 +68,7 @@ public class MyOrdersActivity extends BaseActivity implements OnClickListener {
 				status = "";
 			}
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 		}
 
 	}

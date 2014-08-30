@@ -228,20 +228,20 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-//		Log.e(MyApplication.LOG_TAG, "start onStart~~~");
+		// Log.e(MyApplication.getClassName(this.getClass().getName()), "start onStart~~~");
 	}
 
 	// 当按HOME键时，然后再次启动应用时，我们要恢复先前状态
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-//		Log.e(MyApplication.LOG_TAG, "start onRestart~~~");
+		// Log.e(MyApplication.getClassName(this.getClass().getName()), "start onRestart~~~");
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-//		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
+		// Log.e(MyApplication.getClassName(this.getClass().getName()), "start onResume~~~");
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
 				|| this.getClass().equals(MySmileActivity.class)
@@ -260,19 +260,32 @@ public class BaseActivity extends Activity {
 				overridePendingTransition(0, 0);
 			}
 		}
+
+		if (this.getClass().equals(SearchGoodsActivity.class)
+				|| this.getClass().equals(MySmileActivity.class)
+				|| this.getClass().equals(SortActivity.class)
+				|| this.getClass().equals(MainSmileActivity.class)) {
+			Integer shoppingCount = MyApplication.getInstance().getSqliteService()
+													.getUserShoppingCount();
+			if (shoppingCount != null && !shoppingCount.equals(0)) {
+				TextView mfft = (TextView) findViewById(R.id.mainfooter_four_text);
+				mfft.setText(shoppingCount + "");
+				mfft.setVisibility(View.VISIBLE);
+			}
+		}
 	}
 
 	// 当我们按HOME键时
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// Log.e(MyApplication.LOG_TAG, "start onPause~~~");
+		// Log.e(MyApplication.getClassName(this.getClass().getName()), "start onPause~~~");
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		// Log.e(MyApplication.LOG_TAG, "start onStop~~~");
+		// Log.e(MyApplication.getClassName(this.getClass().getName()), "start onStop~~~");
 	}
 
 	@Override
@@ -297,7 +310,8 @@ public class BaseActivity extends Activity {
 		if (null != ly_content) {
 			ly_content = null;
 		}
-//		Log.e(MyApplication.LOG_TAG, this.getClass() + " start onDestroy~~~");
+		// Log.e(MyApplication.getClassName(this.getClass().getName()), this.getClass() +
+		// " start onDestroy~~~");
 
 		super.onDestroy();
 	}
@@ -532,7 +546,7 @@ public class BaseActivity extends Activity {
 		// loadingTimerTask.cancel();
 		// dialogLoading.dismiss();
 		// } catch (Exception e) {
-		// Log.e(MyApplication.LOG_TAG, e.getMessage());
+		// Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 		// }
 		// } else {
 		// seconds++;
@@ -558,7 +572,7 @@ public class BaseActivity extends Activity {
 				dialogLoading.dismiss();
 			}
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 		}
 	}
 
@@ -572,7 +586,7 @@ public class BaseActivity extends Activity {
 			// loadingTimerTask.cancel();
 			dialogLoading.dismiss();
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 		}
 	}
 

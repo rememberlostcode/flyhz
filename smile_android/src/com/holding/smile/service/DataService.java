@@ -635,7 +635,7 @@ public class DataService {
 					ValidateDto vd = new ValidateDto();
 					vd.setMessage(Constants.MESSAGE_EXCEPTION);
 				}
-				Log.e(MyApplication.LOG_TAG, e.getMessage());
+				Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 			}
 		} else {
 			ValidateDto vd = new ValidateDto();
