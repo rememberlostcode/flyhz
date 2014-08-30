@@ -383,6 +383,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 					startActivity(intent);
 					overridePendingTransition(0, 0);
 				} else {
+					showLoading();
 					Integer discountId = null;
 					if (selectDiscount != null)
 						discountId = selectDiscount.getId();
@@ -405,6 +406,7 @@ public class GoodsDetailActivity extends BaseActivity implements OnClickListener
 						MyApplication.getInstance().getSqliteService()
 										.updateUserShoppingCount(shoppingCount);
 					}
+					closeLoading();
 				}
 				break;
 			}
