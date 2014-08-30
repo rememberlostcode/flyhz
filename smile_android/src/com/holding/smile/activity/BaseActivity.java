@@ -230,7 +230,6 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		TestinAgent.onStop(this);// 此行必须放在super.onStop后
 		// Log.e(MyApplication.getClassName(this.getClass().getName()), "start onStart~~~");
 	}
 
@@ -289,6 +288,7 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
+		TestinAgent.onStop(this);// 此行必须放在super.onStop后
 		// Log.e(MyApplication.getClassName(this.getClass().getName()), "start onStop~~~");
 	}
 
