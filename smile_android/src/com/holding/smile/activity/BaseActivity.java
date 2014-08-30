@@ -244,6 +244,18 @@ public class BaseActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		TestinAgent.onResume(this);// 此行必须放在super.onResume后
+		
+//		System.out.println("CurrentUser===="+MyApplication.getInstance().getCurrentUser());
+//		System.out.println("SessionId===="+MyApplication.getInstance().getSessionId());
+//		if (MyApplication.getInstance().getCurrentUser() == null
+//				|| MyApplication.getInstance().getSessionId() == null) {
+//			SUser user = MyApplication.getInstance().getSqliteService().getScurrentUser();
+//			System.out.println("user=====" + user);
+//			if (user != null) {
+//				MyApplication.getInstance().getLoginService().autoLogin();
+//			}
+//		}
+		
 		// Log.e(MyApplication.getClassName(this.getClass().getName()), "start onResume~~~");
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
@@ -263,7 +275,7 @@ public class BaseActivity extends Activity {
 				overridePendingTransition(0, 0);
 			}
 		}
-
+		
 		if (this.getClass().equals(SearchGoodsActivity.class)
 				|| this.getClass().equals(MySmileActivity.class)
 				|| this.getClass().equals(SortActivity.class)

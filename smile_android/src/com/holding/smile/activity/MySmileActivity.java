@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -78,8 +77,8 @@ public class MySmileActivity extends BaseActivity implements OnClickListener {
 																					.getCurrentUser()
 																					.getUsername());
 		}
-		ImageView backBtn = displayHeaderBack();
-		backBtn.setOnClickListener(this);
+//		ImageView backBtn = displayHeaderBack();
+//		backBtn.setOnClickListener(this);
 
 		displayFooterMain(R.id.mainfooter_more);
 

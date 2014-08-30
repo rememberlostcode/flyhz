@@ -72,8 +72,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.search_goods_view);
-		ImageView backBtn = (ImageView) findViewById(R.id.btn_back_search);
-		backBtn.setOnClickListener(this);
 
 		displayFooterMain(R.id.mainfooter_three);
 
@@ -264,10 +262,6 @@ public class SearchGoodsActivity extends BaseActivity implements OnClickListener
 						&& !"".equals(editText.getText().toString().trim())) {
 					showHistoryListView();
 				}
-				break;
-			case R.id.btn_back_search:
-				setResult(RESULT_CANCELED, null);
-				finish();
 				break;
 			case R.id.header_right_btn_search:
 				editText.setText("");

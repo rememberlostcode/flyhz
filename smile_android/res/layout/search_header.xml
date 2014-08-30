@@ -11,7 +11,7 @@
     android:paddingRight="2dp"
     android:paddingTop="0dp" >
 
-    <LinearLayout
+    <!-- <LinearLayout
         android:id="@+id/layout_back_normal"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -26,7 +26,7 @@
             android:layout_marginLeft="12dip"
             android:contentDescription="@string/search"
             android:src="@drawable/btn_back_bg" />
-    </LinearLayout>
+    </LinearLayout> -->
 
     <LinearLayout
         android:id="@+id/search_content_frame"

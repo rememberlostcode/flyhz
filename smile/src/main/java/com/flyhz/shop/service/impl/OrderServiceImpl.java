@@ -164,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
 						} else {
 							orderDetailDto.setLogisticsPriceEvery(Constants.logisticsPriceEvery);// 每种商品单个物流费用
 						}
-						orderDetailDto.setLogisticsPriceTotal(Constants.logisticsPriceEvery.multiply(BigDecimal.valueOf(qty)));// 每种商品总有物流费用
+						orderDetailDto.setLogisticsPriceTotal(orderDetailDto.getLogisticsPriceEvery().multiply(BigDecimal.valueOf(qty)));// 每种商品总有物流费用
 						logisticsPriceTotal = logisticsPriceTotal.add(orderDetailDto.getLogisticsPriceTotal());// 累加订单总物流费用
 					}
 

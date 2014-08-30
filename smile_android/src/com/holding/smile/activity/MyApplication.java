@@ -2,8 +2,6 @@
 package com.holding.smile.activity;
 
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import android.app.Application;
 import android.content.Context;
@@ -11,12 +9,12 @@ import android.util.Log;
 import cn.jpush.android.api.JPushInterface;
 
 import com.holding.smile.R;
-//import com.holding.smile.cache.ImageLoader;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.service.DataService;
 import com.holding.smile.service.LoginService;
 import com.holding.smile.service.SQLiteService;
 import com.holding.smile.service.SubmitService;
+import com.holding.smile.tools.CrashHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -33,7 +31,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
  */
 public class MyApplication extends Application {
 
-	private static Date				sessionTime;
+	private static Date					sessionTime;
 	private static MyApplication		singleton;
 
 	/**
@@ -51,12 +49,7 @@ public class MyApplication extends Application {
 
 	private DataService					dataService;
 	private SubmitService				submitService;
-
-	/**
-	 * 本地数据库操作service
-	 */
 	private SQLiteService				sqliteService;
-
 	private LoginService				loginService;
 
 	public static String				jgoods_img_url;
@@ -66,18 +59,13 @@ public class MyApplication extends Application {
 	 * 当前登录用户
 	 */
 	private SUser						currentUser;
-
 	private String						sessionId;
 	private String						registrationID;
-
-	/** 任务线程池 */
-	private static ExecutorService		threadPool;
 
 	/**
 	 * 是否有网络
 	 */
 	private static boolean				isHasNetwork	= true;
-
 	/**
 	 * 是否必须升级APP
 	 */
@@ -93,8 +81,7 @@ public class MyApplication extends Application {
 		super.onCreate();
 		Log.i(MyApplication.getClassName(this.getClass().getName()), "MyApplication init...");
 		singleton = this;
-		threadPool = Executors.newFixedThreadPool(2);
-
+		
 		initImageLoader(getApplicationContext());
 
 		Context context = getApplicationContext();
@@ -107,6 +94,9 @@ public class MyApplication extends Application {
 
 		JPushInterface.setDebugMode(false); // 设置开启日志,发布时请关闭日志
 		JPushInterface.init(this); // 初始化 JPush
+		
+		CrashHandler crashHandler = CrashHandler.getInstance();  
+        crashHandler.init(getApplicationContext());
 	}
 
 	// 初始化ImageLoader
@@ -115,19 +105,19 @@ public class MyApplication extends Application {
 		Log.i(MyApplication.getClassName(this.getClass().getName()), "初始化图片缓存工具...");
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).threadPriority(
 				Thread.NORM_PRIORITY)
-																						.denyCacheImageMultipleSizesInMemory()
-																						.memoryCache(
-																								new LruMemoryCache(
-																										10 * 1024 * 1024))
-																						.discCacheSize(
-																								100 * 1024 * 1024)
-																						.discCacheFileNameGenerator(
-																								new Md5FileNameGenerator())
-																						.tasksProcessingOrder(
-																								QueueProcessingType.LIFO)
-																						.discCacheFileCount(
-																								30)
-																						.build();
+																					.denyCacheImageMultipleSizesInMemory()
+																					.memoryCache(
+																							new LruMemoryCache(
+																									10 * 1024 * 1024))
+																					.discCacheSize(
+																							100 * 1024 * 1024)
+																					.discCacheFileNameGenerator(
+																							new Md5FileNameGenerator())
+																					.tasksProcessingOrder(
+																							QueueProcessingType.LIFO)
+																					.discCacheFileCount(
+																							30)
+																					.build();
 		ImageLoader.getInstance().init(config);
 
 		// 使用DisplayImageOptions.Builder()创建DisplayImageOptions
@@ -140,10 +130,6 @@ public class MyApplication extends Application {
 													// RoundedBitmapDisplayer(20))
 													// // 设置成圆角图片
 													.build(); // 创建配置过得DisplayImageOption对象
-	}
-
-	public static ExecutorService getThreadPool() {
-		return threadPool;
 	}
 
 	public DataService getDataService() {
@@ -249,7 +235,7 @@ public class MyApplication extends Application {
 	public static void setMustUpdate(boolean isMustUpdate) {
 		MyApplication.isMustUpdate = isMustUpdate;
 	}
-	
+
 	/**
 	 * 获取类名（不包括包名）
 	 * 
@@ -257,11 +243,12 @@ public class MyApplication extends Application {
 	 *            类名包括包名
 	 * @return
 	 */
-	public static String getClassName(String classAllName){
-		if(classAllName != null && classAllName.indexOf(".") > -1){
-			return classAllName.substring(classAllName.lastIndexOf(".")+1);
+	public static String getClassName(String classAllName) {
+		if (classAllName != null && classAllName.indexOf(".") > -1) {
+			return classAllName.substring(classAllName.lastIndexOf(".") + 1);
 		} else {
 			return classAllName;
 		}
 	}
+
 }

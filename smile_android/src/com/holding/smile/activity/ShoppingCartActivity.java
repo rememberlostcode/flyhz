@@ -60,8 +60,8 @@ public class ShoppingCartActivity extends BaseActivity implements OnClickListene
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.shopping_cart_view);
-		ImageView backBtn = displayHeaderBack();
-		backBtn.setOnClickListener(this);
+//		ImageView backBtn = displayHeaderBack();
+//		backBtn.setOnClickListener(this);
 		TextView headerDesc = displayHeaderDescription();
 		headerDesc.setText(R.string.my_shopping_cart);
 

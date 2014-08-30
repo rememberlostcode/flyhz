@@ -50,8 +50,8 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentLayout(R.layout.goods_sort);
-		ImageView backBtn = displayHeaderBack();
-		backBtn.setOnClickListener(this);
+//		ImageView backBtn = displayHeaderBack();
+//		backBtn.setOnClickListener(this);
 
 		TextView headerDescription = displayHeaderDescription();
 		headerDescription.setText(R.string.the_charts);
@@ -82,6 +82,7 @@ public class SortActivity extends BaseActivity implements OnClickListener {
 		if (childCount != 0) {
 			sortUrl = jSortList.get(0).getU();
 		}
+//		System.out.println(jSortList.get(1000));
 		for (int i = 0; i < childCount; i++) {
 			View v = jSortLayout.getChildAt(i);
 			v.setOnClickListener(new View.OnClickListener() {
