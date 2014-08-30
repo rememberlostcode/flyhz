@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">天天海狗</string>
     <string name="app_start">点击进入</string>
     <string name="app_update">点击更新</string>

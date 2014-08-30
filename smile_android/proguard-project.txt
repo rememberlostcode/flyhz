@@ -69,4 +69,8 @@
 -keep class com.holding.smile.dto.** { *;}
 -keep class com.holding.smile.tools.TbUtil{ *;}
 
+-libraryjars /libs/testinagent-v1.4.jar
+-dontwarn com.testin.agent.**
+-keep class com.testin.agent.** {*;}
+
 
