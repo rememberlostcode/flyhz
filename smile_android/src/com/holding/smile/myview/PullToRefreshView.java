@@ -347,13 +347,13 @@ public class PullToRefreshView extends LinearLayout {
 				if (distance < -10) {
 					if (mPullState == PULL_DOWN_STATE) {
 						// PullToRefreshView执行下拉
-						Log.i(MyApplication.LOG_TAG,
+						Log.i(MyApplication.getClassName(this.getClass().getName()),
 								"PullToRefreshView pull down!parent view move!");
 						headerPrepareToRefresh(deltaY);
 						// setHeaderPadding(-mHeaderViewHeight);
 					} else if (mPullState == PULL_UP_STATE) {
 						// PullToRefreshView执行上拉
-						Log.i(MyApplication.LOG_TAG, "PullToRefreshView pull up!parent view move!");
+						Log.i(MyApplication.getClassName(this.getClass().getName()), "PullToRefreshView pull up!parent view move!");
 						footerPrepareToRefresh(deltaY);
 					}
 				} else {

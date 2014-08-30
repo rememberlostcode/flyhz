@@ -88,7 +88,7 @@ public class RecycleBitmapUtil {
 
 	private void rceycleBitmap(Bitmap bitmap) {
 		if (bitmap != null && !bitmap.isRecycled()) {
-			Log.e(MyApplication.LOG_TAG, "RecycleBitmapUtil rceycleBitmap");
+			Log.e(MyApplication.getClassName(this.getClass().getName()), "RecycleBitmapUtil rceycleBitmap");
 			bitmap.recycle();
 			bitmap = null;
 			System.gc();

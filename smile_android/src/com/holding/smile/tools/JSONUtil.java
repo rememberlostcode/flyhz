@@ -45,7 +45,7 @@ public class JSONUtil {
 		try {
 			obj = objectMapper.readValue(json, resultSetClass);
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, "", e);
+			Log.e(MyApplication.getClassName(JSONUtil.class.getName()), "", e);
 		}
 		return (E) obj;
 	}
@@ -72,7 +72,7 @@ public class JSONUtil {
 				JGoods[] jGoods = objectMapper.readValue(json, JGoods[].class);
 				return new ArrayList<JGoods>(Arrays.asList(jGoods));
 			} catch (Exception e) {
-				Log.e(MyApplication.LOG_TAG, "", e);
+				Log.e(MyApplication.getClassName(JSONUtil.class.getClass().getName()), "", e);
 			}
 		}
 		return null;
@@ -84,7 +84,7 @@ public class JSONUtil {
 				String[] strs = objectMapper.readValue(json, String[].class);
 				return strs;
 			} catch (Exception e) {
-				Log.e(MyApplication.LOG_TAG, "", e);
+				Log.e(MyApplication.getClassName(JSONUtil.class.getClass().getName()), "", e);
 			}
 		}
 		return null;
@@ -102,7 +102,7 @@ public class JSONUtil {
 				String[] strs = objectMapper.readValue(json, String[].class);
 				return new ArrayList<String>(Arrays.asList(strs));
 			} catch (Exception e) {
-				Log.e(MyApplication.LOG_TAG, "", e);
+				Log.e(MyApplication.getClassName(JSONUtil.class.getClass().getName()), "", e);
 			}
 		}
 		return null;

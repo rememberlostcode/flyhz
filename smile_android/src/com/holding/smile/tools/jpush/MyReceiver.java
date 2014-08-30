@@ -133,19 +133,19 @@ public class MyReceiver extends BroadcastReceiver {
 	private void processCustomMessage(Context context, Bundle bundle) {
 		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
 		if (message.indexOf("购物车") > -1) {
-			Log.e(MyApplication.LOG_TAG, "添加购物车数量");
-			try {
-				JSONObject extraJson = new JSONObject(message);
-				Integer addNum = extraJson.getInt("qty");
-				if (addNum != null
-						&& MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
-					MyApplication.getInstance().getSqliteService().addUserShoppingCount(addNum);
-				} else {
-					Log.w(MyApplication.LOG_TAG, "未登录，跳过添加购物车数量");
-				}
-			} catch (JSONException e) {
-				Log.d(MyApplication.LOG_TAG, e.getMessage());
-			}
+			Log.d(MyApplication.getClassName(this.getClass().toString()), "添加购物车数量");
+//			try {
+//				JSONObject extraJson = new JSONObject(message);
+//				Integer addNum = extraJson.getInt("qty");
+//				if (addNum != null
+//						&& MyApplication.getInstance().getLoginService().isSessionInvalidated()) {
+//					MyApplication.getInstance().getSqliteService().addUserShoppingCount(addNum);
+//				} else {
+//					Log.w(MyApplication.getClassName(this.getClass().getName()), "未登录，跳过添加购物车数量");
+//				}
+//			} catch (JSONException e) {
+//				Log.d(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
+//			}
 		}
 	}
 }

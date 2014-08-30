@@ -70,7 +70,7 @@ public class IndexActivity extends InstrumentedActivity {
 							+ jversion.getVersionApk());
 					mUpdateManager.checkUpdateInfo();
 				} catch (Exception e) {
-					Log.e(MyApplication.LOG_TAG, e.getMessage());
+					Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 				}
 			}
 		});
@@ -91,13 +91,13 @@ public class IndexActivity extends InstrumentedActivity {
 		try {
 			String registrationID = JPushInterface.getRegistrationID(MyApplication.getInstance());
 			if (registrationID != null) {
-				Log.i(MyApplication.LOG_TAG, "registrationID=" + registrationID);
+				Log.i(MyApplication.getClassName(this.getClass().getName()), "registrationID=" + registrationID);
 				MyApplication.getInstance().setRegistrationID(registrationID);
 			} else {
-				Log.w(MyApplication.LOG_TAG, "未取得registrationID");
+				Log.w(MyApplication.getClassName(this.getClass().getName()), "未取得registrationID");
 			}
 		} catch (Exception e) {
-			Log.e(MyApplication.LOG_TAG, e.getMessage());
+			Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 		}
 
 		// JPushInterface.resumePush(MyApplication.getInstance());
@@ -106,7 +106,7 @@ public class IndexActivity extends InstrumentedActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		Log.e(MyApplication.LOG_TAG, "IndexActivity start onStart~~~");
+		Log.e(MyApplication.getClassName(this.getClass().getName()), "IndexActivity start onStart~~~");
 
 		/* 自动登录另起一个线程 */
 		mUIHandler.postDelayed(new Runnable() {
@@ -130,7 +130,7 @@ public class IndexActivity extends InstrumentedActivity {
 			public void run() {
 				RtnValueDto rvd = MyApplication.getInstance().getDataService().getLastestVersion();
 				if (rvd != null)
-					Log.i(MyApplication.LOG_TAG + ".version", rvd.getCode() + "");
+					Log.i(MyApplication.getClassName(this.getClass().getName()) + ".version", rvd.getCode() + "");
 				if (CodeValidator.dealCode(getApplicationContext(), rvd)) {
 					try {
 						// 获取packagemanager的实例
@@ -144,7 +144,7 @@ public class IndexActivity extends InstrumentedActivity {
 
 						if (!version.equals(jversion.getVersionNew())) {
 							// 这里来检测版本是否需要更新
-							Log.i(MyApplication.LOG_TAG,
+							Log.i(MyApplication.getClassName(this.getClass().getName()),
 									"检测到新版本需要更新：" + version + "->" + jversion.getVersionNew());
 							mUpdateManager = new UpdateManager(IndexActivity.this);
 							mUpdateManager.setApkUrl(MyApplication.jgoods_img_url
@@ -165,13 +165,13 @@ public class IndexActivity extends InstrumentedActivity {
 
 							mUpdateManager.checkUpdateInfo();
 						} else {
-							Log.i(MyApplication.LOG_TAG, "未检测到新版本");
+							Log.i(MyApplication.getClassName(this.getClass().getName()), "未检测到新版本");
 							Intent intent = new Intent(IndexActivity.this, MainSmileActivity.class);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(intent);
 						}
 					} catch (NameNotFoundException e) {
-						Log.e(MyApplication.LOG_TAG, e.getMessage());
+						Log.e(MyApplication.getClassName(this.getClass().getName()), e.getMessage());
 					}
 				}
 			}
@@ -206,7 +206,7 @@ public class IndexActivity extends InstrumentedActivity {
 	private BroadcastReceiver		connectionReceiver;
 
 	public void initNetworkReceiver() {
-		Log.i(MyApplication.LOG_TAG, "启动网络状态接收器...");
+		Log.i(MyApplication.getClassName(this.getClass().getName()), "启动网络状态接收器...");
 		if (connectionReceiver == null) {
 			connectionReceiver = new BroadcastReceiver() {
 				@Override
@@ -223,14 +223,14 @@ public class IndexActivity extends InstrumentedActivity {
 					// 则进入Network
 					// Setting界面
 					// 由用户配置网络连接
-					Log.i(MyApplication.LOG_TAG + ".State.wifi", wifi.toString());
+					Log.i(MyApplication.getClassName(this.getClass().getName()) + ".State.wifi", wifi.toString());
 					if (mobile == State.CONNECTED || mobile == State.CONNECTING
 							|| wifi == State.CONNECTED || wifi == State.CONNECTING) {
 						MyApplication.setHasNetwork(true);
-						Log.i(MyApplication.LOG_TAG + ".network_state", "true");
+						Log.i(MyApplication.getClassName(this.getClass().getName()) + ".network_state", "true");
 					} else {
 						MyApplication.setHasNetwork(false);
-						Log.i(MyApplication.LOG_TAG + ".network_state", "false");
+						Log.i(MyApplication.getClassName(this.getClass().getName()) + ".network_state", "false");
 						ToastUtils.showShort(context, "网络异常，请检查网络！");
 					}
 				}
@@ -285,13 +285,13 @@ public class IndexActivity extends InstrumentedActivity {
 																										.getLoginService();
 															RtnValueDto rvd = loginService.autoLogin();
 															if (rvd != null)
-																Log.i(MyApplication.LOG_TAG,
+																Log.i(MyApplication.getClassName(this.getClass().getName()),
 																		rvd.getCode() + "");
 															if (CodeValidator.dealCode(
 																	getApplicationContext(), rvd)) {
 																if (rvd != null
 																		&& rvd.getUserData() != null) {
-																	Log.i(MyApplication.LOG_TAG,
+																	Log.i(MyApplication.getClassName(this.getClass().getName()),
 																			"自动登录成功！欢迎您,"
 																					+ user.getUsername());
 																}

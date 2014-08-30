@@ -114,9 +114,9 @@ public class FileUtils {
 				 * 获取响应码 200=成功 当响应成功，获取响应的流
 				 */
 				int res = conn.getResponseCode();
-				Log.i(MyApplication.LOG_TAG, "uploadFile response code:" + res);
+				Log.i(MyApplication.getClassName(FileUtils.class.getName()), "uploadFile response code:" + res);
 				if (res == 200) {
-					Log.e(MyApplication.LOG_TAG, "uploadFile request success");
+					Log.e(MyApplication.getClassName(FileUtils.class.getName()), "uploadFile request success");
 					InputStream input = conn.getInputStream();
 					StringBuffer sb1 = new StringBuffer();
 					int ss;
@@ -124,9 +124,9 @@ public class FileUtils {
 						sb1.append((char) ss);
 					}
 					result = sb1.toString();
-					Log.i(MyApplication.LOG_TAG, "uploadFile result:" + result);
+					Log.i(MyApplication.getClassName(FileUtils.class.getName()), "uploadFile result:" + result);
 				} else {
-					Log.i(MyApplication.LOG_TAG, "uploadFile request error");
+					Log.i(MyApplication.getClassName(FileUtils.class.getName()), "uploadFile request error");
 				}
 			}
 		} catch (MalformedURLException e) {
@@ -286,7 +286,7 @@ public class FileUtils {
 			if (response.getStatusLine().getStatusCode() == 200) {
 				// 获取返回的数据
 				result = EntityUtils.toString(response.getEntity(), CHARSET);
-				Log.d(MyApplication.LOG_TAG, "HttpPost方式请求成功，返回数据如下：");
+				Log.d(MyApplication.getClassName(FileUtils.class.getName()), "HttpPost方式请求成功，返回数据如下：");
 				if (result != null) {
 					RtnValueDto rtn = JSONUtil.getJson2Entity(result, RtnValueDto.class);
 					Integer code = rtn.getCode();
@@ -303,7 +303,7 @@ public class FileUtils {
 					result = "操作成功！";
 				}
 			} else {
-				Log.d(MyApplication.LOG_TAG, "HttpPost方式请求失败");
+				Log.d(MyApplication.getClassName(FileUtils.class.getName()), "HttpPost方式请求失败");
 				result = "发布失败";
 			}
 
@@ -385,7 +385,7 @@ public class FileUtils {
 			if (response.getStatusLine().getStatusCode() == 200) {
 				// 获取返回的数据
 				result = EntityUtils.toString(response.getEntity(), CHARSET);
-				Log.d(MyApplication.LOG_TAG, "HttpPost方式请求成功，返回数据如下：");
+				Log.d(MyApplication.getClassName(FileUtils.class.getName()), "HttpPost方式请求成功，返回数据如下：");
 				if (result != null) {
 					RtnValueDto rtn = JSONUtil.getJson2Entity(result, RtnValueDto.class);
 					if (rtn != null && rtn.getCode().equals(200000)) {
@@ -395,7 +395,7 @@ public class FileUtils {
 					}
 				}
 			} else {
-				Log.d(MyApplication.LOG_TAG, "HttpPost方式请求失败");
+				Log.d(MyApplication.getClassName(FileUtils.class.getName()), "HttpPost方式请求失败");
 				result = "非法操作";
 			}
 
@@ -499,9 +499,9 @@ public class FileUtils {
 			if (response.getStatusLine().getStatusCode() == 200) {
 				// 获取返回的数据
 				result = EntityUtils.toString(response.getEntity(), CHARSET);
-				Log.d(MyApplication.LOG_TAG, "HttpPost方式请求成功，返回数据如下：");
+				Log.d(MyApplication.getClassName(FileUtils.class.getName()), "HttpPost方式请求成功，返回数据如下：");
 			} else {
-				Log.d(MyApplication.LOG_TAG, "HttpPost方式请求失败");
+				Log.d(MyApplication.getClassName(FileUtils.class.getName()), "HttpPost方式请求失败");
 				result = "{\"code\":100000}";
 			}
 
