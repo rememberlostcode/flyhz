@@ -159,7 +159,11 @@ public class OrderServiceImpl implements OrderService {
 						total = total.add(detailTotal);
 
 						// 处理邮费
-						orderDetailDto.setLogisticsPriceEvery(Constants.logisticsPriceEvery);// 每种商品单个物流费用
+						if(product.getId().equals(858)){
+							orderDetailDto.setLogisticsPriceEvery(new BigDecimal(0));// 测试产品为0
+						} else {
+							orderDetailDto.setLogisticsPriceEvery(Constants.logisticsPriceEvery);// 每种商品单个物流费用
+						}
 						orderDetailDto.setLogisticsPriceTotal(Constants.logisticsPriceEvery.multiply(BigDecimal.valueOf(qty)));// 每种商品总有物流费用
 						logisticsPriceTotal = logisticsPriceTotal.add(orderDetailDto.getLogisticsPriceTotal());// 累加订单总物流费用
 					}
