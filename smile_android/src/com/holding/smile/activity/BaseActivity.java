@@ -22,6 +22,7 @@ import com.holding.smile.R;
 import com.holding.smile.entity.SUser;
 import com.holding.smile.myview.HKDialogLoading;
 import com.holding.smile.tools.ToastUtils;
+import com.testin.agent.TestinAgent;
 
 /**
  * 
@@ -83,6 +84,7 @@ public class BaseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		context = getApplicationContext();
 		super.onCreate(savedInstanceState);
+		TestinAgent.init(this, "1b845d96c4b83b180b0c70ca5791f8e8");// 此行必须放在super.onCreate后
 		setContentView(R.layout.base);
 		ly_content = (LinearLayout) findViewById(R.id.content);
 
@@ -182,7 +184,7 @@ public class BaseActivity extends Activity {
 	 * 设置内容区域
 	 * 
 	 * @param resId
-	 *            资源文件ID
+	 * 资源文件ID
 	 */
 	public void setContentLayout(int resId) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -228,6 +230,7 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		TestinAgent.onStop(this);// 此行必须放在super.onStop后
 //		Log.e(MyApplication.LOG_TAG, "start onStart~~~");
 	}
 
@@ -241,6 +244,7 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		TestinAgent.onResume(this);// 此行必须放在super.onResume后
 //		Log.e(MyApplication.LOG_TAG, "start onResume~~~");
 		// 先验证是否是需要登录后才可以访问的activity
 		if (this.getClass().equals(ShoppingCartActivity.class)
