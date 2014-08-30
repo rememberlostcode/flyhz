@@ -18,13 +18,13 @@ import com.holding.smile.dto.RtnValueDto;
  * 101024=旧密码为空 101025=新密码为空 101026=输入旧密码不对 101027=旧密码超过64个字符 101028=新密码超过64个字符
  * 101029=用户邮箱不能为空
  * 
- * 201001=订单商品为空 201002=订单号不能为空 201003=订单为空 201004=关闭订单失败 400000=程序异常
+ * 201001=订单商品为空 201002=订单号不能为空 201003=订单为空 201004=关闭订单失败 400000=等待淘宝订单查询中，请稍候
  * 
  * 111110=操作对象为空 111111=主键ID为空 111112=款号为空 120001=品牌ID为空 120002=身份证照片为空
  * 122221=身份证照片保存出错 122222=身份证照片附件保存出错 130001=订单状态修改失败 130002=用户ID不能为空
  * 130003=订单ID不能为空 130004=订单内容不能为空 140001=用户名与密码不能为空 140002=用户名为空
  * 140003=用户名长度不能大于32个字符 140004=用户名已存在 140005=密码为空 140006=电子邮箱输入不正确
- * 140007=用户验证码不能为空
+ * 140007=用户验证码不能为空 444444 =程序异常
  * 
  * @author zhangb
  * 
@@ -169,6 +169,9 @@ public class CodeValidator {
 					case 200001:
 						ToastUtils.showShort(context, "操作失败，请稍候重试！");
 						break;
+					case 444444:
+						ToastUtils.showShort(context, "程序异常！");
+						break;
 					default:
 						ToastUtils.showShort(context, "程序异常！");
 						break;
@@ -212,6 +215,14 @@ public class CodeValidator {
 	 */
 	public static String getErrorNetworkCodeResult() {
 		return "{\"code\":\"999999\"}";
+	}
+
+	/**
+	 * 请求数据异常时的错误code返回结果
+	 * @return
+	 */
+	public static String getErrorDataCodeResult() {
+		return "{\"code\":\"444444\"}";
 	}
 
 	public static void main(String[] args) {

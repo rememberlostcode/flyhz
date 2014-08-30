@@ -82,10 +82,9 @@ public class URLUtil {
 		} catch (SocketException e) {
 			Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
 			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
-			return null;
 		} catch (Exception e) {
 			Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
-			return null;
+			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
 		}
 		return result.toString();
 	}
@@ -143,7 +142,6 @@ public class URLUtil {
 		} catch (Exception e) {
 			Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
 			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
-			return null;
 		}
 		return result.toString();
 	}
@@ -203,7 +201,6 @@ public class URLUtil {
 		} catch (Exception e) {
 			Log.e(MyApplication.getClassName(URLUtil.class.getName()), e.getMessage());
 			result = new StringBuffer(CodeValidator.getErrorNetworkCodeResult());
-			return null;
 		}
 		return result.toString();
 	}
