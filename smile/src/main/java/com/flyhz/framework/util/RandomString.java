@@ -78,8 +78,5 @@ public class RandomString {
 	public static void main(String[] args) {
 		System.out.println(generateRandomStringTime());
 		System.out.println(generateRandomStringTime());
-		// System.out.println(generateRandomNumber6());
-		// System.out.println(generateRandomStringDate());
-		// System.out.println(generateRandomStringDate());
 	}
 }

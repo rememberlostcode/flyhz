@@ -37,6 +37,7 @@
         <typeAlias alias="VersionModel" type="com.flyhz.shop.persistence.entity.VersionModel"/>
         <typeAlias alias="DiscountModel" type="com.flyhz.shop.persistence.entity.DiscountModel"/>
         <typeAlias alias="CurrencyModel" type="com.flyhz.shop.persistence.entity.CurrencyModel"/>
+        <typeAlias alias="RefundModel" type="com.flyhz.shop.persistence.entity.RefundModel"/>
         
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>
