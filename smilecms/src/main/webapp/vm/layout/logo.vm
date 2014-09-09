@@ -58,7 +58,8 @@
 					<li #if($!current == "0") class="current" #end><a href="$server_name/index">首页</a></li>
 					#if($!u)
 						<li #if($!current == "1") class="current" #end><a href="$server_name/product/list">产品列表</a></li>
-						<li #if($!current == "2") class="current" #end><a href="$server_name/purchase/list">代购列表</a></li>
+						<!--<li #if($!current == "2") class="current" #end><a href="$server_name/purchase/list">代购列表</a></li>-->
+						<li #if($!current == "3") class="current" #end><a href="$server_name/refund/list">退款列表</a></li>
 					#end
 				</ul>
 			</div>

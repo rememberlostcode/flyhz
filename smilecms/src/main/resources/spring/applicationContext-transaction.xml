@@ -79,6 +79,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 		<mvc:interceptor>
 			<mvc:mapping path="/product/**" />
 			<mvc:mapping path="/purchase/**" />
+			<mvc:mapping path="/refund/**" />
 			<bean class="com.flyhz.framework.lang.AccessInterceptor"/>
 		</mvc:interceptor>
 	</mvc:interceptors>                                   

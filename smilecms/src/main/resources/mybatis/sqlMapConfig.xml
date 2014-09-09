@@ -36,6 +36,7 @@
         <typeAlias alias="CurrencyModel" type="com.flyhz.shop.persistence.entity.CurrencyModel"/>
         <typeAlias alias="PurchaseModel" type="com.flyhz.shop.persistence.entity.PurchaseModel"/>
         <typeAlias alias="PurchaseLogModel" type="com.flyhz.shop.persistence.entity.PurchaseLogModel"/>
+        <typeAlias alias="RefundModel" type="com.flyhz.shop.persistence.entity.RefundModel"/>
         <!-- 配置Dto别名 -->
         <typeAlias alias="ProductDto" type="com.flyhz.shop.dto.ProductDto"/>
         <typeAlias alias="OrderDto" type="com.flyhz.shop.dto.OrderDto"/>
@@ -48,6 +49,7 @@
         <typeAlias alias="ProductPageDto" type="com.flyhz.shop.dto.ProductPageDto"/>
         <typeAlias alias="PurchaseDto" type="com.flyhz.shop.dto.PurchaseDto"/>
         <typeAlias alias="PurchasePageDto" type="com.flyhz.shop.dto.PurchasePageDto"/>
+         <typeAlias alias="RefundPageDto" type="com.flyhz.shop.dto.RefundPageDto"/>
         <!-- 配置build Dto别名 -->
         <typeAlias alias="ProductBuildDto" type="com.flyhz.shop.dto.ProductBuildDto"/>
         <typeAlias alias="CategoryBuildDto" type="com.flyhz.shop.dto.CategoryBuildDto"/>
