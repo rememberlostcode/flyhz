@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.RefundDao">
+    <select id="getRefundsPageCount" resultType="Integer" parameterType="RefundPageDto">
+    	select count(1) count from refund r where 1=1 and  
+    	<if test="orderNumber != null">
+   		   and r.order_number = #{orderNumber} 
+   	    </if>
+   	    <if test="tborderId != null">
+   		   and r.tborder_id=#{tborderId} 
+   	    </if>
+   	    <if test="refundStatus != null">
+   		   and r.refund_status=#{refundStatus} 
+   	    </if>
+    </select>
+    
+    <select id="getRefundsPage" resultType="RefundModel" parameterType="RefundPageDto">
+    	select r.id,r.order_number,r.tborder_id,r.refund_fee,r.refund_status from refund r where 1=1 and  
+    	<if test="orderNumber != null">
+   		   and r.order_number = #{orderNumber} 
+   	    </if>
+   	    <if test="tborderId != null">
+   		   and r.tborder_id=#{tborderId} 
+   	    </if>
+   	    <if test="refundStatus != null">
+   		   and r.refund_status=#{refundStatus} 
+   	    </if>
+		order by r.id limit #{start},#{pagesize}
+    </select>
+    
+    <select id="getRefundById" resultType="RefundModel" parameterType="Integer">
+    	select r.id,r.order_number,r.tborder_id,r.refund_fee,r.refund_status from refund r where id=#{refundId}  
+    </select>
+        
+    <update id="updateRefund" parameterType="RefundModel">
+    	update refund set tborder_id = #{tborderId},refund_fee=#{refundFee},refund_status=#{refundStatus} where id = #{id}
+    </update>
+</mapper>
