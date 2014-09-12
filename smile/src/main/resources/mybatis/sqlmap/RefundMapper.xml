@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flyhz.shop.persistence.dao.RefundDao">
+    <select id="getRefundByOrderNumber" resultType="RefundModel" parameterType="String">
+    	select r.id,r.order_number,r.tborder_id,r.refund_fee,r.refund_status from refund r where order_number=#{orderNumber}  
+    </select>
+</mapper>

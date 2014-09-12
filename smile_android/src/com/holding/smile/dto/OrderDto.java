@@ -40,10 +40,20 @@ public class OrderDto implements Serializable {
 	private String					time;
 
 	private String					status;
-	
+
 	private String					tid;
 
 	private LogisticsDto			logisticsDto;
+
+	private RefundDto				refundDto;
+
+	public RefundDto getRefundDto() {
+		return refundDto;
+	}
+
+	public void setRefundDto(RefundDto refundDto) {
+		this.refundDto = refundDto;
+	}
 
 	public String getStatus() {
 		return status;

@@ -14,11 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.holding.smile.activity.IndexActivity;
-import com.holding.smile.activity.MainSmileActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;

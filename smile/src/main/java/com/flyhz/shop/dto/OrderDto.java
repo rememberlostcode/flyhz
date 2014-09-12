@@ -18,7 +18,7 @@ public class OrderDto {
 	private ConsigneeDetailDto		consignee;
 
 	private BigDecimal				logisticsPriceTotal;
-	
+
 	private BigDecimal				total;
 
 	private Integer					qty;
@@ -31,10 +31,20 @@ public class OrderDto {
 	private String					time;
 
 	private String					status;
-	
+
 	private String					tid;
-	
-	private LogisticsDto logisticsDto;
+
+	private LogisticsDto			logisticsDto;
+
+	private RefundDto				refundDto;
+
+	public RefundDto getRefundDto() {
+		return refundDto;
+	}
+
+	public void setRefundDto(RefundDto refundDto) {
+		this.refundDto = refundDto;
+	}
 
 	public Integer getId() {
 		return id;

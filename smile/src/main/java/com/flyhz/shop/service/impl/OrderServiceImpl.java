@@ -35,6 +35,7 @@ import com.flyhz.shop.dto.OrderDto;
 import com.flyhz.shop.dto.OrderPayDto;
 import com.flyhz.shop.dto.OrderSimpleDto;
 import com.flyhz.shop.dto.ProductDto;
+import com.flyhz.shop.dto.RefundDto;
 import com.flyhz.shop.dto.UserDto;
 import com.flyhz.shop.dto.VoucherDto;
 import com.flyhz.shop.persistence.dao.ConsigneeDao;
@@ -43,12 +44,14 @@ import com.flyhz.shop.persistence.dao.IdcardDao;
 import com.flyhz.shop.persistence.dao.LogisticsDao;
 import com.flyhz.shop.persistence.dao.OrderDao;
 import com.flyhz.shop.persistence.dao.ProductDao;
+import com.flyhz.shop.persistence.dao.RefundDao;
 import com.flyhz.shop.persistence.dao.UserDao;
 import com.flyhz.shop.persistence.entity.ConsigneeModel;
 import com.flyhz.shop.persistence.entity.DiscountModel;
 import com.flyhz.shop.persistence.entity.IdcardModel;
 import com.flyhz.shop.persistence.entity.LogisticsModel;
 import com.flyhz.shop.persistence.entity.OrderModel;
+import com.flyhz.shop.persistence.entity.RefundModel;
 import com.flyhz.shop.persistence.entity.UserModel;
 import com.flyhz.shop.service.OrderService;
 import com.flyhz.shop.service.common.OrderStatusService;
@@ -79,6 +82,8 @@ public class OrderServiceImpl implements OrderService {
 	private TaobaoData		taobaoData;
 	@Resource
 	private DiscountDao		discountDao;
+	@Resource
+	private RefundDao refundDao;
 	@Resource
 	private OrderStatusService	orderStatusService;
 
@@ -243,6 +248,19 @@ public class OrderServiceImpl implements OrderService {
 				if (orderDto != null) {
 					orderDto.setStatus(order.getStatus());// 把订单的状态塞入dto
 					orderDto.setLogisticsDto(order.getLogisticsDto());
+					
+					//退款信息
+					RefundModel refundModel = refundDao.getRefundByOrderNumber(orderDto.getNumber());
+					if(refundModel!=null){
+						RefundDto refundDto = new RefundDto();
+						refundDto.setRefundFee(refundModel.getRefundFee());
+						refundDto.setRefundStatus(refundModel.getRefundStatus());
+						refundDto.setTborderId(refundModel.getTborderId());
+						
+						orderDto.setRefundDto(refundDto);
+					}
+					
+					
 					orderDtoList.add(orderDto);
 				}
 			}
