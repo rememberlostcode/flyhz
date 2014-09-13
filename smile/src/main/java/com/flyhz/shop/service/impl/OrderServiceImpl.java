@@ -256,6 +256,7 @@ public class OrderServiceImpl implements OrderService {
 						refundDto.setRefundFee(refundModel.getRefundFee());
 						refundDto.setRefundStatus(refundModel.getRefundStatus());
 						refundDto.setTborderId(refundModel.getTborderId());
+						refundDto.setOrderNumber(refundModel.getOrderNumber());
 						
 						orderDto.setRefundDto(refundDto);
 					}

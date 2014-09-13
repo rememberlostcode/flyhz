@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 public class RefundDto implements Serializable {
 	private static final long	serialVersionUID	= -6538358346069114540L;
+	private String				orderNumber;									// 海狗订单号
 	private String				tborderId;										// 淘宝订单号
 	private BigDecimal			refundFee;										// 退款金额
 	private String				refundStatus;									// 可退款状态：0--否
@@ -33,5 +34,13 @@ public class RefundDto implements Serializable {
 
 	public void setRefundStatus(String refundStatus) {
 		this.refundStatus = refundStatus;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 }
